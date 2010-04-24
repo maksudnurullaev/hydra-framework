@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+
+<project name="Hydra" basedir="." default="usage">
+	<property file="build.properties" />
+
+	<property name="src" value="${basedir}/src" />
+	<property name="src.tests" value="${basedir}/tests" />
+	<property name="classes" value="${basedir}/WebContext/WEB-INF/classes" />
+	<property name="name" value="${application.name}-${application.version}" />
+
+	<fileset id="local.libs" dir="${basedir}/WebContext/WEB-INF/lib">
+		<include name="*.jar" />
+	</fileset>
+	
+	<fileset id="web.libs" dir="${appserver.lib}">
+		<include name="servlet*.jar" />
+	</fileset>
+	
+	<taskdef classpath="${aspectj.home}/lib/aspectjtools.jar" resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties"/>
+	<fileset id="aspectj.libs" dir="${aspectj.home}/lib">
+		<include name="*.jar" />
+	</fileset>		
+
+	
+	<path id="master-classpath">
+		<pathelement path="${classes}"/>
+		<fileset refid="local.libs"/>
+		<fileset refid="web.libs"/>
+		<fileset refid="aspectj.libs"/>
+	</path>
+
+	<path id="sources-path">
+		<pathelement path="${basedir}/src"/>
+		<pathelement path="${basedir}/test"/>
+	</path>
+		
+	<target name="usage">
+		<echo message="" />
+		<echo message="Current:" />
+		<echo message="-----------------------------------" />
+		<echo message="appserver.home      = ${appserver.home}" />
+		<echo message="appserver.lib       = ${appserver.lib}" />
+		<echo message="deploy.path         = ${deploy.path}" />
+		<echo message="application.name    = ${application.name}" />
+		<echo message="application.version = ${application.version}" />
+		<echo message="aspectj.home        = ${aspectj.home}" />
+	</target>
+
+	<target name="local.build" description="Build project">
+		<mkdir dir="${classes}" />
+		<javac destdir="${classes}" source="1.5" target="1.5" debug="true"
+			deprecation="true" optimize="false" failonerror="true">
+			<src path="${src}" />
+			<src path="${src.tests}" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+
+	<target name="local.clean" description="Clean project">
+		<delete dir="${classes}/org" />
+		<delete dir="${classes}/doc" />
+	</target>	
+	
+	<target name="web.cleanup.webapp" description="Remove project from web server">
+		<delete dir="${deploy.path}/${name}" />
+	</target>	
+	
+	<target name="web.deploy" depends="local.build" description="Deploy project to web server">
+		<copy todir="${deploy.path}/${name}" preservelastmodified="true">
+			<fileset dir="${basedir}/WebContext">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="local.create.war.file" depends="local.build"
+		description="Create WAR file">
+		<war destfile="${name}.war" webxml="${basedir}/WebContext/WEB-INF/web.xml">
+			<fileset dir="${basedir}/WebContext">
+				<include name="**/*.*" />
+			</fileset>
+		</war>
+	</target>
+	
+	<target name="local.run.tests" depends="local.build" description="Run tests">
+		<junit printsummary="on" fork="false" haltonfailure="false"
+			failureproperty="tests.failed" showoutput="true">
+			<classpath refid="master-classpath" />
+			<formatter type="brief" usefile="false" />
+
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/Test*.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<fail if="tests.failed">
+tests.failed=${tests.failed}
+***********************************************************
+***********************************************************
+**** One or more tests failed! Check the output ... ****
+***********************************************************
+***********************************************************
+        </fail>
+	</target>
+	
+	<target name="local.build.javadoc" depends="local.build" description="Build API documentation">
+
+		<mkdir dir="./doc/api" />
+		<javadoc sourcepath="${src}" destdir="./doc/api" packagenames="*">
+			<classpath refid="master-classpath" />
+		</javadoc>
+
+	</target>	
+
+</project>

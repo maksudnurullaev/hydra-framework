@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!--
+Copyright: Darren Hester 2006, http://www.designsbydarren.com
+License: Released Under the "Creative Commons License", 
+http://creativecommons.org/licenses/by-nc/2.5/
+-->
+	<head>
+		<!-- Meta Data -->
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="description" content="Spring DWR mootools Hydra Framework" />
+		<meta name="keywords" content="java, spring, dwr, ajile, hydra" />
+		
+		<!-- Mootools -->
+		<script type="text/javascript" src="scripts/mootools-1.2.4-core-nc.js"></script>
+		<script type="text/javascript" src="scripts/mootools-1.2.4.4-more.js"></script>
+		
+		<!-- Default scripts -->
+		<script type="text/javascript" src="scripts/Globals.js"></script>
+		<script type="text/javascript" src="scripts/GlobalsNav.js"></script>
+		
+		
+		<!-- Site Title -->
+		<title>Hydra Framework</title>
+		
+		<!-- Link to Style External Sheet -->
+		<link href="css/style.css" type="text/css" rel="stylesheet" />
+	</head>
+	<body>	
+		<div id="page_wrapper">		
+			<div id="header_wrapper">		
+				<div id="header">
+					<h1>Hydra<font color="#FFDF8C">Framework</font></h1>
+					<h2 id="logos">Будь проще!</h2>	
+				</div>
+				<div id="navcontainer">
+					<ul id="navlist">
+						<li id="selected"><a href="#" onclick="javascript:void(GlobalsNav.onClik(this))" id="home">Главная</a></li>
+						<li><a href="#" onclick="javascript:void(GlobalsNav.onClik(this))" id="docs">Документация</a></li>
+						<li><a href="#" onclick="javascript:void(GlobalsNav.onClik(this))" id="agreement">Лицензия</a></li>
+						<li><a href="#" onclick="javascript:void(GlobalsNav.onClik(this))" id="admin">Администрирование</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="content">
+				<div id="home.content">		
+					<h3>История</h3>
+						Cуществование огромного количества свободный программ и инструментов для веб разработок иногда ужасает, а не радует. 
+						Мы полагаем что для "счастья" веб-программиста необходимы лишь три компоненты:
+						<ul>
+							<li>легкая, гибкая и программируемая <u>серверная часть</u>;</li>
+							<li>легкая, гибкая и программируемая <u>клиентская часть</u>;</li>
+							<li>легкая, гибкая и программируемая <u>связь</u> между клиентской и серверной частью.
+						</ul>
+						Из этих соображений, для нашего проекта, мы выбрали такие компоненты:
+						<ul>
+							<li><u>серверная часть</u> - <a href="http://ru.wikipedia.org/wiki/Spring_Framework">The Spring Framework</a> (открытая платформы для Java разработок);</li>
+							<li><u>клиентская часть</u> - <a href="http://ru.wikipedia.org/wiki/Mootools">MooTools</a> (свободный JavaScript  фреймворк для разработки кроссбраузерных веб-приложений и веб-сервисов);
+							<li>и то, что их <u>свяжет</u> - <a href="http://ru.wikipedia.org/wiki/DWR">DWR</a> (свободная Java библиотеки, упрощающая взаимодействие Java скриптов с Java сервером).</li>
+						</ul>
+						"До кучи" добавили собственные разработки по многопоточному выполнению запросов и назвали это чудо 
+						<a href="#">HydraFramework</a>-ом!<br />
+						<p>
+						<small>Помните, что вы всегда свободны в выборе и можете использовать совершенно другие компоненты и вариации на эту же тему, но это будет уже другая история... ;-)</small>
+						</p>
+				</div>
+			</div>
+			<div id="footer">
+				<a href="#">Link One</a> | 
+				<a href="#">Link Two</a> | 
+				<a href="#">Link Three</a> | 
+				<a href="#">Link Four</a> | 
+				<a href="#">Link Five</a>
+				<br />
+				Copyright &copy; 2010 <a href="http://www.setka.uz" target="_blank">Max Micro Systems</a>, Лицензия
+				<a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License (Версия 2.0)</a>
+			</div>
+		</div>
+		<!-- Initial Invisible DIV for HTML Elements stack -->
+		<div id="stack" style="border: 1px solid red; display: none;">
+		</div>
+	</body>
+</html>
