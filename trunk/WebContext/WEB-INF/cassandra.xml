@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<!-- Cassandra server -->
+	<bean id="_cassandra_server" class="org.hydra.db.server.CassandraBean">
+		<property name="host">
+			<value>localhost</value>
+		</property>
+		<property name="port">
+			<value type="int">9160</value>
+		</property>
+	</bean>
+	
+	<!--CFName & CName description -->
+	<bean id="_cfname_article" class="org.hydra.db.beans.CFName">
+		<property name="name" value="Article" />
+		<property name="fields">
+			<map>
+				<entry key="Title">    <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Text">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Comments"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+				<entry key="Tags">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+				<entry key="Authors">  <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="_cfname_comments" class="org.hydra.db.beans.CFName">
+		<property name="name" value="Comments" />
+		<property name="fields">
+			<map>
+				<entry key="Text">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Comments"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+				<entry key="Authors">  <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="_cfname_users" class="org.hydra.db.beans.CFName">
+		<property name="name" value="Users" />
+		<property name="fields">
+			<map>
+				<entry key="Password"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Atricles"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+				<entry key="Comments"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+				<entry key="EMails">   <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="_cfname_emails" class="org.hydra.db.beans.CFName">
+		<property name="name" value="Emails" />
+		<property name="fields">
+			<map>
+				<entry key="Address"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Users">   <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="_cfname_tags" class="org.hydra.db.beans.CFName">
+		<property name="name" value="Tags" />
+		<property name="fields">
+			<map>
+				<entry key="Name">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Articles"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+			</map>
+		</property>
+	</bean>
+
+	<!-- KSName description -->
+	<bean id="_ksname_KSMain" class="org.hydra.db.beans.KSName">
+		<property name="name" value="KSMain"/>
+		<property name="linkTableName" value="Links"/>		
+		<property name="tables">
+			<map>
+				<entry key="Article">   <ref bean="_cfname_article"/></entry>
+				<entry key="Comments">  <ref bean="_cfname_comments"/></entry>
+				<entry key="Users">   <ref bean="_cfname_users"/></entry>
+				<entry key="Emails">   <ref bean="_cfname_emails"/></entry>
+				<entry key="Tags">   <ref bean="_cfname_tags"/></entry>
+			</map>
+		</property>
+	</bean>
+
+</beans>
