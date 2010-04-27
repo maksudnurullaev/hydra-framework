@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.directwebremoting.WebContextFactory;
+import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.messages.handlers.AdminMessageHandler;
 
 /**
@@ -20,7 +21,7 @@ public final class Constants {
 	public static final String _beans_main_input_pipe = "_main_input_pipe_";
 	public static final String _beans_main_message_collector = "_main_message_collector";
 	public static final String _beans_statistics_collector = "_statisticsCollector";
-	public static final String _beans_cassandra_server = "_cassandra_server";
+	public static final String _beans_cassandra_server_descriptor = "_cassandra_server_descriptor";
 	// **** END - BEAN Constants
 	
 	public static final String _project_name = "Hydra";
@@ -48,6 +49,8 @@ public final class Constants {
 	
 	// **** Deafult response waiting time (in milliseconds)
 	public static final long _max_response_wating_time = 1000;
+	
+	//public static final String _html_a_onclik_label = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({%s}))\">%s</a>";
 	
 
 	public static String GetCurrentDateTime() {
@@ -121,16 +124,7 @@ public final class Constants {
 	}
 	
 	public static String getTemplate(String inKey, String inWrap){
-		return MessagesManager.getTextManager().getTextByKey(inKey, null);
-	}
-
-	public static String getJStrSendMessage(String inHandlerName,
-			String inWhat, String inKind, String inDestDivId) {
-		return String.format(getTemplate("template.js.sendMessage", null),
-				inHandlerName,
-				inWhat,
-				inKind,
-				inDestDivId);
+		return MessagesManager.getTextManager().getTextByKey(inKey, inWrap);
 	}
 
 	public static String trace(Object inObj, StackTraceElement[] stackTraceElements) {
@@ -146,4 +140,19 @@ public final class Constants {
 		
 		return String.format(format, "no-stacktrace-found!");
 	}
+
+	public static CassandraDescriptorBean getCassandraServerDescriptor() {
+		Result result = SessionManager.getBean(Constants._beans_cassandra_server_descriptor);
+		
+		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
+			return (CassandraDescriptorBean) result.getObject();
+		}
+		return null;
+	}
+	
+	public static String makeJSLink(String inLabelName, String format, Object ...inObjects){
+		return String.format(Constants.getTemplate("template.html.a.onClick.sendmessage.Label", null),
+												String.format(format, inObjects),
+												inLabelName);	
+	}	
 }

@@ -1,8 +1,10 @@
 package org.hydra.messages.handlers;
 
+import java.util.Map;
+
 import org.hydra.collectors.StatisticsCollector;
 import org.hydra.db.beans.KSName;
-import org.hydra.db.server.CassandraBean;
+import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
@@ -14,7 +16,6 @@ import org.hydra.utils.SessionManager;
 public class AdminMessageHandler extends AMessageHandler {
 	public static final String _handler_name = "AdminMessage";
 	public static final String _defaultContentBodyID = "admin.content.body";
-	public static final String _defaultContentBodyIDTail = "admin.content.body.tail";
 	
 	public static final String _what_hydra_desc = "hydra_desc";
 	public static final String _what_hydra_bean_desc = "hydra_bean_desc";
@@ -35,41 +36,49 @@ public class AdminMessageHandler extends AMessageHandler {
 		if(inMessage.getData().get(IMessage._data_what).equals(_what_hydra_desc)){			
 			inMessage.setHtmlContent(getDescriptionHtmlHydraBeans());
 		}else if(inMessage.getData().get(IMessage._data_what).equals(_what_cassandra_desc)){
-			inMessage.setHtmlContent(getDescriptionHTMLCassandra()
-					+ String.format("<hr /><div id='%s'>...</div>", _defaultContentBodyIDTail));
+			inMessage.setHtmlContent(getDescriptionHTMLCassandra());
 		}else if(inMessage.getData().get(IMessage._data_what).equals(_what_cassandra_ksname_desc)){
 			inMessage.setHtmlContent(getCassandraKSNameDesc(inMessage.getData().get(IMessage._data_kind)));
-		}else{
-			String errorMsg = trace + String.format("error.unknown.message.type.(What/Kind): (%s/%s)"
-				, inMessage.getData().get(IMessage._data_what)
-				, inMessage.getData().get(IMessage._data_kind));
-			getLog().error(errorMsg);			
+		}else {
+			String errorMsg = trace + String.format("error.unknown.message.type.(What/Kind):(%s/%s)\n", 
+					inMessage.getData().get(IMessage._data_what),
+					inMessage.getData().get(IMessage._data_kind));
+			
+			if(AppContext.isDebugMode()){
+				for(Map.Entry<String, String> dataEntry:inMessage.getData().entrySet())
+					errorMsg += String.format("%s/%s\n", dataEntry.getKey(), dataEntry.getValue());
+			}
+			
 			inMessage.setError(errorMsg);
+			getLog().error(errorMsg);
 		}
 		return inMessage;
-		
 	}
 	
-	private String getCassandraKSNameDesc(String  inKSNameBean) {
+	private String getCassandraKSNameDesc(String  inKSName) {
 		// Spring Debug Mode
 		if(AppContext.isDebugMode()){
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		Result result = SessionManager.getBean(inKSNameBean);
+		CassandraDescriptorBean csd = Constants.getCassandraServerDescriptor();
 		
-		if(result.isOk() && result.getObject() instanceof KSName){
-			KSName desriptor = (KSName) result.getObject();
-			return desriptor.getTablesDescriptionHTML();
+		if(csd != null){
+			KSName ksname = csd.getKSName(inKSName);
+			return ksname.getCFNamesDescriptionHTML();
 		}
-		return trace + MessagesManager.getTextManager().getTextByKey("error.bean.statistics.not.found");		
+		
+		return String.format("%s %s: %s", 
+				trace, 
+				"error.bean.not.found", 
+				inKSName);		
 	}
 
 	private String getDescriptionHTMLCassandra(){
-		Result result = SessionManager.getBean(Constants._beans_cassandra_server);
+		Result result = SessionManager.getBean(Constants._beans_cassandra_server_descriptor);
 		
-		if(result.isOk() && result.getObject() instanceof CassandraBean){
-			CassandraBean server = (CassandraBean) result.getObject();
+		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
+			CassandraDescriptorBean server = (CassandraDescriptorBean) result.getObject();
 			return server.getHTMLReport();
 		}
 		return MessagesManager.getTextManager().getTextByKey("error.bean.statistics.not.found");		

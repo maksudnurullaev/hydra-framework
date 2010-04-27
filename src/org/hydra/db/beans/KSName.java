@@ -1,21 +1,30 @@
 package org.hydra.db.beans;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.hydra.messages.handlers.CFNameMessageHandler;
+import org.hydra.utils.Constants;
 import org.hydra.utils.abstracts.ALogger;
 
 public class KSName extends ALogger {
-	private Map<String, CFName> tables = new HashMap<String, CFName>();
+	private Set<CFName> _columnFamilies = new HashSet<CFName>();
+	
 	private String name = null;
 	private String linkTableName = null;
+
+	// HTML IDs
+	public static final String _ksname_desc_divId = "_ksname_desc_div";
+
 	
-	public void setTables(Map<String, CFName> tables) {
-		this.tables = tables;
-		getLog().debug(String.format("%s tables added to KSName(%s)", tables.size(), getName()));		
+	public void setColumnFamilies(Set<CFName> inCFNames) {
+		_columnFamilies = inCFNames;
+		
+		getLog().debug(String.format("%s CFNames added to KSName(%s)", _columnFamilies.size(), getName()));		
 	}
-	public Map<String, CFName> getTables() {
-		return tables;
+	
+	public Set<CFName> getColumnFamilies() {
+		return _columnFamilies;
 	}
 	
 	public void setName(String name) {
@@ -27,34 +36,53 @@ public class KSName extends ALogger {
 		return name;
 	}
 	
-	public String getTablesDescriptionHTML() {
-		String formatStrong = "%s<strong>%s:</strong> %s<br />";
-		// KSName
-		StringBuffer result = new StringBuffer(String.format(formatStrong, "", "KSName", getName()));		
-		for(Map.Entry<String, CFName> entryKeyCFName: tables.entrySet()){
-			// CFName
-			result.append(String.format(formatStrong,"&nbsp;", "CFName",entryKeyCFName.getKey()));
-			// CName
-			for(Map.Entry<String, CFKey> entryKeyCFKey: entryKeyCFName.getValue().getFields().entrySet()){
-				result.append(String.format(formatStrong,"&nbsp;&nbsp;", "CFKey", 
-						String.format("%s, %s", 
-								entryKeyCFKey.getKey(), 
-								entryKeyCFKey.getValue().getType()), 
-						""));				
-			}
+	public String getCFNamesDescriptionHTML() {
+		String formatStrong = Constants.getTemplate("template.html.Strongtext.Text.br", null);
+		
+		int counter = 0;
+		String result = String.format(formatStrong, "KSName", getName());
+		
+		String cfNamesLinks = "";
+				
+		
+		for(CFName entryCFName: _columnFamilies){
+			if(counter++ != 0)
+				cfNamesLinks += ", ";
+			cfNamesLinks += Constants.makeJSLink(entryCFName.getName(),
+					"handler:'%s',what:'%s',kind:'%s', dest:'%s'", 
+						CFNameMessageHandler._handler_name,
+						getName(),
+						entryCFName.getName(),
+						CFNameMessageHandler._cfname_desc_divId
+					);
 		}
+		
+		// Append all CFName links
+		result += String.format(formatStrong, "CFNames", cfNamesLinks.toString());
+		
+		// Append tail div for child elements
+		if(counter > 0)
+			result += String.format(Constants.getTemplate("template.html.hr.divId.dots",null), CFNameMessageHandler._cfname_desc_divId);
+		
 		return result.toString();		
 	}
 	
 	public String getTablesDescriptionText(){
 		String result = String.format("KSName(%s) statistics:\n", getName());
 		result += String.format("\tLink table is CFName(%s).\n", getLinkTableName());
-		for(Map.Entry<String, CFName> entry: tables.entrySet()){
-			result += entry.getValue().getFieldsDescription();
+		for(CFName entryCFName: _columnFamilies){
+			result += entryCFName.getFieldsDescription();
 		}
 		return result;		
 	}
 	
+	public CFName getCFName(String inCFName){
+		for(CFName entry:_columnFamilies){
+			if(entry.getName().equalsIgnoreCase(inCFName))
+				return entry;
+		}
+		return null;
+	}
 	
 	public void setLinkTableName(String linkTableName) {
 		this.linkTableName = linkTableName;

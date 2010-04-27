@@ -99,7 +99,13 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		
 		// Table rows
 		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
-			tempString = String.format(MessagesManager.getTextManager().getTextByKey("template.table.td", null), makeJSLink(mapStringTypeInteger.getKey()));
+			tempString = String.format(MessagesManager.getTextManager().getTextByKey("template.table.td", null), 
+					Constants.makeJSLink(mapStringTypeInteger.getKey(), 
+							"handler:'%s',what:'%s',kind:'%s', dest:'%s'",
+							AdminMessageHandler._handler_name,
+							AdminMessageHandler._what_hydra_bean_desc,
+							mapStringTypeInteger.getKey(),
+							AdminMessageHandler._defaultContentBodyID));
 			for (StatisticsTypes type : StatisticsTypes.values()) {
 				tempString += String.format(MessagesManager.getTextManager().getTextByKey("template.table.td", null), mapStringTypeInteger.getValue().get(type));
 			}
@@ -109,16 +115,5 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		return String.format(MessagesManager.getTextManager().getTextByKey("template.html.h4", null), 
 					MessagesManager.getTextManager().getTextByKey("text.statistics.message.handled.by.objects", null))
 				+ String.format(MessagesManager.getTextManager().getTextByKey("template.table.with.class", null), "statistics", result);
-	}
-
-	private String makeJSLink(String key) {
-		String onClickJStr  = Constants.getJStrSendMessage(AdminMessageHandler._handler_name,
-				AdminMessageHandler._what_hydra_bean_desc,
-				key,
-				AdminMessageHandler._defaultContentBodyID);		
-		
-		return String.format(Constants.getTemplate("template.html.a.onclick.label", null),
-				onClickJStr, 
-				key);
 	}
 }

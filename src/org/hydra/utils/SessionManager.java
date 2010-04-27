@@ -103,12 +103,15 @@ public final class SessionManager {
 	 * 
 	 * Detache session data (locale, userId and etc.)
 	 * @param inMessage
+	 * @return 
 	 */
-	public static void detachSessionData(MessageBean inMessage) {
-		inMessage.getData().remove(IMessage._string_locale);
-		inMessage.getData().remove(IMessage._string_userId);
-		inMessage.getData().remove(IMessage._data_sessionId);
-		inMessage.getData().remove(IMessage._data_handler);
+	public static void detachSessionData(IMessage inMessage) {
+		if(inMessage != null && inMessage.getData() != null){
+			inMessage.getData().remove(IMessage._string_locale);
+			inMessage.getData().remove(IMessage._string_userId);
+			inMessage.getData().remove(IMessage._data_sessionId);
+			inMessage.getData().remove(IMessage._data_handler);
+		}
 	}
 
 	public static boolean isDebug() {
