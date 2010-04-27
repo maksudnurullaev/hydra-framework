@@ -37,7 +37,7 @@
 	<target name="usage">
 		<echo message="" />
 		<echo message="Current:" />
-		<echo message="-----------------------------------" />
+		<echo message="---------------------------------------" />
 		<echo message="appserver.home      = ${appserver.home}" />
 		<echo message="appserver.lib       = ${appserver.lib}" />
 		<echo message="deploy.path         = ${deploy.path}" />

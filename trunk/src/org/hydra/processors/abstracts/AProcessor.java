@@ -1,5 +1,7 @@
 package org.hydra.processors.abstracts;
 
+import java.util.Map;
+
 import org.hydra.collectors.StatisticsCollector.StatisticsTypes;
 import org.hydra.collectors.abstracts.AStatisticsApplyer;
 import org.hydra.collectors.interfaces.ICollector;
@@ -11,6 +13,7 @@ import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
 import org.hydra.processors.exceptions.NullPipeException;
 import org.hydra.processors.interfaces.IProcessor;
+import org.hydra.spring.AppContext;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 
@@ -39,6 +42,11 @@ public abstract class AProcessor extends AStatisticsApplyer implements IProcesso
 	}
 	
 	public Result getMessageHandler(IMessage inMessage) {
+		// Spring Debug Mode
+		if(AppContext.isDebugMode()){
+			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
+		} else trace = "";
+		
 		Result _result = new Result();
 		
 		String path2MessageHandler = Constants._message_handler_class_prefix 
@@ -58,8 +66,17 @@ public abstract class AProcessor extends AStatisticsApplyer implements IProcesso
 			_result.setObject(object);
 			
 		} catch (Exception e) {
+			String errorStr = "Internal Error!";
+			if(AppContext.isDebugMode()){
+				
+				errorStr = trace + "===DATA(key/value)===\n";
+				for(Map.Entry<String, String> entryMap: inMessage.getData().entrySet()){
+					errorStr += String.format("%s/%s\n", entryMap.getKey(), entryMap.getValue());
+				}
+				errorStr += e.toString();
+			}
 			_result.setResult(false);
-			_result.setResult(e.toString());
+			_result.setResult(errorStr);
 			
 			getLog().error(e.toString());
 		}

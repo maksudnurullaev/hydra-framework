@@ -4,8 +4,6 @@ if (Globals == null){
 
 /* Values */
 Globals.DivContentID   = "content";
-Globals.DivHeaderID    = "header";
-Globals.DivFooterID    = "footer";
 Globals.DivInvisibleID = "stack";
 
 /* Debugger */

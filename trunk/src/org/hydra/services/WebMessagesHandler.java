@@ -44,6 +44,8 @@ public class WebMessagesHandler extends ALogger {
 		}else{
 			getLog().fatal("Could not initialize " + Constants._beans_main_input_pipe + " object");
 			inMessage.setError("Could not initialize " + Constants._beans_main_input_pipe + " object");
+			
+			SessionManager.detachSessionData(inMessage);
 			_result.add(inMessage);
 			return _result;
 		}
@@ -63,23 +65,25 @@ public class WebMessagesHandler extends ALogger {
 					
 					inMessage.setError("Waiting time limit is over...");				
 					getLog().error("Waiting time limit is over...");
-					_result.add(inMessage);				
 					
+					SessionManager.detachSessionData(inMessage);
+					_result.add(inMessage);				
 					return _result;
 				}
 				Thread.yield();
 			}
 			getLog().debug("END: Waiting for response...");
-			// 5. If response messages exist
-			//TODO IMessage VS MessageBean ???
-			MessageBean messageBean = null;
-			while((messageBean = (MessageBean) messagesCollector.getMessage(Constants.getCurrentSessionID())) != null){
+			// 5. If response messages exist	
+			IMessage messageBean = null;
+			while((messageBean = messagesCollector.getMessage(Constants.getCurrentSessionID())) != null){
+				
 				SessionManager.detachSessionData(messageBean);
-				_result.add(messageBean);
+				_result.add((MessageBean)messageBean);
 			}
 			return _result;		
 		}
 		
+		SessionManager.detachSessionData(inMessage);
 		inMessage.setError("Could not initialize " + Constants._beans_main_message_collector + " object");
 		_result.add(inMessage);
 		

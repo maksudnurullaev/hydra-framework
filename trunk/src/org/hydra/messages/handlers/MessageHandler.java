@@ -17,10 +17,12 @@ public class MessageHandler extends AMessageHandler {
 		if(inMessage.getData().get(_what).equals(_data_what_html_content)){
 			if(inMessage.getData().get(IMessage._string_locale) != null){
 				inMessage.getData().put(IMessage._data_value, 
-						MessagesManager.getTextManager().getTextByKey(inMessage.getData().get(_kind),inMessage.getData().get(IMessage._string_locale)));
+						MessagesManager.getTextManager().getTextByKey(inMessage.getData().get(_kind),
+								"div",
+								inMessage.getData().get(IMessage._string_locale)));
 			}else{
 				inMessage.getData().put(IMessage._data_value, 
-						MessagesManager.getTextManager().getTextByKey(inMessage.getData().get(_kind)));				
+						MessagesManager.getTextManager().getTextByKey(inMessage.getData().get(_kind), "div"));				
 			}
 		}else{
 			getLog().error("error.unknown.message.type: " + inMessage.getData().get(_what));			
