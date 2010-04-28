@@ -13,7 +13,7 @@ public class TestCFKey {
 		Assert.assertNull(field.getType());
 		
 		field.setType("COLUMN");
-		Assert.assertEquals(field.getType(), TYPE.COLUMN);
+		Assert.assertEquals(field.getType(), TYPE.COLUMNS);
 				
 		field.setType("LINKS");
 		Assert.assertEquals(field.getType(), TYPE.LINKS);

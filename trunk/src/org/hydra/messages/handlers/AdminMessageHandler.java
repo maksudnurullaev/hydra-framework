@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.hydra.collectors.StatisticsCollector;
 import org.hydra.db.beans.KSName;
-import org.hydra.db.server.CassandraDescriptorBean;
+import org.hydra.db.server.abstracts.ACassandraDescriptorBean;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
@@ -61,7 +61,7 @@ public class AdminMessageHandler extends AMessageHandler {
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		CassandraDescriptorBean csd = Constants.getCassandraServerDescriptor();
+		ACassandraDescriptorBean csd = Constants.getCassandraServerDescriptor();
 		
 		if(csd != null){
 			KSName ksname = csd.getKSName(inKSName);
@@ -77,8 +77,8 @@ public class AdminMessageHandler extends AMessageHandler {
 	private String getDescriptionHTMLCassandra(){
 		Result result = SessionManager.getBean(Constants._beans_cassandra_server_descriptor);
 		
-		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
-			CassandraDescriptorBean server = (CassandraDescriptorBean) result.getObject();
+		if(result.isOk() && result.getObject() instanceof ACassandraDescriptorBean){
+			ACassandraDescriptorBean server = (ACassandraDescriptorBean) result.getObject();
 			return server.getHTMLReport();
 		}
 		return MessagesManager.getTextManager().getTextByKey("error.bean.statistics.not.found");		

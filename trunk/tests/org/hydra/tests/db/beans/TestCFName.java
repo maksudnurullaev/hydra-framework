@@ -26,7 +26,7 @@ public class TestCFName {
 		
 		cf.setFields(cfkeys);
 		
-		Assert.assertEquals(TYPE.COLUMN, cf.getFields().get("TypeCOLUMN").getType());
+		Assert.assertEquals(TYPE.COLUMNS, cf.getFields().get("TypeCOLUMN").getType());
 		Assert.assertEquals(TYPE.LINKS, cf.getFields().get("TypeLINKS").getType());
 		
 	}	

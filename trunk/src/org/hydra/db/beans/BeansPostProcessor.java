@@ -1,19 +1,19 @@
-package org.hydra.spring;
+package org.hydra.db.beans;
 
-import org.hydra.db.server.CassandraDescriptorBean;
+import org.hydra.db.server.abstracts.ACassandraDescriptorBean;
 import org.hydra.utils.abstracts.ALogger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-public class MyBeanPostProcessor extends ALogger implements BeanPostProcessor {
+public class BeansPostProcessor extends ALogger implements BeanPostProcessor {
 
 	@Override
 	public Object postProcessAfterInitialization(Object beanObject, String beanName)
 			throws BeansException {
 		getLog().debug(String.format("Bean(%s) initilazed as %s", beanName, beanObject.getClass().getSimpleName()));
 		// 1. For cassandra bean post initialization
-		if(beanObject instanceof CassandraDescriptorBean)
-			((CassandraDescriptorBean)beanObject).setupServer();
+		if(beanObject instanceof ACassandraDescriptorBean)
+			((ACassandraDescriptorBean)beanObject).setup();
 		return beanObject;
 	}
 

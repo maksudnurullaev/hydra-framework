@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.directwebremoting.WebContextFactory;
-import org.hydra.db.server.CassandraDescriptorBean;
+import org.hydra.db.server.abstracts.ACassandraDescriptorBean;
 import org.hydra.messages.handlers.AdminMessageHandler;
 
 /**
@@ -141,11 +141,11 @@ public final class Constants {
 		return String.format(format, "no-stacktrace-found!");
 	}
 
-	public static CassandraDescriptorBean getCassandraServerDescriptor() {
+	public static ACassandraDescriptorBean getCassandraServerDescriptor() {
 		Result result = SessionManager.getBean(Constants._beans_cassandra_server_descriptor);
 		
-		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
-			return (CassandraDescriptorBean) result.getObject();
+		if(result.isOk() && result.getObject() instanceof ACassandraDescriptorBean){
+			return (ACassandraDescriptorBean) result.getObject();
 		}
 		return null;
 	}

@@ -16,7 +16,7 @@
 	<import resource="cassandra.xml"/>
 	
 	<!-- My Bean initialization [pre|post]processor -->
-	<bean class="org.hydra.spring.MyBeanPostProcessor"/>
+	<bean class="org.hydra.db.beans.BeansPostProcessor"/>
 
 	<!-- Text Resources object -->
 	<bean id="_text_manager" class="org.hydra.text.TextManager">
