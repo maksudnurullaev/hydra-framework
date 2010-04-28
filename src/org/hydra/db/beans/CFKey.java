@@ -4,7 +4,7 @@ import org.hydra.utils.abstracts.ALogger;
 
 public class CFKey extends ALogger {
 
-	public static enum TYPE{COLUMN, LINKS};
+	public static enum TYPE{COLUMNS, LINKS};
 	
 	private TYPE type;
 	

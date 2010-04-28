@@ -64,12 +64,13 @@ public class CFNameMessageHandler extends AMessageHandler {
 			if(counter++ != 0)
 				resultLinks += ", ";
 			resultLinks += Constants.makeJSLink(entryCFKey.getKey(),
-					"handler:'%s',what:'%s',kind:'%s',cname:'%s',dest:'%s'",
+					"handler:'%s',what:'%s',kind:'%s',dest:'%s',%s:'%s',%s:'%s'",
 					CassandraMessageHandler._handler_name,
-					ksNameBean.getName(),   // ksName
-					inCFNameBean.getName(), // cfName
-					entryCFKey.getKey(),    // cName
-					CFNameMessageHandler._cname_desc_divId
+					CassandraMessageHandler._what_describe,
+					ksNameBean.getName(),
+					CFNameMessageHandler._cname_desc_divId,
+					CassandraMessageHandler._cfname_key, inCFNameBean.getName(),
+					CassandraMessageHandler._cname_key, entryCFKey.getKey()
 				);
 						
 		}		

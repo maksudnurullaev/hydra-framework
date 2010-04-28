@@ -1,6 +1,5 @@
 package org.hydra.messages.handlers.abstracts;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.hydra.messages.MessageBean;
@@ -16,52 +15,38 @@ public abstract class AMessageHandler extends ALogger implements IMessageHandler
 	protected static final String _kind = "kind";
 	protected static final String[] _mansatory_data_keys = {_what, _kind};
 		
-	@Override
-	public boolean isValidMessage(IMessage inMessage) {
+	
+	public static final boolean isValidData(Map<String, String> inMap, String[] inKeys){
+		if(inMap == null) return false;
+		
+		// Check mandatories
+		for (String keyValue:_mansatory_data_keys) {
+			if(!inMap.containsKey(keyValue) ||
+					inMap.get(keyValue) == null) return false;
+		}
+		
+		// Check additional
+		for (String keyValue:inKeys) {
+			if(!inMap.containsKey(keyValue) ||
+					inMap.get(keyValue) == null) return false;
+		}
+		
+		// Finish, all test passed
+		return true;
+	}		
+	
+	public boolean isValidMessage(IMessage inMessage, String ...keys){
 		if(!(inMessage instanceof MessageBean)){
 			getLog().error("Unexpected message class: " + inMessage.getClass().getSimpleName());
 			inMessage.setError("Unexpected message class: " + inMessage.getClass().getSimpleName());
 			return false;
-		}else if(!isValidData(inMessage.getData(), getMandatoryDataKeys())){
+		}else if(!isValidData(inMessage.getData(), keys)){
 			getLog().error("Incoming message does not have necessary data");
 			inMessage.setError("Incoming message does not have necessary data");
 			return false;			
 		}			
 		// Finish, all test passed
-		return true;
-	}	
-	
-	@Override
-	public String[] getMandatoryDataKeys() {
-		if(getAdditionalManatoryDataKeys() == null) return _mansatory_data_keys;
-		ArrayList<String> result = new ArrayList<String>();
-		
-		// Add default mandatory keys
-		for(String elem:_mansatory_data_keys)
-			result.add(elem);
-		
-		// Add addiotional mandatoryn keys
-		for(String elem:getAdditionalManatoryDataKeys())
-			result.add(elem);
-		
-		return (String[]) result.toArray();
-		
-	}
-
-	public static final boolean isValidData(Map<String, String> map, String[] mandarotyDataKeys){
-		if(map == null) return false;
-		
-		for (String keyValue:mandarotyDataKeys) {
-			if(!map.containsKey(keyValue) ||
-					map.get(keyValue) == null) return false;
-		}
-		// Finish, all test passed
-		return true;
-	}	
-	
-	@Override
-	public String[] getAdditionalManatoryDataKeys() {
-		return null;
+		return true;		
 	}
 	
 }

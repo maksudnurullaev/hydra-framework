@@ -6,19 +6,42 @@
        	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<!-- Cassandra server -->
+	<!-- Cassandra descriptor bean -->
 	<bean id="_cassandra_server_descriptor" class="org.hydra.db.server.CassandraDescriptorBean">
+		<!-- Setup locales -->
+		<property name="locales">
+			<map>
+				<entry key="Eng" value="English" />
+				<entry key="Rus" value="Русский"/>
+			</map>
+		</property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>Eng</value>
+		</property>
+		
+		<!-- Set cassandra accessor bean -->
+		<property name="accessor">
+			<ref bean="_cassandra_accessor"/>
+		</property>
+		
+		<!-- Set keyspace -->
+		<property name="keyspaces">
+			<set>
+				<ref bean="_ksname_KSMain"/>
+			</set>
+		</property>			
+	</bean>
+	
+	<!-- Cassandra accessor bean -->
+	<bean id="_cassandra_accessor" class="org.hydra.db.server.CassandraAccessorBean">
 		<property name="host">
 			<value>localhost</value>
 		</property>
 		<property name="port">
 			<value type="int">9160</value>
 		</property>
-		<property name="keyspaces">
-			<set>
-				<ref bean="_ksname_KSMain"/>
-			</set>
-		</property>
+	
 	</bean>
 	
 	<!-- KSName description -->
@@ -41,8 +64,8 @@
 		<property name="name" value="Articles" />
 		<property name="fields">
 			<map>
-				<entry key="Title">    <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
-				<entry key="Text">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Title">    <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMNS"/></bean></entry>
+				<entry key="Text">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMNS"/></bean></entry>
 				<entry key="Comments"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 				<entry key="Tags">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 				<entry key="Authors">  <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
@@ -54,7 +77,7 @@
 		<property name="name" value="Comments" />
 		<property name="fields">
 			<map>
-				<entry key="Text">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Text">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMNS"/></bean></entry>
 				<entry key="Comments"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 				<entry key="Authors">  <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 			</map>
@@ -65,7 +88,7 @@
 		<property name="name" value="Users" />
 		<property name="fields">
 			<map>
-				<entry key="Password"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Password"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMNS"/></bean></entry>
 				<entry key="Atricles"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 				<entry key="Comments"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 				<entry key="EMails">   <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
@@ -77,7 +100,7 @@
 		<property name="name" value="Emails" />
 		<property name="fields">
 			<map>
-				<entry key="Address"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Address"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMNS"/></bean></entry>
 				<entry key="Users">   <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 			</map>
 		</property>
@@ -87,7 +110,7 @@
 		<property name="name" value="Tags" />
 		<property name="fields">
 			<map>
-				<entry key="Name">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMN"/></bean></entry>
+				<entry key="Name">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMNS"/></bean></entry>
 				<entry key="Articles"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 			</map>
 		</property>
