@@ -17,10 +17,13 @@ public class AdminMessageHandler extends AMessageHandler {
 	public static final String _handler_name = "AdminMessage";
 	public static final String _defaultContentBodyID = "admin.content.body";
 	
+	public static final String _what = "what";	
 	public static final String _what_hydra_desc = "hydra_desc";
 	public static final String _what_hydra_bean_desc = "hydra_bean_desc";
 	public static final String _what_cassandra_desc = "cassandra_desc";
 	public static final String _what_cassandra_ksname_desc = "cassandra_ksname_desc";
+	
+	public static final String _kind = "kind";
 
 	@Override
 	public IMessage handleMessage(IMessage inMessage) {
@@ -30,7 +33,7 @@ public class AdminMessageHandler extends AMessageHandler {
 		} else trace = "";
 		
 		// - Test incoming message
-		if(!isValidMessage(inMessage)) return inMessage;
+		if(!isValidMessage(inMessage, _what, _kind)) return inMessage;
 		
 		// - Handle request message by type == global
 		if(inMessage.getData().get(IMessage._data_what).equals(_what_hydra_desc)){			

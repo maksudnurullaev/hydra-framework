@@ -12,6 +12,7 @@ import org.hydra.db.beans.CFKey.TYPE;
 import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.messages.handlers.AdminMessageHandler;
 import org.hydra.messages.handlers.CassandraMessageHandler;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
 import org.hydra.utils.Constants;
 import org.hydra.utils.abstracts.ALogger;
@@ -103,13 +104,14 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 					String.format(Constants.getTemplate("template.html.custom.input.ID.Value", null), inputBoxID, inputBoxVal),
 					getCName(ksName, cfName, cName).getType(),
 					Constants.makeJSLink(cName, 
-							"handler:'%s',what:'%s',kind:'%s',dest:'%s',%s:'%s',%s:'%s'", 
-							CassandraMessageHandler._handler_name, // handler
-							CassandraMessageHandler._what_select,  // what
-							ksName, //kind
-							resultDivID, //dest
+							"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s',%s:'%s',%s:$('%s').value",
+							CassandraMessageHandler._handler_name,
+							resultDivID,
+							CassandraMessageHandler._action, CassandraMessageHandler._action_select,  
+							CassandraMessageHandler._ksname_key, ksName,
 							CassandraMessageHandler._cfname_key, cfName,
-							CassandraMessageHandler._cname_key, cName)
+							CassandraMessageHandler._cname_key, cName,
+							CassandraMessageHandler._ID, inputBoxID)
 					)
 					+
 					String.format(Constants.getTemplate("template.html.hr.divId.dots",null), resultDivID);
@@ -121,12 +123,14 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 				String.format(Constants.getTemplate("template.html.custom.input.ID.Value", null), inputBoxID, inputBoxVal),
 				cName,
 				Constants.makeJSLink("IDs", 
-						"handler:'%s',what:'%s',kind:'%s',cname:'%s',dest:'%s'", 
-						"CassandraData",
-						ksName,
-						cfName,
-						cName,
-						resultDivID)
+						"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s',%s:'%s',%s:$('%s').value", 
+						CassandraMessageHandler._handler_name,
+						resultDivID,
+						CassandraMessageHandler._action, CassandraMessageHandler._action_select,  
+						CassandraMessageHandler._ksname_key, ksName,
+						CassandraMessageHandler._cfname_key, cfName,
+						CassandraMessageHandler._cname_key, cName,
+						CassandraMessageHandler._ID, inputBoxID)
 				)
 				+
 				String.format(Constants.getTemplate("template.html.hr.divId.dots",null), resultDivID);
@@ -172,11 +176,12 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 				if(counter++ != 0)
 					result.append(", ");
 					result.append(Constants.makeJSLink(entryKSName.getName(), 
-							"handler:'%s',what:'%s',kind:'%s', dest:'%s'", 
+							"handler:'%s',dest:'%s',%s:'%s',%s:'%s'", 
 							AdminMessageHandler._handler_name,
-							AdminMessageHandler._what_cassandra_ksname_desc,
-							entryKSName.getName(),
-							KSName._ksname_desc_divId));
+							KSName._ksname_desc_divId,
+							IMessage._data_what, AdminMessageHandler._what_cassandra_ksname_desc,
+							IMessage._data_kind, entryKSName.getName()
+							));
 					
 			}else result.append(String.format("Keyspace(%s) doesn't exist on server!", entryKSName.getName()));
 		}

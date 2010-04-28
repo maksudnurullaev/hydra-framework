@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hydra.messages.handlers.CFNameMessageHandler;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
 import org.hydra.utils.abstracts.ALogger;
 
@@ -49,11 +50,11 @@ public class KSName extends ALogger {
 			if(counter++ != 0)
 				cfNamesLinks += ", ";
 			cfNamesLinks += Constants.makeJSLink(entryCFName.getName(),
-					"handler:'%s',what:'%s',kind:'%s', dest:'%s'", 
+					"handler:'%s',dest:'%s',%s:'%s',%s:'%s'", 
 						CFNameMessageHandler._handler_name,
-						getName(),
-						entryCFName.getName(),
-						CFNameMessageHandler._cfname_desc_divId
+						CFNameMessageHandler._cfname_desc_divId,
+						IMessage._data_what, getName(),
+						IMessage._data_kind, entryCFName.getName()						
 					);
 		}
 		
