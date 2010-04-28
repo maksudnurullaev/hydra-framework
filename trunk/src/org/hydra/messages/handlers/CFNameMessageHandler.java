@@ -14,7 +14,7 @@ import org.hydra.utils.SessionManager;
 
 public class CFNameMessageHandler extends AMessageHandler {
 	public static final String _handler_name = "CFNameMessage";
-	public static final String _what_cassandra_cfname_desc = "cassandra_cfname_desc";
+	public static final String _what_desc = "desc";
 
 	// HTML IDs
 	public static final String _cfname_desc_divId = "_cfname_desc_div";
@@ -38,9 +38,7 @@ public class CFNameMessageHandler extends AMessageHandler {
 		if(ksNameBean != null){
 			CFName cfNameBean = ksNameBean.getCFName(cfName);
 			if(cfNameBean != null){
-				inMessage.setHtmlContent(
-						getCNamesDescHtml(inMessage, cfNameBean, ksNameBean)
-						);
+				inMessage.setHtmlContent(getCNamesDescHtml(inMessage, cfNameBean, ksNameBean));
 			}else inMessage.setError(trace + "Could not find CFName: " + cfName);
 			
 		}else inMessage.setError(trace + "Could not find KSName: " + ksName);
@@ -64,11 +62,11 @@ public class CFNameMessageHandler extends AMessageHandler {
 			if(counter++ != 0)
 				resultLinks += ", ";
 			resultLinks += Constants.makeJSLink(entryCFKey.getKey(),
-					"handler:'%s',what:'%s',kind:'%s',dest:'%s',%s:'%s',%s:'%s'",
+					"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s',%s:'%s'",
 					CassandraMessageHandler._handler_name,
-					CassandraMessageHandler._what_describe,
-					ksNameBean.getName(),
 					CFNameMessageHandler._cname_desc_divId,
+					CassandraMessageHandler._action, CassandraMessageHandler._action_describe,
+					CassandraMessageHandler._ksname_key, ksNameBean.getName(),
 					CassandraMessageHandler._cfname_key, inCFNameBean.getName(),
 					CassandraMessageHandler._cname_key, entryCFKey.getKey()
 				);

@@ -101,11 +101,11 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
 			tempString = String.format(MessagesManager.getTextManager().getTextByKey("template.table.td", null), 
 					Constants.makeJSLink(mapStringTypeInteger.getKey(), 
-							"handler:'%s',what:'%s',kind:'%s', dest:'%s'",
+							"handler:'%s', dest:'%s',%s:'%s',%s:'%s'",
 							AdminMessageHandler._handler_name,
-							AdminMessageHandler._what_hydra_bean_desc,
-							mapStringTypeInteger.getKey(),
-							AdminMessageHandler._defaultContentBodyID));
+							AdminMessageHandler._defaultContentBodyID,
+							AdminMessageHandler._what, AdminMessageHandler._what_hydra_bean_desc,
+							AdminMessageHandler._kind, mapStringTypeInteger.getKey()));
 			for (StatisticsTypes type : StatisticsTypes.values()) {
 				tempString += String.format(MessagesManager.getTextManager().getTextByKey("template.table.td", null), mapStringTypeInteger.getValue().get(type));
 			}

@@ -45,10 +45,13 @@ public final class Constants {
 	public static final String _file_name_delimiter = "_";
 	public static final String _beans_text_manager = "_text_manager";
 	public static final String _path2ApplicationContext_xml = "WebContext/WEB-INF/applicationContext.xml";
-	public static final String _ksname_prefix = "_ksname_";
 	
 	// **** Deafult response waiting time (in milliseconds)
 	public static final long _max_response_wating_time = 1000;
+	
+	// **** Cassandra's constants
+	public static final String _ksname_prefix = "_ksname_";
+	public static final String _cassandra_descriptor_name = "_cassandra_server_descriptor";
 	
 	//public static final String _html_a_onclik_label = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({%s}))\">%s</a>";
 	

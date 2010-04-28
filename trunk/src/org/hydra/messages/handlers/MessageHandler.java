@@ -7,6 +7,8 @@ import org.hydra.utils.MessagesManager;
 
 public class MessageHandler extends AMessageHandler {
 	private static final String _data_what_html_content = "html.content";
+	protected static final String _what = "what";
+	protected static final String _kind = "kind";
 
 	@Override
 	public IMessage handleMessage(IMessage inMessage) {

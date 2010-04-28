@@ -8,24 +8,19 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class AMessageHandler extends ALogger implements IMessageHandler {
-	/**
-	 * Unique data key to request message ID
-	 */
-	protected static final String _what = "what";
-	protected static final String _kind = "kind";
-	protected static final String[] _mansatory_data_keys = {_what, _kind};
-		
+	
+	public static final String[]defaultFields = {"handler", "dest"};
 	
 	public static final boolean isValidData(Map<String, String> inMap, String[] inKeys){
 		if(inMap == null) return false;
 		
-		// Check mandatories
-		for (String keyValue:_mansatory_data_keys) {
+		// check Default
+		for (String keyValue:defaultFields) {
 			if(!inMap.containsKey(keyValue) ||
 					inMap.get(keyValue) == null) return false;
 		}
 		
-		// Check additional
+		// check additional
 		for (String keyValue:inKeys) {
 			if(!inMap.containsKey(keyValue) ||
 					inMap.get(keyValue) == null) return false;
