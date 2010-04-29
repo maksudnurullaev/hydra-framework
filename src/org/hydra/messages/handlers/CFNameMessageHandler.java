@@ -9,8 +9,6 @@ import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
 import org.hydra.utils.Constants;
-import org.hydra.utils.Result;
-import org.hydra.utils.SessionManager;
 
 public class CFNameMessageHandler extends AMessageHandler {
 	public static final String _handler_name = "CFNameMessage";
