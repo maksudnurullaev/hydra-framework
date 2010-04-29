@@ -35,13 +35,9 @@
 	
 	<!-- Cassandra accessor bean -->
 	<bean id="_cassandra_accessor" class="org.hydra.db.server.CassandraAccessorBean">
-		<property name="host">
-			<value>localhost</value>
-		</property>
-		<property name="port">
-			<value type="int">9160</value>
-		</property>
-	
+		<property name="host" value="localhost"/>
+		<property name="port"><value type="int">9160</value></property>
+		<property name="poolSizeMin"><value type="int">5</value></property>
 	</bean>
 	
 	<!-- KSName description -->

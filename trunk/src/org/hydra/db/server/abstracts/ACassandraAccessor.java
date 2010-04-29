@@ -1,8 +1,10 @@
 package org.hydra.db.server.abstracts;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.cassandra.thrift.Cassandra;
+import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -20,7 +22,80 @@ public abstract class ACassandraAccessor extends ALogger {
 	private String _cluster_name = null;
 	private String _version = null;
 	private Set<String> keyspaces = null;
+		
+	// **** For Cassandra.Client pool functionality
+	private Set<Cassandra.Client> _cassandraClientsActive = new HashSet<Cassandra.Client>();
+	private Set<Cassandra.Client> _cassandraClientsPassive = new HashSet<Cassandra.Client>();
 
+	private int poolSizeMin = 0;	
+	
+	public void setPoolSizeMin(int poolSizeMin) {
+		getLog().debug("Set PoolSizeMin: " + poolSizeMin);
+		this.poolSizeMin = poolSizeMin;
+	}
+
+	public int getPoolSizeMin() {
+		return poolSizeMin;
+	}	
+	
+	private void clientSetPassive(Cassandra.Client inClient){
+		_cassandraClientsPassive.add(inClient);	
+		if(_cassandraClientsActive.contains(inClient))
+			_cassandraClientsActive.remove(inClient);
+		
+		getLog().debug(getPoolInfo());
+	}
+	
+	private void clientSetActive(Cassandra.Client inClient){
+		_cassandraClientsActive.add(inClient);
+		if(_cassandraClientsPassive.contains(inClient))
+			_cassandraClientsPassive.remove(inClient);
+		
+		getLog().debug(getPoolInfo());
+	}
+	
+	private Cassandra.Client clientGet(){
+		getLog().debug(getPoolInfo());
+		if(_cassandraClientsPassive.size() == 0){
+			getLog().warn("P(0) - create new one...");
+			// 1. If NO passive clients exist, create new one 
+			Cassandra.Client client = clientCreate();
+			clientSetActive(client);
+			getLog().debug(getPoolInfo());
+			return client;
+		}
+		
+		// 2. Else get 
+		getLog().debug("Get passive client...");
+		Cassandra.Client client = _cassandraClientsPassive.iterator().next();
+		
+		clientSetActive(client);
+		
+		getLog().debug("Remove from passive pool...");
+		_cassandraClientsPassive.remove(client);
+		getLog().debug(getPoolInfo());
+		
+		return client;
+	}	
+	
+	private String getPoolInfo(){
+		return String.format("Clients pool size: A(%s)/P(%s)", 
+				_cassandraClientsActive.size(),
+				_cassandraClientsPassive.size());
+	}
+	
+	private void clientClose(Cassandra.Client inClient){
+		getLog().debug("Return client to passive pool...");
+		clientSetPassive(inClient);
+		getLog().debug(getPoolInfo());
+	}
+	
+	private Client clientCreate() {
+		getLog().debug("Create new cassandra client!");
+		return (new Cassandra.Client(getProtocol()));
+	}
+	// ############################################################################################
+	
 	public ACassandraAccessor() {
 		super();
 	}
@@ -78,11 +153,11 @@ public abstract class ACassandraAccessor extends ALogger {
 	public void setup() {
 		// 1. Init transport
 		setTransport(new TSocket(getHost(),getPort()));
-		getLog().warn(String.format("New cassandra trasport(host/port) setted up to: (%s/%s)", getHost(), getPort()));
+		getLog().debug(String.format("(host/port): (%s/%s)", getHost(), getPort()));
 		
 		// 2. Init protocol
 		setProtocol(new TBinaryProtocol(getTransport()));
-		getLog().warn(String.format("New protocol initialized"));
+		getLog().debug(String.format("New TBinaryProtocol created!"));
 		
 		if(!getTransport().isOpen());
 			try {
@@ -90,15 +165,24 @@ public abstract class ACassandraAccessor extends ALogger {
 			} catch (TTransportException e1) {
 				getLog().error(e1.getMessage());
 			}
-		// 3.
-		Cassandra.Client client = new Cassandra.Client(getProtocol());
+		// 3. Init values
+		for (int i = 0; i < getPoolSizeMin(); i++){
+			getLog().debug("Create initial pool size...");
+			clientSetPassive(clientCreate());
+		}
+		getLog().debug(getPoolInfo());
+		
+		Cassandra.Client client = clientGet();
+		//Cassandra.Client client = new Cassandra.Client(getProtocol());
 		try {
+			getLog().debug("Get cassandra info...");
 			client.send_describe_cluster_name();
 			_cluster_name = client.recv_describe_cluster_name();
 			client.send_describe_keyspaces();
 			setKeyspaces(client.recv_describe_keyspaces());
 			client.send_describe_version();
 			_version = client.recv_describe_version();
+			clientClose(client);
 			
 		} catch (TException e) {
 			getLog().error(e.getMessage());
@@ -109,7 +193,7 @@ public abstract class ACassandraAccessor extends ALogger {
 	protected void finalize() throws Throwable {
 		// 1. Proper close trasport
 		if(getTransport() != null && getTransport().isOpen()){
-			getLog().warn("Cassandra trasport still in use, we sould flush & close it before...");
+			getLog().warn("Cassandra trasport still in use, we should flush & close it!.");
 			getTransport().flush();
 			getTransport().close();			
 		}
@@ -123,5 +207,7 @@ public abstract class ACassandraAccessor extends ALogger {
 	public String getProtocolVersion() {
 		return _version;
 	}
+
+
 
 }
