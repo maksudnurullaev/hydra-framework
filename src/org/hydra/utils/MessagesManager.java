@@ -20,7 +20,7 @@ public final class MessagesManager{
 		// 1. Try to get bean from springs
 		if(SessionManager.getWebApplicationContext() != null){
 			_textManager = (TextManager) SessionManager.getWebApplicationContext().getBean(Constants._beans_text_manager);
-			_log.debug("Found spring's default bean dictionary: " + _textManager.getFileName());
+			_log.debug("Found spring's default TextManager bean dictionary!");
 		// 2. If not 
 		}else{
 			_textManager = new TextManager();
@@ -37,4 +37,18 @@ public final class MessagesManager{
 		return null;
 	}
 	
+	public static String getText(String inKey, String inHtmlWrap, String inLocale){
+		if(!getTextManager().getLocales().containsKey(inLocale))
+			return  "error.locale.not.found" ;
+		
+		if(inLocale == null)
+			inLocale = getTextManager().getDefaultLocale();		
+		
+		return getTextManager().getTextByKey(inKey, inHtmlWrap, inLocale);
+	}
+		
+	public static String getTemplate(String inKey){
+		return getTextManager().getTemplate(inKey);
+	}
+
 }

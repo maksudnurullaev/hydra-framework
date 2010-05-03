@@ -9,6 +9,8 @@ import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
 import org.hydra.utils.Constants;
+import org.hydra.utils.MessagesManager;
+import org.hydra.utils.SessionManager;
 
 public class CFNameMessageHandler extends AMessageHandler {
 	public static final String _handler_name = "CFNameMessage";
@@ -31,7 +33,7 @@ public class CFNameMessageHandler extends AMessageHandler {
 		String cfName = inMessage.getData().get(IMessage._data_kind); // cfName
 		String ksName = inMessage.getData().get(IMessage._data_what); // ksName
 
-		KSName ksNameBean = Constants.getCassandraServerDescriptor().getKSName(ksName);
+		KSName ksNameBean = SessionManager.getCassandraServerDescriptor().getKSName(ksName);
 				
 		if(ksNameBean != null){
 			CFName cfNameBean = ksNameBean.getCFName(cfName);
@@ -50,7 +52,7 @@ public class CFNameMessageHandler extends AMessageHandler {
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 
-		String formatStrong = Constants.getTemplate("template.html.Strongtext.Text.br", null);
+		String formatStrong = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
 		int counter = 0;
 		
 		String result = String.format(formatStrong, "CFName", inCFNameBean.getName());
@@ -64,9 +66,9 @@ public class CFNameMessageHandler extends AMessageHandler {
 					CassandraMessageHandler._handler_name,
 					CFNameMessageHandler._cname_desc_divId,
 					CassandraMessageHandler._action, CassandraMessageHandler._action_describe,
-					CassandraMessageHandler._ksname_key, ksNameBean.getName(),
-					CassandraMessageHandler._cfname_key, inCFNameBean.getName(),
-					CassandraMessageHandler._cname_key, entryCFKey.getKey()
+					CassandraMessageHandler._ksname_link, ksNameBean.getName(),
+					CassandraMessageHandler._cfname_link, inCFNameBean.getName(),
+					CassandraMessageHandler._cname_link, entryCFKey.getKey()
 				);
 						
 		}		
@@ -74,7 +76,7 @@ public class CFNameMessageHandler extends AMessageHandler {
 		
 		// Append tail div for child elements
 		if(counter > 0)
-			result += String.format(Constants.getTemplate("template.html.hr.divId.dots",null), _cname_desc_divId);
+			result += String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), _cname_desc_divId);
 
 		
 		return result;

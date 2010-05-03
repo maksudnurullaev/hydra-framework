@@ -37,9 +37,9 @@ public class AdminMessageHandler extends AMessageHandler {
 		
 		// - Handle request message by type == global
 		if(inMessage.getData().get(IMessage._data_what).equals(_what_hydra_desc)){			
-			inMessage.setHtmlContent(getDescriptionHtmlHydraBeans());
+			inMessage.setHtmlContent(getDescriptionHtmlHydraBeans(inMessage));
 		}else if(inMessage.getData().get(IMessage._data_what).equals(_what_cassandra_desc)){
-			inMessage.setHtmlContent(getDescriptionHTMLCassandra());
+			inMessage.setHtmlContent(getDescriptionHTMLCassandra(inMessage));
 		}else if(inMessage.getData().get(IMessage._data_what).equals(_what_cassandra_ksname_desc)){
 			inMessage.setHtmlContent(getCassandraKSNameDesc(inMessage.getData().get(IMessage._data_kind)));
 		}else {
@@ -64,7 +64,7 @@ public class AdminMessageHandler extends AMessageHandler {
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		ACassandraDescriptorBean csd = Constants.getCassandraServerDescriptor();
+		ACassandraDescriptorBean csd = SessionManager.getCassandraServerDescriptor();
 		
 		if(csd != null){
 			KSName ksname = csd.getKSName(inKSName);
@@ -77,24 +77,28 @@ public class AdminMessageHandler extends AMessageHandler {
 				inKSName);		
 	}
 
-	private String getDescriptionHTMLCassandra(){
+	private String getDescriptionHTMLCassandra(IMessage inMessage){
 		Result result = SessionManager.getBean(Constants._beans_cassandra_server_descriptor);
 		
 		if(result.isOk() && result.getObject() instanceof ACassandraDescriptorBean){
 			ACassandraDescriptorBean server = (ACassandraDescriptorBean) result.getObject();
 			return server.getHTMLReport();
 		}
-		return MessagesManager.getTextManager().getTextByKey("error.bean.statistics.not.found");		
+		return MessagesManager.getTextManager().getTextByKey("error.bean.statistics.not.found",
+				null, 
+				inMessage.getData().get(IMessage._data_locale));		
 	}
 	
-	private String getDescriptionHtmlHydraBeans() {
+	private String getDescriptionHtmlHydraBeans(IMessage inMessage) {
 		Result result = SessionManager.getBean(Constants._beans_statistics_collector);
 		
 		if(result.isOk() && result.getObject() instanceof StatisticsCollector){
 			StatisticsCollector statisticsCollector = (StatisticsCollector) result.getObject();
 			return statisticsCollector.getHtmlReport();
 		}
-		return MessagesManager.getTextManager().getTextByKey("error.bean.statistics.not.found");		
+		return MessagesManager.getTextManager().getTextByKey("error.bean.statistics.not.found",
+				null,
+				inMessage.getData().get(IMessage._data_locale));
 	}
 
 }

@@ -14,7 +14,6 @@ import org.apache.thrift.transport.TTransportException;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraAccessor extends ALogger {
-
 	private String host = null;
 	private int port = -1;
 	private TTransport _transport = null;
@@ -54,7 +53,7 @@ public abstract class ACassandraAccessor extends ALogger {
 		getLog().debug(getPoolInfo());
 	}
 	
-	private Cassandra.Client clientGet(){
+	public Cassandra.Client clientGet(){
 		getLog().debug(getPoolInfo());
 		if(_cassandraClientsPassive.size() == 0){
 			getLog().warn("P(0) - create new one...");
@@ -84,7 +83,7 @@ public abstract class ACassandraAccessor extends ALogger {
 				_cassandraClientsPassive.size());
 	}
 	
-	private void clientClose(Cassandra.Client inClient){
+	public void clientClose(Cassandra.Client inClient){
 		getLog().debug("Return client to passive pool...");
 		clientSetPassive(inClient);
 		getLog().debug(getPoolInfo());

@@ -50,10 +50,6 @@ Globals.isLoadedStage13 = function(){
 	return typeof MessageHandler != "undefined";
 };
 
-Globals.isLoadedStage14 = function(){
-	return typeof MessageHandler.applyIncomingMessages != "undefined";
-};
-
 /* Loading Stages */
 Globals.loadStages = function(){
 	Globals.loadStage1();
@@ -79,24 +75,23 @@ Globals.loadStage12 = function() {
 
 Globals.loadStage13 = function() {
 	if (!Globals.isLoadedStage13()) {
-		Globals.loadJS("dwr/interface/MessageHandler.js", Globals.loadStage14);
-	}
-};
-
-Globals.loadStage14 = function() {
-	if (!Globals.isLoadedStage14()) {
-		Globals.loadJS("scripts/MessageHandler.js", Globals.loadStage2);
+		Globals.loadJS("dwr/interface/MessageHandler.js", Globals.loadStage2);
 	}
 };
 
 Globals.loadStage2 = function(){
 	// Check Stage #1
-	if(!Globals.isLoadedStage1()){
+	if(!Globals.isLoadedStage13()){
 		Globals.debug("ERROR: Could not load stage #1");
 		return;
 	}
 	
-	alert("!!!Start STAGE 2!!!");
+	// alert("!!!Start STAGE 2 - Load Full Page Content!!!");
+	Globals.sendMessage(
+		{handler:'SessionMessage',
+		 what:'_none_', 
+		 kind:'_none_', 
+		 dest:'body'});
 
 };
 

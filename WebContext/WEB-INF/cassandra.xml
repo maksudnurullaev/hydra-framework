@@ -11,13 +11,13 @@
 		<!-- Setup locales -->
 		<property name="locales">
 			<map>
-				<entry key="Eng" value="English" />
-				<entry key="Rus" value="Русский"/>
+				<entry key="eng" value="English" />
+				<entry key="rus" value="Русский"/>
 			</map>
 		</property>
 		<!-- Set default locale -->
 		<property name="defaultLocale">
-			<value>Eng</value>
+			<value>eng</value>
 		</property>
 		
 		<!-- Set cassandra accessor bean -->
@@ -108,6 +108,7 @@
 			<map>
 				<entry key="Name">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="COLUMNS"/></bean></entry>
 				<entry key="Articles"> <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
+				<entry key="Tags">     <bean class="org.hydra.db.beans.CFKey"><property name="type" value="LINKS"/></bean></entry>
 			</map>
 		</property>
 	</bean>

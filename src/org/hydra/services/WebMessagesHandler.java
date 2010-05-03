@@ -17,10 +17,10 @@ import org.hydra.utils.abstracts.ALogger;
 public class WebMessagesHandler extends ALogger {
 
 	public List<MessageBean> sendMessage(MessageBean inMessage) throws RichedMaxCapacityException{
-		inMessage.setSessionID(Constants.getCurrentSessionID());
 		
 		// -1. Attach session's data
-		SessionManager.attachSessionData(inMessage, WebContextFactory.get().getSession());
+		getLog().debug("WebContextFactory.get(): " + WebContextFactory.get());
+		SessionManager.attachIMessageSessionData(inMessage, WebContextFactory.get());
 		
 		// 0. Debug part
 		if(getLog().isDebugEnabled()){
@@ -45,7 +45,7 @@ public class WebMessagesHandler extends ALogger {
 			getLog().fatal("Could not initialize " + Constants._beans_main_input_pipe + " object");
 			inMessage.setError("Could not initialize " + Constants._beans_main_input_pipe + " object");
 			
-			SessionManager.detachSessionData(inMessage);
+			SessionManager.detachIMessageSessionData(inMessage);
 			_result.add(inMessage);
 			return _result;
 		}
@@ -60,13 +60,13 @@ public class WebMessagesHandler extends ALogger {
 		if(result.isOk() && result.getObject() instanceof MessagesCollector){
 			MessagesCollector messagesCollector = (MessagesCollector)result.getObject();
 
-			while(!messagesCollector.hasNewMessages(Constants.getCurrentSessionID())){
+			while(!messagesCollector.hasNewMessages(inMessage.getData().get(IMessage._data_sessionId))){
 				if(System.currentTimeMillis() - startTime > Constants._max_response_wating_time){
 					
 					inMessage.setError("Waiting time limit is over...");				
 					getLog().error("Waiting time limit is over...");
 					
-					SessionManager.detachSessionData(inMessage);
+					SessionManager.detachIMessageSessionData(inMessage);
 					_result.add(inMessage);				
 					return _result;
 				}
@@ -75,15 +75,15 @@ public class WebMessagesHandler extends ALogger {
 			getLog().debug("END: Waiting for response...");
 			// 5. If response messages exist	
 			IMessage messageBean = null;
-			while((messageBean = messagesCollector.getMessage(Constants.getCurrentSessionID())) != null){
+			while((messageBean = messagesCollector.getMessage(inMessage.getData().get(IMessage._data_sessionId))) != null){
 				
-				SessionManager.detachSessionData(messageBean);
+				SessionManager.detachIMessageSessionData(messageBean);
 				_result.add((MessageBean)messageBean);
 			}
 			return _result;		
 		}
 		
-		SessionManager.detachSessionData(inMessage);
+		SessionManager.detachIMessageSessionData(inMessage);
 		inMessage.setError("Could not initialize " + Constants._beans_main_message_collector + " object");
 		_result.add(inMessage);
 		

@@ -2,15 +2,18 @@ package org.hydra.messages.interfaces;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
+import org.hydra.utils.Result;
+
 public interface IMessage {
-	// **** Inrernal session data
-	static final String _string_locale = "locale";
-	static final String _string_userId = "userId";
-	
-	// **** Default data types
+	// **** Session data keys
+	static final String _data_locale = "locale";
+	static final String _data_userId = "userId";
 	static final String _data_sessionId = "sessionId";
-	static final String _data_handler = "handler";
-	
+		
+	// **** Other default keys
+	static final String _data_handler = "handler";	
 	static final String _data_what = "what" ;
 	static final String _data_kind = "kind" ;
 	static final String _data_value = "value" ;
@@ -22,5 +25,11 @@ public interface IMessage {
 	Map<String, String> getData();
 	
 	void setError(String inErrorMessage);
+	
 	void setHtmlContent(String inHtmlContent);
+	
+	Result setToHttpSession(String inKey, Object inObj);
+	void setHttpSession(HttpSession inSession);
+	HttpSession withHttpSession();
+		
 }

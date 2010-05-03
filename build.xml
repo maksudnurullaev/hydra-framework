@@ -71,6 +71,7 @@
 				<include name="**/*.*" />
 			</fileset>
 		</copy>
+		<echo message="goto: http://yourserver/${name}"/>
 	</target>
 
 	<target name="local.create.war.file" depends="local.build"

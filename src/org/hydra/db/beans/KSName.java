@@ -6,6 +6,7 @@ import java.util.Set;
 import org.hydra.messages.handlers.CFNameMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
+import org.hydra.utils.MessagesManager;
 import org.hydra.utils.abstracts.ALogger;
 
 public class KSName extends ALogger {
@@ -38,7 +39,7 @@ public class KSName extends ALogger {
 	}
 	
 	public String getCFNamesDescriptionHTML() {
-		String formatStrong = Constants.getTemplate("template.html.Strongtext.Text.br", null);
+		String formatStrong = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
 		
 		int counter = 0;
 		String result = String.format(formatStrong, "KSName", getName());
@@ -63,7 +64,7 @@ public class KSName extends ALogger {
 		
 		// Append tail div for child elements
 		if(counter > 0)
-			result += String.format(Constants.getTemplate("template.html.hr.divId.dots",null), CFNameMessageHandler._cfname_desc_divId);
+			result += String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), CFNameMessageHandler._cfname_desc_divId);
 		
 		return result.toString();		
 	}

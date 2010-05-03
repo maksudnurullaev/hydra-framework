@@ -1,14 +1,11 @@
 package org.hydra.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.directwebremoting.WebContextFactory;
-import org.hydra.db.server.abstracts.ACassandraDescriptorBean;
-import org.hydra.messages.handlers.AdminMessageHandler;
 
 /**
  * 
@@ -16,6 +13,8 @@ import org.hydra.messages.handlers.AdminMessageHandler;
  * 
  */
 public final class Constants {
+	// **** Defaults
+	public static final String _default_encoding = "UTF8";	
 	
 	// **** BEAN Constants
 	public static final String _beans_main_input_pipe = "_main_input_pipe_";
@@ -52,9 +51,6 @@ public final class Constants {
 	// **** Cassandra's constants
 	public static final String _ksname_prefix = "_ksname_";
 	public static final String _cassandra_descriptor_name = "_cassandra_server_descriptor";
-	
-	//public static final String _html_a_onclik_label = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({%s}))\">%s</a>";
-	
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);
@@ -117,17 +113,8 @@ public final class Constants {
 		return inString;
 	}
 
-	public static String getCurrentSessionID() {
-		//return WebContextFactory.get().getScriptSession().getId();
-		return WebContextFactory.get().getSession().getId();
-	}
-
 	public static Date getDate() {
 		return (new Date());
-	}
-	
-	public static String getTemplate(String inKey, String inWrap){
-		return MessagesManager.getTextManager().getTextByKey(inKey, inWrap);
 	}
 
 	public static String trace(Object inObj, StackTraceElement[] stackTraceElements) {
@@ -143,19 +130,39 @@ public final class Constants {
 		
 		return String.format(format, "no-stacktrace-found!");
 	}
-
-	public static ACassandraDescriptorBean getCassandraServerDescriptor() {
-		Result result = SessionManager.getBean(Constants._beans_cassandra_server_descriptor);
-		
-		if(result.isOk() && result.getObject() instanceof ACassandraDescriptorBean){
-			return (ACassandraDescriptorBean) result.getObject();
-		}
-		return null;
-	}
 	
 	public static String makeJSLink(String inLabelName, String format, Object ...inObjects){
-		return String.format(Constants.getTemplate("template.html.a.onClick.sendmessage.Label", null),
+		return String.format(MessagesManager.getTextManager().getTemplate("template.html.a.onClick.sendmessage.Label"),
 												String.format(format, inObjects),
 												inLabelName);	
+	}
+	
+	public static String bytes2UTF8String(byte[] inBytes){
+		return bytes2UTF8String(inBytes, 0);
+	}	
+	
+	public static String bytes2UTF8String(byte[] inBytes, int trancateLength){
+		String result = null;
+		try {
+			result = new String(inBytes, "UTF8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		if(trancateLength > 0 && result.length() > trancateLength)
+			return result.substring(0, trancateLength) + "...";
+		
+		return result;
+	}
+	
+	public static byte[] string2UTF8Bytes(String inString){
+		byte[] result = null;
+		try {
+			result = inString.getBytes("UTF8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}	
 }
