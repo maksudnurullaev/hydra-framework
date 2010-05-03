@@ -91,15 +91,15 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		String tempString = "";
 		
 		// Table header
-		tempString += String.format(MessagesManager.getTextManager().getTextByKey("template.table.th", null), "&nbsp;");
+		tempString += String.format(MessagesManager.getTemplate("template.table.th"), "&nbsp;");
 		for (StatisticsTypes type : StatisticsTypes.values()) {
-			tempString += String.format(MessagesManager.getTextManager().getTextByKey("template.table.th", null), type.toString());
+			tempString += String.format(MessagesManager.getTemplate("template.table.th"), type.toString());
 		}
-		result += String.format(MessagesManager.getTextManager().getTextByKey("template.table.tr", null), tempString);
+		result += String.format(MessagesManager.getTemplate("template.table.tr"), tempString);
 		
 		// Table rows
 		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
-			tempString = String.format(MessagesManager.getTextManager().getTextByKey("template.table.td", null), 
+			tempString = String.format(MessagesManager.getTemplate("template.table.td"), 
 					Constants.makeJSLink(mapStringTypeInteger.getKey(), 
 							"handler:'%s', dest:'%s',%s:'%s',%s:'%s'",
 							AdminMessageHandler._handler_name,
@@ -107,13 +107,12 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 							AdminMessageHandler._what, AdminMessageHandler._what_hydra_bean_desc,
 							AdminMessageHandler._kind, mapStringTypeInteger.getKey()));
 			for (StatisticsTypes type : StatisticsTypes.values()) {
-				tempString += String.format(MessagesManager.getTextManager().getTextByKey("template.table.td", null), mapStringTypeInteger.getValue().get(type));
+				tempString += String.format(MessagesManager.getTemplate("template.table.td"), 
+						mapStringTypeInteger.getValue().get(type));
 			}
-			result += String.format(MessagesManager.getTextManager().getTextByKey("template.table.tr", null), tempString);
+			result += String.format(MessagesManager.getTemplate("template.table.tr"), tempString);
 		}
 		
-		return String.format(MessagesManager.getTextManager().getTextByKey("template.html.h4", null), 
-					MessagesManager.getTextManager().getTextByKey("text.statistics.message.handled.by.objects", null))
-				+ String.format(MessagesManager.getTextManager().getTextByKey("template.table.with.class", null), "statistics", result);
+		return String.format(MessagesManager.getTemplate("template.table.with.class"), "statistics", result);
 	}
 }

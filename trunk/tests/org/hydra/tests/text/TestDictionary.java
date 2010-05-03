@@ -22,7 +22,6 @@ public class TestDictionary {
 		// Test defaults: basename & locale
 		TextManager textMananger = (TextManager)factory.getBean(Constants._beans_text_manager);
 		Assert.assertNotNull(textMananger.getBasename());
-		Assert.assertNotNull(textMananger.getLocale());
 	}
 	
 }

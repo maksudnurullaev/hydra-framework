@@ -87,7 +87,7 @@ public class TestThreadPool {
 				message.getData().put(IMessage._data_handler,"Message");
 				message.getData().put(IMessage._data_what, IMessage._data_what_html_content);
 				message.getData().put(IMessage._data_kind, "home.context");
-				message.setSessionID(String.format("Test Message #%d", i));
+				message.getData().put(IMessage._data_sessionId, String.format("Test Message #%d", i));
 				_main_inPipe.setMessage(message);
 			}
 		} catch (RichedMaxCapacityException e) {

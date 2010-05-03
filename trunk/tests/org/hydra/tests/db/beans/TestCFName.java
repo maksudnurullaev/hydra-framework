@@ -17,7 +17,7 @@ public class TestCFName {
 		Map<String, CFKey> cfkeys = new HashMap<String, CFKey>();
 		
 		CFKey field1 = new CFKey();				
-		field1.setType("COLUMN");
+		field1.setType("COLUMNS");
 		cfkeys.put("TypeCOLUMN", field1);
 
 		CFKey field3 = new CFKey();				

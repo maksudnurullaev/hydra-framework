@@ -12,7 +12,7 @@ public class TestCFKey {
 		CFKey field = new CFKey();		
 		Assert.assertNull(field.getType());
 		
-		field.setType("COLUMN");
+		field.setType("COLUMNS");
 		Assert.assertEquals(field.getType(), TYPE.COLUMNS);
 				
 		field.setType("LINKS");

@@ -6,10 +6,9 @@
        	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-
 	<!-- Static Application Context Provider -->
 	<bean id="contextApplicationContextProvider" class="org.hydra.spring.ApplicationContextProvider" >
-		<property name="debugMode" value="true"/>
+		<property name="debugMode" value="false"/>
 	</bean>  
 
 	<!-- Cassandra's beans -->
@@ -20,12 +19,16 @@
 
 	<!-- Text Resources object -->
 	<bean id="_text_manager" class="org.hydra.text.TextManager">
-		<!-- Defaults -->
-		<property name="basename">
-			<value>messages</value>
-		</property>
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="eng" value="Eng"/>
+	    		<entry key="rus" value="Рус"/>
+	    	</map>
+	    </property>
+		<!-- Default locale -->
 		<property name="defaultLocale">
-			<value>ru</value>
+			<value>eng</value>
 		</property>
 	</bean>
 	

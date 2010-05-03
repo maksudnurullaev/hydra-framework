@@ -9,7 +9,7 @@ import org.hydra.utils.abstracts.ALogger;
 
 public abstract class AMessageHandler extends ALogger implements IMessageHandler {
 	
-	public static final String[]defaultFields = {"handler", "dest"};
+	public static final String[]defaultFields = {"handler"};
 	
 	public static final boolean isValidData(Map<String, String> inMap, String[] inKeys){
 		if(inMap == null) return false;

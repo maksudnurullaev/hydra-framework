@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.collectors.StatisticsCollector;
 import org.hydra.messages.MessageBean;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.processors.Processor;
@@ -52,10 +53,10 @@ public class TestPipeAndProcessor{
 		_outPipe.setStatisticsCollector(_statisticsCollector);
 
 		_message1 = new MessageBean();
-		_message1.setSessionID("Test Message1");
+		_message1.getData().put(IMessage._data_sessionId, "Test Message1");
 		
 		_message2 = new MessageBean();
-		_message2.setSessionID("Test Message2");
+		_message2.getData().put(IMessage._data_sessionId, "Test Message2");
 	}
 
 	@Test
@@ -130,7 +131,7 @@ public class TestPipeAndProcessor{
 		for (int i = 0; i < (messageCount * 2); i++) {
 			counter++;
 			message = new MessageBean();
-			message.setSessionID(String.format("Message #%d", i));
+			message.getData().put(IMessage._data_sessionId, String.format("Message #%d", i));
 			_inPipe.setMessage(message);
 		}
 	}

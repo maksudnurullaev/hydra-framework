@@ -1,51 +1,20 @@
 package org.hydra.utils;
 
-import java.util.HashMap;
-
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
+import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
-import org.springframework.jms.IllegalStateException;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 public final class SessionManager {
 	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionManager");
 	
-	public static WebContext getWebContext(){
-		return WebContextFactory.get();
-	}
-	
-	public static HttpSession getHttpSession(){
-		return getWebContext().getSession();
-	}
-	
-	public static Object getFromSession(String inKey){
-		Object result = getHttpSession().getAttribute(inKey);
-		if(result != null)
-			return getHttpSession().getAttribute(inKey);
-		return null;
-	}
-	
-	public static void setToSession(String inKey, Object inObject){
-		getHttpSession().setAttribute(inKey, inObject);
-	}
-	
-	public static Object getSessionValue(String inKey){
-		return getFromSession(inKey);
-	}
-	
-	public static String setSessionValue(String inKey, Object obj){
-		setToSession(inKey, obj);
-		return "OK";
-	}
-
 	public static WebApplicationContext getWebApplicationContext() {
 		return ContextLoader.getCurrentWebApplicationContext();
 	}
@@ -62,42 +31,38 @@ public final class SessionManager {
 		return result;
 	}
 	
-	
-	public static Result getHttpSessionValue(HttpSession session,
-			String inKey) {
-		Result result = new Result();
-		try{
-			result.setObject(session.getAttribute(inKey));
-			result.setResult(true);
-		}catch (IllegalStateException e) {
-			 _log.error(e.getMessage());
-			result.setResult(false);
-			result.setResult(e.getMessage());
-		}
-		return result;
-	}
-	
 	/**
 	 * Attache session data (locale, userId and etc.)
 	 * @param inMessage
 	 * @param inSession 
 	 */
-	public static void attachSessionData(MessageBean inMessage, HttpSession inSession) {
-		// Validate message's data
-		if(inMessage.getData() == null) inMessage.setData(new HashMap<String, String>());
+	public static void attachIMessageSessionData(MessageBean inMessage, WebContext inWebContext) {
+		_log.debug("Attach new data to session with id: " 
+				+ inWebContext.getSession().getId());
+		inMessage.getData().put(IMessage._data_sessionId,inWebContext.getSession().getId());
+		inMessage.getData().put(IMessage._data_locale, getLocale(inWebContext.getSession()));
+		inMessage.getData().put(IMessage._data_userId, getUserId(inWebContext.getSession()));
 		
-		// Session locale
-		Result result = getHttpSessionValue(inSession, IMessage._string_locale);
-		if(result.isOk()){
-			inMessage.getData().put(IMessage._string_locale, (String)result.getObject());
-		}else inMessage.getData().put(IMessage._string_locale, null);
-		
-		// Session userId
-		result = getHttpSessionValue(inSession, IMessage._string_userId);
-		if(result.isOk()){
-			inMessage.getData().put(IMessage._string_userId, (String)result.getObject());
-		}else inMessage.getData().put(IMessage._string_userId, null);
+		inMessage.setHttpSession(inWebContext.getSession());
 	}
+	
+	public static String getUserId(HttpSession session) {
+		return (String) session.getAttribute(IMessage._data_userId);
+	}
+
+	public static void setUserId(HttpSession session, String userId) {
+		session.setAttribute(IMessage._data_userId, userId);
+	}	
+	
+	public static String getLocale(HttpSession session) {
+		if(session.getAttribute(IMessage._data_locale) != null)
+			return (String) session.getAttribute(IMessage._data_locale);
+		return MessagesManager.getTextManager().getDefaultLocale();
+	}
+
+	public static void setLocale(HttpSession session, String locale) {
+		session.setAttribute(IMessage._data_locale,locale);
+	}	
 	
 	/**
 	 * 
@@ -105,17 +70,26 @@ public final class SessionManager {
 	 * @param inMessage
 	 * @return 
 	 */
-	public static void detachSessionData(IMessage inMessage) {
-		if(inMessage != null && inMessage.getData() != null){
-			inMessage.getData().remove(IMessage._string_locale);
-			inMessage.getData().remove(IMessage._string_userId);
-			inMessage.getData().remove(IMessage._data_sessionId);
+	public static void detachIMessageSessionData(IMessage inMessage) {
+		if(inMessage != null && inMessage.getData() != null && !AppContext.isDebugMode()){
 			inMessage.getData().remove(IMessage._data_handler);
+			inMessage.getData().remove(IMessage._data_sessionId);
+			inMessage.getData().remove(IMessage._data_locale);
+			inMessage.getData().remove(IMessage._data_userId);			
+			inMessage.getData().remove(IMessage._data_kind);			
 		}
 	}
 
 	public static boolean isDebug() {
 		return AppContext.getApplicationContext().containsBean(Constants._debug_mode);
 	}
+	
+	public static CassandraDescriptorBean getCassandraServerDescriptor() {
+		Result result = getBean(Constants._beans_cassandra_server_descriptor);
 		
+		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
+			return (CassandraDescriptorBean) result.getObject();
+		}
+		return null;
+	}	
 }

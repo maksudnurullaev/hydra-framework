@@ -15,6 +15,7 @@ import org.hydra.messages.handlers.CassandraMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
 import org.hydra.utils.Constants;
+import org.hydra.utils.MessagesManager;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraDescriptorBean extends ALogger {
@@ -78,11 +79,13 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 		if(cfName == null) return false;
 		
 		// 3. check cname
-		return cfNameBean.getFields().containsKey(cName);
+		return (cfNameBean.getFields() != null) 
+					&& 
+					(cfNameBean.getFields().containsKey(cName));
 	}
 
 	public String getAccessDescription(String ksName, String cfName, String cName) {
-		String formatStrong = Constants.getTemplate("template.html.Strongtext.Text.br", null);
+		String formatStrong = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
 		
 		String inputBoxID = ksName + cfName;
 		String inputBoxVal = inputBoxID + "ID";
@@ -101,39 +104,42 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 			return String.format(String.format(formatStrong, "Column", "%s.%s['%s']['%s']['%s']"), 
 					ksName,
 					cfName,
-					String.format(Constants.getTemplate("template.html.custom.input.ID.Value", null), inputBoxID, inputBoxVal),
+					String.format(MessagesManager.getTemplate("template.html.custom.input.ID.Value"), inputBoxID, inputBoxVal),
 					getCName(ksName, cfName, cName).getType(),
 					Constants.makeJSLink(cName, 
 							"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s',%s:'%s',%s:$('%s').value",
-							CassandraMessageHandler._handler_name,
-							resultDivID,
-							CassandraMessageHandler._action, CassandraMessageHandler._action_select,  
-							CassandraMessageHandler._ksname_key, ksName,
-							CassandraMessageHandler._cfname_key, cfName,
-							CassandraMessageHandler._cname_key, cName,
-							CassandraMessageHandler._ID, inputBoxID)
+							//         1         2   3   4   5   6   7   8   9  10  11    12  
+							CassandraMessageHandler._handler_name, // 1
+							resultDivID, // 2
+							CassandraMessageHandler._action, CassandraMessageHandler._action_select, // 3,4   
+							CassandraMessageHandler._ksname_link, ksName,     // 5,6
+							CassandraMessageHandler._cfname_link, cfName,     // 7,8
+							CassandraMessageHandler._cname_link,  cName,      // 9,10
+							CassandraMessageHandler._scfkey_link, inputBoxID  // 11,12
+							)
 					)
 					+
-					String.format(Constants.getTemplate("template.html.hr.divId.dots",null), resultDivID);
+					String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), resultDivID);
 		}
 		
 		return String.format(String.format(formatStrong, "Column", "%s.%s['%s']['%s']['%s']"), 
 				ksName,
 				getKSName(ksName).getLinkTableName(),
-				String.format(Constants.getTemplate("template.html.custom.input.ID.Value", null), inputBoxID, inputBoxVal),
+				String.format(MessagesManager.getTemplate("template.html.custom.input.ID.Value"), inputBoxID, inputBoxVal),
 				cName,
 				Constants.makeJSLink("IDs", 
 						"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s',%s:'%s',%s:$('%s').value", 
-						CassandraMessageHandler._handler_name,
-						resultDivID,
-						CassandraMessageHandler._action, CassandraMessageHandler._action_select,  
-						CassandraMessageHandler._ksname_key, ksName,
-						CassandraMessageHandler._cfname_key, cfName,
-						CassandraMessageHandler._cname_key, cName,
-						CassandraMessageHandler._ID, inputBoxID)
+						//         1         2   3   4   5   6   7   8   9  10  11    12  
+						CassandraMessageHandler._handler_name, // 1
+						resultDivID, // 2
+						CassandraMessageHandler._action, CassandraMessageHandler._action_select, // 3,4  
+						CassandraMessageHandler._ksname_link, ksName,     // 5,6
+						CassandraMessageHandler._cfname_link, cfName,     // 7,8
+						CassandraMessageHandler._cname_link, cName,       // 9,10
+						CassandraMessageHandler._scfkey_link, inputBoxID) // 11,12
 				)
 				+
-				String.format(Constants.getTemplate("template.html.hr.divId.dots",null), resultDivID);
+				String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), resultDivID);
 	}
 
 
@@ -152,14 +158,14 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 
 	public String getHTMLReport() {		
 		StringBuffer result = new StringBuffer();
-		String formatStrong = Constants.getTemplate("template.html.Strongtext.Text.br", null);
+		String formatStrong = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
 		try{
 			result.append(String.format(formatStrong,"Cluster name", getAccessor().getClusterName()));
 			result.append(String.format(formatStrong,"Ip", getAccessor().getHost()));
 			result.append(String.format(formatStrong,"Port", getAccessor().getPort()));
 			result.append(String.format(formatStrong,"Version", getAccessor().getProtocolVersion()));
 			result.append(String.format(formatStrong,"Keyspaces", getKSNamesJSLinks()));
-			result.append(String.format(Constants.getTemplate("template.html.hr.divId.dots",null), KSName._ksname_desc_divId));
+			result.append(String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), KSName._ksname_desc_divId));
 		}catch (Exception e) {
 			result.append(e.getMessage());
 			getLog().error(e.getMessage());
