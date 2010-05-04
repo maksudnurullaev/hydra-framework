@@ -9,6 +9,10 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.abstracts.ALogger;
 
+/**
+ * @author M.Nurullayev
+ *
+ */
 public class Ksp extends ALogger {
 	private Set<Cf> _columnFamilies = new HashSet<Cf>();
 	
