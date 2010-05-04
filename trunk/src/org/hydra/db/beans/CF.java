@@ -5,6 +5,10 @@ import java.util.Map;
 
 import org.hydra.utils.abstracts.ALogger;
 
+/**
+ * @author M.Nurullayev
+ *
+ */
 public class Cf extends ALogger {
 	private Map<String, Key> keys = new HashMap<String, Key>();
 	private String name = null;

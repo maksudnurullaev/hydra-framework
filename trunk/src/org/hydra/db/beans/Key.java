@@ -2,6 +2,10 @@ package org.hydra.db.beans;
 
 import org.hydra.utils.abstracts.ALogger;
 
+/**
+ * @author M.Nurullayev
+ *
+ */
 public class Key extends ALogger {
 
 	public static enum SUPER{COLUMNS, LINKS, UNKOWN};
