@@ -50,8 +50,7 @@ public class SessionMessageHandler extends AMessageHandler {
 		
 		String path2File = String.format(_body_html_path_format, locale);
 		
-		getLog().debug("Try to get content of: " + path2File);
-		
+		getLog().debug("Get content of: " + path2File);
 		content = forwardToString(path2File, inMessage);
 		
 		inMessage.setHtmlContent(content);		
@@ -70,7 +69,7 @@ public class SessionMessageHandler extends AMessageHandler {
 
 		try {
 			File file = new File(result);
-			result = FileUtils.readFileToString(file, Constants._default_encoding);
+			result = FileUtils.readFileToString(file, Constants._utf8_encoding);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = e.getMessage();

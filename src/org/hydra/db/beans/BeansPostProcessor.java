@@ -1,5 +1,6 @@
 package org.hydra.db.beans;
 
+import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.abstracts.ACassandraDescriptorBean;
 import org.hydra.utils.abstracts.ALogger;
 import org.springframework.beans.BeansException;
@@ -12,8 +13,8 @@ public class BeansPostProcessor extends ALogger implements BeanPostProcessor {
 			throws BeansException {
 		getLog().debug(String.format("Bean(%s) initilazed as %s", beanName, beanObject.getClass().getSimpleName()));
 		// 1. For cassandra bean post initialization
-		if(beanObject instanceof ACassandraDescriptorBean)
-			((ACassandraDescriptorBean)beanObject).setup();
+		if(beanObject instanceof CassandraAccessorBean)
+			((CassandraAccessorBean)beanObject).setup();
 		return beanObject;
 	}
 

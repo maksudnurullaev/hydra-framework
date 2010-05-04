@@ -13,21 +13,23 @@ import java.util.regex.Pattern;
  * 
  */
 public final class Constants {
-	// **** Defaults
-	public static final String _default_encoding = "UTF8";	
-	
-	// **** BEAN Constants
-	public static final String _beans_main_input_pipe = "_main_input_pipe_";
-	public static final String _beans_main_message_collector = "_main_message_collector";
-	public static final String _beans_statistics_collector = "_statisticsCollector";
-	public static final String _beans_cassandra_server_descriptor = "_cassandra_server_descriptor";
-	// **** END - BEAN Constants
-	
+	// **** Project values
 	public static final String _project_name = "Hydra";
 	public static final String _project_version = "0.1";
 	public static final String _conf_dir_location = "conf";
 	public static final String _logs_dir_location = "logs";
 	public static final String _date_time_id_format = "yyyy.MM.dd HH:mm:ss";
+
+	// **** Defaults
+	public static final String _utf8_encoding = "UTF8";	
+	
+	// **** Beans
+	public static final String _beans_main_input_pipe = "_main_input_pipe_";
+	public static final String _beans_main_message_collector = "_main_message_collector";
+	public static final String _beans_statistics_collector = "_statisticsCollector";
+	// Cassandra beans
+	public static final String _beans_cassandra_descriptor = "_cassandra_descriptor";
+	public static final String _beans_cassandra_accessor   = "_cassandra_accessor";
 
 	// **** Debug mode beans
 	public static final String _debug_mode = "debug_mode";
@@ -49,7 +51,7 @@ public final class Constants {
 	public static final long _max_response_wating_time = 1000;
 	
 	// **** Cassandra's constants
-	public static final String _ksname_prefix = "_ksname_";
+	public static final String _ksp_prefix = "_ksp_";
 	public static final String _cassandra_descriptor_name = "_cassandra_server_descriptor";
 
 	public static String GetCurrentDateTime() {

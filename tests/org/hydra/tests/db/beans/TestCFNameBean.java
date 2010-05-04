@@ -2,7 +2,7 @@ package org.hydra.tests.db.beans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.db.beans.CFName;
+import org.hydra.db.beans.Cf;
 import org.hydra.tests.utils.Utils4Tests;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +20,7 @@ public class TestCFNameBean {
 	
 	@Test
 	public void test_type(){
-		Assert.assertTrue(factory.containsBean("_cfname_article"));
-		Assert.assertTrue(factory.getBean("_cfname_article") instanceof CFName);		
+		Assert.assertTrue(factory.containsBean("_cf_article"));
+		Assert.assertTrue(factory.getBean("_cf_article") instanceof Cf);		
 	}	
 }

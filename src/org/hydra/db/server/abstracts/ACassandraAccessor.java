@@ -11,17 +11,27 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
+import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraAccessor extends ALogger {
-	private String host = null;
-	private int port = -1;
+	private String _host = null;
+	private int _port = -1;
 	private TTransport _transport = null;
 	private TProtocol _protocol = null;
 	private String _cluster_name = null;
 	private String _version = null;
-	private Set<String> keyspaces = null;
+	private Set<String> _keyspaces = null;
+	private CassandraDescriptorBean _descriptor = null;
 		
+	public CassandraDescriptorBean getDescriptor() {
+		return _descriptor;
+	}
+
+	public void setDescriptor(CassandraDescriptorBean descriptor) {
+		this._descriptor = descriptor;
+	}
+
 	// **** For Cassandra.Client pool functionality
 	private Set<Cassandra.Client> _cassandraClientsActive = new HashSet<Cassandra.Client>();
 	private Set<Cassandra.Client> _cassandraClientsPassive = new HashSet<Cassandra.Client>();
@@ -103,14 +113,14 @@ public abstract class ACassandraAccessor extends ALogger {
 	 * @return the keyspaces
 	 */
 	public Set<String> getKeyspaces() {
-		return keyspaces;
+		return _keyspaces;
 	}
 
 	/**
 	 * @param keyspaces the keyspaces to set
 	 */
 	public void setKeyspaces(Set<String> keyspaces) {
-		this.keyspaces = keyspaces;
+		this._keyspaces = keyspaces;
 	}
 
 	public void setTransport(TTransport transport) {
@@ -132,20 +142,20 @@ public abstract class ACassandraAccessor extends ALogger {
 	}
 
 	public String getHost() {
-		return host;
+		return _host;
 	}
 
 	public void setHost(String inHost) {
-		this.host = inHost;
+		this._host = inHost;
 		getLog().debug("Set host to: " + getHost());
 	}
 
 	public int getPort() {
-		return port;
+		return _port;
 	}
 
 	public void setPort(int inPort) {
-		this.port = inPort;
+		this._port = inPort;
 		getLog().debug("Set port to: " + getPort());
 	}
 

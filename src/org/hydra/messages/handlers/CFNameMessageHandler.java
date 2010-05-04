@@ -2,9 +2,9 @@ package org.hydra.messages.handlers;
 
 import java.util.Map;
 
-import org.hydra.db.beans.CFKey;
-import org.hydra.db.beans.CFName;
-import org.hydra.db.beans.KSName;
+import org.hydra.db.beans.Key;
+import org.hydra.db.beans.Cf;
+import org.hydra.db.beans.Ksp;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
@@ -17,7 +17,7 @@ public class CFNameMessageHandler extends AMessageHandler {
 	public static final String _what_desc = "desc";
 
 	// HTML IDs
-	public static final String _cfname_desc_divId = "_cfname_desc_div";
+	public static final String _cf_desc_divId = "_cf_desc_div";
 	public static final String _cname_desc_divId = "_cname_desc_div";
 
 	@Override
@@ -33,10 +33,10 @@ public class CFNameMessageHandler extends AMessageHandler {
 		String cfName = inMessage.getData().get(IMessage._data_kind); // cfName
 		String ksName = inMessage.getData().get(IMessage._data_what); // ksName
 
-		KSName ksNameBean = SessionManager.getCassandraServerDescriptor().getKSName(ksName);
+		Ksp ksNameBean = SessionManager.getCassandraServerDescriptor().getKSName(ksName);
 				
 		if(ksNameBean != null){
-			CFName cfNameBean = ksNameBean.getCFName(cfName);
+			Cf cfNameBean = ksNameBean.getCFName(cfName);
 			if(cfNameBean != null){
 				inMessage.setHtmlContent(getCNamesDescHtml(inMessage, cfNameBean, ksNameBean));
 			}else inMessage.setError(trace + "Could not find CFName: " + cfName);
@@ -46,7 +46,7 @@ public class CFNameMessageHandler extends AMessageHandler {
 		return inMessage;				
 	}
 
-	private String getCNamesDescHtml(IMessage inMessage, CFName inCFNameBean, KSName ksNameBean) {
+	private String getCNamesDescHtml(IMessage inMessage, Cf inCFNameBean, Ksp ksNameBean) {
 		// Spring Debug Mode
 		if(AppContext.isDebugMode()){
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
@@ -58,7 +58,7 @@ public class CFNameMessageHandler extends AMessageHandler {
 		String result = String.format(formatStrong, "CFName", inCFNameBean.getName());
 		
 		String resultLinks = "";
-		for(Map.Entry<String, CFKey> entryCFKey: inCFNameBean.getFields().entrySet()){
+		for(Map.Entry<String, Key> entryCFKey: inCFNameBean.getKeys().entrySet()){
 			if(counter++ != 0)
 				resultLinks += ", ";
 			resultLinks += Constants.makeJSLink(entryCFKey.getKey(),
@@ -66,9 +66,9 @@ public class CFNameMessageHandler extends AMessageHandler {
 					CassandraMessageHandler._handler_name,
 					CFNameMessageHandler._cname_desc_divId,
 					CassandraMessageHandler._action, CassandraMessageHandler._action_describe,
-					CassandraMessageHandler._ksname_link, ksNameBean.getName(),
-					CassandraMessageHandler._cfname_link, inCFNameBean.getName(),
-					CassandraMessageHandler._cname_link, entryCFKey.getKey()
+					CassandraMessageHandler._ksp_link, ksNameBean.getName(),
+					CassandraMessageHandler._cf_link, inCFNameBean.getName(),
+					CassandraMessageHandler._key_link, entryCFKey.getKey()
 				);
 						
 		}		
