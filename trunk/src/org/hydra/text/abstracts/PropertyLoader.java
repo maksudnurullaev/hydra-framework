@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.utils.Constants;
 import org.hydra.utils.abstracts.ALogger;
 
 import com.lowagie.text.Font;
@@ -114,7 +115,7 @@ public abstract class PropertyLoader extends ALogger {
 	private static void parsePropertyFile(Properties result, InputStream in)
 			throws UnsupportedEncodingException, IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in,
-				"UTF8"));
+				Constants._utf8_encoding));
 
 		String line = null;
 		String curKey = null;

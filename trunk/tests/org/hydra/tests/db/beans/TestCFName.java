@@ -3,9 +3,9 @@ package org.hydra.tests.db.beans;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hydra.db.beans.CFKey;
-import org.hydra.db.beans.CFName;
-import org.hydra.db.beans.CFKey.TYPE;
+import org.hydra.db.beans.Key;
+import org.hydra.db.beans.Cf;
+import org.hydra.db.beans.Key.SUPER;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,21 +13,21 @@ public class TestCFName {
 	
 	@Test
 	public void test_type(){
-		CFName cf = new CFName();
-		Map<String, CFKey> cfkeys = new HashMap<String, CFKey>();
+		Cf cf = new Cf();
+		Map<String, Key> cfkeys = new HashMap<String, Key>();
 		
-		CFKey field1 = new CFKey();				
-		field1.setType("COLUMNS");
+		Key field1 = new Key();				
+		field1.setSuper("COLUMNS");
 		cfkeys.put("TypeCOLUMN", field1);
 
-		CFKey field3 = new CFKey();				
-		field3.setType("LINKS");
+		Key field3 = new Key();				
+		field3.setSuper("LINKS");
 		cfkeys.put("TypeLINKS", field3);
 		
-		cf.setFields(cfkeys);
+		cf.setKeys(cfkeys);
 		
-		Assert.assertEquals(TYPE.COLUMNS, cf.getFields().get("TypeCOLUMN").getType());
-		Assert.assertEquals(TYPE.LINKS, cf.getFields().get("TypeLINKS").getType());
+		Assert.assertEquals(SUPER.COLUMNS, cf.getKeys().get("TypeCOLUMN").getSuper());
+		Assert.assertEquals(SUPER.LINKS, cf.getKeys().get("TypeLINKS").getSuper());
 		
 	}	
 }

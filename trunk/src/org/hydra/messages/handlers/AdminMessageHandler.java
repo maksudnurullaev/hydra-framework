@@ -3,7 +3,8 @@ package org.hydra.messages.handlers;
 import java.util.Map;
 
 import org.hydra.collectors.StatisticsCollector;
-import org.hydra.db.beans.KSName;
+import org.hydra.db.beans.Ksp;
+import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.abstracts.ACassandraDescriptorBean;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
@@ -21,7 +22,7 @@ public class AdminMessageHandler extends AMessageHandler {
 	public static final String _what_hydra_desc = "hydra_desc";
 	public static final String _what_hydra_bean_desc = "hydra_bean_desc";
 	public static final String _what_cassandra_desc = "cassandra_desc";
-	public static final String _what_cassandra_ksname_desc = "cassandra_ksname_desc";
+	public static final String _what_cassandra_ksp_desc = "cassandra_ksp_desc";
 	
 	public static final String _kind = "kind";
 
@@ -40,7 +41,7 @@ public class AdminMessageHandler extends AMessageHandler {
 			inMessage.setHtmlContent(getDescriptionHtmlHydraBeans(inMessage));
 		}else if(inMessage.getData().get(IMessage._data_what).equals(_what_cassandra_desc)){
 			inMessage.setHtmlContent(getDescriptionHTMLCassandra(inMessage));
-		}else if(inMessage.getData().get(IMessage._data_what).equals(_what_cassandra_ksname_desc)){
+		}else if(inMessage.getData().get(IMessage._data_what).equals(_what_cassandra_ksp_desc)){
 			inMessage.setHtmlContent(getCassandraKSNameDesc(inMessage.getData().get(IMessage._data_kind)));
 		}else {
 			String errorMsg = trace + String.format("error.unknown.message.type.(What/Kind):(%s/%s)\n", 
@@ -67,7 +68,7 @@ public class AdminMessageHandler extends AMessageHandler {
 		ACassandraDescriptorBean csd = SessionManager.getCassandraServerDescriptor();
 		
 		if(csd != null){
-			KSName ksname = csd.getKSName(inKSName);
+			Ksp ksname = csd.getKSName(inKSName);
 			return ksname.getCFNamesDescriptionHTML();
 		}
 		
@@ -78,11 +79,10 @@ public class AdminMessageHandler extends AMessageHandler {
 	}
 
 	private String getDescriptionHTMLCassandra(IMessage inMessage){
-		Result result = SessionManager.getBean(Constants._beans_cassandra_server_descriptor);
+		Result result = SessionManager.getBean(Constants._beans_cassandra_accessor);
 		
-		if(result.isOk() && result.getObject() instanceof ACassandraDescriptorBean){
-			ACassandraDescriptorBean server = (ACassandraDescriptorBean) result.getObject();
-			return server.getHTMLReport();
+		if(result.isOk() && result.getObject() instanceof CassandraAccessorBean){
+			return ((CassandraAccessorBean) result.getObject()).getHTMLReport();
 		}
 		return MessagesManager.getTextManager().getTextByKey("error.bean.statistics.not.found",
 				null, 

@@ -2,8 +2,8 @@ package org.hydra.tests.db.beans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.db.beans.CFName;
-import org.hydra.db.beans.KSName;
+import org.hydra.db.beans.Cf;
+import org.hydra.db.beans.Ksp;
 import org.hydra.tests.utils.Utils4Tests;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,9 +20,9 @@ public class TestKSName {
 	}
 	
 	@Test
-	public void test_ksname_KSMain(){
-		String bean_name = "_ksname_KSMain";
+	public void test_ksp_KSMain(){
+		String bean_name = "_ksp_KSMain";
 		Assert.assertTrue(factory.containsBean(bean_name));
-		Assert.assertTrue(factory.getBean(bean_name) instanceof KSName);		
+		Assert.assertTrue(factory.getBean(bean_name) instanceof Ksp);		
 	}	
 }

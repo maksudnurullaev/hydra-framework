@@ -3,6 +3,7 @@ package org.hydra.tests.bean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.abstracts.ACassandraDescriptorBean;
 import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.Constants;
@@ -22,14 +23,14 @@ public class TestSpringCassandraServerBean {
 	
 	@Test
 	public void test_cassandraServer(){
-		Assert.assertTrue(factory.containsBean(Constants._beans_cassandra_server_descriptor));
-		Assert.assertTrue(factory.getBean(Constants._beans_cassandra_server_descriptor) instanceof ACassandraDescriptorBean);
+		Assert.assertTrue(factory.containsBean(Constants._beans_cassandra_descriptor));
+		Assert.assertTrue(factory.getBean(Constants._beans_cassandra_descriptor) instanceof ACassandraDescriptorBean);
 	}	
 	
 	@Test
 	public void test_cassandraServer2(){
-		ACassandraDescriptorBean server = (ACassandraDescriptorBean) factory.getBean(Constants._beans_cassandra_server_descriptor);
-		Assert.assertNotNull(server.getAccessor());
+		CassandraAccessorBean accessor = (CassandraAccessorBean) factory.getBean(Constants._beans_cassandra_accessor);
+		Assert.assertNotNull(accessor.getDescriptor());
 	}	
 	
 }

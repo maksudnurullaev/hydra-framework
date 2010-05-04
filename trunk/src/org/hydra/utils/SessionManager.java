@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
+import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
@@ -85,11 +86,24 @@ public final class SessionManager {
 	}
 	
 	public static CassandraDescriptorBean getCassandraServerDescriptor() {
-		Result result = getBean(Constants._beans_cassandra_server_descriptor);
+		Result result = getBean(Constants._beans_cassandra_descriptor);
 		
 		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
+			_log.debug("Found bean: " + Constants._beans_cassandra_descriptor);
 			return (CassandraDescriptorBean) result.getObject();
 		}
+		_log.fatal("Could not find bean: " + Constants._beans_cassandra_descriptor);
 		return null;
 	}	
+	
+	public static CassandraAccessorBean getCassandraServerAccessor() {
+		Result result = getBean(Constants._beans_cassandra_accessor);
+		
+		if(result.isOk() && result.getObject() instanceof CassandraAccessorBean){
+			_log.debug("Found bean: " + Constants._beans_cassandra_accessor);
+			return (CassandraAccessorBean) result.getObject();
+		}
+		_log.fatal("Could not find bean: " + Constants._beans_cassandra_accessor);
+		return null;
+	}		
 }

@@ -9,23 +9,23 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.abstracts.ALogger;
 
-public class KSName extends ALogger {
-	private Set<CFName> _columnFamilies = new HashSet<CFName>();
+public class Ksp extends ALogger {
+	private Set<Cf> _columnFamilies = new HashSet<Cf>();
 	
 	private String name = null;
 	private String linkTableName = null;
 
 	// HTML IDs
-	public static final String _ksname_desc_divId = "_ksname_desc_div";
+	public static final String _ksp_desc_divId = "_ksp_desc_div";
 
 	
-	public void setColumnFamilies(Set<CFName> inCFNames) {
+	public void setColumnFamilies(Set<Cf> inCFNames) {
 		_columnFamilies = inCFNames;
 		
 		getLog().debug(String.format("%s CFNames added to KSName(%s)", _columnFamilies.size(), getName()));		
 	}
 	
-	public Set<CFName> getColumnFamilies() {
+	public Set<Cf> getColumnFamilies() {
 		return _columnFamilies;
 	}
 	
@@ -47,13 +47,13 @@ public class KSName extends ALogger {
 		String cfNamesLinks = "";
 				
 		
-		for(CFName entryCFName: _columnFamilies){
+		for(Cf entryCFName: _columnFamilies){
 			if(counter++ != 0)
 				cfNamesLinks += ", ";
 			cfNamesLinks += Constants.makeJSLink(entryCFName.getName(),
 					"handler:'%s',dest:'%s',%s:'%s',%s:'%s'", 
 						CFNameMessageHandler._handler_name,
-						CFNameMessageHandler._cfname_desc_divId,
+						CFNameMessageHandler._cf_desc_divId,
 						IMessage._data_what, getName(),
 						IMessage._data_kind, entryCFName.getName()						
 					);
@@ -64,22 +64,13 @@ public class KSName extends ALogger {
 		
 		// Append tail div for child elements
 		if(counter > 0)
-			result += String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), CFNameMessageHandler._cfname_desc_divId);
+			result += String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), CFNameMessageHandler._cf_desc_divId);
 		
 		return result.toString();		
 	}
 	
-	public String getTablesDescriptionText(){
-		String result = String.format("KSName(%s) statistics:\n", getName());
-		result += String.format("\tLink table is CFName(%s).\n", getLinkTableName());
-		for(CFName entryCFName: _columnFamilies){
-			result += entryCFName.getFieldsDescription();
-		}
-		return result;		
-	}
-	
-	public CFName getCFName(String inCFName){
-		for(CFName entry:_columnFamilies){
+	public Cf getCFName(String inCFName){
+		for(Cf entry:_columnFamilies){
 			if(entry.getName().equalsIgnoreCase(inCFName))
 				return entry;
 		}
