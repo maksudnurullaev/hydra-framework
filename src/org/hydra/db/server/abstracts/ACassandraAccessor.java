@@ -80,7 +80,7 @@ public abstract class ACassandraAccessor extends ALogger {
 		
 		clientSetActive(client);
 		
-		getLog().debug("Remove from passive pool...");
+		getLog().debug("Remove client from passive pool...");
 		_cassandraClientsPassive.remove(client);
 		getLog().debug(getPoolInfo());
 		
@@ -88,7 +88,7 @@ public abstract class ACassandraAccessor extends ALogger {
 	}	
 	
 	private String getPoolInfo(){
-		return String.format("Clients pool size: A(%s)/P(%s)", 
+		return String.format("Pools size: A(%s)/P(%s)", 
 				_cassandraClientsActive.size(),
 				_cassandraClientsPassive.size());
 	}
@@ -112,7 +112,7 @@ public abstract class ACassandraAccessor extends ALogger {
 	/**
 	 * @return the keyspaces
 	 */
-	public Set<String> getKeyspaces() {
+	public Set<String> getServerKeyspaces() {
 		return _keyspaces;
 	}
 

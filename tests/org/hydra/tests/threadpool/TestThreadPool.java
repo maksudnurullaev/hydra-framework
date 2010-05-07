@@ -8,6 +8,7 @@ import org.hydra.collectors.MessagesCollector;
 import org.hydra.collectors.StatisticsCollector;
 import org.hydra.executors.Executor;
 import org.hydra.messages.MessageBean;
+import org.hydra.messages.handlers.MessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
@@ -85,8 +86,8 @@ public class TestThreadPool {
 				message = new MessageBean();
 				message.setData(new HashMap<String, String>());
 				message.getData().put(IMessage._data_handler,"Message");
-				message.getData().put(IMessage._data_what, IMessage._data_what_html_content);
-				message.getData().put(IMessage._data_kind, "home.context");
+				message.getData().put(MessageHandler._action, IMessage._data_what_html_content);
+				message.getData().put(MessageHandler._key, "home.context");
 				message.getData().put(IMessage._data_sessionId, String.format("Test Message #%d", i));
 				_main_inPipe.setMessage(message);
 			}

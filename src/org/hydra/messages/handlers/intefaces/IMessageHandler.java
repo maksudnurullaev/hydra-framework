@@ -18,5 +18,5 @@ import org.hydra.messages.interfaces.IMessage;
  */
 public interface IMessageHandler {
 	public IMessage handleMessage(IMessage inMessage);
-	public boolean isValidMessage(IMessage inMessage, String ...keys);
+	public boolean testParameters(IMessage inMessage, String ...keys);
 }

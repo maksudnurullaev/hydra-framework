@@ -72,20 +72,20 @@ public final class SessionManager {
 	 * @return 
 	 */
 	public static void detachIMessageSessionData(IMessage inMessage) {
-		if(inMessage != null && inMessage.getData() != null && !AppContext.isDebugMode()){
-			inMessage.getData().remove(IMessage._data_handler);
-			inMessage.getData().remove(IMessage._data_sessionId);
-			inMessage.getData().remove(IMessage._data_locale);
-			inMessage.getData().remove(IMessage._data_userId);			
-			inMessage.getData().remove(IMessage._data_kind);			
-		}
+//		if(inMessage != null && inMessage.getData() != null && !AppContext.isDebugMode()){
+//			inMessage.getData().remove(IMessage._data_handler);
+//			inMessage.getData().remove(IMessage._data_sessionId);
+//			inMessage.getData().remove(IMessage._data_locale);
+//			inMessage.getData().remove(IMessage._data_userId);			
+//			inMessage.getData().remove(IMessage._data_key);			
+//		}
 	}
 
 	public static boolean isDebug() {
 		return AppContext.getApplicationContext().containsBean(Constants._debug_mode);
 	}
 	
-	public static CassandraDescriptorBean getCassandraServerDescriptor() {
+	public static CassandraDescriptorBean getCassandraDescriptor() {
 		Result result = getBean(Constants._beans_cassandra_descriptor);
 		
 		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
@@ -96,7 +96,7 @@ public final class SessionManager {
 		return null;
 	}	
 	
-	public static CassandraAccessorBean getCassandraServerAccessor() {
+	public static CassandraAccessorBean getCassandraAccessor() {
 		Result result = getBean(Constants._beans_cassandra_accessor);
 		
 		if(result.isOk() && result.getObject() instanceof CassandraAccessorBean){

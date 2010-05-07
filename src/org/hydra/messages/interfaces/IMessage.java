@@ -7,20 +7,27 @@ import javax.servlet.http.HttpSession;
 import org.hydra.utils.Result;
 
 public interface IMessage {
+	static final String _data_action = "action";	
+	
 	// **** Session data keys
 	static final String _data_locale = "locale";
 	static final String _data_userId = "userId";
 	static final String _data_sessionId = "sessionId";
 		
 	// **** Other default keys
-	static final String _data_handler = "handler";	
-	static final String _data_what = "what" ;
-	static final String _data_kind = "kind" ;
-	static final String _data_value = "value" ;
-	
+	static final String _data_handler = "handler";		
+	static final String _data_what  = "what" ;
+	static final String _data_key  = "key" ;
+	static final String _data_value  = "value" ;
 	static final String _data_what_error_message = "error.message" ;
-	static final String _data_what_html_content  = "html.content" ;	
-
+	static final String _data_what_html_content  = "html.content" ;
+	
+	// **** Cassandra keys
+	static final String _data_cs_ksp   = "cs_ksp";
+	static final String _data_cs_cf    = "cs_cf";
+	static final String _data_cs_key   = "cs_key";
+	static final String _data_cs_col   = "cs_col";		
+	
 	void setData(Map<String, String> _data);
 	Map<String, String> getData();
 	

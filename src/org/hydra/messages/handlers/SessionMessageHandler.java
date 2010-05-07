@@ -22,14 +22,14 @@ public class SessionMessageHandler extends AMessageHandler {
 	@Override
 	public IMessage handleMessage(IMessage inMessage) {
 		// - Test incoming message
-		if(!isValidMessage(inMessage)) return inMessage;
+		if(!testParameters(inMessage)) return inMessage;
 				
 		// - Handle request message
 		if(inMessage.getData().get(_what).equals(_what_change_locale)){
-			getLog().debug("Try to change current locale to: " + inMessage.getData().get(IMessage._data_kind));
+			getLog().debug("Try to change current locale to: " + inMessage.getData().get(IMessage._data_key));
 			
 			// 1. Change session
-			Result result = inMessage.setToHttpSession(IMessage._data_locale, inMessage.getData().get(IMessage._data_kind));
+			Result result = inMessage.setToHttpSession(IMessage._data_locale, inMessage.getData().get(IMessage._data_key));
 			
 			// 2. If something wrong		
 			if(!result.isOk()){
