@@ -29,7 +29,7 @@
 	</bean>
 	
 	<!-- Ksp description -->
-	<bean id="_ksp_KSMain" class="org.hydra.db.beans.Ksp">
+	<bean id="_ksp_KSMain" class="org.hydra.db.beans.KeyspaceBean">
 		<property name="name" value="KSMain"/>
 		<property name="linkTableName" value="Links"/>		
 		<property name="columnFamilies">
@@ -37,67 +37,111 @@
 				<ref bean="_cf_article"/>
 				<ref bean="_cf_comments"/>
 				<ref bean="_cf_users"/>
-				<ref bean="_cf_emails"/>
 				<ref bean="_cf_tags"/>
 			</set>
 		</property>
 	</bean>	
 	
-	<!--Cf & CName description -->
-	<bean id="_cf_article" class="org.hydra.db.beans.Cf">
+	<!--ColumnFamilies & Columns description -->
+	<bean id="_cf_article" class="org.hydra.db.beans.ColumnFamilyBean">
 		<property name="name" value="Articles" />
-		<property name="keys">
-			<map>
-				<entry key="Title">    <bean class="org.hydra.db.beans.Key"><property name="super" value="COLUMNS"/></bean></entry>
-				<entry key="Text">     <bean class="org.hydra.db.beans.Key"><property name="super" value="COLUMNS"/></bean></entry>
-				<entry key="Comments"> <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-				<entry key="Tags">     <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-				<entry key="Authors">  <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-			</map>
+		<property name="columnBeans">
+			<set>
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Title"/>
+					<property name="super" value="COLUMN"/>
+				</bean>
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Text"/>
+					<property name="super" value="COLUMN"/>
+				</bean>
+				
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Comments"/>
+					<property name="super" value="LINK"/>
+				</bean>
+				
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Tags"/>
+					<property name="super" value="LINK"/>
+				</bean>
+				
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Authors"/>
+					<property name="super" value="LINK"/>
+				</bean>				
+			</set>
 		</property>
 	</bean>
 	
-	<bean id="_cf_comments" class="org.hydra.db.beans.Cf">
+	<bean id="_cf_comments" class="org.hydra.db.beans.ColumnFamilyBean">
 		<property name="name" value="Comments" />
-		<property name="keys">
-			<map>
-				<entry key="Text">     <bean class="org.hydra.db.beans.Key"><property name="super" value="COLUMNS"/></bean></entry>
-				<entry key="Comments"> <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-				<entry key="Authors">  <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-			</map>
+		<property name="columnBeans">
+			<set>
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Text"/>
+					<property name="super" value="COLUMN"/>
+				</bean>
+				
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Comments"/>
+					<property name="super" value="LINK"/>
+				</bean>
+				
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Authors"/>
+					<property name="super" value="LINK"/>
+				</bean>				
+			</set>
 		</property>
 	</bean>
 
-	<bean id="_cf_users" class="org.hydra.db.beans.Cf">
+	<bean id="_cf_users" class="org.hydra.db.beans.ColumnFamilyBean">
 		<property name="name" value="Users" />
-		<property name="keys">
-			<map>
-				<entry key="Password"> <bean class="org.hydra.db.beans.Key"><property name="super" value="COLUMNS"/></bean></entry>
-				<entry key="Atricles"> <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-				<entry key="Comments"> <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-				<entry key="EMails">   <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-			</map>
+		<property name="columnBeans">
+			<set>
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Email"/>
+					<property name="super" value="COLUMN"/>
+				</bean>	
+
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Password"/>
+					<property name="super" value="COLUMN"/>
+				</bean>
+				
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Atricles"/>
+					<property name="super" value="LINK"/>
+				</bean>
+				
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Comments"/>
+					<property name="super" value="LINK"/>
+				</bean>								
+			</set>
 		</property>
 	</bean>
 
-	<bean id="_cf_emails" class="org.hydra.db.beans.Cf">
-		<property name="name" value="Emails" />
-		<property name="keys">
-			<map>
-				<entry key="Address"> <bean class="org.hydra.db.beans.Key"><property name="super" value="COLUMNS"/></bean></entry>
-				<entry key="Users">   <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-			</map>
-		</property>
-	</bean>
-
-	<bean id="_cf_tags" class="org.hydra.db.beans.Cf">
+	<bean id="_cf_tags" class="org.hydra.db.beans.ColumnFamilyBean">
 		<property name="name" value="Tags" />
-		<property name="keys">
-			<map>
-				<entry key="Name">     <bean class="org.hydra.db.beans.Key"><property name="super" value="COLUMNS"/></bean></entry>
-				<entry key="Articles"> <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-				<entry key="Tags">     <bean class="org.hydra.db.beans.Key"><property name="super" value="LINKS"/></bean></entry>
-			</map>
+		<property name="columnBeans">
+			<set>
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Name"/>
+					<property name="super" value="COLUMN"/>
+				</bean>	
+								
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Atricles"/>
+					<property name="super" value="LINK"/>
+				</bean>
+				
+				<bean class="org.hydra.db.beans.ColumnBean">
+					<property name="name" value="Comments"/>
+					<property name="super" value="Tags"/>
+				</bean>								
+			</set>					
 		</property>
 	</bean>
 

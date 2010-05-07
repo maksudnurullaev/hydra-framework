@@ -30,14 +30,22 @@ public abstract class AMessageHandler extends ALogger implements IMessageHandler
 		return true;
 	}		
 	
-	public boolean isValidMessage(IMessage inMessage, String ...keys){
+	public boolean testParameters(IMessage inMessage, String ...keys){
 		if(!(inMessage instanceof MessageBean)){
-			getLog().error("Unexpected message class: " + inMessage.getClass().getSimpleName());
-			inMessage.setError("Unexpected message class: " + inMessage.getClass().getSimpleName());
+			String errorStr = "Unexpected message class: " + inMessage.getClass().getSimpleName();
+			getLog().error(errorStr);
+			inMessage.setError(errorStr);
 			return false;
 		}else if(!isValidData(inMessage.getData(), keys)){
-			getLog().error("Incoming message does not have necessary data");
-			inMessage.setError("Incoming message does not have necessary data");
+			String errorStr = "Error! Parameter(s) missing:\n";
+			int count  = 0;
+			for(String key:keys){
+				if(count++ > 0)
+					errorStr += " or ";
+				errorStr += key;
+			}
+			getLog().error(errorStr);
+			inMessage.setError(errorStr);
 			return false;			
 		}			
 		// Finish, all test passed

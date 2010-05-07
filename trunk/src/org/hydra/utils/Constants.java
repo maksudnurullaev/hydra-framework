@@ -48,7 +48,7 @@ public final class Constants {
 	public static final String _path2ApplicationContext_xml = "WebContext/WEB-INF/applicationContext.xml";
 	
 	// **** Deafult response waiting time (in milliseconds)
-	public static final long _max_response_wating_time = 1000;
+	public static final long _max_response_wating_time = 3000;
 	
 	// **** Cassandra's constants
 	public static final String _ksp_prefix = "_ksp_";

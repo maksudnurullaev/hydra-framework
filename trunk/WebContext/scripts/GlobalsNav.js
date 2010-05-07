@@ -17,8 +17,8 @@ GlobalsNav.onClick = function(elm){
 	var requestDivId = elm.id + ".content";
 	if(!$(requestDivId)){ /* From Servert */
 		Globals.sendMessage({handler:'Message',
-							 what:'html.content', 
-			   				 kind:requestDivId,
+							 action:'get_html_content', 
+			   				 key:requestDivId,
 			   				 dest:Globals.DivContentID});
 	}else { /* From Stack */
 		$(Globals.DivContentID).appendChild($(requestDivId));

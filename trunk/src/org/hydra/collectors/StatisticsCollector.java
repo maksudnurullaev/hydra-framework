@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.hydra.collectors.interfaces.IStatisticsCollector;
 import org.hydra.messages.handlers.AdminMessageHandler;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.abstracts.ALogger;
@@ -101,11 +102,10 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
 			tempString = String.format(MessagesManager.getTemplate("template.table.td"), 
 					Constants.makeJSLink(mapStringTypeInteger.getKey(), 
-							"handler:'%s', dest:'%s',%s:'%s',%s:'%s'",
+							"handler:'%s', dest:'%s',%s:'%s'",
 							AdminMessageHandler._handler_name,
 							AdminMessageHandler._defaultContentBodyID,
-							AdminMessageHandler._what, AdminMessageHandler._what_hydra_bean_desc,
-							AdminMessageHandler._kind, mapStringTypeInteger.getKey()));
+							IMessage._data_action, AdminMessageHandler._action_describe_hydra_bean));
 			for (StatisticsTypes type : StatisticsTypes.values()) {
 				tempString += String.format(MessagesManager.getTemplate("template.table.td"), 
 						mapStringTypeInteger.getValue().get(type));
