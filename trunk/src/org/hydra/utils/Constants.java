@@ -51,8 +51,8 @@ public final class Constants {
 	public static final long _max_response_wating_time = 3000;
 	
 	// **** Cassandra's constants
-	public static final String _ksp_prefix = "_ksp_";
 	public static final String _cassandra_descriptor_name = "_cassandra_server_descriptor";
+	public static final String _attention_str = "-!!!-!!!- ";
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);

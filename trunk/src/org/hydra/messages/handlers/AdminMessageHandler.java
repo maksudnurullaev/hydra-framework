@@ -9,7 +9,7 @@ import org.hydra.db.beans.ColumnBean;
 import org.hydra.db.beans.ColumnFamilyBean;
 import org.hydra.db.beans.KeyspaceBean;
 import org.hydra.db.server.CassandraAccessorBean;
-import org.hydra.db.server.CassandraRealPath;
+import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
@@ -90,13 +90,16 @@ public class AdminMessageHandler extends AMessageHandler {
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		CassandraRealPath path = new CassandraRealPath(inMessage);
+		//CassandraVirtualPath path = new CassandraVirtualPath(inMessage);
 		
-		List<Column> columns = SessionManager.getCassandraAccessor().getDBColumns(
+		List<Column> columns = null;
+		/* 
+		 * SessionManager.getCassandraAccessor().getDBColumns(
 				path.ksp,
 				path.cf,
 				path.key,
 				path.col);
+		 */
 
 		if(columns == null){
 			inMessage.setError("No column found!");

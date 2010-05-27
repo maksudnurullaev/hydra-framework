@@ -8,39 +8,43 @@ import org.hydra.utils.abstracts.ALogger;
  */
 public class ColumnBean extends ALogger {
 
-	public static final String SUPER_COLUMN = "COLUMN";
-	public static final String SUPER_LINK = "LINK";
+	public enum COLUMN_TYPES {
+		UNDEFINED, COLUMNS, LINKS
+	};
 	
-	private String name = null;
+	private String _name = null;
 	
-	private String _super = null;
+	private COLUMN_TYPES _type = COLUMN_TYPES.UNDEFINED;
 		
-	public void setSuper(String inSuper) {
-		if(inSuper != SUPER_COLUMN || inSuper != SUPER_LINK){
-			getLog().fatal("Could not find proper super property name for column!");
-			_super = null;
+	public void setType(String inType) {
+		try{
+			_type = COLUMN_TYPES.valueOf(inType);
+		}catch(Exception e){
+			getLog().error("Could not setup column bean's type to: " + inType);
+			_type = COLUMN_TYPES.UNDEFINED;
 		}
-		this._super = inSuper;
-		getLog().debug("Key super is: " + getSuper());
 	}
 	
-	public String getSuper() {
-		return _super;
+	public COLUMN_TYPES getTType() {
+		return _type;
 	}
 
+	public String getType(){
+		return _type.toString();
+	}
+	
 	public void setName(String name) {
-		this.name = name;
+		this._name = name;
+		
+		if(name == null){
+			getLog().warn("Column name is NULL now!");
+			return;
+		}
+		getLog().debug("Set column name: " + this._name);
 	}
 
 	public String getName() {
-		return name;
+		return _name;
 	}
 	
-	public boolean isColumn(){
-		return _super != null && SUPER_COLUMN.equals(_super);
-	}
-	
-	public boolean isLink(){
-		return _super != null && SUPER_LINK.equals(_super);
-	}
 }

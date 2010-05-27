@@ -3,6 +3,7 @@ package org.hydra.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.text.TextManager;
+import org.hydra.utils.abstracts.ALogger;
 
 public final class MessagesManager{
 	private static Log _log = LogFactory.getLog("org.hydra.utils.MessagesManager");	
@@ -44,6 +45,7 @@ public final class MessagesManager{
 		if(inLocale == null)
 			inLocale = getTextManager().getDefaultLocale();		
 		
+		_log.debug(String.format("Try to find text by key(%s) and locale(%s)", inKey, inLocale));
 		return getTextManager().getTextByKey(inKey, inHtmlWrap, inLocale);
 	}
 		

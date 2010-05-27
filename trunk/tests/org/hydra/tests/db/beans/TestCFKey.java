@@ -1,6 +1,8 @@
 package org.hydra.tests.db.beans;
 
 import org.hydra.db.beans.ColumnBean;
+import org.hydra.db.beans.ColumnBean.COLUMN_TYPES;
+import org.hydra.messages.interfaces.IMessage;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,20 +11,20 @@ public class TestCFKey {
 	@Test
 	public void test_type(){
 		ColumnBean key = new ColumnBean();		
-		Assert.assertNull(key.getSuper());
+		Assert.assertEquals(key.getTType(), COLUMN_TYPES.UNDEFINED);
 		
-		key.setSuper("COLUMNS");
-		Assert.assertEquals(key.getSuper(), "COLUMNS");
+		key.setType("COLUMN");
+		Assert.assertEquals(key.getTType(), COLUMN_TYPES.COLUMNS);
 				
-		key.setSuper("LINKS");
-		Assert.assertEquals(key.getSuper(), "LINKS");
+		key.setType("LINK");
+		Assert.assertEquals(key.getTType(), COLUMN_TYPES.LINKS);
 
 	}
 	
-	@Test(expected = java.lang.IllegalArgumentException.class)
 	public void test_to_error(){
 		ColumnBean field = new ColumnBean();		
-		field.setSuper("HELLO");		
+		field.setType("HELLO");		
+		Assert.assertNull(field.getTType());
 	}
 	
 	

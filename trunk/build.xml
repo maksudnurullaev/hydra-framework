@@ -91,7 +91,7 @@
 
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/Test*.class" />
+					<include name="**/TestV*.class" />
 				</fileset>
 			</batchtest>
 		</junit>

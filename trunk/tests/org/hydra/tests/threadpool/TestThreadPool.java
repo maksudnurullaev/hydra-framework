@@ -78,7 +78,7 @@ public class TestThreadPool {
 		_processor12.setOutPipe(_outPipe);		
 		_processor13.setOutPipe(_outPipe);		
 
-		int messageCount = 10000;
+		int messageCount = 10;
 
 		try {
 			MessageBean message = null;
@@ -86,8 +86,8 @@ public class TestThreadPool {
 				message = new MessageBean();
 				message.setData(new HashMap<String, String>());
 				message.getData().put(IMessage._data_handler,"Message");
-				message.getData().put(MessageHandler._action, IMessage._data_what_html_content);
-				message.getData().put(MessageHandler._key, "home.context");
+				message.getData().put(IMessage._data_action, MessageHandler._action_get_html_content);
+				message.getData().put(IMessage._data_key, "home.context");
 				message.getData().put(IMessage._data_sessionId, String.format("Test Message #%d", i));
 				_main_inPipe.setMessage(message);
 			}
