@@ -12,6 +12,7 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.hydra.db.server.CassandraDescriptorBean;
+import org.hydra.utils.Constants;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraAccessor extends ALogger {
@@ -166,13 +167,15 @@ public abstract class ACassandraAccessor extends ALogger {
 		
 		// 2. Init protocol
 		setProtocol(new TBinaryProtocol(getTransport()));
-		getLog().debug(String.format("New TBinaryProtocol created!"));
+		getLog().debug("New TBinaryProtocol created!");
 		
 		if(!getTransport().isOpen());
 			try {
+				getLog().debug("Try to setup connection with Cassandra...");
 				getTransport().open();
-			} catch (TTransportException e1) {
-				getLog().error(e1.getMessage());
+			} catch (TTransportException e) {
+				getLog().fatal(Constants._attention_str + e.getMessage());
+				return;
 			}
 		// 3. Init values
 		for (int i = 0; i < getPoolSizeMin(); i++){
@@ -194,7 +197,8 @@ public abstract class ACassandraAccessor extends ALogger {
 			clientClose(client);
 			
 		} catch (TException e) {
-			getLog().error(e.getMessage());
+			getLog().fatal(Constants._attention_str + e.getMessage());
+			return;
 		}
 	}
 

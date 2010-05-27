@@ -13,8 +13,9 @@ import org.hydra.db.server.abstracts.ACassandraAccessor;
 import org.hydra.utils.Constants;
 
 public class CassandraAccessorBean extends ACassandraAccessor {
-	public List<Column> getDBColumns(CassandraRealPath path){
-		return getDBColumns(path.ksp, path.cf, path.key, path.col);
+	public List<Column> getDBColumns(CassandraVirtualPath path){
+		//return getDBColumns(path.ksp, path.cf, path.key, path.col);
+		return null;
 	}
 	
 	public List<Column> getDBColumns(String keyspaceName,

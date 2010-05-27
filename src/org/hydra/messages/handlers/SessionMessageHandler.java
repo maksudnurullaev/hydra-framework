@@ -12,20 +12,22 @@ import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
 
 public class SessionMessageHandler extends AMessageHandler {
-	public static final String _what = "what";
-	public static final String _kind = "kind";
-
 	public static final String _body_html_path_format = "/h/body_%s.html";		
 	
-	public static final String _what_change_locale     = "change_locale";
+	public static final String _action_change_locale = "change_locale";
 	
 	@Override
 	public IMessage handleMessage(IMessage inMessage) {
 		// - Test incoming message
 		if(!testParameters(inMessage)) return inMessage;
 				
+		if(!testParameters(inMessage, IMessage._data_action)) return inMessage;		
+		
+		
 		// - Handle request message
-		if(inMessage.getData().get(_what).equals(_what_change_locale)){
+		if(inMessage.getData().get(IMessage._data_action).equals(_action_change_locale)){
+			if(!testParameters(inMessage, IMessage._data_key)) return inMessage;		
+			
 			getLog().debug("Try to change current locale to: " + inMessage.getData().get(IMessage._data_key));
 			
 			// 1. Change session

@@ -45,4 +45,5 @@ public class CassandraDescriptorBean extends ACassandraDescriptorBean {
 		return columnFamily.getColumnByName(columnName);				
 	}
 
+
 }

@@ -89,8 +89,8 @@ Globals.loadStage2 = function(){
 	// alert("!!!Start STAGE 2 - Load Full Page Content!!!");
 	Globals.sendMessage(
 		{handler:'SessionMessage',
-		 what:'_none_', 
-		 kind:'_none_', 
+		 action:'_none_', 
+		 key:'_none_', 
 		 dest:'body'});
 
 };

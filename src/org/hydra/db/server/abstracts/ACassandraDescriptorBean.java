@@ -17,6 +17,7 @@ import org.hydra.utils.abstracts.ALogger;
 public abstract class ACassandraDescriptorBean extends ALogger {
 
 	private Map<String, KeyspaceBean> _keyspaces = new HashMap<String, KeyspaceBean>();
+	private KeyspaceBean rootKeyspace = null;
 	
 	public static final String PATH2COLUMN5 = "%s.%s['%s']['%s']['%s']";
 	public static final String PATH2COLUMN4   = "%s.%s['%s']['%s']";	
@@ -63,7 +64,7 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 		
 		getLog().debug(String.format("Get column(%s) with type: %s", 
 				column.getName(),
-				column.getSuper()));
+				column.getTType()));
 		
 		if(column == null){
 			inMessage.setError("Could not find cassandra column description!");
@@ -76,13 +77,14 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 		String inputBoxVal = inputBoxID + "ID";
 		String resultDivID = inputBoxID + "Div";
 		
-		if(column.getSuper().equals(ColumnBean.SUPER_COLUMN)){
+		switch (column.getTType()) {
+		case COLUMNS:
 			getLog().debug("Create html path for column!");
 			inMessage.setHtmlContent(String.format(String.format(formatStrong, "Column", PATH2COLUMN5), 
 					keyspaceName,
 					columnFamilyName,
 					String.format(MessagesManager.getTemplate("template.html.custom.input.ID.Value"), inputBoxID, inputBoxVal),
-						Constants.makeJSLink(column.getSuper(), 
+						Constants.makeJSLink(column.getTType().toString(), 
 								"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s',%s:$('%s').value",
 								//         1         2   3   4   5   6   7   8   9    10  
 								AdminMessageHandler._handler_name, // 1
@@ -106,8 +108,9 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 					)
 					+
 					String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), resultDivID)
-			);
-		}else if(column.getSuper().equals(ColumnBean.SUPER_LINK)){		
+			);			
+			break;
+		case LINKS:
 			getLog().debug("Create html path for link!");
 			inMessage.setHtmlContent(String.format(String.format(formatStrong, "Column", PATH2COLUMN4), 
 					keyspaceName,
@@ -126,12 +129,22 @@ public abstract class ACassandraDescriptorBean extends ALogger {
 					)
 					+
 					String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), resultDivID)
-				);
-		}else{ // unknown super type
+				);			
+			break;
+		default:
 			inMessage.setError(String.format("Uknown super type(%s) for column: %s",
-					column.getSuper(),
+					column.getTType(),
 					column.getName()));
+			break;
 		}
+	}
+
+	public void setRootKeyspace(KeyspaceBean rootKeyspace) {
+		this.rootKeyspace = rootKeyspace;
+	}
+
+	public KeyspaceBean getRootKeyspace() {
+		return rootKeyspace;
 	}
 	
 

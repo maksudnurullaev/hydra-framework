@@ -15,9 +15,14 @@ public class ColumnFamilyBean extends ALogger {
 	private String name = null;
 
 	public void setColumnBeans(Set<ColumnBean> inColumns) {
-		for(ColumnBean column: inColumns)
+		for(ColumnBean column: inColumns){
+			getLog().debug(String.format("Add column/type: %s/%s to %s",
+					column.getName(),
+					column.getTType(),
+					getName()));
 			this.columns.put(column.getName(), column);
-		getLog().debug(String.format("%s fields added to Cf(%s)", inColumns.size(), getName()));
+		}
+		getLog().debug(String.format("%s fields added to %s", inColumns.size(), getName()));
 	}
 
 	public Map<String, ColumnBean> getColumns() {
@@ -32,11 +37,17 @@ public class ColumnFamilyBean extends ALogger {
 
 	public void setName(String name) {
 		this.name = name;
-		getLog().debug("Set Cf name to: " + getName());
+		getLog().debug("Setup CF name: " + getName());
 	}
 
 	public String getName() {
 		return name;
+	}
+	
+	public boolean containsColumnBeanByName(String inName){
+		if(columns != null)
+			return columns.containsKey(inName);
+		return false;
 	}
 	
 }

@@ -90,9 +90,17 @@ public class KeyspaceBean extends ALogger {
 	public void setLinkTableName(String linkTableName) {
 		this.linkTableName = linkTableName;
 	}
+	
 	public String getLinkTableName() {
 		return linkTableName;
 	}
+
+	public boolean containsColumnFamily(String inColumnFamilyName) {
+		if(_columnFamilies != null)
+			return _columnFamilies.containsKey(inColumnFamilyName);
+		return false;
+	}
+
 	
 	
 }
