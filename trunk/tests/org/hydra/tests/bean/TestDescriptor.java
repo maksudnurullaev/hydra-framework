@@ -1,8 +1,7 @@
-package org.hydra.tests.db;
+package org.hydra.tests.bean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.db.beans.KeyspaceBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.Constants;
@@ -11,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 
-public class TestRootAccess {
+public class TestDescriptor {
 	Log _log = LogFactory.getLog(this.getClass());
 	BeanFactory beanFactory = Utils4Tests.getBeanFactory();
 

@@ -53,7 +53,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
         ColumnParent parent = new ColumnParent(columnFamilyName);
 
         getLog().debug("Borrow client...");
-        Cassandra.Client cClient = clientGet();
+        Cassandra.Client cClient = clientBorrow();
         
 		List<Column> result = null;		
         try {
@@ -81,7 +81,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			e.printStackTrace();			
 			result = null;			
 		}finally{
-			clientClose(cClient);
+			clientRelease(cClient);
 			getLog().debug("Borrowed client closed!");
 		}
 		
