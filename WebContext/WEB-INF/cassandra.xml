@@ -111,7 +111,7 @@
 				</bean>
 				
 				<bean class="org.hydra.db.beans.ColumnBean">
-					<property name="name" value="Atricles"/>
+					<property name="name" value="Articles"/>
 					<property name="type" value="LINKS"/>
 				</bean>
 				

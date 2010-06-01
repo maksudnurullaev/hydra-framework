@@ -48,12 +48,12 @@ public class CassandraVirtualPath extends ALogger {
 	// Result types
 	public enum RESULT_TYPES {
 		UNDEFINED, 
-		DATA_KSP_CF,		 				/* get IDs */
-		DATA_KSP_CF_COLUMNS, 				/* get column descriptions */
-		DATA_KSP_CF_COLUMNS_SUPER, 			/* get columns for certain ID (super) */
-		DATA_KSP_CF_COLUMNS_SUPER_COLUMN,	/* get certain column from columns for certain ID (super) */
-		DATA_KSP_CF_LINKS, 					/* get links descriptions */
-		DATA_KSP_CF_LINKS_SUPER_COLUMN,		/* get linked ID's for certain ID (super) */ 
+		LIST_OF_IDS4KSP_CF,			 			/* get IDs */
+		LIST_OF_COLS4KSP_CF_COLUMNS_SUPER, 		/* get columns for certain ID (super) */
+		LIST_OF_IDS4KSP_CF_LINKS_SUPER_COLUMN,	/* get linked ID's for certain ID (super) */ 
+		COL4KSP_CF_COLUMNS_SUPER_COLUMN,		/* get certain column from columns for certain ID (super) */
+		MAP4KSP_CF_LINKS, 						/* get links descriptions */
+		MAP4KSP_CF_COLUMNS, 					/* get column descriptions */
 	};
 
 	RESULT_TYPES _resultType = RESULT_TYPES.UNDEFINED;
@@ -126,7 +126,7 @@ public class CassandraVirtualPath extends ALogger {
 
 		// * defined just 2 parts
 		if (_pathMap.size() == 2) {
-			_resultType = RESULT_TYPES.DATA_KSP_CF;
+			_resultType = RESULT_TYPES.LIST_OF_IDS4KSP_CF;
 			return;
 		}
 
@@ -136,9 +136,9 @@ public class CassandraVirtualPath extends ALogger {
 			COLUMN_TYPES columnType = COLUMN_TYPES.valueOf(_pathMap
 					.get(PARTS.SUPE_R));
 			if (columnType == COLUMN_TYPES.COLUMNS) {
-				_resultType = RESULT_TYPES.DATA_KSP_CF_COLUMNS;
+				_resultType = RESULT_TYPES.MAP4KSP_CF_COLUMNS;
 			} else if (columnType == COLUMN_TYPES.LINKS) {
-				_resultType = RESULT_TYPES.DATA_KSP_CF_LINKS;
+				_resultType = RESULT_TYPES.MAP4KSP_CF_LINKS;
 			} else {
 				setError("Invalid column type: " + columnType.toString());
 				_resultType = RESULT_TYPES.UNDEFINED;
@@ -147,7 +147,7 @@ public class CassandraVirtualPath extends ALogger {
 			}				
 		} catch (Exception e) {
 			// ...we suppose that super is ID
-			_resultType = RESULT_TYPES.DATA_KSP_CF_COLUMNS_SUPER;
+			_resultType = RESULT_TYPES.LIST_OF_COLS4KSP_CF_COLUMNS_SUPER;
 		}
 
 		// * defined just 3 parts
@@ -161,9 +161,9 @@ public class CassandraVirtualPath extends ALogger {
 		if (cf.containsColumnBeanByName(_pathMap.get(PARTS.COL))) {
 			ColumnBean col = cf.getColumnByName(_pathMap.get(PARTS.COL));
 			if (col.getTType() == COLUMN_TYPES.COLUMNS)
-				_resultType = RESULT_TYPES.DATA_KSP_CF_COLUMNS_SUPER_COLUMN;
+				_resultType = RESULT_TYPES.COL4KSP_CF_COLUMNS_SUPER_COLUMN;
 			else if(col.getTType() == COLUMN_TYPES.LINKS)
-				_resultType = RESULT_TYPES.DATA_KSP_CF_LINKS_SUPER_COLUMN;
+				_resultType = RESULT_TYPES.LIST_OF_IDS4KSP_CF_LINKS_SUPER_COLUMN;
 			else{
 				setError(String.format("Invalid column type(%s) for column(%s)!",
 						col.getType(),
