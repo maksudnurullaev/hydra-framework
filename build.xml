@@ -14,19 +14,13 @@
 	
 	<fileset id="web.libs" dir="${appserver.lib}">
 		<include name="servlet*.jar" />
-	</fileset>
-	
-	<taskdef classpath="${aspectj.home}/lib/aspectjtools.jar" resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties"/>
-	<fileset id="aspectj.libs" dir="${aspectj.home}/lib">
-		<include name="*.jar" />
-	</fileset>		
+	</fileset>	
 
 	
 	<path id="master-classpath">
 		<pathelement path="${classes}"/>
 		<fileset refid="local.libs"/>
 		<fileset refid="web.libs"/>
-		<fileset refid="aspectj.libs"/>
 	</path>
 
 	<path id="sources-path">
@@ -91,7 +85,7 @@
 
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestV*.class" />
+					<include name="**/TestAccess*.class" />
 				</fileset>
 			</batchtest>
 		</junit>
