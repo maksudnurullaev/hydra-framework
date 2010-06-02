@@ -61,12 +61,16 @@ public final class Constants {
 
 	public static String GetCurrentDateTime(String inFormat) {
 		SimpleDateFormat sdf = new SimpleDateFormat(inFormat);
-		return String.format(sdf.format(new Date()));
+		return sdf.format(new Date());
 	};	
 	
 	public static String GetUUID() {
 		return java.util.UUID.randomUUID().toString();
 
+	}
+	
+	public static String GetDateUUID(){
+		return Constants.GetCurrentDateTime("yyyy.MM.dd HH:mm:ss SSS - ") + Constants.GetUUID();
 	}
 
 	/**
