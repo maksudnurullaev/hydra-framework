@@ -85,7 +85,7 @@
 
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestAccess*.class" />
+					<include name="**/TestAcc*.class" />
 				</fileset>
 			</batchtest>
 		</junit>

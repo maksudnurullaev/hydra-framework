@@ -9,6 +9,11 @@ import org.hydra.db.beans.ColumnBean.COLUMN_TYPES;
 import org.hydra.utils.abstracts.ALogger;
 
 public class CassandraVirtualPath extends ALogger {
+	// Access path beans - needs for "same time initialization"
+	public KeyspaceBean kspBean = null;
+	public ColumnFamilyBean cfBean = null;
+	public ColumnBean colBean = null;
+	
 	// Error codes
 	public enum ERR_CODES {
 		UNDEFINED, 
@@ -112,17 +117,17 @@ public class CassandraVirtualPath extends ALogger {
 			_errCode = ERR_CODES.INVALID_KS;
 			return;
 		}
-
-		KeyspaceBean ks = cassandraDescriptorBean
+		kspBean = cassandraDescriptorBean
 				.getKeyspace(getPathPart(PARTS.KSP));
 
 		// * [Mandatory] validate column family...
 		getLog().debug("Validate for column family: " + getPathPart(PARTS.CF));
-		if (!ks.containsColumnFamily(getPathPart(PARTS.CF))) {
+		if (!kspBean.containsColumnFamily(getPathPart(PARTS.CF))) {
 			setError("Could not find column family: " + getPathPart(PARTS.CF));
 			_errCode = ERR_CODES.INVALID_CF;
 			return;
 		}
+		cfBean = kspBean.getColumnFamilyByName(_pathMap.get(PARTS.CF));
 
 		// * defined just 2 parts
 		if (_pathMap.size() == 2) {
@@ -155,19 +160,17 @@ public class CassandraVirtualPath extends ALogger {
 			return;
 		}
 
-		ColumnFamilyBean cf = ks.getColumnFamilyByName(_pathMap.get(PARTS.CF));
-
 		// * [Optional] validate 4th parts
-		if (cf.containsColumnBeanByName(_pathMap.get(PARTS.COL))) {
-			ColumnBean col = cf.getColumnByName(_pathMap.get(PARTS.COL));
-			if (col.getTType() == COLUMN_TYPES.COLUMNS)
+		if (cfBean.containsColumnBeanByName(_pathMap.get(PARTS.COL))) {
+			colBean = cfBean.getColumnByName(_pathMap.get(PARTS.COL));
+			if (colBean.getTType() == COLUMN_TYPES.COLUMNS)
 				_resultType = RESULT_TYPES.COL4KSP_CF_COLUMNS_SUPER_COLUMN;
-			else if(col.getTType() == COLUMN_TYPES.LINKS)
+			else if(colBean.getTType() == COLUMN_TYPES.LINKS)
 				_resultType = RESULT_TYPES.LIST_OF_IDS4KSP_CF_LINKS_SUPER_COLUMN;
 			else{
 				setError(String.format("Invalid column type(%s) for column(%s)!",
-						col.getType(),
-						col.getName()));
+						colBean.getType(),
+						colBean.getName()));
 				_resultType = RESULT_TYPES.UNDEFINED;
 				_errCode = ERR_CODES.INVALID_DIC_TYPE;
 				return;
