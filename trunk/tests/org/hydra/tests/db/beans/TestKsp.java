@@ -21,7 +21,7 @@ public class TestKsp {
 	
 	@Test
 	public void test_ksp_KSMain(){
-		String bean_name = "_ksp_KSMain";
+		String bean_name = "KSMainTEST";
 		Assert.assertTrue(factory.containsBean(bean_name));
 		Assert.assertTrue(factory.getBean(bean_name) instanceof KeyspaceBean);		
 	}	

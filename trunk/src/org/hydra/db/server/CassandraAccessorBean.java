@@ -65,6 +65,8 @@ public class CassandraAccessorBean extends ACassandraAccessor {
         getLog().debug("Borrow client...");
 		Cassandra.Client client = clientBorrow();
 		
+		//TODO Надо создать тествую базу как нить!?
+		
 		try {
 			result.setObject(client.get_slice(kspName, keyName, cf, predicate, ConsistencyLevel.ONE));
 			result.setResult(true);

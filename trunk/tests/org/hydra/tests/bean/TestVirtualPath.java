@@ -34,19 +34,19 @@ public class TestVirtualPath {
 		Assert.assertEquals(testPath.getErrorCode(),
 				ERR_CODES.INVALID_DESCRIPTOR);
 
-		testPath = new CassandraVirtualPath(null, "KSMain");
+		testPath = new CassandraVirtualPath(null, "KSMainTEST");
 		Assert.assertEquals(testPath.getErrorCode(),
 				ERR_CODES.INVALID_DESCRIPTOR);
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean, null);
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.INVALID_PATH);
 
-		testPath = new CassandraVirtualPath(cassandraDescriptorBean, "KSMain");
+		testPath = new CassandraVirtualPath(cassandraDescriptorBean, "KSMainTEST");
 		Assert.assertEquals(testPath.getErrorCode(),
 				ERR_CODES.INVALID_PATH_STRUCTURE);
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean,
-				"KSMain.Articles.ID.Title.Extended");
+				"KSMainTEST.Articles.ID.Title.Extended");
 		Assert.assertEquals(testPath.getErrorCode(),
 				ERR_CODES.INVALID_PATH_STRUCTURE);
 
@@ -55,63 +55,63 @@ public class TestVirtualPath {
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.INVALID_KS);
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean,
-				"KSMain.UknownArticles");
+				"KSMainTEST.UknownArticles");
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.INVALID_CF);
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean,
-				"KSMain.Articles.ID.UnkownColumn");
+				"KSMainTEST.Articles.ID.UnkownColumn");
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.INVALID_COLUMN);
 	}
 
 	@Test
 	public void test_2_valid_virtual_path() {
 		CassandraVirtualPath testPath = new CassandraVirtualPath(
-				cassandraDescriptorBean, "KSMain.Users");
+				cassandraDescriptorBean, "KSMainTEST.Users");
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.NO_ERROR);
 		Assert.assertEquals(testPath.getResultType(),
 				RESULT_TYPES.LIST_OF_IDS4KSP_CF);
-		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMain");
+		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMainTEST");
 		Assert.assertEquals(testPath.getPathPart(PARTS.CF), "Users");
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean,
-				"KSMain.Users.COLUMNS");
+				"KSMainTEST.Users.COLUMNS");
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.NO_ERROR);
 		Assert.assertEquals(testPath.getResultType(),
 				RESULT_TYPES.MAP4KSP_CF_COLUMNS);
-		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMain");
+		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMainTEST");
 		Assert.assertEquals(testPath.getPathPart(PARTS.CF), "Users");
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean,
-				"KSMain.Users.userID");
+				"KSMainTEST.Users.userID");
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.NO_ERROR);
 		Assert.assertEquals(testPath.getResultType(),
 				RESULT_TYPES.LIST_OF_COLS4KSP_CF_COLUMNS_SUPER);
-		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMain");
+		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMainTEST");
 		Assert.assertEquals(testPath.getPathPart(PARTS.CF), "Users");
 		Assert.assertEquals(testPath.getPathPart(PARTS.SUPE_R), "userID");
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean,
-				"KSMain.Users.userID.Password");
+				"KSMainTEST.Users.userID.Password");
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.NO_ERROR);
 		Assert.assertEquals(testPath.getResultType(),
 				RESULT_TYPES.COL4KSP_CF_COLUMNS_SUPER_COLUMN);
-		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMain");
+		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMainTEST");
 		Assert.assertEquals(testPath.getPathPart(PARTS.CF), "Users");
 		Assert.assertEquals(testPath.getPathPart(PARTS.SUPE_R), "userID");
 		Assert.assertEquals(testPath.getPathPart(PARTS.COL), "Password");
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean,
-				"KSMain.Users.LINKS");
+				"KSMainTEST.Users.LINKS");
 		Assert.assertEquals(testPath.getResultType(),
 				RESULT_TYPES.MAP4KSP_CF_LINKS);
-		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMain");
+		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMainTEST");
 		Assert.assertEquals(testPath.getPathPart(PARTS.CF), "Users");
 
 		testPath = new CassandraVirtualPath(cassandraDescriptorBean,
-				"KSMain.Users.userID.Articles");
+				"KSMainTEST.Users.userID.Articles");
 		Assert.assertEquals(testPath.getResultType(),
 				RESULT_TYPES.LIST_OF_IDS4KSP_CF_LINKS_SUPER_COLUMN);
-		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMain");
+		Assert.assertEquals(testPath.getPathPart(PARTS.KSP), "KSMainTEST");
 		Assert.assertEquals(testPath.getPathPart(PARTS.CF), "Users");
 		Assert.assertEquals(testPath.getPathPart(PARTS.SUPE_R), "userID");
 		Assert.assertEquals(testPath.getPathPart(PARTS.COL), "Articles");
