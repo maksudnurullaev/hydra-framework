@@ -16,34 +16,100 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 
 public class CassandraAccessorBean extends ACassandraAccessor {
-	public Result getDBColumns(CassandraVirtualPath path) {
+	public Result getDBColumns(CassandraVirtualPath inPath) {
 
 		// Check for access path
-		if (path == null) {
+		if (inPath == null) {
 			Result result = new Result();
 			result.setResult(false);
 			result.setResult("Access path is NULL!");
 			return result;
-		} else if (path.getErrorCode() != ERR_CODES.NO_ERROR) {
+		} else if (inPath.getErrorCode() != ERR_CODES.NO_ERROR) {
 			Result result = new Result();
 			result.setResult(false);
-			result.setResult("Access path is invalid: " + path._errString);
+			result.setResult("Access path is invalid: " + inPath._errString);
 			return result;
 		}
 
 		// Main action
-		switch (path.getResultType()) {
+		switch (inPath.getResultType()) {
 		case LIST_OF_IDS4KSP_CF:
-			return listOfIDs4KspCf(path);
+			return resultAsListOfIDs4KspCf(inPath);
+		case MAP4KSP_CF_COLUMNS:
+			return resultAsMapOfColumns(inPath);
+		case MAP4KSP_CF_LINKS:
+			return resultAsMapOfLinks(inPath);
 		default:
 			Result result = new Result();
 			result.setResult(false);
-			result.setResult("Undefined result type:" + path.getResultType());
+			result.setResult("Undefined result type: " + inPath.getResultType());
 			return result;
 		}
 	}
 
-	private Result listOfIDs4KspCf(CassandraVirtualPath path) {
+	private Result resultAsMapOfColumns(CassandraVirtualPath inPath) {
+		Result result = new Result();
+		
+		if(inPath == null){
+			getLog().error("Expected CassandraVirtualPath instead NULL!");
+			
+			result.setResult(false);
+			result.setResult("Expected CassandraVirtualPath instead NULL!");
+			return result; 
+		}
+		
+		if(inPath.cfBean == null){
+			getLog().error("Expected ColumnFamilyBean instead NULL!");
+			
+			result.setResult(false);
+			result.setResult("Expected ColumnFamilyBean instead NULL!");
+			return result; 
+		}
+		
+		if(inPath.cfBean.getColumns().size() == 0){
+			getLog().error("Columns size is 0!");
+			result.setResult(false);
+			result.setResult("Columns size is 0!");
+			return result; 
+		}
+		
+		result.setObject(inPath.cfBean.getColumns());
+		result.setResult(true);		
+		return result;
+	}	
+	
+	private Result resultAsMapOfLinks(CassandraVirtualPath inPath) {
+		Result result = new Result();
+		
+		if(inPath == null){
+			getLog().error("Expected CassandraVirtualPath instead NULL!");
+			
+			result.setResult(false);
+			result.setResult("Expected CassandraVirtualPath instead NULL!");
+			return result; 
+		}
+		
+		if(inPath.cfBean == null){
+			getLog().error("Expected ColumnFamilyBean instead NULL!");
+			
+			result.setResult(false);
+			result.setResult("Expected ColumnFamilyBean instead NULL!");
+			return result; 
+		}
+		
+		if(inPath.cfBean.getLinks().size() == 0){
+			getLog().error("Columns size is 0!");
+			result.setResult(false);
+			result.setResult("Columns size is 0!");
+			return result; 
+		}
+		
+		result.setObject(inPath.cfBean.getLinks());
+		result.setResult(true);		
+		return result;
+	}	
+
+	private Result resultAsListOfIDs4KspCf(CassandraVirtualPath path) {
 		Result result = new Result();
 		String kspName = path.getPathPart(PARTS.KSP);
 		String cfName = path.getPathPart(PARTS.CF);
@@ -65,7 +131,6 @@ public class CassandraAccessorBean extends ACassandraAccessor {
         getLog().debug("Borrow client...");
 		Cassandra.Client client = clientBorrow();
 		
-		//TODO Надо создать тествую базу как нить!?
 		
 		try {
 			result.setObject(client.get_slice(kspName, keyName, cf, predicate, ConsistencyLevel.ONE));

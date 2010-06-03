@@ -76,7 +76,7 @@ public class KeyspaceBean extends ALogger {
 	
 	public ColumnFamilyBean getColumnFamilyByName(String inCfName){
 		if(_columnFamilies.containsKey(inCfName)){
-			getLog().warn(String.format("Found column family(%s) in keyspace(%s)",
+			getLog().debug(String.format("Found column family(%s) in keyspace(%s)",
 					inCfName,
 					getName()));
 			return _columnFamilies.get(inCfName);

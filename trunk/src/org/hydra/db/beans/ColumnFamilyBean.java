@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.hydra.db.beans.ColumnBean.COLUMN_TYPES;
 import org.hydra.utils.abstracts.ALogger;
 
 /**
@@ -12,6 +13,7 @@ import org.hydra.utils.abstracts.ALogger;
  */
 public class ColumnFamilyBean extends ALogger {
 	private Map<String, ColumnBean> columns = new HashMap<String, ColumnBean>();
+	private Map<String, ColumnBean> links = new HashMap<String, ColumnBean>();
 	private String name = null;
 
 	public void setColumnBeans(Set<ColumnBean> inColumns) {
@@ -20,7 +22,12 @@ public class ColumnFamilyBean extends ALogger {
 					column.getName(),
 					column.getTType(),
 					getName()));
-			this.columns.put(column.getName(), column);
+			if(column.getTType() == COLUMN_TYPES.COLUMNS)
+				this.columns.put(column.getName(), column);
+			else if(column.getTType() == COLUMN_TYPES.LINKS)
+				this.links.put(column.getName(), column);
+			else
+				getLog().error("Unkown column type: " + column.getTType());
 		}
 		getLog().debug(String.format("%s fields added to %s", inColumns.size(), getName()));
 	}
@@ -28,6 +35,10 @@ public class ColumnFamilyBean extends ALogger {
 	public Map<String, ColumnBean> getColumns() {
 		return columns;
 	}
+	
+	public Map<String, ColumnBean> getLinks() {
+		return links;
+	}	
 	
 	public ColumnBean getColumnByName(String inColumnName) {
 		if(columns.containsKey(inColumnName))

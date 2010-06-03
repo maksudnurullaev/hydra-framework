@@ -70,7 +70,11 @@ public final class Constants {
 	}
 	
 	public static String GetDateUUID(){
-		return Constants.GetCurrentDateTime("yyyy.MM.dd HH:mm:ss SSS - ") + Constants.GetUUID();
+		return Constants.GetCurrentDateTime("yyyy.MM.dd HH:mm:ss SSS") + " - " + Constants.GetUUID();
+	}
+
+	public static String GetDateUUIDTEST(){
+		return "TEST - " + Constants.GetCurrentDateTime("yyyy.MM.dd HH:mm:ss SSS") + " - " + Constants.GetUUID();
 	}
 
 	/**
