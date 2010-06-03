@@ -10,7 +10,6 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 
@@ -35,6 +34,7 @@ public class TestAccessor {
 	public void test_beans(){
 		Assert.assertTrue(testAccessor.isValid());
 		
+		/* Test accessor*/
 		CassandraVirtualPath testPath = new CassandraVirtualPath(testDescriptor, "KSMainTEST.Users");
 		Result result = testAccessor.getDBColumns(testPath);
 	}
