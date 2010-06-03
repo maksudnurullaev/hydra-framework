@@ -43,7 +43,7 @@ public class TestAccessor {
 	public void test_getIDs(){
 		Assert.assertTrue(testAccessor.isValid());
 		
-		initTestUsers(10);
+		initTestUsers(5);
 		
 //		/* Test accessor */
 //		CassandraVirtualPath testPath = new CassandraVirtualPath(testDescriptor, "KSMainTEST.Users");
@@ -82,7 +82,6 @@ public class TestAccessor {
 			tempMap.put("Email", String.format("test%s@mail.com", i));
 			
 			result.put(userID, tempMap);
-			
 		}
 		// 2. Get fields descriptions for user descriptions
 		// 3. Insert list of user [-- Map<IDs, Map<fields, values> --] into Cassandra DB
