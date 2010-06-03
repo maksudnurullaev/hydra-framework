@@ -35,7 +35,7 @@ public class TestAccessor {
 	public void test_beans(){
 		Assert.assertTrue(testAccessor.isValid());
 		
-		CassandraVirtualPath testPath = new CassandraVirtualPath(testDescriptor, "KSMain.Users");
+		CassandraVirtualPath testPath = new CassandraVirtualPath(testDescriptor, "KSMainTEST.Users");
 		Result result = testAccessor.getDBColumns(testPath);
 	}
 

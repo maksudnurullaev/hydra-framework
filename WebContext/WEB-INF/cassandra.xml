@@ -12,6 +12,7 @@
 		<property name="keyspaces">
 			<set>
 				<ref bean="KSMain"/>
+				<ref bean="KSMainTEST"/>
 			</set>
 		</property>					
 	</bean>
@@ -41,6 +42,20 @@
 			</set>
 		</property>
 	</bean>	
+		
+	<!-- JUST4TEST - Test ksp description - JUST4TEST-->
+	<bean id="KSMainTEST" class="org.hydra.db.beans.KeyspaceBean">
+		<property name="name" value="KSMainTEST"/>
+		<property name="linkTableName" value="Links"/>		
+		<property name="columnFamilies">
+			<set>
+				<ref bean="Tags"/>
+				<ref bean="Users"/>
+				<ref bean="Articles"/>
+				<ref bean="Comments"/>
+			</set>
+		</property>
+	</bean>			
 		
 	<!--ColumnFamilies & Columns description -->
 	<bean id="Articles" class="org.hydra.db.beans.ColumnFamilyBean">
