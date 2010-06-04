@@ -28,7 +28,7 @@ public class CassandraVirtualPath extends ALogger {
 		INVALID_DIC_TYPE
 	};
 
-	ERR_CODES _errCode = ERR_CODES.NO_ERROR;
+	ERR_CODES _errCode = ERR_CODES.UNDEFINED;
 	
 	public ERR_CODES getErrorCode() {
 		return _errCode;
@@ -47,21 +47,21 @@ public class CassandraVirtualPath extends ALogger {
 
 	// Path parts
 	public enum PARTS {
-		KSP, CF, /* KEY, - unnecessary */SUPE_R, COL
+		KSP, CF, /* KEY, - unnecessary */SUPER, COL
 	};
 
 	// Result types
-	public enum RESULT_TYPES {
+	public enum PATH_TYPE {
 		UNDEFINED, 
-		LIST_OF_IDS4KSP_CF,			 			/* get IDs */
-		LIST_OF_COLS4KSP_CF_COLUMNS_SUPER, 		/* get columns for certain ID (super) */
-		LIST_OF_IDS4KSP_CF_LINKS_SUPER_COLUMN,	/* get linked ID's for certain ID (super) */ 
-		COL4KSP_CF_COLUMNS_SUPER_COLUMN,		/* get certain column from columns for certain ID (super) */
-		MAP4KSP_CF_LINKS, 						/* get links descriptions */
-		MAP4KSP_CF_COLUMNS, 					/* get column descriptions */
+		KSP___CF___,			 			/* get IDs */
+		KSP___CF___COLUMNS, 				/* get column descriptions */
+		KSP___CF___COLUMNS___SUPER, 		/* get columns for certain ID (super) */
+		KSP___CF___COLUMNS___SUPER___COL,	/* get certain column from columns for certain ID (super) */
+		KSP___CF___LINKS, 					/* get links descriptions */
+		KSP___CF___LINKS___SUPER___COL,		/* get linked ID's for certain ID (super) */ 
 	};
 
-	RESULT_TYPES _resultType = RESULT_TYPES.UNDEFINED;
+	PATH_TYPE _resultType = PATH_TYPE.UNDEFINED;
 
 	// Map contains parsed parts of access path
 	public EnumMap<PARTS, String> _pathMap = new EnumMap<PARTS, String>(
@@ -131,7 +131,8 @@ public class CassandraVirtualPath extends ALogger {
 
 		// * defined just 2 parts
 		if (_pathMap.size() == 2) {
-			_resultType = RESULT_TYPES.LIST_OF_IDS4KSP_CF;
+			_errCode = ERR_CODES.NO_ERROR;
+			_resultType = PATH_TYPE.KSP___CF___;
 			return;
 		}
 
@@ -139,55 +140,55 @@ public class CassandraVirtualPath extends ALogger {
 		getLog().debug("Setup 3rd part of request: " + inPath);
 		try {
 			COLUMN_TYPES columnType = COLUMN_TYPES.valueOf(_pathMap
-					.get(PARTS.SUPE_R));
+					.get(PARTS.SUPER));
 			if (columnType == COLUMN_TYPES.COLUMNS) {
-				_resultType = RESULT_TYPES.MAP4KSP_CF_COLUMNS;
+				_resultType = PATH_TYPE.KSP___CF___COLUMNS;
 			} else if (columnType == COLUMN_TYPES.LINKS) {
-				_resultType = RESULT_TYPES.MAP4KSP_CF_LINKS;
+				_resultType = PATH_TYPE.KSP___CF___LINKS;
 			} else {
 				setError("Invalid column type: " + columnType.toString());
-				_resultType = RESULT_TYPES.UNDEFINED;
+				_resultType = PATH_TYPE.UNDEFINED;
 				_errCode = ERR_CODES.INVALID_DIC_TYPE;
 				return;
 			}				
 		} catch (Exception e) {
-			// ...we suppose that super is ID
-			_resultType = RESULT_TYPES.LIST_OF_COLS4KSP_CF_COLUMNS_SUPER;
+			// ...we suppose that SUPER is actual ID
+			_errCode = ERR_CODES.NO_ERROR;
+			_resultType = PATH_TYPE.KSP___CF___COLUMNS___SUPER;
 		}
 
 		// * defined just 3 parts
 		if (_pathMap.size() == 3) {
+			_errCode = ERR_CODES.NO_ERROR;
 			return;
 		}
 
 		// * [Optional] validate 4th parts
-		if (cfBean.containsColumnBeanByName(_pathMap.get(PARTS.COL))) {
-			colBean = cfBean.getColumnByName(_pathMap.get(PARTS.COL));
-			if (colBean.getTType() == COLUMN_TYPES.COLUMNS)
-				_resultType = RESULT_TYPES.COL4KSP_CF_COLUMNS_SUPER_COLUMN;
-			else if(colBean.getTType() == COLUMN_TYPES.LINKS)
-				_resultType = RESULT_TYPES.LIST_OF_IDS4KSP_CF_LINKS_SUPER_COLUMN;
-			else{
-				setError(String.format("Invalid column type(%s) for column(%s)!",
-						colBean.getType(),
-						colBean.getName()));
-				_resultType = RESULT_TYPES.UNDEFINED;
-				_errCode = ERR_CODES.INVALID_DIC_TYPE;
-				return;
-			}
-		} else {
-			getLog().error("Invalid column name: " + _pathMap.get(PARTS.COL));
-			_resultType = RESULT_TYPES.UNDEFINED;
+		if (cfBean.getColumns().containsKey(_pathMap.get(PARTS.COL))) {
+			colBean = cfBean.getColumns().get(_pathMap.get(PARTS.COL));
+			_resultType = PATH_TYPE.KSP___CF___COLUMNS___SUPER___COL;
+		}else if(cfBean.getLinks().containsKey(_pathMap.get(PARTS.COL))){
+			colBean = cfBean.getLinks().get(_pathMap.get(PARTS.COL));
+			_resultType = PATH_TYPE.KSP___CF___LINKS___SUPER___COL;
+			
+		}else{
+			setError(String.format("Invalid column (%s)!",
+					_pathMap.get(PARTS.COL)));
+			_resultType = PATH_TYPE.UNDEFINED;
 			_errCode = ERR_CODES.INVALID_COLUMN;
 			return;
+			
 		}
+		
+		_errCode = ERR_CODES.NO_ERROR;
+		return;
 	}
 
 	public String getPathPart(PARTS inPathPart) {
 		return _pathMap.get(inPathPart);
 	}
 
-	public RESULT_TYPES getResultType() {
+	public PATH_TYPE getPathType() {
 		return _resultType;
 	}
 

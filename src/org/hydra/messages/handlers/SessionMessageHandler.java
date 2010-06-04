@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
+import org.hydra.utils.DBUtils;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
 
@@ -71,7 +72,7 @@ public class SessionMessageHandler extends AMessageHandler {
 
 		try {
 			File file = new File(result);
-			result = FileUtils.readFileToString(file, Constants._utf8_encoding);
+			result = FileUtils.readFileToString(file, DBUtils._utf8_encoding);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = e.getMessage();

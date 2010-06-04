@@ -38,13 +38,7 @@ public class ColumnFamilyBean extends ALogger {
 	
 	public Map<String, ColumnBean> getLinks() {
 		return links;
-	}	
-	
-	public ColumnBean getColumnByName(String inColumnName) {
-		if(columns.containsKey(inColumnName))
-			return columns.get(inColumnName);
-		return null;
-	}	
+	}		
 
 	public void setName(String name) {
 		this.name = name;
@@ -54,11 +48,12 @@ public class ColumnFamilyBean extends ALogger {
 	public String getName() {
 		return name;
 	}
-	
-	public boolean containsColumnBeanByName(String inName){
-		if(columns != null)
-			return columns.containsKey(inName);
-		return false;
+
+	public ColumnBean getAnyColumnOrLinkByName(String columnName) {
+		if(columns != null && columns.containsKey(columnName)) return columns.get(columnName);
+		if(links != null && links.containsKey(columnName)) return links.get(columnName);
+
+		getLog().error("Could not find column or link description for name: " + columnName);
+		return null;
 	}
-	
 }
