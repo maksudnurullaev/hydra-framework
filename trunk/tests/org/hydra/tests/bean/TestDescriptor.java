@@ -4,15 +4,17 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.db.beans.ColumnBean;
 import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
-import org.hydra.db.server.CassandraVirtualPath.RESULT_TYPES;
+import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
 import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
+import org.hydra.utils.ResultAsMapOfStringAndColumnBean;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,13 +51,11 @@ public class TestDescriptor {
 		
 		Assert.assertEquals("KSMainTEST", testPath.getPathPart(PARTS.KSP));
 		Assert.assertEquals("Users", testPath.getPathPart(PARTS.CF));
-		Assert.assertEquals(RESULT_TYPES.MAP4KSP_CF_COLUMNS, testPath.getResultType());
+		Assert.assertEquals(PATH_TYPE.KSP___CF___COLUMNS, testPath.getPathType());
 		
-		Result result = cassandraAccessor.getDBColumns(testPath);
-
-		assertResultMap(result);
+		ResultAsMapOfStringAndColumnBean result = cassandraDescriptor.resultAsMapOfColumns(testPath);
 		
-		Map<?, ?> resultMap = (Map<?, ?>) result.getObject();
+		Map<String, ColumnBean>  resultMap =  result.getMapOfStringAndColumnBean();
 		Assert.assertTrue(resultMap.size() == 2);
 		Assert.assertTrue(resultMap.containsKey("Password"));
 		Assert.assertTrue(resultMap.containsKey("Email"));
@@ -68,32 +68,13 @@ public class TestDescriptor {
 		
 		Assert.assertEquals("KSMainTEST", testPath.getPathPart(PARTS.KSP));
 		Assert.assertEquals("Users", testPath.getPathPart(PARTS.CF));
-		Assert.assertEquals(RESULT_TYPES.MAP4KSP_CF_LINKS, testPath.getResultType());
+		Assert.assertEquals(PATH_TYPE.KSP___CF___LINKS, testPath.getPathType());
 		
-		Result result = cassandraAccessor.getDBColumns(testPath);
-
-		assertResultMap(result);
+		ResultAsMapOfStringAndColumnBean result = cassandraDescriptor.resultAsMapOfLinks(testPath);
 		
-		Map<?, ?> resultMap = (Map<?, ?>) result.getObject();
+		Map<String,ColumnBean> resultMap = result.getMapOfStringAndColumnBean();
 		Assert.assertTrue(resultMap.size() == 2);
 		Assert.assertTrue(resultMap.containsKey("Articles"));
 		Assert.assertTrue(resultMap.containsKey("Comments"));
-	}
-	
-	
-	
-	private void assertResultMap(Result result) {
-		if(result.isOk()){
-			if(result.getObject() instanceof Map){
-				Assert.assertTrue(true);				
-			}else{
-				System.out.println("result.getObject() IS NOT instanceof Map");
-				Assert.assertTrue(false);				
-			}
-		}else{
-			System.out.println(result.getResult());
-			Assert.assertTrue(false);
-		}
-		Assert.assertTrue(result.isOk());	
 	}
 }

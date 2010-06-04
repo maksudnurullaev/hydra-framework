@@ -14,6 +14,7 @@ import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
 import org.hydra.utils.Constants;
+import org.hydra.utils.DBUtils;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionManager;
@@ -122,9 +123,9 @@ public class AdminMessageHandler extends AMessageHandler {
 	private String getColumnDescription(Column inColumn){
 		String format = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
 		String result = "";
-		result += String.format(format, "_name_", Constants.bytes2UTF8String(inColumn.name, 32));				
+		result += String.format(format, "_name_", DBUtils.bytes2UTF8String(inColumn.name, 32));				
 		result += String.format(format, "&nbsp;_timestamp_", inColumn.timestamp);
-		result += String.format(format, "&nbsp;_value_", Constants.bytes2UTF8String(inColumn.value, 32));
+		result += String.format(format, "&nbsp;_value_", DBUtils.bytes2UTF8String(inColumn.value, 32));
 		return result;
 	}	
 	

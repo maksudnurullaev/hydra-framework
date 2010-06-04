@@ -19,9 +19,6 @@ public final class Constants {
 	public static final String _conf_dir_location = "conf";
 	public static final String _logs_dir_location = "logs";
 	public static final String _date_time_id_format = "yyyy.MM.dd HH:mm:ss";
-
-	// **** Defaults
-	public static final String _utf8_encoding = "UTF8";	
 	
 	// **** Beans
 	public static final String _beans_main_input_pipe = "_main_input_pipe_";
@@ -146,33 +143,4 @@ public final class Constants {
 												String.format(format, inObjects),
 												inLabelName);	
 	}
-	
-	public static String bytes2UTF8String(byte[] inBytes){
-		return bytes2UTF8String(inBytes, 0);
-	}	
-	
-	public static String bytes2UTF8String(byte[] inBytes, int trancateLength){
-		String result = null;
-		try {
-			result = new String(inBytes, "UTF8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		
-		if(trancateLength > 0 && result.length() > trancateLength)
-			return result.substring(0, trancateLength) + "...";
-		
-		return result;
-	}
-	
-	public static byte[] string2UTF8Bytes(String inString){
-		byte[] result = null;
-		try {
-			result = inString.getBytes("UTF8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}	
 }
