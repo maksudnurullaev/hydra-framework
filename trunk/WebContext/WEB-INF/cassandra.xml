@@ -66,6 +66,7 @@
 					<property name="name" value="Title"/>
 					<property name="type" value="COLUMNS"/>
 				</bean>
+				
 				<bean class="org.hydra.db.beans.ColumnBean">
 					<property name="name" value="Text"/>
 					<property name="type" value="COLUMNS"/>
@@ -82,7 +83,7 @@
 				</bean>
 				
 				<bean class="org.hydra.db.beans.ColumnBean">
-					<property name="name" value="Authors"/>
+					<property name="name" value="Users"/>
 					<property name="type" value="LINKS"/>
 				</bean>				
 			</set>

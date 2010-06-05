@@ -82,8 +82,13 @@
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />
-<!--			
--->						
+
+			<!--			
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestByte*.class" />
+				</fileset>
+			</batchtest>
 
 			<batchtest>
 				<fileset dir="${classes}">
@@ -96,12 +101,20 @@
 					<include name="**/TestDesc*.class" />
 				</fileset>
 			</batchtest>
-
+			
 			<batchtest>
 				<fileset dir="${classes}">
 					<include name="**/TestAcc*.class" />
 				</fileset>
 			</batchtest>
+-->						
+			
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestLink*.class" />
+				</fileset>
+			</batchtest>
+
 		</junit>
 
 		<fail if="tests.failed">

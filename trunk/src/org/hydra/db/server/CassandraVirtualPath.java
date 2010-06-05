@@ -53,12 +53,12 @@ public class CassandraVirtualPath extends ALogger {
 	// Result types
 	public enum PATH_TYPE {
 		UNDEFINED, 
-		KSP___CF___,			 			/* get IDs */
-		KSP___CF___COLUMNS, 				/* get column descriptions */
-		KSP___CF___COLUMNS___SUPER, 		/* get columns for certain ID (super) */
-		KSP___CF___COLUMNS___SUPER___COL,	/* get certain column from columns for certain ID (super) */
-		KSP___CF___LINKS, 					/* get links descriptions */
-		KSP___CF___LINKS___SUPER___COL,		/* get linked ID's for certain ID (super) */ 
+		KSP___CF___,			/* all super columns */
+		KSP___CF___COLUMNS, 	/* description of super columns */
+		KSP___CF___ID,	 		/* super column */
+		KSP___CF___ID___COL,	/* column of super column */
+		KSP___CF___LINKS, 		/* description of links */
+		KSP___CF___ID___LINKS,	/* all links */ 
 	};
 
 	PATH_TYPE _resultType = PATH_TYPE.UNDEFINED;
@@ -73,7 +73,9 @@ public class CassandraVirtualPath extends ALogger {
 	// Access path string delimeter
 	final String PATH_DELIMETER = "\\.";
 
-	CassandraDescriptorBean cassandraDescriptorBean = null;
+	// To save original access path
+	private String _path = null;
+	private CassandraDescriptorBean _descriptor;
 
 	public CassandraVirtualPath(
 			CassandraDescriptorBean inCassandraDescriptorBean, String inPath) {
@@ -84,13 +86,15 @@ public class CassandraVirtualPath extends ALogger {
 			setError("Access path is NULL");
 			_errCode = ERR_CODES.INVALID_PATH;
 		} else {
-			cassandraDescriptorBean = inCassandraDescriptorBean;
+			_path = inPath;
+			_descriptor = inCassandraDescriptorBean;
+			
 			getLog().debug("Parsing access path: " + inPath);
-			parseVirtualString(inPath);
+			parseVirtualString(inCassandraDescriptorBean, inPath);
 		}
 	}
 
-	private void parseVirtualString(String inPath) {
+	private void parseVirtualString(CassandraDescriptorBean inCassandraDescriptorBean, String inPath) {
 		// * split access path to definitions
 		pathDefs = inPath.split(PATH_DELIMETER);
 
@@ -112,13 +116,12 @@ public class CassandraVirtualPath extends ALogger {
 
 		// * [Mandatory] validate keyspace...
 		getLog().debug("Validate for keyspace: " + getPathPart(PARTS.KSP));
-		if (!cassandraDescriptorBean.containsKeyspace(getPathPart(PARTS.KSP))) {
+		if (!inCassandraDescriptorBean.containsKeyspace(getPathPart(PARTS.KSP))) {
 			setError("Could not find keyspace: " + getPathPart(PARTS.KSP));
 			_errCode = ERR_CODES.INVALID_KS;
 			return;
 		}
-		kspBean = cassandraDescriptorBean
-				.getKeyspace(getPathPart(PARTS.KSP));
+		kspBean = inCassandraDescriptorBean.getKeyspace(getPathPart(PARTS.KSP));
 
 		// * [Mandatory] validate column family...
 		getLog().debug("Validate for column family: " + getPathPart(PARTS.CF));
@@ -154,7 +157,7 @@ public class CassandraVirtualPath extends ALogger {
 		} catch (Exception e) {
 			// ...we suppose that SUPER is actual ID
 			_errCode = ERR_CODES.NO_ERROR;
-			_resultType = PATH_TYPE.KSP___CF___COLUMNS___SUPER;
+			_resultType = PATH_TYPE.KSP___CF___ID;
 		}
 
 		// * defined just 3 parts
@@ -166,10 +169,10 @@ public class CassandraVirtualPath extends ALogger {
 		// * [Optional] validate 4th parts
 		if (cfBean.getColumns().containsKey(_pathMap.get(PARTS.COL))) {
 			colBean = cfBean.getColumns().get(_pathMap.get(PARTS.COL));
-			_resultType = PATH_TYPE.KSP___CF___COLUMNS___SUPER___COL;
+			_resultType = PATH_TYPE.KSP___CF___ID___COL;
 		}else if(cfBean.getLinks().containsKey(_pathMap.get(PARTS.COL))){
 			colBean = cfBean.getLinks().get(_pathMap.get(PARTS.COL));
-			_resultType = PATH_TYPE.KSP___CF___LINKS___SUPER___COL;
+			_resultType = PATH_TYPE.KSP___CF___ID___LINKS;
 			
 		}else{
 			setError(String.format("Invalid column (%s)!",
@@ -194,5 +197,13 @@ public class CassandraVirtualPath extends ALogger {
 
 	public EnumMap<PARTS, String> getPathMaps() {
 		return _pathMap;
+	}
+
+	public String getPath() {
+		return _path;
+	}
+
+	public CassandraDescriptorBean getDescriptor() {
+		return _descriptor;
 	}
 }
