@@ -27,6 +27,18 @@ import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
 public class CassandraAccessorBean extends ACassandraAccessor {
 	public ResultAsListOfColumnOrSuperColumn resultAsListOfColumns4KspCf(CassandraVirtualPath path) {
 		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();
+		
+		// tests path
+		if(path == null 
+				|| path.getErrorCode() != ERR_CODES.NO_ERROR
+				|| path.getPathType() != PATH_TYPE.KSP___CF___
+				|| path.kspBean == null
+				|| path.cfBean == null
+				){
+			getLog().error("Invalid access path!");
+			return result;
+		}
+		
 		String kspName = path.getPathPart(PARTS.KSP);
 		String cfName = path.getPathPart(PARTS.CF);
 		
@@ -64,8 +76,11 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 	public List<Column> getDBColumns(String keyspaceName,
 			String cf, String key, String supe_r) {
 
-		String formatStr = "\nGet column(s) for:\n" + " Keyspace: %s\n"
-				+ "       CF: %s\n" + "      Key: %s\n" + "    Super: %s";
+		String formatStr = "\nGet column(s) for:\n" 
+				+ "Keyspace: %s\n"
+				+ "--> CF: %s\n" 
+				+ "--> Key: %s\n" 
+				+ "--> Super: %s";
 		getLog().debug(
 				String.format(formatStr, keyspaceName, cf, key,
 						supe_r));
@@ -133,52 +148,12 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			return result;
 		}		
 		
-		/**
-		 * preparing objects for 
-		 * 	batch_mutate(
-		 * 		String keyspace, 
-		 * 		Map<String, Map<String, List<Mutation>>> mutation_map, 
-		 * 		ConsistencyLevel consistency_level
-		 * 	)
-		 */
-		// create Map<String, Map<String, List<Mutation>>> - mutationKeyCfMap
-		Map<String, Map<String, List<Mutation>>> mutationKeyCfMap = new HashMap<String, Map<String,List<Mutation>>>();
-		// * create Map<String, List<Mutation>> - mutationCfMap
-		Map<String, List<Mutation>> mutationCfMap = new HashMap<String, List<Mutation>>();
-		// ** create List<Mutation> - listOfMutation
-		List<Mutation> listOfMutation = new ArrayList<Mutation>();
-		for(Map.Entry<byte[], Map<byte[], byte[]>> mapIdColsVals:inBatchMap.entrySet()){			
-			// *** create Mutaion
-			Mutation mutation = new Mutation();
-			// **** create ColumnOrSuperColumn
-			ColumnOrSuperColumn columnOrSuperColumn = new ColumnOrSuperColumn();
-			// ***** create SuperColumn
-			SuperColumn superColumn = new SuperColumn();
-			superColumn.setName(mapIdColsVals.getKey());
-			// ****** create & init List<Column>
-			List<Column> listOfColumns = new ArrayList<Column>();			
-			for(Map.Entry<byte[], byte[]> mapColVal:mapIdColsVals.getValue().entrySet()){
-				listOfColumns.add(new Column(mapColVal.getKey(), mapColVal.getValue(), System.currentTimeMillis()));
-			}
-			// ***** setup SuperColumn
-			superColumn.setColumns(listOfColumns);
-			// **** setup ColumnOrSuperColumn
-			columnOrSuperColumn.setSuper_column(superColumn);
-			// *** setup Mutation
-			mutation.setColumn_or_supercolumn(columnOrSuperColumn);
-			// ** Finish - add to mutaions list
-			listOfMutation.add(mutation);
-		}
-		
-		// * setup mutationCfMap
-		mutationCfMap.put(inPath.cfBean.getName(), listOfMutation);
-		// setup mutationKeyCfMap
-		mutationKeyCfMap.put(COLUMNS_KEY_DEF, mutationCfMap);
-		
 		// try to insert batch
 		Client client = clientBorrow();
 		try {
-			client.batch_mutate(inPath.kspBean.getName(), mutationKeyCfMap, ConsistencyLevel.ONE);
+			for(Map<String, Map<String, List<Mutation>>> batchMap:generateMutationMap(inPath, inBatchMap)){
+				client.batch_mutate(inPath.kspBean.getName(), batchMap, ConsistencyLevel.ONE);
+			}
 			result.setResult(true);
 			result.setResult("Batch mutate accepted!");
 			getLog().debug("Batch mutate accepted!");
@@ -190,6 +165,82 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			clientRelease(client);
 		}		
 		return result;
+	}
+
+	/**
+	 * @param inPath
+	 * @param inBatchMap
+	 * @return {@code List<Map<KeyString, Map<ColumnFamilyString, List<Mutation>>>>}
+	 */
+	private List<Map<String, Map<String, List<Mutation>>>> generateMutationMap(
+			CassandraVirtualPath inPath,
+			Map<byte[], Map<byte[], byte[]>> inBatchMap) {
+		
+		List<Map<String, Map<String, List<Mutation>>>> result = new ArrayList<Map<String,Map<String,List<Mutation>>>>();
+		
+		getLog().debug(String.format("Generate mutation list for: %s, access path type: %s", inPath.getPath(), inPath.getPathType()));
+		switch (inPath.getPathType()) {
+		case KSP___CF___:
+			generateMutationMap4KspCf(inPath, inBatchMap, result);
+			break;
+		case KSP___CF___ID___LINKS:
+			generateMutationMap4KspCfIDLinks(inPath, inBatchMap, result);			
+			break;
+		default:
+			getLog().error(String.format("Unknow access path type to create mutation list for: %s, access path type: %s", inPath.getPath(), inPath.getPathType()));
+			return null;
+		}
+		return result;
+	}
+	
+	private void generateMutationMap4KspCfIDLinks(CassandraVirtualPath inPath,
+			Map<byte[], Map<byte[], byte[]>> inBatchMap,
+			List<Map<String, Map<String, List<Mutation>>>> result) {
+		// 1. setup access path for links
+		CassandraVirtualPath linksVPath = new CassandraVirtualPath(inPath.getDescriptor(),
+				String.format("%s.%s", inPath.kspBean.getName(), inPath.colBean.getName()));
+		// 2. create batch data map for links
+		generateMutationMap4KspCf(linksVPath, inBatchMap, result);
+		// 3. create batch data map for LINKS table
+	}
+
+	private void generateMutationMap4KspCf(CassandraVirtualPath inPath,
+			Map<byte[], Map<byte[], byte[]>> inBatchMap, List<Map<String, Map<String, List<Mutation>>>> result) {
+		getLog().debug("Generate mutation list for: " + inPath.getPath());
+		
+		Map<String, Map<String, List<Mutation>>> mapKeyMapCfListMutaion = new HashMap<String, Map<String,List<Mutation>>>();
+		// * create Map<String, List<Mutation>> - mutationCfMap
+		Map<String, List<Mutation>> mapCfListMutaion = new HashMap<String, List<Mutation>>();
+		// ** create List<Mutation> - listOfMutation
+		List<Mutation> listOfMutation = new ArrayList<Mutation>();
+		for(Map.Entry<byte[], Map<byte[], byte[]>> mapIdColsVals:inBatchMap.entrySet()){
+			// setup List<Column> object
+			List<Column> listOfColumns = new ArrayList<Column>();			
+			for(Map.Entry<byte[], byte[]> mapColVal:mapIdColsVals.getValue().entrySet()){
+				listOfColumns.add(new Column(mapColVal.getKey(), mapColVal.getValue(), System.currentTimeMillis()));
+			}
+			// setup SuperColumn object
+			SuperColumn superColumn = new SuperColumn();
+			superColumn.setName(mapIdColsVals.getKey());
+			superColumn.setColumns(listOfColumns);
+			// setup ColumnOrSuperColumn object
+			ColumnOrSuperColumn columnOrSuperColumn = new ColumnOrSuperColumn();
+			columnOrSuperColumn.setSuper_column(superColumn);
+			// setup Mutation object 
+			Mutation mutation = new Mutation();
+			mutation.setColumn_or_supercolumn(columnOrSuperColumn);
+			// add to List<Mutation> result object
+			listOfMutation.add(mutation);
+			// make result
+			result.add(mapKeyMapCfListMutaion);
+		}
+		// * setup mutationCfMap
+		mapCfListMutaion.put(inPath.cfBean.getName(), listOfMutation);
+		// setup mutationKeyCfMap
+		mapKeyMapCfListMutaion.put(COLUMNS_KEY_DEF, mapCfListMutaion);
+		// finish, make result
+		result.add(mapKeyMapCfListMutaion);
+		getLog().debug("Added super columns count: " + mapKeyMapCfListMutaion.size());
 	}
 
 	public void batchDelete4KspCf(CassandraVirtualPath path) {
