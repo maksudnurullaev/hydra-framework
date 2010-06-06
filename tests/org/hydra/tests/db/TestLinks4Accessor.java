@@ -18,6 +18,7 @@ import org.hydra.utils.CryptoManager;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -77,7 +78,7 @@ public class TestLinks4Accessor {
 		// 3. setup access path
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR);
-		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF___ID___LINKS);
+		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF___ID___LINKNAME);
 		Assert.assertTrue(path.kspBean != null);
 		Assert.assertTrue(path.cfBean != null);
 		// 4. insert data
@@ -96,7 +97,7 @@ public class TestLinks4Accessor {
 		// 3. setup access path
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, VALID_PATH_KSMAINTEST_USERS);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF___);
+		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF);
 		Assert.assertTrue(path.kspBean != null);
 		Assert.assertTrue(path.cfBean != null);
 		// 4. insert data to db
@@ -105,7 +106,8 @@ public class TestLinks4Accessor {
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
 
-	private static void clearTestData() {
+	@AfterClass
+	public static void clearTestData() {
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, VALID_PATH_KSMAINTEST_USERS);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path.kspBean != null);

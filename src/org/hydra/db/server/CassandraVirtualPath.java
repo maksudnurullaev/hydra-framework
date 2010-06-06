@@ -47,18 +47,19 @@ public class CassandraVirtualPath extends ALogger {
 
 	// Path parts
 	public enum PARTS {
-		KSP, CF, /* KEY, - unnecessary */SUPER, COL
+		P1_KSP, P2_CF, P3_KEY, P4_SUPER, P5_COL
 	};
 
 	// Result types
 	public enum PATH_TYPE {
-		UNDEFINED, 
-		KSP___CF___,			/* all super columns */
-		KSP___CF___COLUMNS, 	/* description of super columns */
-		KSP___CF___ID,	 		/* super column */
-		KSP___CF___ID___COL,	/* column of super column */
-		KSP___CF___LINKS, 		/* description of links */
-		KSP___CF___ID___LINKS,	/* all links */ 
+		UNDEFINED,							/* undefined */
+		KSP___CF,							/* all super columns */
+		KSP___CF___COLUMNS, 				/* description of super columns */
+		KSP___CF___LINKS, 					/* description of links */
+		KSP___CF___ID,				 		/* super column */
+		KSP___CF___ID___COL,				/* column of super column */
+		KSP___CF___ID___LINKNAME,			/* all links */
+		KSP___CF___ID___LINKNAME__LINKID,	/* link */ 
 	};
 
 	PATH_TYPE _resultType = PATH_TYPE.UNDEFINED;
@@ -68,7 +69,7 @@ public class CassandraVirtualPath extends ALogger {
 			PARTS.class);
 
 	// Path definitions as array
-	String[] pathDefs = null;
+	String[] _pathDefs = null;
 
 	// Access path string delimeter
 	final String PATH_DELIMETER = "\\.";
@@ -79,112 +80,126 @@ public class CassandraVirtualPath extends ALogger {
 
 	public CassandraVirtualPath(
 			CassandraDescriptorBean inCassandraDescriptorBean, String inPath) {
-		if (inCassandraDescriptorBean == null) {
-			setError("CassandraDescriptor is NULL");
-			_errCode = ERR_CODES.INVALID_DESCRIPTOR;
-		} else if (inPath == null) {
-			setError("Access path is NULL");
-			_errCode = ERR_CODES.INVALID_PATH;
-		} else {
+		if(validateAndInitParameters(inCassandraDescriptorBean, inPath)){			
 			_path = inPath;
 			_descriptor = inCassandraDescriptorBean;
 			
 			getLog().debug("Parsing access path: " + inPath);
-			parseVirtualString(inCassandraDescriptorBean, inPath);
+			parseVirtualString();
 		}
 	}
 
-	private void parseVirtualString(CassandraDescriptorBean inCassandraDescriptorBean, String inPath) {
+	private boolean validateAndInitParameters(CassandraDescriptorBean inCassandraDescriptorBean, String inPath){
+		if (inCassandraDescriptorBean == null) {
+			setError("CassandraDescriptor is NULL");
+			_errCode = ERR_CODES.INVALID_DESCRIPTOR;
+			return false;
+		} else if (inPath == null) {
+			setError("Access path is NULL");
+			_errCode = ERR_CODES.INVALID_PATH;
+			return false;
+		}
 		// * split access path to definitions
-		pathDefs = inPath.split(PATH_DELIMETER);
-
-		// * Validate path parts...
-		if (pathDefs.length < 2 || pathDefs.length > PARTS.values().length) {
+		_pathDefs = inPath.split(PATH_DELIMETER);
+		// * validate access path parts length...
+		if (_pathDefs.length < 2 || _pathDefs.length > PARTS.values().length) {
 			setError("Cassandra access path definition length(tokens) is valid: " + inPath);
 			_errCode = ERR_CODES.INVALID_PATH_STRUCTURE;
-			return;
+			return false;
 		}
-
-		// * ... if OK, split access path to map values
+		
+		// * ... if OK, split access path to mapPartString
 		getLog().debug("Parsing access info for: " + inPath);
-		for (int i = 0; i < pathDefs.length; i++) {
-			_pathMap.put(PARTS.values()[i], pathDefs[i]);
+		for (int i = 0; i < _pathDefs.length; i++) {
+			_pathMap.put(PARTS.values()[i], _pathDefs[i]);
 			getLog().debug(
-					String.format("%s. PathParts.%-7s = %s", i,
-							PARTS.values()[i], pathDefs[i]));
+					String.format("%s. PathParts.%-8s = %s", i,
+							PARTS.values()[i], _pathDefs[i]));
+		}		
+		return true;
+	}
+	
+	private void parseVirtualString() {		
+		switch (_pathMap.size()) {
+		case 2:
+			init2Parameters();
+			break;
+		case 3:
+			init2Parameters();
+			init3Parameters();
+			break;
+		case 4:
+			init2Parameters();
+			init3Parameters();
+			init4Parameters();
+			break;
+		default:
+			_errCode = ERR_CODES.INVALID_PATH_STRUCTURE;
+			_errString = "Invalid access path length: " + _pathMap.size();
 		}
+	}
 
-		// * [Mandatory] validate keyspace...
-		getLog().debug("Validate for keyspace: " + getPathPart(PARTS.KSP));
-		if (!inCassandraDescriptorBean.containsKeyspace(getPathPart(PARTS.KSP))) {
-			setError("Could not find keyspace: " + getPathPart(PARTS.KSP));
-			_errCode = ERR_CODES.INVALID_KS;
-			return;
-		}
-		kspBean = inCassandraDescriptorBean.getKeyspace(getPathPart(PARTS.KSP));
-
-		// * [Mandatory] validate column family...
-		getLog().debug("Validate for column family: " + getPathPart(PARTS.CF));
-		if (!kspBean.containsColumnFamily(getPathPart(PARTS.CF))) {
-			setError("Could not find column family: " + getPathPart(PARTS.CF));
-			_errCode = ERR_CODES.INVALID_CF;
-			return;
-		}
-		cfBean = kspBean.getColumnFamilyByName(_pathMap.get(PARTS.CF));
-
-		// * defined just 2 parts
-		if (_pathMap.size() == 2) {
-			_errCode = ERR_CODES.NO_ERROR;
-			_resultType = PATH_TYPE.KSP___CF___;
-			return;
-		}
-
-		// * [Optional] validate 3rd parts
-		getLog().debug("Setup 3rd part of request: " + inPath);
-		try {
-			COLUMN_TYPES columnType = COLUMN_TYPES.valueOf(_pathMap
-					.get(PARTS.SUPER));
-			if (columnType == COLUMN_TYPES.COLUMNS) {
-				_resultType = PATH_TYPE.KSP___CF___COLUMNS;
-			} else if (columnType == COLUMN_TYPES.LINKS) {
-				_resultType = PATH_TYPE.KSP___CF___LINKS;
-			} else {
-				setError("Invalid column type: " + columnType.toString());
-				_resultType = PATH_TYPE.UNDEFINED;
-				_errCode = ERR_CODES.INVALID_DIC_TYPE;
-				return;
-			}				
-		} catch (Exception e) {
-			// ...we suppose that SUPER is actual ID
-			_errCode = ERR_CODES.NO_ERROR;
-			_resultType = PATH_TYPE.KSP___CF___ID;
-		}
-
-		// * defined just 3 parts
-		if (_pathMap.size() == 3) {
-			_errCode = ERR_CODES.NO_ERROR;
-			return;
-		}
-
+	private void init4Parameters() {
 		// * [Optional] validate 4th parts
-		if (cfBean.getColumns().containsKey(_pathMap.get(PARTS.COL))) {
-			colBean = cfBean.getColumns().get(_pathMap.get(PARTS.COL));
+		if (cfBean.getColumns().containsKey(_pathMap.get(PARTS.P4_SUPER))) {
+			colBean = cfBean.getColumns().get(_pathMap.get(PARTS.P4_SUPER));
 			_resultType = PATH_TYPE.KSP___CF___ID___COL;
-		}else if(cfBean.getLinks().containsKey(_pathMap.get(PARTS.COL))){
-			colBean = cfBean.getLinks().get(_pathMap.get(PARTS.COL));
-			_resultType = PATH_TYPE.KSP___CF___ID___LINKS;
+		}else if(cfBean.getLinks().containsKey(_pathMap.get(PARTS.P4_SUPER))){
+			colBean = cfBean.getLinks().get(_pathMap.get(PARTS.P4_SUPER));
+			_resultType = PATH_TYPE.KSP___CF___ID___LINKNAME;
 			
 		}else{
 			setError(String.format("Invalid column (%s)!",
-					_pathMap.get(PARTS.COL)));
+					_pathMap.get(PARTS.P4_SUPER)));
 			_resultType = PATH_TYPE.UNDEFINED;
 			_errCode = ERR_CODES.INVALID_COLUMN;
 			return;
 			
 		}
-		
 		_errCode = ERR_CODES.NO_ERROR;
-		return;
+	}
+
+	private void init3Parameters() {
+		try {
+			COLUMN_TYPES columnType = COLUMN_TYPES.valueOf(_pathMap
+					.get(PARTS.P3_KEY));
+			if (columnType == COLUMN_TYPES.COLUMNS) {
+				_resultType = PATH_TYPE.KSP___CF___COLUMNS;
+				_errCode = ERR_CODES.NO_ERROR;
+			} else if (columnType == COLUMN_TYPES.LINKS) {
+				_resultType = PATH_TYPE.KSP___CF___LINKS;
+				_errCode = ERR_CODES.NO_ERROR;
+			} else {
+				setError("Invalid column type: " + columnType.toString());
+				_errCode = ERR_CODES.INVALID_DIC_TYPE;
+			}				
+		} catch (Exception e) {
+			getLog().error("Could not find predefined column type: " + _pathMap.get(PARTS.P3_KEY));
+			_resultType = PATH_TYPE.KSP___CF___ID;
+			_errCode = ERR_CODES.NO_ERROR;
+		}
+	}
+
+	private void init2Parameters() {
+		// * [Mandatory] validate keyspace...
+		getLog().debug("Validate for keyspace: " + getPathPart(PARTS.P1_KSP));
+		if (!_descriptor.containsKeyspace(getPathPart(PARTS.P1_KSP))) {
+			setError("Could not find keyspace: " + getPathPart(PARTS.P1_KSP));
+			_errCode = ERR_CODES.INVALID_KS;
+			return;
+		}
+		kspBean = _descriptor.getKeyspace(getPathPart(PARTS.P1_KSP));
+
+		// * [Mandatory] validate column family...
+		getLog().debug("Validate for column family: " + getPathPart(PARTS.P2_CF));
+		if (!kspBean.containsColumnFamily(getPathPart(PARTS.P2_CF))) {
+			setError("Could not find column family: " + getPathPart(PARTS.P2_CF));
+			_errCode = ERR_CODES.INVALID_CF;
+			return;
+		}
+		cfBean = kspBean.getColumnFamilyByName(_pathMap.get(PARTS.P2_CF));
+		_errCode = ERR_CODES.NO_ERROR;
+		_resultType = PATH_TYPE.KSP___CF;		
 	}
 
 	public String getPathPart(PARTS inPathPart) {

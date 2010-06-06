@@ -53,16 +53,12 @@ public abstract class ACassandraAccessor extends ALogger {
 		_cassandraClientsPassive.add(inClient);
 		if (_cassandraClientsActive.contains(inClient))
 			_cassandraClientsActive.remove(inClient);
-
-		getLog().debug(getPoolInfo());
 	}
 
 	private void clientSetActive(Cassandra.Client inClient) {
 		_cassandraClientsActive.add(inClient);
 		if (_cassandraClientsPassive.contains(inClient))
 			_cassandraClientsPassive.remove(inClient);
-
-		getLog().debug(getPoolInfo());
 	}
 
 	public Cassandra.Client clientBorrow() {
@@ -77,12 +73,11 @@ public abstract class ACassandraAccessor extends ALogger {
 		}
 
 		// 2. Else get
-		getLog().debug("Get passive client...");
+		getLog().debug("Get client <--- from poll");
 		Cassandra.Client client = _cassandraClientsPassive.iterator().next();
 
 		clientSetActive(client);
 
-		getLog().debug("Remove client from passive pool...");
 		_cassandraClientsPassive.remove(client);
 		getLog().debug(getPoolInfo());
 
@@ -95,7 +90,7 @@ public abstract class ACassandraAccessor extends ALogger {
 	}
 
 	public void clientRelease(Cassandra.Client inClient) {
-		getLog().debug("Return client to passive pool...");
+		getLog().debug("Return client ---> to pool...");
 		clientSetPassive(inClient);
 		getLog().debug(getPoolInfo());
 	}

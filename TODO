@@ -22,7 +22,6 @@
     *. (Сделано) Создать раздел в виде html с сылками на keyspace-ы
 *. (Сделано )Создать пул объектов-клиентов для доступа к серверу
 *. Создать точную фильстацию столбцов в зависимости от типа колонны!!!   
- 
     
 === Описание видов сообщений MessageBean
 *. Запросы MessageBean получают данные от сервера в текстовом виде.
@@ -36,4 +35,14 @@
 * user-space - Add SWIFT messages checker
 * admin-space - Users management
 * admin-space
-		
+
+==== Связи с объектами
+*. Описание пути доступа - access path - описание пути для доступа к интересующему объекту(объектам)
+	*. Примеры:
+		1. "KSMainTEST.Users"                           - all super columns
+		2. "KSMainTEST.Users.userID"                    - super column
+		3. "KSMainTEST.Users.userID.Password"           - column
+		4. "KSMainTEST.Users.userID.Articles"           - all linked super columns
+		5. "KSMainTEST.Users.userID.Articles.articleID" - all linked super columns
+		6. "KSMainTEST.Users.LINKS"                     - links descriptions
+		7. "KSMainTEST.Users.COLUMNS"                   - columns descriptions

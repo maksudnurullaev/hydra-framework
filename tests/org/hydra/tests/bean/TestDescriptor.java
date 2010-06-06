@@ -49,8 +49,8 @@ public class TestDescriptor {
 		CassandraVirtualPath testPath = new CassandraVirtualPath(cassandraDescriptor, "KSMainTEST.Users.COLUMNS");
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.NO_ERROR);
 		
-		Assert.assertEquals("KSMainTEST", testPath.getPathPart(PARTS.KSP));
-		Assert.assertEquals("Users", testPath.getPathPart(PARTS.CF));
+		Assert.assertEquals("KSMainTEST", testPath.getPathPart(PARTS.P1_KSP));
+		Assert.assertEquals("Users", testPath.getPathPart(PARTS.P2_CF));
 		Assert.assertEquals(PATH_TYPE.KSP___CF___COLUMNS, testPath.getPathType());
 		
 		ResultAsMapOfStringAndColumnBean result = cassandraDescriptor.resultAsMapOfColumns(testPath);
@@ -66,8 +66,8 @@ public class TestDescriptor {
 		CassandraVirtualPath testPath = new CassandraVirtualPath(cassandraDescriptor, "KSMainTEST.Users.LINKS");
 		Assert.assertEquals(testPath.getErrorCode(), ERR_CODES.NO_ERROR);
 		
-		Assert.assertEquals("KSMainTEST", testPath.getPathPart(PARTS.KSP));
-		Assert.assertEquals("Users", testPath.getPathPart(PARTS.CF));
+		Assert.assertEquals("KSMainTEST", testPath.getPathPart(PARTS.P1_KSP));
+		Assert.assertEquals("Users", testPath.getPathPart(PARTS.P2_CF));
 		Assert.assertEquals(PATH_TYPE.KSP___CF___LINKS, testPath.getPathType());
 		
 		ResultAsMapOfStringAndColumnBean result = cassandraDescriptor.resultAsMapOfLinks(testPath);

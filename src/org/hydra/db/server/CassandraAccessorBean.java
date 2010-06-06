@@ -31,7 +31,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		// tests path
 		if(path == null 
 				|| path.getErrorCode() != ERR_CODES.NO_ERROR
-				|| path.getPathType() != PATH_TYPE.KSP___CF___
+				|| path.getPathType() != PATH_TYPE.KSP___CF
 				|| path.kspBean == null
 				|| path.cfBean == null
 				){
@@ -39,8 +39,8 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			return result;
 		}
 		
-		String kspName = path.getPathPart(PARTS.KSP);
-		String cfName = path.getPathPart(PARTS.CF);
+		String kspName = path.getPathPart(PARTS.P1_KSP);
+		String cfName = path.getPathPart(PARTS.P2_CF);
 		
 		getLog().debug(String.format("Get IDs for ksp(%s), cf(%s), key(COLUMNS)...", kspName, cfName));
 		
@@ -180,10 +180,10 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		
 		getLog().debug(String.format("Generate mutation list for: %s, access path type: %s", inPath.getPath(), inPath.getPathType()));
 		switch (inPath.getPathType()) {
-		case KSP___CF___:
+		case KSP___CF:
 			generateMutationMap4KspCf(inPath, inBatchMap, result);
 			break;
-		case KSP___CF___ID___LINKS:
+		case KSP___CF___ID___LINKNAME:
 			generateMutationMap4KspCfIDLinks(inPath, inBatchMap, result);			
 			break;
 		default:
@@ -247,7 +247,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		// tests
 		if(path == null 
 				|| path.getErrorCode() != ERR_CODES.NO_ERROR
-				|| path.getPathType() != PATH_TYPE.KSP___CF___){
+				|| path.getPathType() != PATH_TYPE.KSP___CF){
 			getLog().error("Invalid access path!");
 			return;
 		}
