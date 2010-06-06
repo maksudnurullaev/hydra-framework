@@ -83,7 +83,9 @@
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />
 
-			<!--			
+<!--			
+-->						
+			
 			<batchtest>
 				<fileset dir="${classes}">
 					<include name="**/TestByte*.class" />
@@ -102,12 +104,6 @@
 				</fileset>
 			</batchtest>
 			
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestAcc*.class" />
-				</fileset>
-			</batchtest>
--->						
 			
 			<batchtest>
 				<fileset dir="${classes}">
@@ -115,6 +111,12 @@
 				</fileset>
 			</batchtest>
 
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestAcc*.class" />
+				</fileset>
+			</batchtest>
+			
 		</junit>
 
 		<fail if="tests.failed">
