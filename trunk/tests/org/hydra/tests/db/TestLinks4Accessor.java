@@ -103,14 +103,14 @@ public class TestLinks4Accessor {
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		
-		accessor.batchDelete4KspCf(path);
+		accessor.deleteAllKspCf(path);
 		
 		// delete all articles
 		path = new CassandraVirtualPath(descriptor, "KSMainTEST.Articles");
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
-		accessor.batchDelete4KspCf(path);
+		accessor.deleteAllKspCf(path);
 	}
 	
 	@Before

@@ -11,6 +11,7 @@ import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
+import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.Constants;
 import org.hydra.utils.CryptoManager;
@@ -28,7 +29,8 @@ public class TestFMDKspCfId {
 	/**
 	 * FMD - (Find, Mutate(Insert/Update), Delete) 
 	 */
-	private static final String TEST_S_MAIL_COM = "test%s@mail.com";
+	private static final String TEST_MAIL_COM = "test@mail.com";
+	public static final String KSTestUsers = "KSMainTEST.Users";
 	public static final String KSTestUsersId = "KSMainTEST.Users.userID";
 	public static final String USERID = "userID";
 	private static final String PASSWORD = "Password";
@@ -50,7 +52,7 @@ public class TestFMDKspCfId {
 		// 1. Iterate over the user count and create Map<String, Map<String,String>> for batch insert
 		Map<String, String> tempMap = new HashMap<String, String>();
 		tempMap.put(PASSWORD, CryptoManager.encryptPassword(USERID));
-		tempMap.put(EMAIL, TEST_S_MAIL_COM);		
+		tempMap.put(EMAIL, TEST_MAIL_COM);		
 		testUsersMap.put(USERID, tempMap);
 		// 2. Create access path for batch insert
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUsersId);
@@ -66,12 +68,23 @@ public class TestFMDKspCfId {
 
 
 	@AfterClass
-	public static void clearTestUsers() {
-//		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUsersId);
-//		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-//		Assert.assertTrue(path._kspBean != null);
-//		Assert.assertTrue(path._cfBean != null);
-//		accessor.batchDelete4KspCf(path);
+	public static void clearAllTestUsers() {
+		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUsers);
+		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
+		Assert.assertTrue(path._kspBean != null);
+		Assert.assertTrue(path._cfBean != null);
+		accessor.deleteAllKspCf(path);
+	}
+	
+	public static void deleteTestUser() {
+		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUsersId);
+		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
+		Assert.assertTrue(path._kspBean != null);
+		Assert.assertTrue(path._cfBean != null);
+		Assert.assertTrue(path.getPathPart(PARTS.P3_KEY) != null);
+		Assert.assertEquals(path.getPathPart(PARTS.P3_KEY), USERID);
+		accessor.deleteKspCfId(path);
+		// TODO check this code again!
 	}
 	
 	@Before
@@ -86,7 +99,7 @@ public class TestFMDKspCfId {
 	public void test_1_users(){
 		// 1. FMD - Find (EMPTY RESULT)
 		// 1.1 clear users data
-		clearTestUsers();
+		clearAllTestUsers();
 		// 1.2 request users data
 		// 1.2.1 create cassadnra's virtual path
 		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, KSTestUsersId);
@@ -98,35 +111,35 @@ public class TestFMDKspCfId {
 		initTestUser();
 		// 2.1 test local test map size
 		Assert.assertTrue(testUsersMap.size() == 1);
-//		// 2.2 request data from db
-//		result = accessor.resultAsListOfColumns4KspCf(testPath);
-//		// 2.3 test result
-//		Assert.assertTrue(result.isOk());
-//		Assert.assertTrue(result.getColumnOrSuperColumn().size() == testUsersCount);
-//		// 2.4 compare local & cassandra'a data
-//		for(ColumnOrSuperColumn columnOrSuperColumn:result.getColumnOrSuperColumn()){
-//			String ID1 = DBUtils.bytes2UTF8String(columnOrSuperColumn.super_column.name);
-//			Assert.assertTrue(testUsersMap.containsKey(ID1));
-//			Map<String, String> subMap = testUsersMap.get(ID1);
-//			// test column and values
-//			Assert.assertNotNull(columnOrSuperColumn.super_column.getColumns());
-//			for(Column column: columnOrSuperColumn.super_column.getColumns()){
-//				String ID2 = DBUtils.bytes2UTF8String(column.name);
-//				Assert.assertTrue(subMap.containsKey(ID2));
-//				Assert.assertEquals(subMap.get(ID2), DBUtils.bytes2UTF8String(column.value));
-//			}
-//			Map<String, byte[]> mapStringByteA = DBUtils.converMapStringByteA(columnOrSuperColumn.super_column.getColumns());
-//			Assert.assertNotNull(mapStringByteA.get(PASSWORD));
-//			Assert.assertTrue(CryptoManager.checkPassword(ID1, DBUtils.bytes2UTF8String(mapStringByteA.get(PASSWORD))));
-//		}
-//		// print result - debug
-//		// DBUtils.printResult(result);
-//		// 3. FMD - Delete
-//		clearTestUsers();
-//		// 3.1 get data from db
-//		result = accessor.resultAsListOfColumns4KspCf(testPath);
-//		// 1.2.3 test result
-//		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);		
+		// 2.2 request data from db
+		result = accessor.get4KspCfId(testPath);
+		// 2.3 test result
+		DBUtils.printResult(result);
+		Assert.assertTrue(result.isOk());
+		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 1);
+		// 2.4 compare local & cassandra'a data
+		ColumnOrSuperColumn columnOrSuperColumn = result.getColumnOrSuperColumn().get(0);
+		String ID1 = DBUtils.bytes2UTF8String(columnOrSuperColumn.super_column.name);
+		Assert.assertTrue(testUsersMap.containsKey(ID1));
+		Map<String, String> subMap = testUsersMap.get(ID1);
+		// test column and values
+		Assert.assertNotNull(columnOrSuperColumn.super_column.getColumns());
+		for(Column column: columnOrSuperColumn.super_column.getColumns()){
+			String ID2 = DBUtils.bytes2UTF8String(column.name);
+			Assert.assertTrue(subMap.containsKey(ID2));
+			Assert.assertEquals(subMap.get(ID2), DBUtils.bytes2UTF8String(column.value));
+		}
+		Map<String, byte[]> mapStringByteA = DBUtils.converMapStringByteA(columnOrSuperColumn.super_column.getColumns());
+		Assert.assertNotNull(mapStringByteA.get(PASSWORD));
+		Assert.assertTrue(CryptoManager.checkPassword(ID1, DBUtils.bytes2UTF8String(mapStringByteA.get(PASSWORD))));
+		// print result - debug
+		// DBUtils.printResult(result);
+		// 3. FMD - Delete
+		deleteTestUser();
+		// 3.1 get data from db
+		result = accessor.get4KspCfId(testPath);
+		// 1.2.3 test result
+		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);		
 	}
 
 }

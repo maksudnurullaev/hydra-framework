@@ -35,7 +35,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			return result;
 		}
 		// debug
-		getLog().debug(String.format("Try to get IDs for ksp(%s), cf(%s), key(%s)...", 
+		getLog().debug(String.format("Try to get data for ksp(%s), cf(%s), key(%s)...", 
 				inPath.getPathPart(PARTS.P1_KSP), 
 				inPath.getPathPart(PARTS.P2_CF),
 				inPath.getPathPart(PARTS.P3_KEY)));
@@ -211,14 +211,16 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		getLog().debug(String.format("Generate mutation list for: %s, access path type: %s", inPath.getPath(), inPath.getPathType()));
 		switch (inPath.getPathType()) {
 		case KSP___CF:
+		case KSP___CF___ID:
 			generateMutationMap4KspCf(inPath, inBatchMap, result);
 			break;
+//			generateMutationMap4KspCfId(inPath, inBatchMap, result);
+//			break;
 		case KSP___CF___ID___LINKNAME:
 			generateMutationMap4KspCfIDLinks(inPath, inBatchMap, result);			
 			break;
 		default:
 			getLog().error(String.format("Unknow access path type to create mutation list for: %s, access path type: %s", inPath.getPath(), inPath.getPathType()));
-			return null;
 		}
 		return result;
 	}
@@ -273,7 +275,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		getLog().debug("Added super columns count: " + mapKeyMapCfListMutaion.size());
 	}
 
-	public void batchDelete4KspCf(CassandraVirtualPath inPath) {
+	public void deleteAllKspCf(CassandraVirtualPath inPath) {
 		// tests path
 		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
 
@@ -316,6 +318,9 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		}
 	}
 
-
+	public void deleteKspCfId(CassandraVirtualPath path) {
+		// TODO We should finished up code
+		
+	}
 
 }
