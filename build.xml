@@ -83,8 +83,11 @@
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />
 
-<!--			
--->						
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestVirt*.class" />
+				</fileset>
+			</batchtest>
 			
 			<batchtest>
 				<fileset dir="${classes}">
@@ -94,30 +97,33 @@
 
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestVirt*.class" />
-				</fileset>
-			</batchtest>
-
-			<batchtest>
-				<fileset dir="${classes}">
 					<include name="**/TestDesc*.class" />
 				</fileset>
 			</batchtest>
 			
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestAcc*.class" />
+				</fileset>
+			</batchtest>			
 			
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestDBU*.class" />
+				</fileset>
+			</batchtest>			
+
+<!--			
+-->						
+
 			<batchtest>
 				<fileset dir="${classes}">
 					<include name="**/TestLink*.class" />
 				</fileset>
 			</batchtest>
 
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestAcc*.class" />
-				</fileset>
-			</batchtest>
-			
 		</junit>
+
 
 		<fail if="tests.failed">
 tests.failed=${tests.failed}

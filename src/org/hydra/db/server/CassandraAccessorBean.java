@@ -32,8 +32,8 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		if(path == null 
 				|| path.getErrorCode() != ERR_CODES.NO_ERROR
 				|| path.getPathType() != PATH_TYPE.KSP___CF
-				|| path.kspBean == null
-				|| path.cfBean == null
+				|| path._kspBean == null
+				|| path._cfBean == null
 				){
 			getLog().error("Invalid access path!");
 			return result;
@@ -152,7 +152,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		Client client = clientBorrow();
 		try {
 			for(Map<String, Map<String, List<Mutation>>> batchMap:generateMutationMap(inPath, inBatchMap)){
-				client.batch_mutate(inPath.kspBean.getName(), batchMap, ConsistencyLevel.ONE);
+				client.batch_mutate(inPath._kspBean.getName(), batchMap, ConsistencyLevel.ONE);
 			}
 			result.setResult(true);
 			result.setResult("Batch mutate accepted!");
@@ -198,7 +198,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			List<Map<String, Map<String, List<Mutation>>>> result) {
 		// 1. setup access path for links
 		CassandraVirtualPath linksVPath = new CassandraVirtualPath(inPath.getDescriptor(),
-				String.format("%s.%s", inPath.kspBean.getName(), inPath.colBean.getName()));
+				String.format("%s.%s", inPath._kspBean.getName(), inPath._colBean.getName()));
 		// 2. create batch data map for links
 		generateMutationMap4KspCf(linksVPath, inBatchMap, result);
 		// 3. create batch data map for LINKS table
@@ -235,7 +235,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			result.add(mapKeyMapCfListMutaion);
 		}
 		// * setup mutationCfMap
-		mapCfListMutaion.put(inPath.cfBean.getName(), listOfMutation);
+		mapCfListMutaion.put(inPath._cfBean.getName(), listOfMutation);
 		// setup mutationKeyCfMap
 		mapKeyMapCfListMutaion.put(COLUMNS_KEY_DEF, mapCfListMutaion);
 		// finish, make result
@@ -271,9 +271,9 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		try{
 			for(ColumnOrSuperColumn columnOrSuperColumn: result.getColumnOrSuperColumn()){
 				if(columnOrSuperColumn.getSuper_column() != null){
-					ColumnPath cpath = new ColumnPath(path.cfBean.getName());
+					ColumnPath cpath = new ColumnPath(path._cfBean.getName());
 					cpath.setSuper_column(columnOrSuperColumn.super_column.name);
-					client.remove(path.kspBean.getName(), COLUMNS_KEY_DEF, cpath, System.currentTimeMillis(), ConsistencyLevel.ONE);
+					client.remove(path._kspBean.getName(), COLUMNS_KEY_DEF, cpath, System.currentTimeMillis(), ConsistencyLevel.ONE);
 				}else{
 					getLog().error("Delete object should be SuperColumn");
 				}

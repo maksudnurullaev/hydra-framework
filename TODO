@@ -46,3 +46,13 @@
 		5. "KSMainTEST.Users.userID.Articles.articleID" - all linked super columns
 		6. "KSMainTEST.Users.LINKS"                     - links descriptions
 		7. "KSMainTEST.Users.COLUMNS"                   - columns descriptions
+==== Опеределение операций с каждым из видов описаний доступа:
+FMD - (Find, Mutate(Insert/Update), Delete)
+ 
+FMD		KSP___CF,							/* all super columns */
+		KSP___CF___COLUMNS, 				/* description of super columns */
+		KSP___CF___LINKS, 					/* description of links */
+FMD		KSP___CF___ID,				 		/* super column */
+M		KSP___CF___ID___COL,				/* column of super column */
+FMD		KSP___CF___ID___LINKNAME,			/* all links */
+FMD		KSP___CF___ID___LINKNAME__LINKID,	/* link */ 

@@ -59,7 +59,7 @@ public class CassandraDescriptorBean extends ACassandraDescriptorBean {
 			return result; 
 		}
 		
-		if(inPath.cfBean == null){
+		if(inPath._cfBean == null){
 			getLog().error("Expected ColumnFamilyBean instead NULL!");
 			
 			result.setResult(false);
@@ -67,14 +67,14 @@ public class CassandraDescriptorBean extends ACassandraDescriptorBean {
 			return result; 
 		}
 		
-		if(inPath.cfBean.getColumns().size() == 0){
+		if(inPath._cfBean.getColumns().size() == 0){
 			getLog().error("Columns size is 0!");
 			result.setResult(false);
 			result.setResult("Columns size is 0!");
 			return result; 
 		}
 		
-		result.setMapOfStringAndColumnBean(inPath.cfBean.getColumns());
+		result.setMapOfStringAndColumnBean(inPath._cfBean.getColumns());
 		result.setResult(true);		
 		return result;
 	}	
@@ -90,7 +90,7 @@ public class CassandraDescriptorBean extends ACassandraDescriptorBean {
 			return result; 
 		}
 		
-		if(inPath.cfBean == null){
+		if(inPath._cfBean == null){
 			getLog().error("Expected ColumnFamilyBean instead NULL!");
 			
 			result.setResult(false);
@@ -98,14 +98,14 @@ public class CassandraDescriptorBean extends ACassandraDescriptorBean {
 			return result; 
 		}
 		
-		if(inPath.cfBean.getLinks().size() == 0){
+		if(inPath._cfBean.getLinks().size() == 0){
 			getLog().error("Columns size is 0!");
 			result.setResult(false);
 			result.setResult("Columns size is 0!");
 			return result; 
 		}
 		
-		result.setMapOfStringAndColumnBean(inPath.cfBean.getLinks());
+		result.setMapOfStringAndColumnBean(inPath._cfBean.getLinks());
 		result.setResult(true);		
 		return result;
 	}	

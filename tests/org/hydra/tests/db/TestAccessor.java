@@ -49,7 +49,7 @@ public class TestAccessor {
 			accessor.setup();		
 		// 1. Iterate over the user count and create Map<String, Map<String,String>> for batch insert
 		String userID = null;
-		Map<String, String> tempMap;
+		Map<String, String> tempMap = null;
 		for (int i = 0; i < testUsersCount; i++) {
 			userID = Constants.GetDateUUIDTEST();
 
@@ -64,9 +64,9 @@ public class TestAccessor {
 		// 2. Create access path for batch insert
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUserPath);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertTrue(path.kspBean != null);
-		Assert.assertTrue(path.cfBean != null);
-		
+		Assert.assertTrue(path._kspBean != null);
+		Assert.assertTrue(path._cfBean != null);
+		Assert.assertTrue(DBUtils.validateCfAndMap(path._cfBean, tempMap));
 		// 3. Send Map<String, Map<String,String>> to batch insert
 		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapByteAMapByteAByteA(testUsersMap));
 		
@@ -82,8 +82,8 @@ public class TestAccessor {
 	private static void clearTestUsers() {
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUserPath);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertTrue(path.kspBean != null);
-		Assert.assertTrue(path.cfBean != null);
+		Assert.assertTrue(path._kspBean != null);
+		Assert.assertTrue(path._cfBean != null);
 		
 		accessor.batchDelete4KspCf(path);
 	}
