@@ -9,6 +9,9 @@ import java.util.Map.Entry;
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hydra.db.beans.ColumnFamilyBean;
 import org.junit.Assert;
 
 /**
@@ -17,6 +20,7 @@ import org.junit.Assert;
  * 
  */
 public final class DBUtils {
+	private static Log _log = LogFactory.getLog("org.hydra.utils.DBUtils");
 	
 	// **** defaults
 	
@@ -95,5 +99,19 @@ public final class DBUtils {
 		}
 	}
 
+	public static boolean validateCfAndMap(ColumnFamilyBean cf,
+			Map<String, ?> inMap) {
+		if(cf == null || inMap == null){
+			_log.error("Invalid Cf or Map: NULL!");
+			return false;
+		}
+		for(String key:inMap.keySet()){
+			if(!cf.getColumns().containsKey(key)){
+				_log.error(String.format("Could not find column(%s) for cf(%s)", key, cf.getName()));
+				return false;
+			}
+		}
+		return true;
+	}
 	
 }
