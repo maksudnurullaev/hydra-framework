@@ -85,7 +85,7 @@ public class TestAccessor {
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		
-		accessor.batchDelete4KspCf(path);
+		accessor.deleteAllKspCf(path);
 	}
 	
 	@Before
