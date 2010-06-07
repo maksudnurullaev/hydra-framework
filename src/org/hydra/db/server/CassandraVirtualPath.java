@@ -67,12 +67,15 @@ public class CassandraVirtualPath extends ALogger {
 	public ColumnFamilyBean _linkCf = null;	
 	public ColumnBean _colBean = null;
 	// ... path && path type
-	private String _path = null;
 	PATH_TYPE _pathType = PATH_TYPE.UNDEFINED;
 	// ... others
+	private String _path = null;
 	private String _ID = null;
 	private String _linkName = null;
 	private String _linkID = null;
+	public String getPath(){
+		return _path;
+	}
 	public String getID() {
 		return _ID;
 	}
@@ -269,11 +272,7 @@ public class CassandraVirtualPath extends ALogger {
 	public EnumMap<PARTS, String> getPathMaps() {
 		return _pathMap;
 	}
-
-	public String getPath() {
-		return _path;
-	}
-
+	
 	public CassandraDescriptorBean getDescriptor() {
 		return _descriptor;
 	}

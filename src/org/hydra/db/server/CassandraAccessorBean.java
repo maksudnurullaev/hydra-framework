@@ -16,7 +16,6 @@ import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.SuperColumn;
 import org.apache.cassandra.thrift.Cassandra.Client;
-import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
 import org.hydra.db.server.abstracts.ACassandraAccessor;
@@ -24,55 +23,86 @@ import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
 
-public class CassandraAccessorBean extends ACassandraAccessor {
-	public ResultAsListOfColumnOrSuperColumn resultAsListOfColumns4KspCf(CassandraVirtualPath path) {
-		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();
-		
-		// tests path
-		if(path == null 
-				|| path.getErrorCode() != ERR_CODES.NO_ERROR
-				|| path.getPathType() != PATH_TYPE.KSP___CF
-				|| path._kspBean == null
-				|| path._cfBean == null
-				){
-			getLog().error("Invalid access path!");
+public class CassandraAccessorBean extends ACassandraAccessor {	
+	public ResultAsListOfColumnOrSuperColumn get4KspCfId(
+			CassandraVirtualPath inPath) {
+		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();		
+		// test access path
+		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF___ID);
+		if(!tempResult.isOk()){
+			result.setResult(false);
+			result.setResult(tempResult.getResult());
 			return result;
 		}
-		
-		String kspName = path.getPathPart(PARTS.P1_KSP);
-		String cfName = path.getPathPart(PARTS.P2_CF);
-		
-		getLog().debug(String.format("Get IDs for ksp(%s), cf(%s), key(COLUMNS)...", kspName, cfName));
-		
+		// debug
+		getLog().debug(String.format("Try to get IDs for ksp(%s), cf(%s), key(%s)...", 
+				inPath.getPathPart(PARTS.P1_KSP), 
+				inPath.getPathPart(PARTS.P2_CF),
+				inPath.getPathPart(PARTS.P3_KEY)));
 		// setup ColumnParent 
-		ColumnParent cf = new ColumnParent(cfName);
-		
+		ColumnParent cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
 		// setup slice range
-        SlicePredicate predicate = new SlicePredicate();
-        SliceRange sliceRange = new SliceRange();
-        sliceRange.setStart(new byte[0]);
-        sliceRange.setFinish(new byte[0]);
-        predicate.setSlice_range(sliceRange);
-		
+        SlicePredicate predicate = DBUtils.getSlicePredicate(inPath.getPathPart(PARTS.P3_KEY), inPath.getPathPart(PARTS.P3_KEY));		
         // borrow cassandra's client 		
-        getLog().debug("Borrow client...");
-		Cassandra.Client client = clientBorrow();
-		
-		
-		try {
-			result.setColumnOrSuperColumn(client.get_slice(kspName, COLUMNS_KEY_DEF, cf, predicate, ConsistencyLevel.ONE));
-			result.setResult(true);
-		} catch (Exception e) {
+        getLog().debug("Try to get data for: " + inPath.getPath());
+		try2SetResultAsListOfColumnOrSuperColumn(result,
+				inPath.getPathPart(PARTS.P1_KSP), 
+				COLUMNS_KEY_DEF, 
+				cf, 
+				predicate, 
+				ConsistencyLevel.ONE);
+		// finish
+		return result;
+	}	
+	
+	public ResultAsListOfColumnOrSuperColumn get4KspCf(CassandraVirtualPath inPath) {
+		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();		
+		// test access path
+		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
+		if(!tempResult.isOk()){
 			result.setResult(false);
-			result.setResult(e.getMessage());
-		}finally{
-			clientRelease(client);
+			result.setResult(tempResult.getResult());
+			return result;
 		}
-
+		getLog().debug(String.format("Get IDs for ksp(%s), cf(%s), key(COLUMNS)...", 
+				inPath.getPathPart(PARTS.P1_KSP), 
+				inPath.getPathPart(PARTS.P2_CF)));
+		// setup ColumnParent 
+		ColumnParent cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
+		// setup slice range
+        SlicePredicate predicate = DBUtils.getSlicePredicate(null, null);		
+        // borrow cassandra's client 		
+        getLog().debug("Try to get data for: " + inPath.getPath());
+		try2SetResultAsListOfColumnOrSuperColumn(result,
+				inPath.getPathPart(PARTS.P1_KSP), 
+				COLUMNS_KEY_DEF, 
+				cf, 
+				predicate, 
+				ConsistencyLevel.ONE);
 		// finish
 		return result;
 	}
 
+	public void try2SetResultAsListOfColumnOrSuperColumn(ResultAsListOfColumnOrSuperColumn inResult,
+			String inKsp,
+			String inKey,
+			ColumnParent inCf,
+			SlicePredicate inPredicate,
+			ConsistencyLevel inConsistencyLevel){
+        // borrow cassandra's client 		
+        getLog().debug("Borrow client...");
+		Cassandra.Client client = clientBorrow();
+		try {
+			inResult.setColumnOrSuperColumn(client.get_slice(inKsp,	inKey, inCf, inPredicate, inConsistencyLevel));
+			inResult.setResult(true);
+		} catch (Exception e) {
+			inResult.setResult(false);
+			inResult.setResult(e.toString());
+		}finally{
+			clientRelease(client);
+		}
+	}
+	
 	public List<Column> getDBColumns(String keyspaceName,
 			String cf, String key, String supe_r) {
 
@@ -243,16 +273,17 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		getLog().debug("Added super columns count: " + mapKeyMapCfListMutaion.size());
 	}
 
-	public void batchDelete4KspCf(CassandraVirtualPath path) {
-		// tests
-		if(path == null 
-				|| path.getErrorCode() != ERR_CODES.NO_ERROR
-				|| path.getPathType() != PATH_TYPE.KSP___CF){
-			getLog().error("Invalid access path!");
+	public void batchDelete4KspCf(CassandraVirtualPath inPath) {
+		// tests path
+		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
+
+		if(!tempResult.isOk()){
+			String errStr = String.format("Invalid access path: %s, should be: KSP___CF", inPath.getPathType());
+			getLog().error(errStr);
 			return;
 		}
 		
-		ResultAsListOfColumnOrSuperColumn result = resultAsListOfColumns4KspCf(path);
+		ResultAsListOfColumnOrSuperColumn result = get4KspCf(inPath);
 		
 		// test for result
 		if(!result.isOk()){
@@ -271,9 +302,9 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		try{
 			for(ColumnOrSuperColumn columnOrSuperColumn: result.getColumnOrSuperColumn()){
 				if(columnOrSuperColumn.getSuper_column() != null){
-					ColumnPath cpath = new ColumnPath(path._cfBean.getName());
+					ColumnPath cpath = new ColumnPath(inPath._cfBean.getName());
 					cpath.setSuper_column(columnOrSuperColumn.super_column.name);
-					client.remove(path._kspBean.getName(), COLUMNS_KEY_DEF, cpath, System.currentTimeMillis(), ConsistencyLevel.ONE);
+					client.remove(inPath._kspBean.getName(), COLUMNS_KEY_DEF, cpath, System.currentTimeMillis(), ConsistencyLevel.ONE);
 				}else{
 					getLog().error("Delete object should be SuperColumn");
 				}
@@ -284,5 +315,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			clientRelease(client);
 		}
 	}
+
+
 
 }

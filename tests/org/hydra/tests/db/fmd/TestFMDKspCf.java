@@ -1,7 +1,6 @@
-package org.hydra.tests.db;
+package org.hydra.tests.db.fmd;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.cassandra.thrift.Column;
@@ -25,11 +24,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 
-public class TestAccessor {
+public class TestFMDKspCf {
+	/**
+	 * FMD - (Find, Mutate(Insert/Update), Delete) 
+	 */
 	private static final String PASSWORD = "Password";
 	private static final String EMAIL = "Email";
 	private static final String TEST_S_MAIL_COM = "test%s@mail.com";
-	public static final String KSTestUserPath = "KSMainTEST.Users";
+	public static final String KSTestUsers = "KSMainTEST.Users";
 	public static final int testUsersCount = 5;
 	static Map<String, Map<String, String>> testUsersMap = new HashMap<String, Map<String, String>>();
 	
@@ -41,11 +43,9 @@ public class TestAccessor {
 	@BeforeClass
 	public static void initTestData(){
 		if(!accessor.isValid())
-			accessor.setup();
-		
-		initTestUsers();
+			accessor.setup();		
 	}
-
+	
 	private static void initTestUsers() {
 		// 1. Iterate over the user count and create Map<String, Map<String,String>> for batch insert
 		String userID = null;
@@ -62,7 +62,7 @@ public class TestAccessor {
 		}
 		
 		// 2. Create access path for batch insert
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUserPath);
+		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUsers);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
@@ -74,13 +74,10 @@ public class TestAccessor {
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
 
-	@AfterClass
-	public static void clearTestData(){
-		clearTestUsers();		
-	}
 
-	private static void clearTestUsers() {
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUserPath);
+	@AfterClass
+	public static void clearTestUsers() {
+		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUsers);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
@@ -98,15 +95,26 @@ public class TestAccessor {
 	
 	@Test
 	public void test_1_users(){
-		Assert.assertTrue(testUsersMap.size() == testUsersCount);
-		// get users from database
-		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, KSTestUserPath);
+		// 1. FMD - Find (EMPTY RESULT)
+		// 1.1 clear users data
+		clearTestUsers();
+		// 1.2 request users data
+		// 1.2.1 create cassadnra's virtual path
+		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, KSTestUsers);
+		// 1.2.2 request data from db
 		ResultAsListOfColumnOrSuperColumn result = accessor.get4KspCf(testPath);
-		// test result
+		// 1.2.3 test result
+		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);
+		// 2. FMD - Mutate
+		initTestUsers();
+		// 2.1 test local test map size
+		Assert.assertTrue(testUsersMap.size() == testUsersCount);
+		// 2.2 request data from db
+		result = accessor.get4KspCf(testPath);
+		// 2.3 test result
 		Assert.assertTrue(result.isOk());
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == testUsersCount);
-		// test compare resultMap & result
-		
+		// 2.4 compare local & cassandra'a data
 		for(ColumnOrSuperColumn columnOrSuperColumn:result.getColumnOrSuperColumn()){
 			String ID1 = DBUtils.bytes2UTF8String(columnOrSuperColumn.super_column.name);
 			Assert.assertTrue(testUsersMap.containsKey(ID1));
@@ -122,31 +130,14 @@ public class TestAccessor {
 			Assert.assertNotNull(mapStringByteA.get(PASSWORD));
 			Assert.assertTrue(CryptoManager.checkPassword(ID1, DBUtils.bytes2UTF8String(mapStringByteA.get(PASSWORD))));
 		}
-		// print result
-		// printResult(result);
+		// print result - debug
+		// DBUtils.printResult(result);
+		// 3. FMD - Delete
+		clearTestUsers();
+		// 3.1 get data from db
+		result = accessor.get4KspCf(testPath);
+		// 1.2.3 test result
+		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);		
 	}
-
-	public void printResult(ResultAsListOfColumnOrSuperColumn result) {
-		if(result.getColumnOrSuperColumn() != null ||
-				result.getColumnOrSuperColumn().size() != 0){
-			Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
-			while(listIterator.hasNext()){
-				ColumnOrSuperColumn superColumn = listIterator.next();
-				Assert.assertTrue(superColumn.isSetSuper_column());
-				System.out.println(String.format("SuperCol.Name = %s\n",
-						DBUtils.bytes2UTF8String(superColumn.super_column.name, 32)));											
-				for(Column column:superColumn.getSuper_column().columns){
-					System.out.println(String.format("--> Col.Name = %s\n----> Value = %s\n----> Timestamp = %s\n",
-							DBUtils.bytes2UTF8String(column.name, 32), 
-							DBUtils.bytes2UTF8String(column.value, 32),
-							column.timestamp));							
-				}
-			}
-			System.out.println("TEST COLUMN COUNT: " + result.getColumnOrSuperColumn().size()); 
-		}else{
-			System.out.println("Result is NULL or EMPTY!");				
-		}
-	}
-
 
 }

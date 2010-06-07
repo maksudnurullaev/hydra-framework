@@ -9,9 +9,15 @@ import java.util.Map.Entry;
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
+import org.apache.cassandra.thrift.SlicePredicate;
+import org.apache.cassandra.thrift.SliceRange;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.beans.ColumnFamilyBean;
+import org.hydra.db.server.CassandraVirtualPath;
+import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
+import org.hydra.db.server.CassandraVirtualPath.PARTS;
+import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
 import org.junit.Assert;
 
 /**
@@ -113,5 +119,55 @@ public final class DBUtils {
 		}
 		return true;
 	}
+
 	
+	public static Result validate4NullPathKspCfPathType(CassandraVirtualPath inPath, PATH_TYPE inExpectedType){
+		Result result = new Result();
+		// validate path
+		if(inPath == null 
+				|| inPath._kspBean == null
+				|| inPath._cfBean == null
+				){
+			String errStr = "Invalid access path!";
+			_log.error(errStr);
+			result.setResult(false);
+			result.setResult(errStr);
+			return result;
+		}
+		// validate path type
+		if(inPath.getErrorCode() != ERR_CODES.NO_ERROR
+				|| inPath.getPathType() != inExpectedType
+				){
+			String errStr = String.format("Invalid access path type: %s, should be: %s", inPath.getPathType(), inExpectedType);
+			_log.error(errStr);
+			result.setResult(false);
+			result.setResult(errStr);
+			return result;
+		}
+		
+		result.setResult(true);
+		return result;
+	}	
+	
+	public static SlicePredicate getSlicePredicate(String inStartSliceRange, String inFinishSliceRange){
+		// setup slice range
+        SlicePredicate predicate = new SlicePredicate();
+        SliceRange sliceRange = new SliceRange();
+        
+        if(inStartSliceRange == null){
+	        sliceRange.setStart(new byte[0]);
+        }else{
+	        sliceRange.setStart(string2UTF8Bytes(inStartSliceRange));        	
+        }
+        
+        if(inFinishSliceRange == null){
+        	sliceRange.setFinish(new byte[0]);
+        }else{
+        	sliceRange.setFinish(string2UTF8Bytes(inFinishSliceRange));
+        }	
+
+        predicate.setSlice_range(sliceRange);		
+		
+		return predicate;		
+	}
 }
