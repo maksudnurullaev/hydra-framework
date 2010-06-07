@@ -125,7 +125,7 @@ public class TestLinks4Accessor {
 	public void test_1_links(){
 		// get users from database
 		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS);
-		ResultAsListOfColumnOrSuperColumn result = accessor.resultAsListOfColumns4KspCf(testPath);
+		ResultAsListOfColumnOrSuperColumn result = accessor.get4KspCf(testPath);
 		// test result
 		Assert.assertTrue(result.isOk());
 		// test compare resultMap & result

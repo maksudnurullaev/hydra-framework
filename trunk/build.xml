@@ -77,7 +77,7 @@
 		</war>
 	</target>
 	
-	<target name="local.run.tests" depends="local.build" description="Run tests">
+	<target name="local.run.all.tests" depends="local.build" description="Run tests">
 		<junit printsummary="on" fork="false" haltonfailure="false"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
@@ -113,8 +113,6 @@
 				</fileset>
 			</batchtest>			
 
-<!--			
--->						
 
 			<batchtest>
 				<fileset dir="${classes}">
@@ -134,6 +132,31 @@ tests.failed=${tests.failed}
 ***********************************************************
         </fail>
 	</target>
+	
+	<target name="local.run.test" depends="local.build" description="Run tests">
+		<junit printsummary="on" fork="false" haltonfailure="false"
+			failureproperty="tests.failed" showoutput="true">
+			<classpath refid="master-classpath" />
+			<formatter type="brief" usefile="false" />
+			
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestFMDKspCfId.class" />
+				</fileset>
+			</batchtest>
+
+		</junit>
+
+
+		<fail if="tests.failed">
+tests.failed=${tests.failed}
+***********************************************************
+***********************************************************
+**** One or more tests failed! Check the output ... ****
+***********************************************************
+***********************************************************
+        </fail>
+	</target>	
 	
 	<target name="local.build.javadoc" depends="local.build" description="Build API documentation">
 

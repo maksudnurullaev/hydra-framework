@@ -22,7 +22,7 @@ public class Just4Run {
 		if(!accessor.isValid())
 			accessor.setup();
 		
-		ResultAsListOfColumnOrSuperColumn resultUsers = accessor.resultAsListOfColumns4KspCf(testUsersPath);
+		ResultAsListOfColumnOrSuperColumn resultUsers = accessor.get4KspCf(testUsersPath);
 	
 		DBUtils.printResult(resultUsers);
 	}
