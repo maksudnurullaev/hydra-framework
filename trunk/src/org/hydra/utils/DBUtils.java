@@ -84,7 +84,7 @@ public final class DBUtils {
 	}	
 	
 	public static void printResult(ResultAsListOfColumnOrSuperColumn result) {
-		if(result.getColumnOrSuperColumn() != null ||
+		if(result.getColumnOrSuperColumn() != null &&
 				result.getColumnOrSuperColumn().size() != 0){
 			Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
 			while(listIterator.hasNext()){

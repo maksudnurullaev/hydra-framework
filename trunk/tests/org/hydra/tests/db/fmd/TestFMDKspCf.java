@@ -28,10 +28,10 @@ public class TestFMDKspCf {
 	/**
 	 * FMD - (Find, Mutate(Insert/Update), Delete) 
 	 */
-	private static final String PASSWORD = "Password";
-	private static final String EMAIL = "Email";
-	private static final String TEST_S_MAIL_COM = "test%s@mail.com";
-	public static final String KSTestUsers = "KSMainTEST.Users";
+//	private static final String PASSWORD = "Password";
+//	private static final String EMAIL = "Email";
+//	private static final String TEST_S_MAIL_COM = "test%s@mail.com";
+//	public static final String KSTestUsers = "KSMainTEST.Users";
 	public static final int testUsersCount = 5;
 	static Map<String, Map<String, String>> testUsersMap = new HashMap<String, Map<String, String>>();
 	
@@ -45,44 +45,10 @@ public class TestFMDKspCf {
 		if(!accessor.isValid())
 			accessor.setup();		
 	}
-	
-	private static void initTestUsers() {
-		// 1. Iterate over the user count and create Map<String, Map<String,String>> for batch insert
-		String userID = null;
-		Map<String, String> tempMap = null;
-		for (int i = 0; i < testUsersCount; i++) {
-			userID = Constants.GetDateUUIDTEST();
-
-			tempMap = new HashMap<String, String>();
-			
-			tempMap.put(PASSWORD, CryptoManager.encryptPassword(userID));
-			tempMap.put(EMAIL, String.format(TEST_S_MAIL_COM, i));
-			
-			testUsersMap.put(userID, tempMap);
-		}
-		
-		// 2. Create access path for batch insert
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUsers);
-		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertTrue(path._kspBean != null);
-		Assert.assertTrue(path._cfBean != null);
-		Assert.assertTrue(DBUtils.validateCfAndMap(path._cfBean, tempMap));
-		// 3. Send Map<String, Map<String,String>> to batch insert
-		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapByteAMapByteAByteA(testUsersMap));
-		
-		// 4. Test result
-		Assert.assertTrue(batchInsertResult.isOk());
-	}
-
 
 	@AfterClass
 	public static void clearTestUsers() {
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSTestUsers);
-		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertTrue(path._kspBean != null);
-		Assert.assertTrue(path._cfBean != null);
-		
-		accessor.deleteAllKspCf(path);
+		Utils4Tests.deleteAllTestUsers();
 	}
 	
 	@Before
@@ -100,13 +66,13 @@ public class TestFMDKspCf {
 		clearTestUsers();
 		// 1.2 request users data
 		// 1.2.1 create cassadnra's virtual path
-		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, KSTestUsers);
+		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSTestUsers);
 		// 1.2.2 request data from db
 		ResultAsListOfColumnOrSuperColumn result = accessor.get4KspCf(testPath);
 		// 1.2.3 test result
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);
 		// 2. FMD - Mutate
-		initTestUsers();
+		Utils4Tests.initTestUsers(testUsersCount);
 		// 2.1 test local test map size
 		Assert.assertTrue(testUsersMap.size() == testUsersCount);
 		// 2.2 request data from db
@@ -127,8 +93,8 @@ public class TestFMDKspCf {
 				Assert.assertEquals(subMap.get(ID2), DBUtils.bytes2UTF8String(column.value));
 			}
 			Map<String, byte[]> mapStringByteA = DBUtils.converMapStringByteA(columnOrSuperColumn.super_column.getColumns());
-			Assert.assertNotNull(mapStringByteA.get(PASSWORD));
-			Assert.assertTrue(CryptoManager.checkPassword(ID1, DBUtils.bytes2UTF8String(mapStringByteA.get(PASSWORD))));
+			Assert.assertNotNull(mapStringByteA.get(Utils4Tests.PASSWORD));
+			Assert.assertTrue(CryptoManager.checkPassword(ID1, DBUtils.bytes2UTF8String(mapStringByteA.get(Utils4Tests.PASSWORD))));
 		}
 		// print result - debug
 		// DBUtils.printResult(result);

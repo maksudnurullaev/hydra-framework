@@ -141,7 +141,7 @@ tests.failed=${tests.failed}
 			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestFMDKspCfId.class" />
+					<include name="**/TestAcc*.class" />
 				</fileset>
 			</batchtest>
 
