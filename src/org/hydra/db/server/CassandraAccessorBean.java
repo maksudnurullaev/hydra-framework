@@ -280,14 +280,12 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
 
 		if(!tempResult.isOk()){
-			String errStr = String.format("Invalid access path: %s, should be: KSP___CF", inPath.getPathType());
-			getLog().error(errStr);
+			getLog().error(tempResult.getResult());
 			return;
 		}
 		
+		// get all records
 		ResultAsListOfColumnOrSuperColumn result = get4KspCf(inPath);
-		
-		// test for result
 		if(!result.isOk()){
 			getLog().error("Invalid result:" + result.getResult());
 			return;			
@@ -301,12 +299,17 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		}
 				
 		Client client = clientBorrow();
+		//TODO Should be optimazed by one operation - delete key = COLUMNS!!!
 		try{
 			for(ColumnOrSuperColumn columnOrSuperColumn: result.getColumnOrSuperColumn()){
 				if(columnOrSuperColumn.getSuper_column() != null){
 					ColumnPath cpath = new ColumnPath(inPath._cfBean.getName());
 					cpath.setSuper_column(columnOrSuperColumn.super_column.name);
-					client.remove(inPath._kspBean.getName(), COLUMNS_KEY_DEF, cpath, System.currentTimeMillis(), ConsistencyLevel.ONE);
+					client.remove(inPath.getPathPart(PARTS.P1_KSP), 
+							COLUMNS_KEY_DEF, 
+							cpath, 
+							System.currentTimeMillis(), 
+							ConsistencyLevel.ONE);
 				}else{
 					getLog().error("Delete object should be SuperColumn");
 				}
@@ -318,9 +321,35 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		}
 	}
 
-	public void deleteKspCfId(CassandraVirtualPath path) {
-		// TODO We should finished up code
+	public Result deleteKspCfId(CassandraVirtualPath inPath) {
+		// tests path
+		Result result = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF___ID);
+
+		if(!result.isOk()){
+			getLog().error(result.getResult());
+			return result;
+		}
+				
+		Client client = clientBorrow();
+		try{
+			ColumnPath cpath = new ColumnPath(inPath.getPathPart(PARTS.P2_CF));
+			cpath.setSuper_column(DBUtils.string2UTF8Bytes(inPath.getPathPart(PARTS.P3_KEY)));
+			client.remove(inPath.getPathPart(PARTS.P1_KSP), 
+					COLUMNS_KEY_DEF, 
+					cpath, 
+					System.currentTimeMillis(), 
+					ConsistencyLevel.ONE);
+			result.setResult(true);
+			result.setResult(null);
+		}catch (Exception e) {
+			getLog().error(e.getMessage());
+			result.setResult(false);
+			result.setResult(e.toString());			
+		}finally{
+			clientRelease(client);
+		}		
 		
+		return result;
 	}
 
 }
