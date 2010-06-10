@@ -36,7 +36,7 @@ public class MessagesCollector implements ICollector {
 
 	@Override
 	public IPipe<IMessage> getPipe(String inGroupID) {
-		synchronized (_groupOfMessages) { //TODO Not sure that is optimal version!?
+		synchronized (_groupOfMessages) { //TODO ... still not sure that is optimal version!?
 			if(!_groupOfMessages.containsKey(inGroupID)){
 				IPipe<IMessage> newPipe = getNewPipe();
 				newPipe.setName(inGroupID);

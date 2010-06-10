@@ -277,5 +277,9 @@ public class CassandraVirtualPath extends ALogger {
 		return _descriptor;
 	}
 
+	public boolean isValid() {
+		return (_errCode == ERR_CODES.NO_ERROR);
+	}
+
 	
 }
