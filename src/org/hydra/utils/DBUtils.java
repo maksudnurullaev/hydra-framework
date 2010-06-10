@@ -14,10 +14,13 @@ import org.apache.cassandra.thrift.SliceRange;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.beans.ColumnFamilyBean;
+import org.hydra.db.server.CassandraAccessorBean;
+import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
+import org.hydra.tests.utils.Utils4Tests;
 import org.junit.Assert;
 
 /**

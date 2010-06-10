@@ -45,7 +45,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
         SlicePredicate predicate = DBUtils.getSlicePredicate(inPath.getPathPart(PARTS.P3_KEY), inPath.getPathPart(PARTS.P3_KEY));		
         // borrow cassandra's client 		
         getLog().debug("Try to get data for: " + inPath.getPath());
-		try2SetResultAsListOfColumnOrSuperColumn(result,
+		try2GetResultAsListOfColumnOrSuperColumn(result,
 				inPath.getPathPart(PARTS.P1_KSP), 
 				COLUMNS_KEY_DEF, 
 				cf, 
@@ -64,7 +64,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			result.setResult(tempResult.getResult());
 			return result;
 		}
-		getLog().debug(String.format("Get IDs for ksp(%s), cf(%s), key(COLUMNS)...", 
+		getLog().debug(String.format("Try to get data for ksp(%s), cf(%s), key(COLUMNS)...", 
 				inPath.getPathPart(PARTS.P1_KSP), 
 				inPath.getPathPart(PARTS.P2_CF)));
 		// setup ColumnParent 
@@ -72,8 +72,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		// setup slice range
         SlicePredicate predicate = DBUtils.getSlicePredicate(null, null);		
         // borrow cassandra's client 		
-        getLog().debug("Try to get data for: " + inPath.getPath());
-		try2SetResultAsListOfColumnOrSuperColumn(result,
+		try2GetResultAsListOfColumnOrSuperColumn(result,
 				inPath.getPathPart(PARTS.P1_KSP), 
 				COLUMNS_KEY_DEF, 
 				cf, 
@@ -83,7 +82,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		return result;
 	}
 
-	public void try2SetResultAsListOfColumnOrSuperColumn(ResultAsListOfColumnOrSuperColumn inResult,
+	public void try2GetResultAsListOfColumnOrSuperColumn(ResultAsListOfColumnOrSuperColumn inResult,
 			String inKsp,
 			String inKey,
 			ColumnParent inCf,
@@ -97,6 +96,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			inResult.setResult(true);
 		} catch (Exception e) {
 			inResult.setResult(false);
+			getLog().error(e.toString());
 			inResult.setResult(e.toString());
 		}finally{
 			clientRelease(client);
@@ -166,7 +166,6 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 
 	public Result batchMutate(CassandraVirtualPath inPath,
 			Map<byte[], Map<byte[],byte[]>> inBatchMap) {
-		    /*  ID          col    val                   */
 		Result result = new Result();
 		
 		// some tests
@@ -211,11 +210,13 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		getLog().debug(String.format("Generate mutation list for: %s, access path type: %s", inPath.getPath(), inPath.getPathType()));
 		switch (inPath.getPathType()) {
 		case KSP___CF:
-		case KSP___CF___ID:
 			generateMutationMap4KspCf(inPath, inBatchMap, result);
 			break;
-//			generateMutationMap4KspCfId(inPath, inBatchMap, result);
+//		case KSP___CF___ID:
+//			getLog().error("generateMutationMap4KspCf(inPath, inBatchMap, result);");
 //			break;
+////			generateMutationMap4KspCfId(inPath, inBatchMap, result);
+////			break;
 		case KSP___CF___ID___LINKNAME:
 			generateMutationMap4KspCfIDLinks(inPath, inBatchMap, result);			
 			break;
@@ -275,53 +276,77 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		getLog().debug("Added super columns count: " + mapKeyMapCfListMutaion.size());
 	}
 
-	public void deleteAllKspCf(CassandraVirtualPath inPath) {
-		// tests path
-		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
-
-		if(!tempResult.isOk()){
-			getLog().error(tempResult.getResult());
-			return;
-		}
-		
-		// get all records
-		ResultAsListOfColumnOrSuperColumn result = get4KspCf(inPath);
+	public Result delete4KspCf(CassandraVirtualPath inPath) {
+		// test incoming path
+		Result result = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
 		if(!result.isOk()){
-			getLog().error("Invalid result:" + result.getResult());
-			return;			
+			return result;
 		}
-		
-		// test for attache object (should be List)
-		if(result.getColumnOrSuperColumn() == null ||
-				result.getColumnOrSuperColumn().size() == 0){
-			getLog().error("Invalid result: NULL or not EMPTY!");
-			return;						
-		}
-				
+		// remove full COLUMNS data
 		Client client = clientBorrow();
-		//TODO Should be optimazed by one operation - delete key = COLUMNS!!!
-		try{
-			for(ColumnOrSuperColumn columnOrSuperColumn: result.getColumnOrSuperColumn()){
-				if(columnOrSuperColumn.getSuper_column() != null){
-					ColumnPath cpath = new ColumnPath(inPath._cfBean.getName());
-					cpath.setSuper_column(columnOrSuperColumn.super_column.name);
-					client.remove(inPath.getPathPart(PARTS.P1_KSP), 
-							COLUMNS_KEY_DEF, 
-							cpath, 
-							System.currentTimeMillis(), 
-							ConsistencyLevel.ONE);
-				}else{
-					getLog().error("Delete object should be SuperColumn");
-				}
-			}
-		}catch (Exception e) {
-			getLog().error(e.getMessage());
+		
+		ColumnPath cf = new ColumnPath(inPath._cfBean.getName());
+		try {
+			client.remove(inPath.getPathPart(PARTS.P1_KSP), 
+					COLUMNS_KEY_DEF, 
+					cf, 
+					System.currentTimeMillis(), 
+					ConsistencyLevel.ONE);
+			result.setResult(true);
+		} catch (Exception e) {
+			result.setResult(false);
+			result.setResult(e.toString());
 		}finally{
 			clientRelease(client);
 		}
+		return result;
 	}
+	
+//	public Result delete4KspCfId(CassandraVirtualPath inPath) {
+//		// get all records
+//		ResultAsListOfColumnOrSuperColumn result = get4KspCf(inPath);
+//		if(!result.isOk()){
+//			getLog().error("Invalid result:" + result.getResult());
+//			return result;			
+//		}
+//		
+//		// test for attache object (should be List)
+//		if(result.getColumnOrSuperColumn() == null ||
+//				result.getColumnOrSuperColumn().size() == 0){
+//			result.setResult("Invalid result: NULL or not EMPTY!");
+//			result.setResult(false);
+//			getLog().error("Invalid result: NULL or not EMPTY!");
+//			return result;
+//		}
+//				
+//		Client client = clientBorrow();
+//		//TODO Should be optimazed by one operation - delete key = COLUMNS!!!
+//		try{
+//			for(ColumnOrSuperColumn columnOrSuperColumn: result.getColumnOrSuperColumn()){
+//				if(columnOrSuperColumn.getSuper_column() != null){
+//					ColumnPath cpath = new ColumnPath(inPath._cfBean.getName());
+//					cpath.setSuper_column(columnOrSuperColumn.super_column.name);
+//					client.remove(inPath.getPathPart(PARTS.P1_KSP), 
+//							COLUMNS_KEY_DEF, 
+//							cpath, 
+//							System.currentTimeMillis(), 
+//							ConsistencyLevel.ONE);
+//				}else{
+//					getLog().error("Delete object should be SuperColumn");
+//				}
+//			}
+//			result.setResult(true);
+//		}catch (Exception e) {
+//			result.setResult(e.toString());
+//			result.setResult(false);
+//			getLog().error(e.toString());
+//		}finally{
+//			clientRelease(client);
+//		}
+//		return result;
+//	}
 
-	public Result deleteKspCfId(CassandraVirtualPath inPath) {
+	public Result delete4KspCfId(CassandraVirtualPath inPath) {
 		// tests path
 		Result result = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF___ID);
 

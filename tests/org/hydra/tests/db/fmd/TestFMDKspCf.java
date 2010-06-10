@@ -66,13 +66,13 @@ public class TestFMDKspCf {
 		clearTestUsers();
 		// 1.2 request users data
 		// 1.2.1 create cassadnra's virtual path
-		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSTestUsers);
+		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
 		// 1.2.2 request data from db
 		ResultAsListOfColumnOrSuperColumn result = accessor.get4KspCf(testPath);
 		// 1.2.3 test result
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);
 		// 2. FMD - Mutate
-		Utils4Tests.initTestUsers(testUsersCount);
+		testUsersMap = Utils4Tests.initTestUsers(testUsersCount);
 		// 2.1 test local test map size
 		Assert.assertTrue(testUsersMap.size() == testUsersCount);
 		// 2.2 request data from db
@@ -94,7 +94,8 @@ public class TestFMDKspCf {
 			}
 			Map<String, byte[]> mapStringByteA = DBUtils.converMapStringByteA(columnOrSuperColumn.super_column.getColumns());
 			Assert.assertNotNull(mapStringByteA.get(Utils4Tests.PASSWORD));
-			Assert.assertTrue(CryptoManager.checkPassword(ID1, DBUtils.bytes2UTF8String(mapStringByteA.get(Utils4Tests.PASSWORD))));
+			Assert.assertEquals(String.format(Utils4Tests.S_PASSWORD, ID1), 
+					DBUtils.bytes2UTF8String(mapStringByteA.get(Utils4Tests.PASSWORD)));
 		}
 		// print result - debug
 		// DBUtils.printResult(result);

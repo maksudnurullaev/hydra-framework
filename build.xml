@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="Hydra" basedir="." default="usage">
+<project name="Hydra" basedir="." default="info">
 	<property file="build.properties" />
 
 	<property name="src" value="${basedir}/src" />
@@ -28,16 +28,11 @@
 		<pathelement path="${basedir}/test"/>
 	</path>
 		
-	<target name="usage">
+	<target name="info">
 		<echo message="" />
-		<echo message="Current:" />
+		<echo message="Help:" />
 		<echo message="---------------------------------------" />
-		<echo message="appserver.home      = ${appserver.home}" />
-		<echo message="appserver.lib       = ${appserver.lib}" />
-		<echo message="deploy.path         = ${deploy.path}" />
-		<echo message="application.name    = ${application.name}" />
-		<echo message="application.version = ${application.version}" />
-		<echo message="aspectj.home        = ${aspectj.home}" />
+		<echo message="type 'ant -p' for list of targets" />
 	</target>
 
 	<target name="local.build" description="Build project">
@@ -141,7 +136,7 @@ tests.failed=${tests.failed}
 			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestAcc*.class" />
+					<include name="**/TestFMDKspCf.class" />
 				</fileset>
 			</batchtest>
 

@@ -46,12 +46,10 @@ public class TestAccessor {
 	}
 
 	private static void clearTestUsers() {
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, Utils4Tests.KSTestUsers);
+		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
-		
-		accessor.deleteAllKspCf(path);
 	}
 	
 	@Before
@@ -66,7 +64,7 @@ public class TestAccessor {
 	public void test_1_users(){
 		Assert.assertTrue(testUsersMap.size() == testUsersCount);
 		// get users from database
-		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSTestUsers);
+		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
 		ResultAsListOfColumnOrSuperColumn result = accessor.get4KspCf(testPath);
 		// test result
 		Assert.assertTrue(result.isOk());
@@ -86,9 +84,7 @@ public class TestAccessor {
 			}
 			Map<String, byte[]> mapStringByteA = DBUtils.converMapStringByteA(columnOrSuperColumn.super_column.getColumns());
 			Assert.assertNotNull(mapStringByteA.get(Utils4Tests.PASSWORD));
-			Assert.assertTrue(CryptoManager.checkPassword(ID1, DBUtils.bytes2UTF8String(mapStringByteA.get(Utils4Tests.PASSWORD))));
+
 		}
-		// print result
-		// Utils4Tests.printResult(result);
 	}
 }
