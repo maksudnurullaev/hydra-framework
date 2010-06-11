@@ -46,7 +46,7 @@ public class TestFMDKspCfId {
 		int countOfTestUsers = 10;
 		// clean up users data
 		clearAllTestUsers();
-		// insert test users
+		//!!!------------------ MUTATE ------------------!!!
 		Map<String, Map<String, String>> resultInsertionOfUsers = Utils4Tests.initTestUsers(countOfTestUsers);
 		Assert.assertTrue(resultInsertionOfUsers.size() == countOfTestUsers);
 		
@@ -58,7 +58,7 @@ public class TestFMDKspCfId {
 					String.format(format, mapKeyMapNameValue.getKey()));
 			
 			Assert.assertTrue(tempPath.getErrorCode() == ERR_CODES.NO_ERROR);
-			
+			// !!!------------------ FIND ------------------!!!
 			ResultAsListOfColumnOrSuperColumn findColResult = accessor.get4KspCfId(tempPath);
 			Assert.assertTrue(findColResult.isOk());
 			Assert.assertTrue(findColResult.getColumnOrSuperColumn().size() == 1);
@@ -72,7 +72,7 @@ public class TestFMDKspCfId {
 				Assert.assertEquals(mapKeyMapNameValue.getValue().get(name), value);
 			}
 			
-			// try delete column
+			// !!!------------------ DELETE ------------------!!!
 			Result delColResult = accessor.delete4KspCfId(tempPath);
 			Assert.assertTrue(delColResult.isOk());
 			

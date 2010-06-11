@@ -301,50 +301,6 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		}
 		return result;
 	}
-	
-//	public Result delete4KspCfId(CassandraVirtualPath inPath) {
-//		// get all records
-//		ResultAsListOfColumnOrSuperColumn result = get4KspCf(inPath);
-//		if(!result.isOk()){
-//			getLog().error("Invalid result:" + result.getResult());
-//			return result;			
-//		}
-//		
-//		// test for attache object (should be List)
-//		if(result.getColumnOrSuperColumn() == null ||
-//				result.getColumnOrSuperColumn().size() == 0){
-//			result.setResult("Invalid result: NULL or not EMPTY!");
-//			result.setResult(false);
-//			getLog().error("Invalid result: NULL or not EMPTY!");
-//			return result;
-//		}
-//				
-//		Client client = clientBorrow();
-//		//TODO Should be optimazed by one operation - delete key = COLUMNS!!!
-//		try{
-//			for(ColumnOrSuperColumn columnOrSuperColumn: result.getColumnOrSuperColumn()){
-//				if(columnOrSuperColumn.getSuper_column() != null){
-//					ColumnPath cpath = new ColumnPath(inPath._cfBean.getName());
-//					cpath.setSuper_column(columnOrSuperColumn.super_column.name);
-//					client.remove(inPath.getPathPart(PARTS.P1_KSP), 
-//							COLUMNS_KEY_DEF, 
-//							cpath, 
-//							System.currentTimeMillis(), 
-//							ConsistencyLevel.ONE);
-//				}else{
-//					getLog().error("Delete object should be SuperColumn");
-//				}
-//			}
-//			result.setResult(true);
-//		}catch (Exception e) {
-//			result.setResult(e.toString());
-//			result.setResult(false);
-//			getLog().error(e.toString());
-//		}finally{
-//			clientRelease(client);
-//		}
-//		return result;
-//	}
 
 	public Result delete4KspCfId(CassandraVirtualPath inPath) {
 		// tests path

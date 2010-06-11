@@ -28,10 +28,6 @@ public class TestFMDKspCf {
 	/**
 	 * FMD - (Find, Mutate(Insert/Update), Delete) 
 	 */
-//	private static final String PASSWORD = "Password";
-//	private static final String EMAIL = "Email";
-//	private static final String TEST_S_MAIL_COM = "test%s@mail.com";
-//	public static final String KSTestUsers = "KSMainTEST.Users";
 	public static final int testUsersCount = 5;
 	static Map<String, Map<String, String>> testUsersMap = new HashMap<String, Map<String, String>>();
 	
@@ -71,11 +67,11 @@ public class TestFMDKspCf {
 		ResultAsListOfColumnOrSuperColumn result = accessor.get4KspCf(testPath);
 		// 1.2.3 test result
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);
-		// 2. FMD - Mutate
+		// 2. !!!------------------ Mutate ------------------ !!!
 		testUsersMap = Utils4Tests.initTestUsers(testUsersCount);
 		// 2.1 test local test map size
 		Assert.assertTrue(testUsersMap.size() == testUsersCount);
-		// 2.2 request data from db
+		// 2.2 !!!------------------ FIND ------------------!!!
 		result = accessor.get4KspCf(testPath);
 		// 2.3 test result
 		Assert.assertTrue(result.isOk());
@@ -99,7 +95,7 @@ public class TestFMDKspCf {
 		}
 		// print result - debug
 		// DBUtils.printResult(result);
-		// 3. FMD - Delete
+		// 3. !!!------------------ Delete ------------------!!!
 		clearTestUsers();
 		// 3.1 get data from db
 		result = accessor.get4KspCf(testPath);
