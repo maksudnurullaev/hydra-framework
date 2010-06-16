@@ -65,7 +65,7 @@ public final class DBUtils {
 		return result;
 	}
 
-	public static Map<byte[], Map<byte[], byte[]>> convertMapByteAMapByteAByteA(
+	public static Map<byte[], Map<byte[], byte[]>> convertMapKBytesVMapKBytesVBytes(
 			Map<String, Map<String, String>> inResult) {
 		Map<byte[], Map<byte[], byte[]>> result = new HashMap<byte[], Map<byte[],byte[]>>();
 		for(Entry<String, Map<String, String>> mapEntry: inResult.entrySet()){

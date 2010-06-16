@@ -72,7 +72,7 @@ public final class Utils4Tests {
 		Assert.assertTrue(path._cfBean != null);
 		Assert.assertTrue(DBUtils.validateCfAndMap(path._cfBean, tempMap));
 		// 3. Send Map<String, Map<String,String>> to batch insert
-		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapByteAMapByteAByteA(result));
+		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapKBytesVMapKBytesVBytes(result));
 		
 		// 4. Test result
 		Assert.assertTrue(batchInsertResult.isOk());

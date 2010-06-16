@@ -70,7 +70,7 @@ public class TestLinks4Accessor {
 		Assert.assertNotNull(path._linkCf);
 		Assert.assertTrue(DBUtils.validateCfAndMap(path._linkCf, fieldValueMap));
 		// 4. insert data
-		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapByteAMapByteAByteA(testArticleMap));
+		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapKBytesVMapKBytesVBytes(testArticleMap));
 		// 5. test result
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
@@ -90,7 +90,7 @@ public class TestLinks4Accessor {
 		Assert.assertTrue(path._cfBean != null);
 		Assert.assertTrue(DBUtils.validateCfAndMap(path._cfBean, fieldValueMap));
 		// 4. insert data to db
-		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapByteAMapByteAByteA(testUserMap));
+		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapKBytesVMapKBytesVBytes(testUserMap));
 		// 5. Test result
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
