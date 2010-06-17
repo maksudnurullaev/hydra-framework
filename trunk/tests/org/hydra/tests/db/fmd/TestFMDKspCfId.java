@@ -56,7 +56,6 @@ public class TestFMDKspCfId {
 		ResultAsListOfColumnOrSuperColumn resultAsListOfUsers = accessor.get4KspCfId(path);
 		Assert.assertTrue(resultAsListOfUsers.isOk());
 		Assert.assertEquals(0, resultAsListOfUsers.getColumnOrSuperColumn().size());
-		//resultAsListOfUsers.
 		//!!!------------------ Create test users ------------------!!!
 		Map<String, Map<String, String>> resultMapStringMapStringString = Utils4Tests.initTestUsers(1);
 		Assert.assertTrue(resultMapStringMapStringString.size() == 1);
@@ -67,7 +66,7 @@ public class TestFMDKspCfId {
 		Assert.assertEquals(1, resultAsListOfUsers.getColumnOrSuperColumn().size());
 		SuperColumn superColumn = resultAsListOfUsers.getColumnOrSuperColumn().get(0).super_column;
 		Assert.assertEquals(userID, DBUtils.bytes2UTF8String(superColumn.name));
-		//TODO !!!------------------ MUTATE (change) ------------------!!!
+		//!!!------------------ MUTATE (change) ------------------!!!
 		Assert.assertTrue(resultMapStringMapStringString.get(userID).containsKey(Utils4Tests.EMAIL));
 		String testMail = "zzzz@zzz.zzz";
 		resultMapStringMapStringString.get(userID).put(Utils4Tests.EMAIL, testMail);
@@ -79,48 +78,10 @@ public class TestFMDKspCfId {
 		Assert.assertTrue(mapStringBytes.containsKey(Utils4Tests.EMAIL));
 		Assert.assertEquals(testMail, DBUtils.bytes2UTF8String(mapStringBytes.get(Utils4Tests.EMAIL)));
 		//TODO !!!------------------ DELETE ------------------!!!
-		
-		
-		
-/*		// access path formater
-		
-		String format = "KSMainTEST.Users.%s";
-		// one by one - find/check/delete column
-		for(Map.Entry<String, Map<String, String>> mapKeyMapNameValue:resultMapStringMapStringString.entrySet()){
-			CassandraVirtualPath tempPath = new CassandraVirtualPath(descriptor, 
-					String.format(format, mapKeyMapNameValue.getKey()));
-			
-			Assert.assertTrue(tempPath.getErrorCode() == ERR_CODES.NO_ERROR);
-			// !!!------------------ FIND ------------------!!!
-			ResultAsListOfColumnOrSuperColumn findColResult = accessor.get4KspCfId(tempPath);
-			Assert.assertTrue(findColResult.isOk());
-			Assert.assertTrue(findColResult.getColumnOrSuperColumn().size() == 1);
-			
-			// test column values
-			ColumnOrSuperColumn columnOrSuperColumn = findColResult.getColumnOrSuperColumn().get(0);
-			for(Column column: columnOrSuperColumn.getSuper_column().columns){
-				String name = DBUtils.bytes2UTF8String(column.name);
-				String value = DBUtils.bytes2UTF8String(column.value);
-				Assert.assertTrue(mapKeyMapNameValue.getValue().containsKey(name));
-				Assert.assertEquals(mapKeyMapNameValue.getValue().get(name), value);
-			}
-			
-			// !!!------------------ DELETE ------------------!!!
-			Result delColResult = accessor.delete4KspCfId(tempPath);
-			Assert.assertTrue(delColResult.isOk());
-			
-			// test column
-			findColResult = accessor.get4KspCfId(tempPath);
-			Assert.assertTrue(findColResult.isOk());
-			Assert.assertTrue(findColResult.getColumnOrSuperColumn().size() == 0);
-		}
-		// Check that cf(Users) is know empty
-		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor,Utils4Tests.KSMAINTEST_Users);
-		Assert.assertTrue(testPath.isValid());
-		
-		ResultAsListOfColumnOrSuperColumn resultAsListOfColumnOrSuperColumn = accessor.get4KspCf(testPath);
-		Assert.assertTrue(resultAsListOfColumnOrSuperColumn.getColumnOrSuperColumn().size() == 0);*/
-		
+		Result delColResult = accessor.delete4KspCfId(path);
+		Assert.assertTrue(delColResult.isOk());		
+		resultAsListOfUsers = accessor.get4KspCfId(path);
+		Assert.assertTrue(resultAsListOfUsers.getColumnOrSuperColumn().size() == 0);		
 	}
 
 }
