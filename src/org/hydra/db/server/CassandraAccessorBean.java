@@ -210,13 +210,9 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		getLog().debug(String.format("Generate mutation list for: %s, access path type: %s", inPath.getPath(), inPath.getPathType()));
 		switch (inPath.getPathType()) {
 		case KSP___CF:
+		case KSP___CF___ID:
 			generateMutationMap4KspCf(inPath, inBatchMap, result);
 			break;
-//		case KSP___CF___ID:
-//			getLog().error("generateMutationMap4KspCf(inPath, inBatchMap, result);");
-//			break;
-////			generateMutationMap4KspCfId(inPath, inBatchMap, result);
-////			break;
 		case KSP___CF___ID___LINKNAME:
 			generateMutationMap4KspCfIDLinks(inPath, inBatchMap, result);			
 			break;
