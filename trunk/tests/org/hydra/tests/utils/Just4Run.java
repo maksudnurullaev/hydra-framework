@@ -17,17 +17,6 @@ import org.junit.Assert;
 public class Just4Run {
 
 	public static void main(String[] args) {
-<<<<<<< .mine
-//		Map<String, Map<String, String>> result = Utils4Tests.initTestUsers(3);
-//		printUsers();
-//		//TODO test deletion actual result one by one
-//		for(Map.Entry<String, Map<String, String>> entry: result.entrySet()){
-//			CassandraVirtualPath tempPath = new CassandraVirtualPath 
-//			System.out.println(entry.getKey());
-//		}
-//		Utils4Tests.deleteAllTestUsers();
-		printUsers();		
-=======
 		Map<String, Map<String, String>> result = Utils4Tests.initTestUsers(10);
 		printUsers();
 		// get accessor
@@ -68,7 +57,6 @@ public class Just4Run {
 		//Utils4Tests.deleteAllTestUsers();
 		printUsers();
 			
->>>>>>> .r33
 	}
 
 	private static void printUsers() {
