@@ -30,9 +30,11 @@ public final class Utils4Tests {
 	public static final String EMAIL = "Email";
 	public static final String TEST_S_MAIL_COM = "test%s@mail.com";
 	public static final String KSMAINTEST_Users = "KSMainTEST.Users";
+	public static final String KSMAINTEST_Articles = "KSMainTEST.Articles";
 	
-	final static Resource res = new FileSystemResource(Constants._path2ApplicationContext_xml);
-	final static XmlBeanFactory factory = new XmlBeanFactory(res);
+	public final static Resource res = new FileSystemResource(Constants._path2ApplicationContext_xml);
+	public static XmlBeanFactory factory = new XmlBeanFactory(res);
+	
 	
 	public static BeanFactory getBeanFactory(){
 		return factory;
@@ -44,7 +46,6 @@ public final class Utils4Tests {
 	
 	public static Map<String, Map<String, String>> initTestUsers(int count) {
 		Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
-		
 		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
 		if(!accessor.isValid())
 			accessor.setup();
@@ -102,5 +103,18 @@ public final class Utils4Tests {
 	public static CassandraDescriptorBean getDescriptor() {
 		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) Utils4Tests.getBean(Constants._beans_cassandra_descriptor);
 		return descriptor;
+	}
+
+	public static Result deleteAllTestArticles() {
+		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);
+		
+		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSMAINTEST_Articles);
+		
+		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
+		Assert.assertTrue(path._kspBean != null);
+		Assert.assertTrue(path._cfBean != null);
+		
+		return accessor.delete4KspCf(path);		
 	}	
 }

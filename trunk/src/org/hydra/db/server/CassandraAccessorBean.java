@@ -24,85 +24,112 @@ import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
 
 public class CassandraAccessorBean extends ACassandraAccessor {	
-	public ResultAsListOfColumnOrSuperColumn get4KspCfId(
+	public ResultAsListOfColumnOrSuperColumn get4Path(
 			CassandraVirtualPath inPath) {
-		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();		
-		// test access path
-		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF___ID);
-		if(!tempResult.isOk()){
-			result.setResult(false);
-			result.setResult(tempResult.getResult());
-			return result;
-		}
 		// debug
-		getLog().debug(String.format("Try to get data for ksp(%s), cf(%s), key(%s)...", 
-				inPath.getPathPart(PARTS.P1_KSP), 
-				inPath.getPathPart(PARTS.P2_CF),
-				inPath.getPathPart(PARTS.P3_KEY)));
-		// setup ColumnParent 
-		ColumnParent cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
-		// setup slice range
-        SlicePredicate predicate = DBUtils.getSlicePredicate(inPath.getPathPart(PARTS.P3_KEY), inPath.getPathPart(PARTS.P3_KEY));		
-        // borrow cassandra's client 		
-        getLog().debug("Try to get data for: " + inPath.getPath());
-		try2GetResultAsListOfColumnOrSuperColumn(result,
-				inPath.getPathPart(PARTS.P1_KSP), 
-				COLUMNS_KEY_DEF, 
-				cf, 
-				predicate, 
-				ConsistencyLevel.ONE);
-		// finish
-		return result;
-	}	
-	
-	public ResultAsListOfColumnOrSuperColumn get4KspCf(CassandraVirtualPath inPath) {
+		getLog().debug("Try to get data for path: " + inPath.getPath());
+		// init new result
 		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();		
-		// test access path
-		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
+		// test for NULLs
+		Result tempResult = DBUtils.test4NullKspCf(inPath);
 		if(!tempResult.isOk()){
 			result.setResult(false);
 			result.setResult(tempResult.getResult());
 			return result;
+		}		
+		// init parameters
+		String ksp = null;
+		String key = null;
+		ColumnParent cf = null;
+		SlicePredicate predicate = null;
+		ConsistencyLevel cLevel = null;
+		
+		switch (inPath.getPathType()) {
+		case KSP___CF:
+			ksp = inPath.getPathPart(PARTS.P1_KSP);
+			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
+			key = COLUMNS_KEY_DEF;
+			predicate = DBUtils.getSlicePredicate(null, null);
+			cLevel = ConsistencyLevel.ONE;
+			break;
+		case KSP___CF___ID:
+			ksp = inPath.getPathPart(PARTS.P1_KSP);
+			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
+			key = COLUMNS_KEY_DEF;			
+			predicate = DBUtils.getSlicePredicate(inPath.getPathPart(PARTS.P3_KEY), inPath.getPathPart(PARTS.P3_KEY));	
+			cLevel = ConsistencyLevel.ONE;
+			break;
+		default:
+			String errStr = String.format("Unknow path(%s) to get db records!", inPath.getPath());
+			result.setResult(false);
+			result.setResult(errStr);
+			getLog().error(errStr);
+			return result;
 		}
-		getLog().debug(String.format("Try to get data for ksp(%s), cf(%s), key(COLUMNS)...", 
-				inPath.getPathPart(PARTS.P1_KSP), 
-				inPath.getPathPart(PARTS.P2_CF)));
-		// setup ColumnParent 
-		ColumnParent cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
-		// setup slice range
-        SlicePredicate predicate = DBUtils.getSlicePredicate(null, null);		
-        // borrow cassandra's client 		
-		try2GetResultAsListOfColumnOrSuperColumn(result,
-				inPath.getPathPart(PARTS.P1_KSP), 
-				COLUMNS_KEY_DEF, 
-				cf, 
-				predicate, 
-				ConsistencyLevel.ONE);
-		// finish
-		return result;
-	}
-
-	public void try2GetResultAsListOfColumnOrSuperColumn(ResultAsListOfColumnOrSuperColumn inResult,
-			String inKsp,
-			String inKey,
-			ColumnParent inCf,
-			SlicePredicate inPredicate,
-			ConsistencyLevel inConsistencyLevel){
-        // borrow cassandra's client 		
-        getLog().debug("Borrow client...");
+		
+		// try to get records
 		Cassandra.Client client = clientBorrow();
 		try {
-			inResult.setColumnOrSuperColumn(client.get_slice(inKsp,	inKey, inCf, inPredicate, inConsistencyLevel));
-			inResult.setResult(true);
+			result.setColumnOrSuperColumn(client.get_slice(ksp,	key, cf, predicate, cLevel));
+			result.setResult(true);
 		} catch (Exception e) {
-			inResult.setResult(false);
+			result.setResult(false);
 			getLog().error(e.toString());
-			inResult.setResult(e.toString());
+			result.setResult(e.toString());
 		}finally{
 			clientRelease(client);
 		}
-	}
+		return result;
+	}	
 	
+//	public ResultAsListOfColumnOrSuperColumn get4KspCf(CassandraVirtualPath inPath) {
+//		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();		
+//		// test access path
+//		Result tempResult = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
+//		if(!tempResult.isOk()){
+//			result.setResult(false);
+//			result.setResult(tempResult.getResult());
+//			return result;
+//		}
+//		getLog().debug(String.format("Try to get data for ksp(%s), cf(%s), key(COLUMNS)...", 
+//				inPath.getPathPart(PARTS.P1_KSP), 
+//				inPath.getPathPart(PARTS.P2_CF)));
+//		// setup ColumnParent 
+//		ColumnParent cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
+//		// setup slice range
+//        SlicePredicate predicate = DBUtils.getSlicePredicate(null, null);		
+//        // borrow cassandra's client 		
+//		try2GetResultAsListOfColumnOrSuperColumn(result,
+//				inPath.getPathPart(PARTS.P1_KSP), 
+//				COLUMNS_KEY_DEF, 
+//				cf, 
+//				predicate, 
+//				ConsistencyLevel.ONE);
+//		// finish
+//		return result;
+//	}
+//
+//	public void try2GetResultAsListOfColumnOrSuperColumn(ResultAsListOfColumnOrSuperColumn inResult,
+//			String inKsp,
+//			String inKey,
+//			ColumnParent inCf,
+//			SlicePredicate inPredicate,
+//			ConsistencyLevel inConsistencyLevel){
+//        // borrow cassandra's client 		
+//        getLog().debug("Borrow client...");
+//		Cassandra.Client client = clientBorrow();
+//		try {
+//			inResult.setColumnOrSuperColumn(client.get_slice(inKsp,	inKey, inCf, inPredicate, inConsistencyLevel));
+//			inResult.setResult(true);
+//		} catch (Exception e) {
+//			inResult.setResult(false);
+//			getLog().error(e.toString());
+//			inResult.setResult(e.toString());
+//		}finally{
+//			clientRelease(client);
+//		}
+//	}
+//	
 	public List<Column> getDBColumns(String keyspaceName,
 			String cf, String key, String supe_r) {
 
@@ -274,7 +301,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 
 	public Result delete4KspCf(CassandraVirtualPath inPath) {
 		// test incoming path
-		Result result = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF);
+		Result result = DBUtils.test4NullKspCf(inPath);
 		if(!result.isOk()){
 			return result;
 		}
@@ -300,7 +327,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 
 	public Result delete4KspCfId(CassandraVirtualPath inPath) {
 		// tests path
-		Result result = DBUtils.validate4NullPathKspCfPathType(inPath, PATH_TYPE.KSP___CF___ID);
+		Result result = DBUtils.test4NullKspCf(inPath);
 
 		if(!result.isOk()){
 			getLog().error(result.getResult());

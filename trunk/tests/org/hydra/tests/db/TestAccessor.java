@@ -65,7 +65,7 @@ public class TestAccessor {
 		Assert.assertTrue(testUsersMap.size() == testUsersCount);
 		// get users from database
 		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
-		ResultAsListOfColumnOrSuperColumn result = accessor.get4KspCf(testPath);
+		ResultAsListOfColumnOrSuperColumn result = accessor.get4Path(testPath);
 		// test result
 		Assert.assertTrue(result.isOk());
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == testUsersCount);

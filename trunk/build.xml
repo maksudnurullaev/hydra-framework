@@ -80,6 +80,12 @@
 
 			<batchtest>
 				<fileset dir="${classes}">
+					<include name="**/TestFMDKspCfId.class" />
+				</fileset>
+			</batchtest>				
+			
+			<batchtest>
+				<fileset dir="${classes}">
 					<include name="**/TestVirt*.class" />
 				</fileset>
 			</batchtest>
@@ -108,13 +114,12 @@
 				</fileset>
 			</batchtest>			
 
-
 			<batchtest>
 				<fileset dir="${classes}">
 					<include name="**/TestLink*.class" />
 				</fileset>
 			</batchtest>
-
+			
 		</junit>
 
 
@@ -133,13 +138,20 @@ tests.failed=${tests.failed}
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />
-			
+
 			<batchtest>
 				<fileset dir="${classes}">
 					<include name="**/TestFMDKspCfId.class" />
 				</fileset>
+			</batchtest>	
+<!--
+			
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestFMDKspCfIdLinks.class" />
+				</fileset>
 			</batchtest>
-
+-->
 		</junit>
 
 

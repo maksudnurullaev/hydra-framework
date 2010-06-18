@@ -64,7 +64,7 @@ public class TestFMDKspCf {
 		// 1.2.1 create cassadnra's virtual path
 		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
 		// 1.2.2 request data from db
-		ResultAsListOfColumnOrSuperColumn result = accessor.get4KspCf(testPath);
+		ResultAsListOfColumnOrSuperColumn result = accessor.get4Path(testPath);
 		// 1.2.3 test result
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);
 		// 2. !!!------------------ Mutate ------------------ !!!
@@ -72,7 +72,7 @@ public class TestFMDKspCf {
 		// 2.1 test local test map size
 		Assert.assertTrue(testUsersMap.size() == testUsersCount);
 		// 2.2 !!!------------------ FIND ------------------!!!
-		result = accessor.get4KspCf(testPath);
+		result = accessor.get4Path(testPath);
 		// 2.3 test result
 		Assert.assertTrue(result.isOk());
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == testUsersCount);
@@ -98,7 +98,7 @@ public class TestFMDKspCf {
 		// 3. !!!------------------ Delete ------------------!!!
 		clearTestUsers();
 		// 3.1 get data from db
-		result = accessor.get4KspCf(testPath);
+		result = accessor.get4Path(testPath);
 		// 1.2.3 test result
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);		
 	}
