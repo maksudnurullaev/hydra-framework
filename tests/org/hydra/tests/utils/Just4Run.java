@@ -43,7 +43,7 @@ public class Just4Run {
 			
 			Assert.assertTrue(tempPath.getErrorCode() == ERR_CODES.NO_ERROR);
 			
-			ResultAsListOfColumnOrSuperColumn findColResult = accessorBean.get4KspCfId(tempPath);
+			ResultAsListOfColumnOrSuperColumn findColResult = accessorBean.get4Path(tempPath);
 			Assert.assertTrue(findColResult.isOk());
 			Assert.assertTrue(findColResult.getColumnOrSuperColumn().size() == 1);
 			
@@ -61,7 +61,7 @@ public class Just4Run {
 			Assert.assertTrue(delColResult.isOk());
 			
 			// test column
-			findColResult = accessorBean.get4KspCfId(tempPath);
+			findColResult = accessorBean.get4Path(tempPath);
 			Assert.assertTrue(findColResult.isOk());
 			Assert.assertTrue(findColResult.getColumnOrSuperColumn().size() == 0);
 		}
@@ -76,7 +76,7 @@ public class Just4Run {
 		CassandraAccessorBean accessor = Utils4Tests.getAccessor();
 		CassandraVirtualPath testUsersPath = new CassandraVirtualPath(descriptor, "KSMainTEST.Users");
 		
-		ResultAsListOfColumnOrSuperColumn resultUsers = accessor.get4KspCf(testUsersPath);
+		ResultAsListOfColumnOrSuperColumn resultUsers = accessor.get4Path(testUsersPath);
 	
 		System.out.println("TEST COLUMN COUNT: " + resultUsers.getColumnOrSuperColumn().size());
 	}

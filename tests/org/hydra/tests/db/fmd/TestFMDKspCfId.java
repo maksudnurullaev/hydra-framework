@@ -53,16 +53,21 @@ public class TestFMDKspCfId {
 				String.format(format, "ZZZ"));
 		Assert.assertEquals(PATH_TYPE.KSP___CF___ID, path.getPathType());
 		Assert.assertEquals(ERR_CODES.NO_ERROR, path.getErrorCode());
-		ResultAsListOfColumnOrSuperColumn resultAsListOfUsers = accessor.get4KspCfId(path);
+		ResultAsListOfColumnOrSuperColumn resultAsListOfUsers = accessor.get4Path(path);
 		Assert.assertTrue(resultAsListOfUsers.isOk());
 		Assert.assertEquals(0, resultAsListOfUsers.getColumnOrSuperColumn().size());
-		//!!!------------------ Create test users ------------------!!!
+		// create single user for test
 		Map<String, Map<String, String>> resultMapStringMapStringString = Utils4Tests.initTestUsers(1);
 		Assert.assertTrue(resultMapStringMapStringString.size() == 1);
+		// .. get test user id		
 		String userID = (String) resultMapStringMapStringString.keySet().toArray()[0];
 		//!!!------------------ FIND (single) ------------------!!!
 		path = new CassandraVirtualPath(descriptor,	String.format(format, userID));
-		resultAsListOfUsers = accessor.get4KspCfId(path);
+		resultAsListOfUsers = accessor.get4Path(path);
+		if(resultAsListOfUsers.getColumnOrSuperColumn().size() != 1){
+			System.out.println("ERROR!!! Size: " + resultAsListOfUsers.getColumnOrSuperColumn().size());
+			System.out.println("ERROR!!! Path: " + path.getPath());
+		}
 		Assert.assertEquals(1, resultAsListOfUsers.getColumnOrSuperColumn().size());
 		SuperColumn superColumn = resultAsListOfUsers.getColumnOrSuperColumn().get(0).super_column;
 		Assert.assertEquals(userID, DBUtils.bytes2UTF8String(superColumn.name));
@@ -72,7 +77,7 @@ public class TestFMDKspCfId {
 		resultMapStringMapStringString.get(userID).put(Utils4Tests.EMAIL, testMail);
 		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapKBytesVMapKBytesVBytes(resultMapStringMapStringString));
 		Assert.assertTrue(batchInsertResult.isOk());
-		resultAsListOfUsers = accessor.get4KspCfId(path);
+		resultAsListOfUsers = accessor.get4Path(path);
 		Map<String, byte[]> mapStringBytes = 
 			DBUtils.converMapStringByteA(resultAsListOfUsers.getColumnOrSuperColumn().get(0).super_column.columns);
 		Assert.assertTrue(mapStringBytes.containsKey(Utils4Tests.EMAIL));
@@ -80,7 +85,7 @@ public class TestFMDKspCfId {
 		//TODO !!!------------------ DELETE ------------------!!!
 		Result delColResult = accessor.delete4KspCfId(path);
 		Assert.assertTrue(delColResult.isOk());		
-		resultAsListOfUsers = accessor.get4KspCfId(path);
+		resultAsListOfUsers = accessor.get4Path(path);
 		Assert.assertTrue(resultAsListOfUsers.getColumnOrSuperColumn().size() == 0);		
 	}
 

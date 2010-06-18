@@ -123,8 +123,7 @@ public final class DBUtils {
 		return true;
 	}
 
-	
-	public static Result validate4NullPathKspCfPathType(CassandraVirtualPath inPath, PATH_TYPE inExpectedType){
+	public static Result test4NullKspCf(CassandraVirtualPath inPath){
 		Result result = new Result();
 		// validate path
 		if(inPath == null 
@@ -136,18 +135,7 @@ public final class DBUtils {
 			result.setResult(false);
 			result.setResult(errStr);
 			return result;
-		}
-		// validate path type
-		if(inPath.getErrorCode() != ERR_CODES.NO_ERROR
-				|| inPath.getPathType() != inExpectedType
-				){
-			String errStr = String.format("Invalid access path type: %s, should be: %s", inPath.getPathType(), inExpectedType);
-			_log.error(errStr);
-			result.setResult(false);
-			result.setResult(errStr);
-			return result;
-		}
-		
+		}		
 		result.setResult(true);
 		return result;
 	}	
