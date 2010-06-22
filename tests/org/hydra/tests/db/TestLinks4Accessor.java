@@ -70,7 +70,7 @@ public class TestLinks4Accessor {
 		Assert.assertNotNull(path._linkCf);
 		Assert.assertTrue(DBUtils.validateCfAndMap(path._linkCf, fieldValueMap));
 		// 4. insert data
-		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapKBytesVMapKBytesVBytes(testArticleMap));
+		Result batchInsertResult = accessor.update(path, DBUtils.convertMapKBytesVMapKBytesVBytes(testArticleMap));
 		// 5. test result
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
@@ -90,7 +90,7 @@ public class TestLinks4Accessor {
 		Assert.assertTrue(path._cfBean != null);
 		Assert.assertTrue(DBUtils.validateCfAndMap(path._cfBean, fieldValueMap));
 		// 4. insert data to db
-		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapKBytesVMapKBytesVBytes(testUserMap));
+		Result batchInsertResult = accessor.update(path, DBUtils.convertMapKBytesVMapKBytesVBytes(testUserMap));
 		// 5. Test result
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
@@ -103,14 +103,14 @@ public class TestLinks4Accessor {
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		
-		accessor.delete4KspCf(path);
+		accessor.delete(path);
 		
 		// delete all articles
 		path = new CassandraVirtualPath(descriptor, "KSMainTEST.Articles");
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
-		accessor.delete4KspCf(path);
+		accessor.delete(path);
 	}
 	
 	@Before
@@ -125,7 +125,7 @@ public class TestLinks4Accessor {
 	public void test_1_links(){
 		// get users from database
 		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS);
-		ResultAsListOfColumnOrSuperColumn result = accessor.get4Path(testPath);
+		ResultAsListOfColumnOrSuperColumn result = accessor.find(testPath);
 		// test result
 		Assert.assertTrue(result.isOk());
 		// test compare resultMap & result

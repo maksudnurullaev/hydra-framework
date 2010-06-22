@@ -22,7 +22,7 @@ import org.junit.Test;
 
 public class TestFMDKspCfIdLinks {
 	/**
-	 * FMD - (Find, Mutate(Insert/Update), Delete) 
+	 * FUD - (Find, Update, Delete) 
 	 */
 	static Map<String, Map<String, String>> testUsersMap = null;
 	
@@ -54,7 +54,9 @@ public class TestFMDKspCfIdLinks {
 		String userID = (String) resultMapStringMapStringString.keySet().toArray()[0];
 		//TODO !!!------------------ FIND links (nothing) ------------------!!!
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor,	String.format(format, userID));
-		ResultAsListOfColumnOrSuperColumn resultAsListOfUsers = accessor.get4Path(path);
+		ResultAsListOfColumnOrSuperColumn resultAsListOfUsers = accessor.find(path);
+		Assert.assertTrue(resultAsListOfUsers.isOk());
+		
 //		Assert.assertEquals(1, resultAsListOfUsers.getColumnOrSuperColumn().size());
 //		SuperColumn superColumn = resultAsListOfUsers.getColumnOrSuperColumn().get(0).super_column;
 //		Assert.assertEquals(userID, DBUtils.bytes2UTF8String(superColumn.name));

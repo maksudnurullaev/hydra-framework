@@ -73,7 +73,7 @@ public final class Utils4Tests {
 		Assert.assertTrue(path._cfBean != null);
 		Assert.assertTrue(DBUtils.validateCfAndMap(path._cfBean, tempMap));
 		// 3. Send Map<String, Map<String,String>> to batch insert
-		Result batchInsertResult = accessor.batchMutate(path, DBUtils.convertMapKBytesVMapKBytesVBytes(result));
+		Result batchInsertResult = accessor.update(path, DBUtils.convertMapKBytesVMapKBytesVBytes(result));
 		
 		// 4. Test result
 		Assert.assertTrue(batchInsertResult.isOk());
@@ -91,7 +91,7 @@ public final class Utils4Tests {
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		
-		return accessor.delete4KspCf(path);		
+		return accessor.delete(path);		
 	}
 	
 	public static CassandraAccessorBean getAccessor() {
@@ -115,6 +115,6 @@ public final class Utils4Tests {
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		
-		return accessor.delete4KspCf(path);		
+		return accessor.delete(path);		
 	}	
 }

@@ -32,7 +32,7 @@ public class Just4Run {
 			
 			Assert.assertTrue(tempPath.getErrorCode() == ERR_CODES.NO_ERROR);
 			
-			ResultAsListOfColumnOrSuperColumn findColResult = accessorBean.get4Path(tempPath);
+			ResultAsListOfColumnOrSuperColumn findColResult = accessorBean.find(tempPath);
 			Assert.assertTrue(findColResult.isOk());
 			Assert.assertTrue(findColResult.getColumnOrSuperColumn().size() == 1);
 			
@@ -46,11 +46,11 @@ public class Just4Run {
 			}
 			
 			// try delete column
-			Result delColResult = accessorBean.delete4KspCfId(tempPath);
+			Result delColResult = accessorBean.delete(tempPath);
 			Assert.assertTrue(delColResult.isOk());
 			
 			// test column
-			findColResult = accessorBean.get4Path(tempPath);
+			findColResult = accessorBean.find(tempPath);
 			Assert.assertTrue(findColResult.isOk());
 			Assert.assertTrue(findColResult.getColumnOrSuperColumn().size() == 0);
 		}
@@ -64,7 +64,7 @@ public class Just4Run {
 		CassandraAccessorBean accessor = Utils4Tests.getAccessor();
 		CassandraVirtualPath testUsersPath = new CassandraVirtualPath(descriptor, "KSMainTEST.Users");
 		
-		ResultAsListOfColumnOrSuperColumn resultUsers = accessor.get4Path(testUsersPath);
+		ResultAsListOfColumnOrSuperColumn resultUsers = accessor.find(testUsersPath);
 	
 		System.out.println("TEST COLUMN COUNT: " + resultUsers.getColumnOrSuperColumn().size());
 	}
