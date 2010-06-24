@@ -76,6 +76,7 @@ public class DeletePack extends ALogger {
 		return result;
 	}
 
+	//TODO Fix It
 	private static void delete4KspCfIDLinksLinkID(CassandraVirtualPath inPath,
 			List<DeletePack> result) {
 		// Part #1 delete real DB objects
@@ -102,25 +103,55 @@ public class DeletePack extends ALogger {
 
 	private static void delete4KspCfIDLinks(CassandraVirtualPath inPath, List<DeletePack> result) {
 		// Part #1 delete real DB objects
-		// ... get all linked IDs
+
 		CassandraAccessorBean accessor = Utils4Tests.getAccessor();
 		ResultAsListOfColumnOrSuperColumn dbLinks = accessor.find(inPath);
 		
 		// ... for cycle
+		// TODO Надо подумать на счет удаления и каскадного удаления зависимостей (links)
+		/** по идее дожны быть у далены все зависимости
+		 * 	например, удаляя пользователя, необходимо удалить все его прямые ссылки.
+		 * 		должны быть прямые ссылки и косвенные ссылки:
+		 * 			статься от автора - прямая ссылка
+		 * 			коммент для чужой статьи от автора - косвенная ссылка
+		 * 			и т.д.
+		 */
 		if(dbLinks.isOk()){
+			System.out.println("COUNT SIZE: " + dbLinks.getColumnOrSuperColumn().get(0).super_column.columns.size());
 			for(Column col: dbLinks.getColumnOrSuperColumn().get(0).super_column.columns){
-				DeletePack pack = new DeletePack();
-				
-				pack.setKsp(inPath.getPathPart(PARTS.P1_KSP));
-				pack.setCf(new ColumnPath(inPath.getPathPart(PARTS.P4_SUPER)));
-				pack.setKey(DBUtils.bytes2UTF8String(col.name));
-				pack.setTimestamp(System.currentTimeMillis());
-				pack.setConsistencyLevel(ConsistencyLevel.ONE);
-				
-				result.add(pack);
+				// ... delete db objects
+				DeletePack delDBObj = new DeletePack();
+				// ... ... ksp
+				delDBObj.setKsp(inPath.getPathPart(PARTS.P1_KSP));
+				// ... ... cf
+				delDBObj.setCf(new ColumnPath(inPath.getPathPart(PARTS.P4_SUPER)));
+				// ... ... super
+				delDBObj.getCf().setSuper_column(col.name);
+				// ... ... key
+				delDBObj.setKey(KEY_COLUMNS_DEF);
+				// ... ... timestamp & consistency
+				delDBObj.setTimestamp(System.currentTimeMillis());
+				delDBObj.setConsistencyLevel(ConsistencyLevel.ONE);
+				// ... pack
+				result.add(delDBObj);				
 			}
 		}
 		// Part #2 delete records from links table
+		// ... delete db objects links
+		DeletePack delDBLink = new DeletePack();
+		// ... ... ksp
+		delDBLink.setKsp(inPath.getPathPart(PARTS.P1_KSP));
+		// ... ... cf
+		delDBLink.setCf(new ColumnPath(inPath._kspBean.getLinkTableName()));
+		// ... ... super
+		delDBLink.getCf().setSuper_column(DBUtils.string2UTF8Bytes(inPath.getPathPart(PARTS.P4_SUPER)));
+		// ... ... key
+		delDBLink.setKey(inPath.getPathPart(PARTS.P3_KEY));
+		// ... ... timestamp & consistency		
+		delDBLink.setTimestamp(System.currentTimeMillis());
+		delDBLink.setConsistencyLevel(ConsistencyLevel.ONE);
+		// ... pack
+		result.add(delDBLink);
 	}
 
 	private static DeletePack delete4KspCf(CassandraVirtualPath inPath) {

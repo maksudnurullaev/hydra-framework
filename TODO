@@ -45,7 +45,10 @@
 		3. "KSMainTEST.Users.userID.Articles"           - all linked super columns
 		4. "KSMainTEST.Users.userID.Articles.articleID" - all linked super columns
 ==== Опеределение операций с каждым из видов описаний доступа:
-FMD - (Find, Mutate(Insert/Update), Delete)
+FMD  
+	Find(Check)
+	Mutate(Insert/Update)
+	Delete(Remove
 *. Создать тесты для FMD подхода
 	*. (+) KSP___CF,			
 	*. KSP___CF___COLUMNS 		
