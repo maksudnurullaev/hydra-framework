@@ -14,7 +14,7 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraAccessor extends ALogger {
-	public static final String COLUMNS_KEY_DEF = "COLUMNS";
+	public static final String KEY_COLUMNS_DEF = "COLUMNS";
 	
 	private String _host = null;
 	private int _port = -1;

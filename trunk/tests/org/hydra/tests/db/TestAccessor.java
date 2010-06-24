@@ -15,6 +15,7 @@ import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.Constants;
 import org.hydra.utils.CryptoManager;
 import org.hydra.utils.DBUtils;
+import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -25,7 +26,7 @@ import org.springframework.beans.factory.BeanFactory;
 
 public class TestAccessor {
 	private static final int testUsersCount = 5;
-	static Map<String, Map<String, String>> testUsersMap = new HashMap<String, Map<String, String>>();
+	static Map<String, Map<String, String>> users = new HashMap<String, Map<String, String>>();
 	
 	Log _log = LogFactory.getLog(this.getClass());
 	static BeanFactory beanFactory = Utils4Tests.getBeanFactory();
@@ -37,7 +38,23 @@ public class TestAccessor {
 		if(!accessor.isValid())
 			accessor.setup();
 		
-		testUsersMap = Utils4Tests.initTestUsers(testUsersCount);
+		// init test users
+		users = Utils4Tests.initTestUsers(testUsersCount);
+			
+		// Create access path for batch insert
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) Utils4Tests.getBean(Constants._beans_cassandra_descriptor);
+		
+		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
+		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
+		Assert.assertTrue(path._kspBean != null);
+		Assert.assertTrue(path._cfBean != null);
+		
+		// Send Map<String, Map<String,String>> to batch insert
+		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(users));
+		
+		// Test result
+		Assert.assertTrue(batchInsertResult.isOk());
+				
 	}
 
 	@AfterClass
@@ -62,7 +79,7 @@ public class TestAccessor {
 	
 	@Test
 	public void test_1_users(){
-		Assert.assertTrue(testUsersMap.size() == testUsersCount);
+		Assert.assertTrue(users.size() == testUsersCount);
 		// get users from database
 		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
 		ResultAsListOfColumnOrSuperColumn result = accessor.find(testPath);
@@ -73,8 +90,8 @@ public class TestAccessor {
 		
 		for(ColumnOrSuperColumn columnOrSuperColumn:result.getColumnOrSuperColumn()){
 			String ID1 = DBUtils.bytes2UTF8String(columnOrSuperColumn.super_column.name);
-			Assert.assertTrue(testUsersMap.containsKey(ID1));
-			Map<String, String> subMap = testUsersMap.get(ID1);
+			Assert.assertTrue(users.containsKey(ID1));
+			Map<String, String> subMap = users.get(ID1);
 			// test column and values
 			Assert.assertNotNull(columnOrSuperColumn.super_column.getColumns());
 			for(Column column: columnOrSuperColumn.super_column.getColumns()){
@@ -83,7 +100,7 @@ public class TestAccessor {
 				Assert.assertEquals(subMap.get(ID2), DBUtils.bytes2UTF8String(column.value));
 			}
 			Map<String, byte[]> mapStringByteA = DBUtils.converMapStringByteA(columnOrSuperColumn.super_column.getColumns());
-			Assert.assertNotNull(mapStringByteA.get(Utils4Tests.PASSWORD));
+			Assert.assertNotNull(mapStringByteA.get(Utils4Tests.USER_PASSWORD));
 
 		}
 	}

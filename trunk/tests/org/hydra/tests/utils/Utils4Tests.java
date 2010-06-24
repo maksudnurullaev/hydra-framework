@@ -8,8 +8,6 @@ import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.utils.Constants;
-import org.hydra.utils.CryptoManager;
-import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.junit.Assert;
 import org.springframework.beans.factory.BeanFactory;
@@ -25,14 +23,22 @@ import org.springframework.core.io.Resource;
  */
 public final class Utils4Tests {
 	public static final String USER_S = "user%s";
-	public static final String S_PASSWORD = "%sPassword";
-	public static final String PASSWORD = "Password";
-	public static final String EMAIL = "Email";
-	public static final String TEST_S_MAIL_COM = "test%s@mail.com";
+	public static final String USER_PASSWORD_S = "Password4%s";
+	public static final String USER_PASSWORD = "Password";
+	public static final String USER_EMAIL = "Email";
+	public static final String USER_TEST_S_MAIL_COM = "test%s@mail.com";
 	public static final String KSMAINTEST_Users = "KSMainTEST.Users";
 	public static final String KSMAINTEST_Articles = "KSMainTEST.Articles";
+	public static final String KSMAINTEST_Users_S_Articles = "KSMainTEST.Users.%s.Articles";
 	
 	public final static Resource res = new FileSystemResource(Constants._path2ApplicationContext_xml);
+	
+	private static final String ARTICLE_S = "article%s";
+	private static final String ARTICLE_TITLE_S = "article title %s";
+	private static final String ARTICLE_TEXT_S = "article text %s";
+	private static final String ARTICLE_TITLE = "Title";
+	private static final String ARTICLE_TEXT = "Text";
+	
 	public static XmlBeanFactory factory = new XmlBeanFactory(res);
 	
 	
@@ -45,14 +51,9 @@ public final class Utils4Tests {
 	}
 	
 	public static Map<String, Map<String, String>> initTestUsers(int count) {
+		
 		Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
-		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
-		if(!accessor.isValid())
-			accessor.setup();
 		
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);
-		
-		// 1. Iterate over the user count and create Map<String, Map<String,String>> for batch insert
 		String userID = null;
 		Map<String, String> tempMap = null;
 		for (int i = 0; i < count; i++) {
@@ -60,27 +61,38 @@ public final class Utils4Tests {
 
 			tempMap = new HashMap<String, String>();
 			
-			tempMap.put(PASSWORD, String.format(S_PASSWORD, userID)); // CryptoManager.encryptPassword(userID));
-			tempMap.put(EMAIL, String.format(TEST_S_MAIL_COM, i));
+			tempMap.put(USER_PASSWORD, String.format(USER_PASSWORD_S, userID)); // CryptoManager.encryptPassword(userID));
+			tempMap.put(USER_EMAIL, String.format(USER_TEST_S_MAIL_COM, i));
 			
 			result.put(userID, tempMap);
 		}
-		
-		// 2. Create access path for batch insert
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSMAINTEST_Users);
-		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertTrue(path._kspBean != null);
-		Assert.assertTrue(path._cfBean != null);
-		Assert.assertTrue(DBUtils.validateCfAndMap(path._cfBean, tempMap));
-		// 3. Send Map<String, Map<String,String>> to batch insert
-		Result batchInsertResult = accessor.update(path, DBUtils.convertMapKBytesVMapKBytesVBytes(result));
-		
-		// 4. Test result
-		Assert.assertTrue(batchInsertResult.isOk());
-		
+
 		return result;
 	}
 
+	public static Map<String, Map<String, String>> initTestArticles(int count) {
+		Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
+		
+		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
+		if(!accessor.isValid())accessor.setup();
+		
+		// 1. Iterate over the user count and create Map<String, Map<String,String>> for batch insert
+		String articleID = null;
+		Map<String, String> tempMap = null;
+		for (int i = 0; i < count; i++) {
+			articleID = String.format(ARTICLE_S, i);
+
+			tempMap = new HashMap<String, String>();
+			
+			tempMap.put(ARTICLE_TITLE, String.format(ARTICLE_TITLE_S, articleID )); 
+			tempMap.put(ARTICLE_TEXT, String.format(ARTICLE_TEXT_S, Constants.GetCurrentDateTime()));
+			
+			result.put(articleID, tempMap);
+		}		
+		
+		return result;
+	}
+	
 	public static Result deleteAllTestUsers() {
 		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
 		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);

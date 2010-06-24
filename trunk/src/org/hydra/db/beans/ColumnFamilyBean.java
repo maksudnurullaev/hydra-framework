@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hydra.db.beans.ColumnBean.COLUMN_TYPES;
+import org.hydra.utils.Result;
 import org.hydra.utils.abstracts.ALogger;
 
 /**
@@ -12,36 +12,56 @@ import org.hydra.utils.abstracts.ALogger;
  *
  */
 public class ColumnFamilyBean extends ALogger {
-	private Map<String, ColumnBean> columns = new HashMap<String, ColumnBean>();
-	private Map<String, ColumnBean> links = new HashMap<String, ColumnBean>();
+	public Map<String, ColumnBean> columns = new HashMap<String, ColumnBean>();
+	private Set<ColumnFamilyBean> links = null;
 	private String name = null;
 
-	public void setColumnBeans(Set<ColumnBean> inColumns) {
+	public void setColumns(Set<ColumnBean> inColumns) {
 		for(ColumnBean column: inColumns){
-			getLog().debug(String.format("Add column/type: %s/%s to %s",
-					column.getName(),
-					column.getTType(),
-					getName()));
-			if(column.getTType() == COLUMN_TYPES.COLUMNS)
-				this.columns.put(column.getName(), column);
-			else if(column.getTType() == COLUMN_TYPES.LINKS)
-				this.links.put(column.getName(), column);
-			else
-				getLog().error("Unkown column type: " + column.getTType());
+			getLog().debug("Add column: " + getName());			
+			this.columns.put(column.getName(), column);
 		}
 		getLog().debug(String.format("%s fields added to %s", inColumns.size(), getName()));
 	}
-
-	public Map<String, ColumnBean> getColumns() {
-		return columns;
+	
+	public void setLinks( Set<ColumnFamilyBean> inLinks){
+		this.links = inLinks;
 	}
 	
-	public Map<String, ColumnBean> getLinks() {
+	public Set<ColumnFamilyBean> getLinks() {
 		return links;
 	}		
+	
+	public boolean containsLink(String inName){
+		if(links == null) return false;
+		
+		for(ColumnFamilyBean bean:links)
+			if(bean.getName().equals(inName)) return true;
+		
+		return false;
+	}	
+	
+	public Result getLink(String inName){
+		Result result = new Result();
+		if(links == null){
+			result.setResult(false);
+			result.setResult("Links is NULL!");
+		}
+		
+		for(ColumnFamilyBean bean:links)
+			if(bean.getName().equals(name)){
+				result.setResult(true);
+				result.setObject(bean);
+				return result;
+			}
+		
+		result.setResult(false);
+		result.setResult("Link not found!");
+		return result;
+	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String inName) {
+		this.name = inName;
 		getLog().debug("Setup CF name: " + getName());
 	}
 
@@ -49,11 +69,21 @@ public class ColumnFamilyBean extends ALogger {
 		return name;
 	}
 
-	public ColumnBean getAnyColumnOrLinkByName(String columnName) {
-		if(columns != null && columns.containsKey(columnName)) return columns.get(columnName);
-		if(links != null && links.containsKey(columnName)) return links.get(columnName);
+	public Result getColumn(String inName) {
+		Result result = new Result();
+		
+		if(!columns.containsKey(inName)){
+			result.setResult(false);
+			result.setResult("Column not found!");
+			return result;
+		}
+		
+		result.setResult(true);
+		result.setObject(columns.get(inName));
+		return result;
+	}
 
-		getLog().error("Could not find column or link description for name: " + columnName);
-		return null;
+	public boolean containsColumn(String columnName) {
+		return columns.containsKey(columnName);
 	}
 }

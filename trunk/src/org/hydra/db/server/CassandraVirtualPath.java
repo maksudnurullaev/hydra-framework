@@ -2,10 +2,8 @@ package org.hydra.db.server;
 
 import java.util.EnumMap;
 
-import org.hydra.db.beans.ColumnBean;
 import org.hydra.db.beans.ColumnFamilyBean;
 import org.hydra.db.beans.KeyspaceBean;
-import org.hydra.db.beans.ColumnBean.COLUMN_TYPES;
 import org.hydra.utils.abstracts.ALogger;
 
 public class CassandraVirtualPath extends ALogger {
@@ -51,10 +49,7 @@ public class CassandraVirtualPath extends ALogger {
 	public enum PATH_TYPE {
 		UNDEFINED,							/* undefined */
 		KSP___CF,							/* all super columns */
-		KSP___CF___COLUMNS, 				/* description of super columns */
-		KSP___CF___LINKS, 					/* description of links */
 		KSP___CF___ID,				 		/* super column */
-		KSP___CF___ID___COL,				/* column of super column */
 		KSP___CF___ID___LINKNAME,			/* all links */
 		KSP___CF___ID___LINKNAME__LINKID,	/* link */ 
 	};
@@ -64,8 +59,7 @@ public class CassandraVirtualPath extends ALogger {
 	private CassandraDescriptorBean _descriptor;
 	public KeyspaceBean _kspBean = null;
 	public ColumnFamilyBean _cfBean = null;
-	public ColumnFamilyBean _linkCf = null;	
-	public ColumnBean _colBean = null;
+	public ColumnFamilyBean _cfLinkBean = null;	
 	// ... path && path type
 	PATH_TYPE _pathType = PATH_TYPE.UNDEFINED;
 	// ... others
@@ -194,16 +188,9 @@ public class CassandraVirtualPath extends ALogger {
 	}
 
 	private boolean init4Parameters() {
-		// * [Optional] validate 4th parts
-		if (_cfBean.getColumns().containsKey(_pathMap.get(PARTS.P4_SUPER))) {
-			_colBean = _cfBean.getColumns().get(_pathMap.get(PARTS.P4_SUPER));
-			_pathType = PATH_TYPE.KSP___CF___ID___COL;
-			_errCode = ERR_CODES.NO_ERROR;
-			return true;
-		}else if(_cfBean.getLinks().containsKey(_pathMap.get(PARTS.P4_SUPER))){
+		if(_cfBean.containsLink(_pathMap.get(PARTS.P4_SUPER))){
 			_linkName = _pathMap.get(PARTS.P4_SUPER);
-			_colBean = _cfBean.getLinks().get(_pathMap.get(PARTS.P4_SUPER));
-			_linkCf = _kspBean.getColumnFamilyByName(_pathMap.get(PARTS.P4_SUPER));
+			_cfLinkBean = _kspBean.getColumnFamilyByName(_pathMap.get(PARTS.P4_SUPER));
 			_pathType = PATH_TYPE.KSP___CF___ID___LINKNAME;
 			_errCode = ERR_CODES.NO_ERROR;
 			return true;
@@ -216,26 +203,10 @@ public class CassandraVirtualPath extends ALogger {
 	}
 
 	private boolean init3Parameters() {
-		try {
-			COLUMN_TYPES columnType = COLUMN_TYPES.valueOf(_pathMap
-					.get(PARTS.P3_KEY));
-			if (columnType == COLUMN_TYPES.COLUMNS) {
-				_pathType = PATH_TYPE.KSP___CF___COLUMNS;
-				_errCode = ERR_CODES.NO_ERROR;
-			} else if (columnType == COLUMN_TYPES.LINKS) {
-				_pathType = PATH_TYPE.KSP___CF___LINKS;
-				_errCode = ERR_CODES.NO_ERROR;
-			} else {
-				setError("Invalid column type: " + columnType.toString());
-				_errCode = ERR_CODES.INVALID_DIC_TYPE;
-			}				
-		} catch (Exception e) {
-			getLog().error("Could not find predefined column type: " + _pathMap.get(PARTS.P3_KEY));
-			_pathType = PATH_TYPE.KSP___CF___ID;
-			_ID = _pathMap.get(PARTS.P3_KEY);
-			_errCode = ERR_CODES.NO_ERROR;
-		}
-		return _errCode == ERR_CODES.NO_ERROR;
+		_pathType = PATH_TYPE.KSP___CF___ID;
+		_ID = _pathMap.get(PARTS.P3_KEY);
+		_errCode = ERR_CODES.NO_ERROR;
+		return true;
 	}
 
 	private boolean init2Parameters() {
