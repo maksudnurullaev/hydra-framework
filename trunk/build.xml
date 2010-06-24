@@ -150,12 +150,12 @@ tests.failed=${tests.failed}
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />			
-
+			
 			<batchtest>
 				<fileset dir="${classes}">
 					<include name="**/TestFMDKspCfIdLinks.class" />
 				</fileset>
-			</batchtest>					
+			</batchtest>
 			
 		</junit>
 
