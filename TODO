@@ -14,6 +14,7 @@
 	*. Cоздать главу управление пользователями
 	*. Создать главу управления ролями
 	*. Создать личный кобинет пользователя в системе
+*. Создать отдельный статичный класс для генерации Java скриптов	
 	
 === Cassandra
 *. (+) Создать раздел статистики данных по серверу
@@ -41,11 +42,8 @@
 	*. Примеры:
 		1. "KSMainTEST.Users"                           - all super columns
 		2. "KSMainTEST.Users.userID"                    - super column
-		3. "KSMainTEST.Users.userID.Password"           - column
-		4. "KSMainTEST.Users.userID.Articles"           - all linked super columns
-		5. "KSMainTEST.Users.userID.Articles.articleID" - all linked super columns
-		6. "KSMainTEST.Users.LINKS"                     - links descriptions
-		7. "KSMainTEST.Users.COLUMNS"                   - columns descriptions
+		3. "KSMainTEST.Users.userID.Articles"           - all linked super columns
+		4. "KSMainTEST.Users.userID.Articles.articleID" - all linked super columns
 ==== Опеределение операций с каждым из видов описаний доступа:
 FMD - (Find, Mutate(Insert/Update), Delete)
 *. Создать тесты для FMD подхода
@@ -53,6 +51,5 @@ FMD - (Find, Mutate(Insert/Update), Delete)
 	*. KSP___CF___COLUMNS 		
 	*. KSP___CF___LINKS 		
 	*. (+)KSP___CF___ID	
-	*. KSP___CF___ID___COL <---> KSP___CF___ID 
 	*. KSP___CF___ID___LINKNAME
 	*. KSP___CF___ID___LINKNAME__LINKID 

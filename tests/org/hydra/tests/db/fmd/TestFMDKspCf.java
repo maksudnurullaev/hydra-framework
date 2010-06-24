@@ -29,7 +29,7 @@ public class TestFMDKspCf {
 	 * FMD - (Find, Mutate(Insert/Update), Delete) 
 	 */
 	public static final int testUsersCount = 5;
-	static Map<String, Map<String, String>> testUsersMap = new HashMap<String, Map<String, String>>();
+	static Map<String, Map<String, String>> users = new HashMap<String, Map<String, String>>();
 	
 	Log _log = LogFactory.getLog(this.getClass());
 	static BeanFactory beanFactory = Utils4Tests.getBeanFactory();
@@ -62,25 +62,38 @@ public class TestFMDKspCf {
 		clearTestUsers();
 		// 1.2 request users data
 		// 1.2.1 create cassadnra's virtual path
-		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
+		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
 		// 1.2.2 request data from db
-		ResultAsListOfColumnOrSuperColumn result = accessor.find(testPath);
+		ResultAsListOfColumnOrSuperColumn result = accessor.find(path);
 		// 1.2.3 test result
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);
 		// 2. !!!------------------ Mutate ------------------ !!!
-		testUsersMap = Utils4Tests.initTestUsers(testUsersCount);
+		// ... init test users
+		Map<String, Map<String, String>> users = Utils4Tests.initTestUsers(testUsersCount);
+			
+		// ... create access path for batch insert
+		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
+		Assert.assertTrue(path._kspBean != null);
+		Assert.assertTrue(path._cfBean != null);
+		Assert.assertTrue(DBUtils.validateFields(path._cfBean, users));
+		
+		// ... send Map<String, Map<String,String>> to batch insert
+		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(users));
+		
+		// Test result
+		Assert.assertTrue(batchInsertResult.isOk());		
 		// 2.1 test local test map size
-		Assert.assertTrue(testUsersMap.size() == testUsersCount);
+		Assert.assertTrue(users.size() == testUsersCount);
 		// 2.2 !!!------------------ FIND ------------------!!!
-		result = accessor.find(testPath);
+		result = accessor.find(path);
 		// 2.3 test result
 		Assert.assertTrue(result.isOk());
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == testUsersCount);
 		// 2.4 compare local & cassandra'a data
 		for(ColumnOrSuperColumn columnOrSuperColumn:result.getColumnOrSuperColumn()){
 			String ID1 = DBUtils.bytes2UTF8String(columnOrSuperColumn.super_column.name);
-			Assert.assertTrue(testUsersMap.containsKey(ID1));
-			Map<String, String> subMap = testUsersMap.get(ID1);
+			Assert.assertTrue(users.containsKey(ID1));
+			Map<String, String> subMap = users.get(ID1);
 			// test column and values
 			Assert.assertNotNull(columnOrSuperColumn.super_column.getColumns());
 			for(Column column: columnOrSuperColumn.super_column.getColumns()){
@@ -89,16 +102,16 @@ public class TestFMDKspCf {
 				Assert.assertEquals(subMap.get(ID2), DBUtils.bytes2UTF8String(column.value));
 			}
 			Map<String, byte[]> mapStringByteA = DBUtils.converMapStringByteA(columnOrSuperColumn.super_column.getColumns());
-			Assert.assertNotNull(mapStringByteA.get(Utils4Tests.PASSWORD));
-			Assert.assertEquals(String.format(Utils4Tests.S_PASSWORD, ID1), 
-					DBUtils.bytes2UTF8String(mapStringByteA.get(Utils4Tests.PASSWORD)));
+			Assert.assertNotNull(mapStringByteA.get(Utils4Tests.USER_PASSWORD));
+			Assert.assertEquals(String.format(Utils4Tests.USER_PASSWORD_S, ID1), 
+					DBUtils.bytes2UTF8String(mapStringByteA.get(Utils4Tests.USER_PASSWORD)));
 		}
 		// print result - debug
 		// DBUtils.printResult(result);
 		// 3. !!!------------------ Delete ------------------!!!
 		clearTestUsers();
 		// 3.1 get data from db
-		result = accessor.find(testPath);
+		result = accessor.find(path);
 		// 1.2.3 test result
 		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);		
 	}

@@ -13,6 +13,7 @@ import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
 import org.hydra.tests.utils.Utils4Tests;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
@@ -57,10 +58,29 @@ public class TestFMDKspCfId {
 		Assert.assertTrue(resultAsListOfUsers.isOk());
 		Assert.assertEquals(0, resultAsListOfUsers.getColumnOrSuperColumn().size());
 		// create single user for test
-		Map<String, Map<String, String>> resultMapStringMapStringString = Utils4Tests.initTestUsers(1);
-		Assert.assertTrue(resultMapStringMapStringString.size() == 1);
+		Map<String, Map<String, String>> user = Utils4Tests.initTestUsers(1);
 		// .. get test user id		
-		String userID = (String) resultMapStringMapStringString.keySet().toArray()[0];
+		String userID = (String) user.keySet().toArray()[0];
+		
+			
+		// create access path for batch insert
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) Utils4Tests.getBean(Constants._beans_cassandra_descriptor);
+		
+		path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
+		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
+		Assert.assertTrue(path._kspBean != null);
+		Assert.assertTrue(path._cfBean != null);
+		Assert.assertTrue(user.containsKey(userID));
+		Assert.assertTrue(user.size() == 1);
+		Assert.assertTrue(DBUtils.validateFields(path._cfBean, user.get(userID)));
+		
+		// send Map<String, Map<String,String>> to batch insert
+		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(user));
+		
+		// test result
+		Assert.assertTrue(batchInsertResult.isOk());		
+		
+		Assert.assertTrue(user.size() == 1);
 		//!!!------------------ FIND (single) ------------------!!!
 		path = new CassandraVirtualPath(descriptor,	String.format(format, userID));
 		resultAsListOfUsers = accessor.find(path);
@@ -72,16 +92,16 @@ public class TestFMDKspCfId {
 		SuperColumn superColumn = resultAsListOfUsers.getColumnOrSuperColumn().get(0).super_column;
 		Assert.assertEquals(userID, DBUtils.bytes2UTF8String(superColumn.name));
 		//!!!------------------ MUTATE (change) ------------------!!!
-		Assert.assertTrue(resultMapStringMapStringString.get(userID).containsKey(Utils4Tests.EMAIL));
+		Assert.assertTrue(user.get(userID).containsKey(Utils4Tests.USER_EMAIL));
 		String testMail = "zzzz@zzz.zzz";
-		resultMapStringMapStringString.get(userID).put(Utils4Tests.EMAIL, testMail);
-		Result batchInsertResult = accessor.update(path, DBUtils.convertMapKBytesVMapKBytesVBytes(resultMapStringMapStringString));
+		user.get(userID).put(Utils4Tests.USER_EMAIL, testMail);
+		batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(user));
 		Assert.assertTrue(batchInsertResult.isOk());
 		resultAsListOfUsers = accessor.find(path);
 		Map<String, byte[]> mapStringBytes = 
 			DBUtils.converMapStringByteA(resultAsListOfUsers.getColumnOrSuperColumn().get(0).super_column.columns);
-		Assert.assertTrue(mapStringBytes.containsKey(Utils4Tests.EMAIL));
-		Assert.assertEquals(testMail, DBUtils.bytes2UTF8String(mapStringBytes.get(Utils4Tests.EMAIL)));
+		Assert.assertTrue(mapStringBytes.containsKey(Utils4Tests.USER_EMAIL));
+		Assert.assertEquals(testMail, DBUtils.bytes2UTF8String(mapStringBytes.get(Utils4Tests.USER_EMAIL)));
 		//TODO !!!------------------ DELETE ------------------!!!
 		Result delColResult = accessor.delete(path);
 		Assert.assertTrue(delColResult.isOk());		

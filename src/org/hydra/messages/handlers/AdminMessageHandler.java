@@ -66,7 +66,7 @@ public class AdminMessageHandler extends AMessageHandler {
 					inMessage.setError(errorStr);
 					return inMessage;
 				}	
-				SessionManager.getCassandraDescriptor().describeColumn(inMessage);		
+				DBUtils.describeColumn(SessionManager.getCassandraDescriptor(), inMessage);		
 		}else if(inMessage.getData().get(IMessage._data_action).equals(_action_cs_select_column)){
 				if(!testParameters(inMessage, IMessage._data_cs_ksp, IMessage._data_cs_cf, IMessage._data_cs_key, IMessage._data_cs_col)){
 					String errorStr = "Missing parameters _cs_key or _cs_col!";
@@ -155,7 +155,7 @@ public class AdminMessageHandler extends AMessageHandler {
 		
 		String result = String.format(formatStrong, "Column family", cfBean.getName());
 		
-		for(Map.Entry<String, ColumnBean> entryCFKey: cfBean.getColumns().entrySet()){
+		for(Map.Entry<String, ColumnBean> entryCFKey: cfBean.columns.entrySet()){
 			if(counter++ != 0)
 				resultLinks += ", ";
 			resultLinks += Constants.makeJSLink(entryCFKey.getKey(),

@@ -17,6 +17,8 @@ import org.apache.cassandra.thrift.SuperColumn;
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.abstracts.ACassandraAccessor;
+import org.hydra.db.utils.DeletePack;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
@@ -46,15 +48,22 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		case KSP___CF:
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
-			key = COLUMNS_KEY_DEF;
+			key = KEY_COLUMNS_DEF;
 			predicate = DBUtils.getSlicePredicate(null, null);
 			cLevel = ConsistencyLevel.ONE;
 			break;
 		case KSP___CF___ID:
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
-			key = COLUMNS_KEY_DEF;			
+			key = KEY_COLUMNS_DEF;			
 			predicate = DBUtils.getSlicePredicate(inPath.getPathPart(PARTS.P3_KEY), inPath.getPathPart(PARTS.P3_KEY));	
+			cLevel = ConsistencyLevel.ONE;
+			break;
+		case KSP___CF___ID___LINKNAME:
+			ksp = inPath.getPathPart(PARTS.P1_KSP);
+			cf = new ColumnParent(inPath._kspBean.getLinkTableName());
+			key = inPath.getPathPart(PARTS.P3_KEY);
+			predicate = DBUtils.getSlicePredicate(inPath.getPathPart(PARTS.P4_SUPER), inPath.getPathPart(PARTS.P4_SUPER));	
 			cLevel = ConsistencyLevel.ONE;
 			break;
 		default:
@@ -141,23 +150,65 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 	private void generateMutationMap4KspCfIDLinks(CassandraVirtualPath inPath,
 			Map<byte[], Map<byte[], byte[]>> inBatchMap,
 			List<Map<String, Map<String, List<Mutation>>>> result) {
-		// 1. setup access path for links
+		
+		// setup access path for links
 		CassandraVirtualPath linksVPath = new CassandraVirtualPath(inPath.getDescriptor(),
-				String.format("%s.%s", inPath._kspBean.getName(), inPath._colBean.getName()));
-		// 2. create batch data map for links
-		generateMutationMap4KspCf(linksVPath, inBatchMap, result);
-		// 3. create batch data map for LINKS table
+				String.format("%s.%s", inPath._kspBean.getName(), inPath._cfLinkBean.getName()));
+		// create mutation
+		List<byte[]> linkIDs = generateMutationMap4KspCf(linksVPath, inBatchMap, result);
+		// create mutation for links
+		generateMutation4Links(inPath, linkIDs, result);
 	}
 
-	private void generateMutationMap4KspCf(CassandraVirtualPath inPath,
-			Map<byte[], Map<byte[], byte[]>> inBatchMap, List<Map<String, Map<String, List<Mutation>>>> result) {
-		getLog().debug("Generate mutation list for: " + inPath.getPath());
+	private void generateMutation4Links(CassandraVirtualPath inPath,
+			List<byte[]> linkIDs,
+			List<Map<String, Map<String, List<Mutation>>>> inResult) {
 		
 		Map<String, Map<String, List<Mutation>>> mapKeyMapCfListMutaion = new HashMap<String, Map<String,List<Mutation>>>();
-		// * create Map<String, List<Mutation>> - mutationCfMap
 		Map<String, List<Mutation>> mapCfListMutaion = new HashMap<String, List<Mutation>>();
-		// ** create List<Mutation> - listOfMutation
 		List<Mutation> listOfMutation = new ArrayList<Mutation>();
+		
+		List<Column> listOfColumns = new ArrayList<Column>();
+		
+		// generate columns
+		for(byte[] bytes: linkIDs){
+			listOfColumns.add(new Column(bytes, DBUtils.string2UTF8Bytes(Constants.GetCurrentDateTime()), System.currentTimeMillis()));
+		}
+		
+		// generate super_column
+		SuperColumn superColumn = new SuperColumn();
+		superColumn.setName(DBUtils.string2UTF8Bytes(inPath._cfLinkBean.getName()));
+		superColumn.setColumns(listOfColumns);
+		
+		// generate ColumnOrSuperColumn
+		ColumnOrSuperColumn columnOrSuperColumn = new ColumnOrSuperColumn();
+		columnOrSuperColumn.setSuper_column(superColumn);
+		
+		// generate Mutation
+		Mutation mutation = new Mutation();
+		mutation.setColumn_or_supercolumn(columnOrSuperColumn);
+		listOfMutation.add(mutation);		
+		
+		// set Cf
+		mapCfListMutaion.put(inPath._kspBean.getLinkTableName(), listOfMutation);
+		
+		// set Key
+		mapKeyMapCfListMutaion.put(inPath.getID(), mapCfListMutaion);		
+		
+		// update result
+		inResult.add(mapKeyMapCfListMutaion);		
+	}
+
+	private List<byte[]> generateMutationMap4KspCf(CassandraVirtualPath inPath,
+			Map<byte[], Map<byte[], byte[]>> inBatchMap, List<Map<String, Map<String, List<Mutation>>>> inResult) {
+		getLog().debug("Generate mutation list for: " + inPath.getPath());
+		
+		List<byte[]> resultListOfIDs = new ArrayList<byte[]>();
+		
+		Map<String, Map<String, List<Mutation>>> mapKeyMapCfListMutaion = new HashMap<String, Map<String,List<Mutation>>>();
+		Map<String, List<Mutation>> mapCfListMutaion = new HashMap<String, List<Mutation>>();
+		List<Mutation> listOfMutation = new ArrayList<Mutation>();
+		//            Super       Col     Val
 		for(Map.Entry<byte[], Map<byte[], byte[]>> mapIdColsVals:inBatchMap.entrySet()){
 			// setup List<Column> object
 			List<Column> listOfColumns = new ArrayList<Column>();			
@@ -177,15 +228,24 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			// add to List<Mutation> result object
 			listOfMutation.add(mutation);
 			// make result
-			result.add(mapKeyMapCfListMutaion);
+			inResult.add(mapKeyMapCfListMutaion);
+			// add ids of mutation
+			resultListOfIDs.add(mapIdColsVals.getKey());
 		}
-		// * setup mutationCfMap
+		
+		// set Cf
 		mapCfListMutaion.put(inPath._cfBean.getName(), listOfMutation);
-		// setup mutationKeyCfMap
-		mapKeyMapCfListMutaion.put(COLUMNS_KEY_DEF, mapCfListMutaion);
-		// finish, make result
-		result.add(mapKeyMapCfListMutaion);
+		
+		// set Key
+		mapKeyMapCfListMutaion.put(KEY_COLUMNS_DEF, mapCfListMutaion);
+		
+		// update result
+		inResult.add(mapKeyMapCfListMutaion);
+		
 		getLog().debug("Added super columns count: " + mapKeyMapCfListMutaion.size());
+		
+		// finish
+		return resultListOfIDs;
 	}
 
 	public Result delete(CassandraVirtualPath inPath) {
@@ -196,34 +256,16 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			getLog().error(result.getResult());
 			return result;
 		}
-		// init params
-		String ksp = inPath.getPathPart(PARTS.P1_KSP);
-		String key = COLUMNS_KEY_DEF;
-		ColumnPath cf = new ColumnPath(inPath.getPathPart(PARTS.P2_CF));
-		long timestamp = System.currentTimeMillis();
-		ConsistencyLevel cLevel =ConsistencyLevel.ONE;
-		
-		switch (inPath.getPathType()) {
-		case KSP___CF:
-			break;
-		case KSP___CF___ID:
-			cf.setSuper_column(DBUtils.string2UTF8Bytes(inPath.getPathPart(PARTS.P3_KEY)));
-			break;
-		default:
-			String errStr = String.format("Unknow path(%s) to get db records!", inPath.getPath());
-			result.setResult(false);
-			result.setResult(errStr);
-			getLog().error(errStr);
-			return result;
-		}		
 		
 		Client client = clientBorrow();
-		try{
-			client.remove(ksp, 
-					key, 
-					cf, 
-					timestamp, 
-					cLevel);
+		try{			
+			for(DeletePack pack:DeletePack.getDeletePack(inPath)){
+				client.remove(pack.getKsp(), 
+				pack.getKey(), 
+				pack.getCf(), 
+				pack.getTimestamp(), 
+				pack.getConsistencyLevel());				
+			}
 			result.setResult(true);
 			result.setResult(null);
 		}catch (Exception e) {

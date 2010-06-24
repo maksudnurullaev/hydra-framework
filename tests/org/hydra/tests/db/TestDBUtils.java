@@ -37,8 +37,8 @@ public class TestDBUtils {
 		// 2. setup cf's
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES);
 		// test against users cf
-		Assert.assertFalse(DBUtils.validateCfAndMap(path._cfBean, fieldValueMap));
+		Assert.assertFalse(DBUtils.validateFields(path._cfBean, fieldValueMap));
 		// test against articles cf
-		Assert.assertTrue(DBUtils.validateCfAndMap(path._linkCf, fieldValueMap));
+		Assert.assertTrue(DBUtils.validateFields(path._cfLinkBean, fieldValueMap));
 	}
 }

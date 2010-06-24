@@ -67,10 +67,10 @@ public class TestLinks4Accessor {
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		// 3. validate columns
-		Assert.assertNotNull(path._linkCf);
-		Assert.assertTrue(DBUtils.validateCfAndMap(path._linkCf, fieldValueMap));
+		Assert.assertNotNull(path._cfLinkBean);
+		Assert.assertTrue(DBUtils.validateFields(path._cfLinkBean, fieldValueMap));
 		// 4. insert data
-		Result batchInsertResult = accessor.update(path, DBUtils.convertMapKBytesVMapKBytesVBytes(testArticleMap));
+		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(testArticleMap));
 		// 5. test result
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
@@ -88,9 +88,9 @@ public class TestLinks4Accessor {
 		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF);
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
-		Assert.assertTrue(DBUtils.validateCfAndMap(path._cfBean, fieldValueMap));
+		Assert.assertTrue(DBUtils.validateFields(path._cfBean, fieldValueMap));
 		// 4. insert data to db
-		Result batchInsertResult = accessor.update(path, DBUtils.convertMapKBytesVMapKBytesVBytes(testUserMap));
+		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(testUserMap));
 		// 5. Test result
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
