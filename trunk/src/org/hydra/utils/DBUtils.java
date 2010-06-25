@@ -104,9 +104,9 @@ public final class DBUtils {
 							column.timestamp));							
 				}
 			}
-			System.out.println("TEST COLUMN COUNT: " + result.getColumnOrSuperColumn().size()); 
+			_log.debug("Column count: " + result.getColumnOrSuperColumn().size()); 
 		}else{
-			System.out.println("Result is NULL or EMPTY!");				
+			_log.warn("Nothing to print!");				
 		}
 	}
 

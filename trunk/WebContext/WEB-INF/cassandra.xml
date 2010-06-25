@@ -71,9 +71,13 @@
 				</bean>
 			</set>			
 		</property>
-		<property name="links">
+		<property name="childs">
 			<set>
 				<ref bean="Comments"/>
+			</set>			
+		</property>
+		<property name="links">
+			<set>
 				<ref bean="Tags"/>
 				<ref bean="Users"/>
 			</set>			
@@ -89,9 +93,13 @@
 				</bean>
 			</set>			
 		</property>
-		<property name="links">
+		<property name="childs">
 			<set>
 				<ref bean="Comments"/>
+			</set>			
+		</property>
+		<property name="links">
+			<set>
 				<ref bean="Users"/>
 			</set>			
 		</property>
@@ -110,10 +118,9 @@
 				</bean>
 			</set>			
 		</property>
-		<property name="links">
+		<property name="childs">
 			<set>
 				<ref bean="Articles"/>
-				<ref bean="Comments"/>
 			</set>			
 		</property>				
 	</bean>
