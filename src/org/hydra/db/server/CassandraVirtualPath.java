@@ -188,7 +188,7 @@ public class CassandraVirtualPath extends ALogger {
 	}
 
 	private boolean init4Parameters() {
-		if(_cfBean.containsLink(_pathMap.get(PARTS.P4_SUPER))){
+		if(_cfBean.containsRelation(_pathMap.get(PARTS.P4_SUPER))){
 			_linkName = _pathMap.get(PARTS.P4_SUPER);
 			_cfLinkBean = _kspBean.getColumnFamilyByName(_pathMap.get(PARTS.P4_SUPER));
 			_pathType = PATH_TYPE.KSP___CF___ID___LINKNAME;

@@ -58,6 +58,7 @@ public class DeletePack extends ALogger {
 			result.add(delete4KspCf(inPath));			
 			break;
 		case KSP___CF___ID:
+			//TODO ----- reorganize to Ksp.Cf.Id deletetion
 			DeletePack pack = delete4KspCf(inPath);
 			pack.getCf().setSuper_column(DBUtils.string2UTF8Bytes(inPath.getPathPart(PARTS.P3_KEY)));
 			result.add(pack);
@@ -108,16 +109,8 @@ public class DeletePack extends ALogger {
 		ResultAsListOfColumnOrSuperColumn dbLinks = accessor.find(inPath);
 		
 		// ... for cycle
-		// TODO Надо подумать на счет удаления и каскадного удаления зависимостей (links)
-		/** по идее дожны быть у далены все зависимости
-		 * 	например, удаляя пользователя, необходимо удалить все его прямые ссылки.
-		 * 		должны быть прямые ссылки и косвенные ссылки:
-		 * 			статься от автора - прямая ссылка
-		 * 			коммент для чужой статьи от автора - косвенная ссылка
-		 * 			и т.д.
-		 */
 		if(dbLinks.isOk()){
-			System.out.println("COUNT SIZE: " + dbLinks.getColumnOrSuperColumn().get(0).super_column.columns.size());
+			_log.debug("Delete column count: " + dbLinks.getColumnOrSuperColumn().get(0).super_column.columns.size());
 			for(Column col: dbLinks.getColumnOrSuperColumn().get(0).super_column.columns){
 				// ... delete db objects
 				DeletePack delDBObj = new DeletePack();

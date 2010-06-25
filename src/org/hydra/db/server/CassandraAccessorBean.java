@@ -9,6 +9,7 @@ import org.apache.cassandra.thrift.Cassandra;
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;
+import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
@@ -276,6 +277,34 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		}		
 		
 		return result;
+	}
+
+	public ResultAsListOfColumnOrSuperColumn getAllLinks4(CassandraVirtualPath inPath, SlicePredicate inPredicate) {
+		// ===
+		String ksp = inPath.getPathPart(PARTS.P1_KSP);
+		ColumnParent cf = new ColumnParent(inPath._kspBean.getLinkTableName());
+		String key = inPath.getPathPart(PARTS.P3_KEY);
+		ConsistencyLevel cLevel = ConsistencyLevel.ONE;
+		
+		// init new result
+		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();		
+		
+		// try to get records
+		Cassandra.Client client = clientBorrow();
+		try {
+			result.setColumnOrSuperColumn(client.get_slice(ksp,	key, cf, inPredicate, cLevel));
+			result.setResult(true);
+		} catch (Exception e) {
+			result.setResult(false);
+			getLog().error(e.toString());
+			result.setResult(e.toString());
+		}finally{
+			clientRelease(client);
+		}		
+		
+		// ===
+		return result;
+		
 	}
 
 }

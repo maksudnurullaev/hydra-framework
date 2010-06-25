@@ -65,17 +65,18 @@ public class TestFMDKspCfIdLinks {
 		result = accessor.update(path, DBUtils.convert2Bytes(articles));
 		Assert.assertTrue(result.isOk());
 		
-		// TODO UPDATE/CHANGE user's articles
+		//TODO UPDATE/CHANGE user's articles
 		
 		// FIND links(all new articles)
 		dbResult = accessor.find(path);
 		Assert.assertTrue(dbResult.isOk());
 		Assert.assertEquals(1, dbResult.getColumnOrSuperColumn().size());
-		Assert.assertEquals(initialArticleCount + articleCount, dbResult.getColumnOrSuperColumn().get(0).super_column.columns.size());
+		Assert.assertEquals(articleCount, dbResult.getColumnOrSuperColumn().get(0).super_column.columns.size());
 		
 		//[debug only] 
 		DBUtils.printResult(dbResult);
 		
+		//TODO Check cascade deletion one by one records
 		// DELETE(delete links)
 		Assert.assertEquals(String.format(Utils4Tests.KSMAINTEST_Users_S_Articles, userID), path.getPath());
 		Assert.assertEquals(PATH_TYPE.KSP___CF___ID___LINKNAME, path.getPathType());
