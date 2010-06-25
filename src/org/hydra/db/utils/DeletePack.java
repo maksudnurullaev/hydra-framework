@@ -1,13 +1,17 @@
 package org.hydra.db.utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.cassandra.thrift.Column;
+import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.db.beans.ColumnFamilyBean;
 import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
@@ -15,6 +19,7 @@ import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
 import org.hydra.utils.abstracts.ALogger;
+import org.junit.Assert;
 
 public class DeletePack extends ALogger {
 	private static Log _log = 	LogFactory.getLog("org.hydra.db.utils.DeletePack");	
@@ -55,13 +60,10 @@ public class DeletePack extends ALogger {
 		
 		switch(inPath.getPathType()){
 		case KSP___CF:
-			result.add(delete4KspCf(inPath));			
+			result.add(delete4KspCfXXXEvil(inPath));			
 			break;
 		case KSP___CF___ID:
-			//TODO ----- reorganize to Ksp.Cf.Id deletetion
-			DeletePack pack = delete4KspCf(inPath);
-			pack.getCf().setSuper_column(DBUtils.string2UTF8Bytes(inPath.getPathPart(PARTS.P3_KEY)));
-			result.add(pack);
+			deleteKspCfIdXXX(inPath, result);
 			break;
 		case KSP___CF___ID___LINKNAME:
 			delete4KspCfIDLinks(inPath, result);
@@ -73,8 +75,63 @@ public class DeletePack extends ALogger {
 				_log.error("Unknown path: " + inPath.getPath());
 				result.clear();
 		}
-		
+		//TODO [remove later]
+		result.clear();
 		return result;
+	}
+
+	private static void deleteKspCfIdXXX(CassandraVirtualPath inPath,
+			List<DeletePack> inResult) {
+		_log.debug("Deletion for: " + inPath.getPath());
+		//TODO ----- reorganize to Ksp.Cf.Id deletetion
+		// delete Ksp.Cf.ID
+		DeletePack pack = delete4KspCfXXXEvil(inPath);
+		pack.getCf().setSuper_column(DBUtils.string2UTF8Bytes(inPath.getPathPart(PARTS.P3_KEY)));		
+		inResult.add(pack);
+		_log.debug("Deletion columns count now: " +inResult.size());
+		
+		// delete Ksp.Cf.ID.CHILDs
+		Set<ColumnFamilyBean> childs = inPath._cfBean.getChilds();
+		if(childs != null){
+			// ... ... call deleteKspCfIdXXX for each child  
+			for(ColumnFamilyBean childColumnFamilyBean: childs){
+				_log.debug("... deletion for child: " + childColumnFamilyBean.getName());
+				// get all Ksp.Cf.ID.[cfb.getName()].chilIDs
+				ResultAsListOfColumnOrSuperColumn result = Utils4Tests.getAccessor().getAllLinks4(inPath, 
+						DBUtils.getSlicePredicate(childColumnFamilyBean.getName(), childColumnFamilyBean.getName()));
+				
+				if(result.isOk() 
+						&& result.getColumnOrSuperColumn() != null 
+						&& result.getColumnOrSuperColumn().size() != 0){
+					
+					Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
+					ColumnOrSuperColumn superColumn = listIterator.next();
+					
+					Assert.assertTrue(superColumn.isSetSuper_column());
+					Assert.assertEquals(childColumnFamilyBean.getName(), DBUtils.bytes2UTF8String(superColumn.getSuper_column().name));
+					
+					for(Column column:superColumn.getSuper_column().columns){
+						// ... ... deletioin for child
+						String childPathStr = String.format("%s.%s.%s", 
+								inPath._kspBean.getName(),
+								childColumnFamilyBean.getName(),
+								DBUtils.bytes2UTF8String(column.name));
+						_log.debug("... ... new sub-deletion for path: "+ childPathStr);
+						CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
+								childPathStr);
+						// ... ... recursive delete again
+						deleteKspCfIdXXX(childPath, inResult);
+//								// format new ksp.cf.id
+//								String.format("%s.%s.%s.", 
+//										inPath._kspBean.getName(),
+//										DBUtils.bytes2UTF8String(column.name),
+//										DBUtils.bytes2UTF8String(column.value));
+					}
+				}else{
+					_log.debug("Nothing delete for child: " + childColumnFamilyBean.getName());					
+				}
+			}
+		}
 	}
 
 	//TODO Fix It
@@ -147,7 +204,7 @@ public class DeletePack extends ALogger {
 		result.add(delDBLink);
 	}
 
-	private static DeletePack delete4KspCf(CassandraVirtualPath inPath) {
+	private static DeletePack delete4KspCfXXXEvil(CassandraVirtualPath inPath) {
 		DeletePack pack = new DeletePack();
 		
 		pack.setKsp(inPath.getPathPart(PARTS.P1_KSP));
