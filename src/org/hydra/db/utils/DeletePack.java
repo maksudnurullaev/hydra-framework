@@ -63,7 +63,7 @@ public class DeletePack extends ALogger {
 			result.add(delete4KspCfXXXEvil(inPath));			
 			break;
 		case KSP___CF___ID:
-			deleteKspCfIdXXX(inPath, result);
+			deleteKspCfIdXXX(inPath, result, 0);
 			break;
 		case KSP___CF___ID___LINKNAME:
 			delete4KspCfIDLinks(inPath, result);
@@ -75,27 +75,27 @@ public class DeletePack extends ALogger {
 				_log.error("Unknown path: " + inPath.getPath());
 				result.clear();
 		}
-		//TODO [remove later]
-		result.clear();
 		return result;
 	}
 
 	private static void deleteKspCfIdXXX(CassandraVirtualPath inPath,
-			List<DeletePack> inResult) {
-		_log.debug("Deletion for: " + inPath.getPath());
-		//TODO ----- reorganize to Ksp.Cf.Id deletetion
+			List<DeletePack> inResult, int inRecursionDeep) {
+		
+		String recursionPrefixStr = "";
+		for (int i = 0; i < inRecursionDeep; i++) recursionPrefixStr += " ... ";
+		
+		_log.debug(recursionPrefixStr + "Make deletion pack for: " + inPath.getPath());
 		// delete Ksp.Cf.ID
 		DeletePack pack = delete4KspCfXXXEvil(inPath);
 		pack.getCf().setSuper_column(DBUtils.string2UTF8Bytes(inPath.getPathPart(PARTS.P3_KEY)));		
 		inResult.add(pack);
-		_log.debug("Deletion columns count now: " +inResult.size());
-		
+
 		// delete Ksp.Cf.ID.CHILDs
 		Set<ColumnFamilyBean> childs = inPath._cfBean.getChilds();
 		if(childs != null){
 			// ... ... call deleteKspCfIdXXX for each child  
 			for(ColumnFamilyBean childColumnFamilyBean: childs){
-				_log.debug("... deletion for child: " + childColumnFamilyBean.getName());
+				_log.debug(recursionPrefixStr + " ... found childs: " + childColumnFamilyBean.getName());
 				// get all Ksp.Cf.ID.[cfb.getName()].chilIDs
 				ResultAsListOfColumnOrSuperColumn result = Utils4Tests.getAccessor().getAllLinks4(inPath, 
 						DBUtils.getSlicePredicate(childColumnFamilyBean.getName(), childColumnFamilyBean.getName()));
@@ -116,47 +116,46 @@ public class DeletePack extends ALogger {
 								inPath._kspBean.getName(),
 								childColumnFamilyBean.getName(),
 								DBUtils.bytes2UTF8String(column.name));
-						_log.debug("... ... new sub-deletion for path: "+ childPathStr);
+						// _log.debug(recursionPrefixStr + "Delete child: "+ childPathStr);
 						CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
 								childPathStr);
 						// ... ... recursive delete again
-						deleteKspCfIdXXX(childPath, inResult);
-//								// format new ksp.cf.id
-//								String.format("%s.%s.%s.", 
-//										inPath._kspBean.getName(),
-//										DBUtils.bytes2UTF8String(column.name),
-//										DBUtils.bytes2UTF8String(column.value));
+						inRecursionDeep += 1;
+						deleteKspCfIdXXX(childPath, inResult, inRecursionDeep);
+						inRecursionDeep -= 1;
 					}
 				}else{
-					_log.debug("Nothing delete for child: " + childColumnFamilyBean.getName());					
+					_log.debug(recursionPrefixStr + " ... but no " + childColumnFamilyBean.getName());					
 				}
 			}
 		}
+		if(inRecursionDeep == 0)
+			_log.debug(recursionPrefixStr + "Found " + inResult.size() + " pack(s) for deletion!");			
 	}
 
 	//TODO Fix It
 	private static void delete4KspCfIDLinksLinkID(CassandraVirtualPath inPath,
 			List<DeletePack> result) {
-		// Part #1 delete real DB objects
-		// ... get all linked IDs
-		CassandraAccessorBean accessor = Utils4Tests.getAccessor();
-		ResultAsListOfColumnOrSuperColumn dbLinks = accessor.find(inPath);
-		
-		// ... for cycle
-		if(dbLinks.isOk()){
-			for(Column col: dbLinks.getColumnOrSuperColumn().get(0).super_column.columns){
-				DeletePack pack = new DeletePack();
-				
-				pack.setKsp(inPath.getPathPart(PARTS.P1_KSP));
-				pack.setCf(new ColumnPath(inPath.getPathPart(PARTS.P4_SUPER)));
-				pack.getCf().setSuper_column(col.name);
-				pack.setKey(KEY_COLUMNS_DEF);
-				pack.setTimestamp(System.currentTimeMillis());
-				pack.setConsistencyLevel(ConsistencyLevel.ONE);
-				
-				result.add(pack);
-			}
-		}		
+//		// Part #1 delete real DB objects
+//		// ... get all linked IDs
+//		CassandraAccessorBean accessor = Utils4Tests.getAccessor();
+//		ResultAsListOfColumnOrSuperColumn dbLinks = accessor.find(inPath);
+//		
+//		// ... for cycle
+//		if(dbLinks.isOk()){
+//			for(Column col: dbLinks.getColumnOrSuperColumn().get(0).super_column.columns){
+//				DeletePack pack = new DeletePack();
+//				
+//				pack.setKsp(inPath.getPathPart(PARTS.P1_KSP));
+//				pack.setCf(new ColumnPath(inPath.getPathPart(PARTS.P4_SUPER)));
+//				pack.getCf().setSuper_column(col.name);
+//				pack.setKey(KEY_COLUMNS_DEF);
+//				pack.setTimestamp(System.currentTimeMillis());
+//				pack.setConsistencyLevel(ConsistencyLevel.ONE);
+//				
+//				result.add(pack);
+//			}
+//		}		
 	}
 
 	private static void delete4KspCfIDLinks(CassandraVirtualPath inPath, List<DeletePack> result) {
