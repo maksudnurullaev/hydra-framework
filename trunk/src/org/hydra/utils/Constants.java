@@ -50,6 +50,7 @@ public final class Constants {
 	// **** Cassandra's constants
 	public static final String _cassandra_descriptor_name = "_cassandra_server_descriptor";
 	public static final String _attention_str = "-!!!-!!!- ";
+	public static final String KEY_COLUMNS_DEF = "COLUMNS";	
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);

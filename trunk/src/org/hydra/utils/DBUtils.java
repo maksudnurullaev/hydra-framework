@@ -1,16 +1,23 @@
 package org.hydra.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.management.ImmutableDescriptor;
+
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
+import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.beans.ColumnBean;
@@ -247,5 +254,85 @@ public final class DBUtils {
 //					column.getName()));
 //			break;
 //		}
-	}	
+	}
+
+	public static long getCassandraTimestamp() {
+		int factor = 1000000; 
+		long timestamp = System.currentTimeMillis() * factor;
+		return timestamp;
+	}
+
+	public static <E> void joinResults(
+			String inCfName, 
+			String inKeyID,
+			List<E> inList,
+			Map<String, Map<String, List<E>>> inResult) {
+		if(!inResult.containsKey(inKeyID)){
+			Map<String, List<E>> newMapCfList = new HashMap<String, List<E>>();
+			newMapCfList.put(inCfName, inList);
+			inResult.put(inKeyID, newMapCfList);
+		}else{
+			 Map<String, List<E>> originalMapKeyMapCfList = inResult.get(inKeyID);
+			 if(!originalMapKeyMapCfList.containsKey(inCfName)){
+				 originalMapKeyMapCfList.put(inCfName, inList);
+			 }else{
+				 List<E> originalList = originalMapKeyMapCfList.get(inCfName);
+				 List<E> newList = new ArrayList<E>(originalList);
+				 newList.addAll(inList);
+				 originalMapKeyMapCfList.put(inCfName, newList);
+				 //for(E e:inList) originalList.add(e);
+			 }
+		}
+		
+	}
+
+	public static void debugMutationResult(Map<String, Map<String, List<Mutation>>> result) {
+		for(Map.Entry<String, Map<String, List<Mutation>>> entry:result.entrySet()){
+			for(Map.Entry<String, List<Mutation>> subEntry: entry.getValue().entrySet()){
+				_log.debug(String.format(" ... Cf(%s).Key(%s)", subEntry.getKey(), entry.getKey()));
+				for(Mutation mutation:subEntry.getValue()){
+					String debugStr = "";
+					if(mutation.isSetColumn_or_supercolumn()){
+						debugStr += "UPDATE: ";
+						if(mutation.column_or_supercolumn.isSetColumn())
+							debugStr += "COLUMN: " + DBUtils.bytes2UTF8String(mutation.column_or_supercolumn.column.name, 32);
+						else if((mutation.column_or_supercolumn.isSetSuper_column()))
+							debugStr += " SUPER COLUMN: " + DBUtils.bytes2UTF8String(mutation.column_or_supercolumn.super_column.name, 32);
+						else
+							debugStr += " UNKNOWN!!!";
+					}else if(mutation.isSetDeletion()){
+						debugStr += "DELETE: ";
+						if(mutation.deletion.isSetSuper_column())
+							debugStr += "SUPER COLUMN: " + DBUtils.bytes2UTF8String(mutation.deletion.super_column, 32);							
+						if(mutation.deletion.isSetPredicate()){
+							debugStr += "PREDICATE: ";
+							if(mutation.deletion.predicate.isSetColumn_names())
+								debugStr += "COLUMN NAMES SIZE: " + mutation.deletion.predicate.column_names.size();								
+							if(mutation.deletion.predicate.isSetSlice_range())
+								debugStr += "SLICE RANGE: " + mutation.deletion.predicate.slice_range;				
+						}
+					}else
+						debugStr += " UNKNOWN!!!";
+					_log.debug(" ... ... " + debugStr);
+				}
+			}
+		}
+		
+	}
+
+	//	public static void add2Result(String inKeyID,
+//			Map<String, List<String>> inMapList,
+//			Map<String, Map<String, List<String>>> inResult) {
+//		
+//		if(!inResult.containsKey(inKeyID)){
+//			inResult.put(inKeyID, inMapList);
+//			return;
+//		}
+//		
+//		Map<String, List<String>> original = inResult.get(inKeyID);
+//		
+//		for(Map.Entry<String, List<String>> entry:inMapList.entrySet()){
+//			
+//		}
+//	}	
 }

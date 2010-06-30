@@ -150,7 +150,7 @@ public class DeletePack extends ALogger {
 //				pack.setCf(new ColumnPath(inPath.getPathPart(PARTS.P4_SUPER)));
 //				pack.getCf().setSuper_column(col.name);
 //				pack.setKey(KEY_COLUMNS_DEF);
-//				pack.setTimestamp(System.currentTimeMillis());
+//				pack.setTimestamp(DBUtils.getCassandraTimestamp());
 //				pack.setConsistencyLevel(ConsistencyLevel.ONE);
 //				
 //				result.add(pack);
@@ -166,23 +166,26 @@ public class DeletePack extends ALogger {
 		
 		// ... for cycle
 		if(dbLinks.isOk()){
-			_log.debug("Delete column count: " + dbLinks.getColumnOrSuperColumn().get(0).super_column.columns.size());
+			
+			_log.debug("Delete column count: " 
+					+ dbLinks.getColumnOrSuperColumn().get(0).super_column.columns.size());
+			
 			for(Column col: dbLinks.getColumnOrSuperColumn().get(0).super_column.columns){
 				// ... delete db objects
-				DeletePack delDBObj = new DeletePack();
+				DeletePack delPack = new DeletePack();
 				// ... ... ksp
-				delDBObj.setKsp(inPath.getPathPart(PARTS.P1_KSP));
+				delPack.setKsp(inPath.getPathPart(PARTS.P1_KSP));
 				// ... ... cf
-				delDBObj.setCf(new ColumnPath(inPath.getPathPart(PARTS.P4_SUPER)));
+				delPack.setCf(new ColumnPath(inPath.getPathPart(PARTS.P4_SUPER)));
 				// ... ... super
-				delDBObj.getCf().setSuper_column(col.name);
+				delPack.getCf().setSuper_column(col.name);
 				// ... ... key
-				delDBObj.setKey(KEY_COLUMNS_DEF);
+				delPack.setKey(KEY_COLUMNS_DEF);
 				// ... ... timestamp & consistency
-				delDBObj.setTimestamp(System.currentTimeMillis());
-				delDBObj.setConsistencyLevel(ConsistencyLevel.ONE);
+				delPack.setTimestamp(DBUtils.getCassandraTimestamp());
+				delPack.setConsistencyLevel(ConsistencyLevel.ONE);
 				// ... pack
-				result.add(delDBObj);				
+				result.add(delPack);				
 			}
 		}
 		// Part #2 delete records from links table
@@ -197,7 +200,7 @@ public class DeletePack extends ALogger {
 		// ... ... key
 		delDBLink.setKey(inPath.getPathPart(PARTS.P3_KEY));
 		// ... ... timestamp & consistency		
-		delDBLink.setTimestamp(System.currentTimeMillis());
+		delDBLink.setTimestamp(DBUtils.getCassandraTimestamp());
 		delDBLink.setConsistencyLevel(ConsistencyLevel.ONE);
 		// ... pack
 		result.add(delDBLink);
@@ -209,7 +212,7 @@ public class DeletePack extends ALogger {
 		pack.setKsp(inPath.getPathPart(PARTS.P1_KSP));
 		pack.setCf(new ColumnPath(inPath.getPathPart(PARTS.P2_CF)));
 		pack.setKey(KEY_COLUMNS_DEF);
-		pack.setTimestamp(System.currentTimeMillis());
+		pack.setTimestamp(DBUtils.getCassandraTimestamp());
 		pack.setConsistencyLevel(ConsistencyLevel.ONE);
 		
 		return pack;
