@@ -2,18 +2,23 @@ package org.hydra.db.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
+import org.apache.cassandra.thrift.Deletion;
 import org.apache.cassandra.thrift.Mutation;
-import org.apache.cassandra.thrift.SuperColumn;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.db.beans.ColumnFamilyBean;
 import org.hydra.db.server.CassandraVirtualPath;
+import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
+import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
+import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
 import org.hydra.utils.abstracts.ALogger;
 
 public class Mutation2Delete extends ALogger{
@@ -22,33 +27,29 @@ public class Mutation2Delete extends ALogger{
 	
 	/**
 	 * @param inPath
-	 * @param inBatchMap
 	 * @return {@code Map<Key(String), Map<CfName(String), List<Mutation>>>}
 	 * 
 	 */
 	public static Map<String, Map<String, List<Mutation>>> generate(
-			CassandraVirtualPath inPath,
-			Map<byte[], Map<byte[], byte[]>> inBatchMap) {
+			CassandraVirtualPath inPath) {
 		
-		_log.debug("Generate mutation pack for: " + inPath.getPath());
-		_log.debug(" ... mutation column count: " + inBatchMap.size());
+		_log.debug("Generate delete mutation pack for: " + inPath.getPath());
 		
 		Map<String, Map<String, List<Mutation>>> result = 
 			new HashMap<String, Map<String,List<Mutation>>>();
 		
-		if(inBatchMap.size() == 0){
-			_log.warn("Nothing to mutate!");
-			return result;
-		}
-		
 		switch (inPath.getPathType()) {
 		case KSP___CF:
+			//TODO mutations4KspCf(inPath, result);
+			_log.error("[[[mutations4KspCf(inPath, result)]]]it's not implemented yet!");
+			break;
 		case KSP___CF___ID:
-			mutations4KspCf(inPath, inBatchMap, result);
+			mutations4KspCfId(inPath, result, 0);
 			break;
 
 		case KSP___CF___ID___LINKNAME:
-			mutations4KspCfIDLinks(inPath, inBatchMap, result);
+			//TODO mutations4KspCfIDLinks(inPath, result);
+			_log.error("[[[mutations4KspCfIDLinks(inPath, result)]]] it's not implemented yet!");
 			break;
 
 		default:
@@ -56,120 +57,115 @@ public class Mutation2Delete extends ALogger{
 						inPath.getPath(), 
 						inPath.getPathType()));
 		}		
+		
+		if(_log.isDebugEnabled())
+			DBUtils.debugMutationResult(result);		
 
 		return result;
 	}
-
-	private static void mutations4KspCfIDLinks(CassandraVirtualPath inPath,
-			Map<byte[], Map<byte[], byte[]>> inMutaionMap,
-			Map<String, Map<String, List<Mutation>>> inResultMap) {
+	
+	private static void mutations4KspCfId(CassandraVirtualPath inPath,
+			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {
 		
-		_log.debug(" ... mutations4KspCfIDLinks: " + inPath.getPath());
+		// ... setup prefix
+		String recursionDeepPrefixStr = "";
+		for (int i = 0; i < inRecursionDeep; i++) recursionDeepPrefixStr += " ... ";
 		
-		// setup access path for links
-		CassandraVirtualPath linksVPath = new CassandraVirtualPath(
-				inPath.getDescriptor(),
-				String.format("%s.%s", inPath._kspBean.getName(),
-						inPath._cfLinkBean.getName()));
-		// create mutation
-		List<byte[]> linkIDs = mutations4KspCf(linksVPath,
-				inMutaionMap,
-				inResultMap);
-
-		// create mutation for links
-		mutations4Links(inPath, linkIDs, inResultMap);		
+		// ... debug
+		_log.debug(recursionDeepPrefixStr + "Make deletion pack for: " + inPath.getPath());		
+				
+		// ... setup list of mutations
+		List<Mutation> listOfMutations = new ArrayList<Mutation>();
+		listOfMutations.add(getDeleteMutation4SuperColumn(inPath.getID()));
 		
+		// ... setup result
+		DBUtils.joinMutationResults(
+				inPath._cfBean.getName(), 
+				Constants.KEY_COLUMNS_DEF, 
+				listOfMutations, inResultMap);
+		
+		// ... delete childs if exists
+		mutations4ChildsIfExists4KfpCfID(inPath, inResultMap, inRecursionDeep + 1);
 	}
 
-	private static void mutations4Links(CassandraVirtualPath inPath,
-			List<byte[]> linkIDs,
-			Map<String, Map<String, List<Mutation>>> inResultMap) {
-
-		_log.debug(" ... mutations4Links: " + inPath.getPath());
-
-
-
-		// generate list of columns
-		List<Column> listOfColumns = new ArrayList<Column>();
-		for (byte[] id : linkIDs) {
-			listOfColumns.add(new Column(id,
-								DBUtils.string2UTF8Bytes(Constants.GetUUID()),
-								DBUtils.getCassandraTimestamp()));
-		}
-
-		// generate single list of mutation
-		SuperColumn superColumn = new SuperColumn();
-		superColumn.setName(DBUtils.string2UTF8Bytes(inPath._cfLinkBean.getName()));
-		superColumn.setColumns(listOfColumns);
-
-		ColumnOrSuperColumn columnOrSuperColumn = new ColumnOrSuperColumn();
-		columnOrSuperColumn.setSuper_column(superColumn);
-
-		Mutation mutation = new Mutation();
-		mutation.setColumn_or_supercolumn(columnOrSuperColumn);
+	private static void mutations4ChildsIfExists4KfpCfID(CassandraVirtualPath inPath,
+			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {	
 		
-		List<Mutation> listOfMutation = new ArrayList<Mutation>();
-		listOfMutation.add(mutation);
-
-//		// setup cf
-//		Map<String, List<Mutation>> mapCfListMutaion = 
-//			new HashMap<String, List<Mutation>>();
-//		mapCfListMutaion.put(inPath._kspBean.getLinkTableName(), listOfMutation);
-//
-//		// setup key
-//		inResultMap.put(inPath.getID(), mapCfListMutaion);		
-	}
-
-	private static List<byte[]> mutations4KspCf(CassandraVirtualPath inPath,
-			Map<byte[], Map<byte[], byte[]>> inMutaionMap,
-			Map<String, Map<String, List<Mutation>>> inResultMap) {
+		// ... test path
+		if(inPath.getPathType() != PATH_TYPE.KSP___CF___ID){
+			_log.error("Path type should be: PATH_TYPE.KSP___CF___ID");
+			return;
+		}		
+				
+		// ... setup prefix
+		String recursionDeepPrefixStr = "";
+		for (int i = 0; i < inRecursionDeep; i++) recursionDeepPrefixStr += " ... ";
 		
-		_log.debug(" ... mutations4KspCf: " + inPath.getPath());		
-		
-		List<byte[]> result = new ArrayList<byte[]>();
-
-		List<Mutation> listOfMutation =	new ArrayList<Mutation>();			
-		
-		// configure super columns to mutate
-		for (Map.Entry<byte[], Map<byte[], byte[]>> mapIdColsVals : inMutaionMap.entrySet()) {
-
-			// ... setup list of columns
-			List<Column> listOfColumns = new ArrayList<Column>();
-			for (Map.Entry<byte[], byte[]> mapColVal : mapIdColsVals.getValue()
-					.entrySet()) {
-				listOfColumns.add(new Column(mapColVal.getKey(), 
-								mapColVal.getValue(),
-								DBUtils.getCassandraTimestamp()));
+		// ... process over all childs
+		if(inPath._cfBean.getChilds() != null){
+			for(ColumnFamilyBean childColumnFamilyBean: inPath._cfBean.getChilds()){
+				_log.debug(recursionDeepPrefixStr + " ... found childs: " + childColumnFamilyBean.getName());
+				
+				ResultAsListOfColumnOrSuperColumn result = Utils4Tests.getAccessor().getAllLinks4(inPath, 
+						DBUtils.getSlicePredicate(childColumnFamilyBean.getName(), childColumnFamilyBean.getName()));
+				
+				if(result.isOk() 
+						&& result.getColumnOrSuperColumn() != null 
+						&& result.getColumnOrSuperColumn().size() != 0){
+					
+					Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
+					while(listIterator.hasNext()){
+						ColumnOrSuperColumn columnOrSuperColumn = listIterator.next();
+						if(columnOrSuperColumn.isSetSuper_column()){
+							
+							// ... setup result for LINKS
+							List<Mutation> listOfMutations = new ArrayList<Mutation>();
+							listOfMutations.add(getDeleteMutation4SuperColumn(columnOrSuperColumn.super_column.name));
+							
+							DBUtils.joinMutationResults(
+									inPath._kspBean.getLinkTableName(), 
+									inPath.getID(), 
+									listOfMutations, inResultMap);							
+							
+							for(Column column:columnOrSuperColumn.getSuper_column().columns){
+								// ... ... deletioin for child
+								String childPathStr = String.format("%s.%s.%s", 
+										inPath._kspBean.getName(),
+										childColumnFamilyBean.getName(),
+										DBUtils.bytes2UTF8String(column.name));
+								
+								CassandraVirtualPath childPath = 
+									new CassandraVirtualPath(inPath.getDescriptor(), childPathStr);
+								
+								mutations4KspCfId(childPath, inResultMap, inRecursionDeep + 1);
+							}
+							
+						}else{
+							_log.error(recursionDeepPrefixStr + " ... no proper super column found for: " + childColumnFamilyBean.getName());												
+						}
+					}
+					
+				}else{
+					_log.debug(recursionDeepPrefixStr + " ... but no " + childColumnFamilyBean.getName());					
+				}
 			}
-			// ... setup mutation for super column
-			SuperColumn superColumn = new SuperColumn();
-
-			superColumn.setName(mapIdColsVals.getKey());
-			superColumn.setColumns(listOfColumns);
-
-			ColumnOrSuperColumn columnOrSuperColumn = new ColumnOrSuperColumn();
-
-			columnOrSuperColumn.setSuper_column(superColumn);
-
-			Mutation mutation = new Mutation();
-			mutation.setColumn_or_supercolumn(columnOrSuperColumn);
-
-			listOfMutation.add(mutation);
-
-			// ... add ID as result for further use
-			result.add(mapIdColsVals.getKey());
-		}
+		}		
+	}
+	
+	// ### UTILS
+	private static Mutation getDeleteMutation4SuperColumn(String inKey){
+		return getDeleteMutation4SuperColumn(DBUtils.string2UTF8Bytes(inKey));
+	}
+	
+	private static Mutation getDeleteMutation4SuperColumn(byte[] inKeyAsBytes) {		
+		Deletion deletion = new Deletion(DBUtils.getCassandraTimestamp());
+		deletion.setSuper_column(inKeyAsBytes);
 		
-		// setup cf
-		Map<String, List<Mutation>> mapCfListMutaion = 
-			new HashMap<String, List<Mutation>>();		
-		mapCfListMutaion.put(inPath._cfBean.getName(), listOfMutation);
+		Mutation mutation = new Mutation();
+		mutation.setDeletion(deletion);		
 		
-		// setup key
-		inResultMap.put(Constants.KEY_COLUMNS_DEF, mapCfListMutaion);
-		
-		return result;
-		
+		return mutation;
 	}
 
+	
 }

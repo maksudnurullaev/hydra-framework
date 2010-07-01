@@ -262,7 +262,7 @@ public final class DBUtils {
 		return timestamp;
 	}
 
-	public static <E> void joinResults(
+	public static <E> void joinMutationResults(
 			String inCfName, 
 			String inKeyID,
 			List<E> inList,
@@ -320,19 +320,4 @@ public final class DBUtils {
 		
 	}
 
-	//	public static void add2Result(String inKeyID,
-//			Map<String, List<String>> inMapList,
-//			Map<String, Map<String, List<String>>> inResult) {
-//		
-//		if(!inResult.containsKey(inKeyID)){
-//			inResult.put(inKeyID, inMapList);
-//			return;
-//		}
-//		
-//		Map<String, List<String>> original = inResult.get(inKeyID);
-//		
-//		for(Map.Entry<String, List<String>> entry:inMapList.entrySet()){
-//			
-//		}
-//	}	
 }

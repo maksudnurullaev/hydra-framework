@@ -40,7 +40,7 @@ public class TestFMDKspCfIdLinks {
 	}
 
 	@Test
-	public void test_1_user_with_2_articles() {
+	public void test_fmd4user_with_articles() {
 		int articleCount = 10;
 		
 		// init single user for test
@@ -48,9 +48,7 @@ public class TestFMDKspCfIdLinks {
 		String userID = (String) user.keySet().toArray()[0];
 		CassandraVirtualPath path2Users = new CassandraVirtualPath(descriptor,
 				Utils4Tests.KSMAINTEST_Users);
-		
-		Result result = accessor
-				.update(path2Users, DBUtils.convert2Bytes(user));
+		Result result = accessor.update(path2Users, DBUtils.convert2Bytes(user));
 		// ... test result
 		Assert.assertTrue(result.isOk());
 
@@ -58,19 +56,19 @@ public class TestFMDKspCfIdLinks {
 		CassandraVirtualPath path2UsersIDArticles = new CassandraVirtualPath(
 				descriptor,
 				String.format(Utils4Tests.KSMAINTEST_Users_S_Articles, userID));
+		// ... find
 		ResultAsListOfColumnOrSuperColumn dbResult = accessor
 				.find(path2UsersIDArticles);
 		Assert.assertTrue(dbResult.isOk());
 		int initialArticleCount = dbResult.getColumnOrSuperColumn().size();
 
-		// UPDATE/INSERT (insert 2 articles for users)
+		// UPDATE/INSERT (insert articles for users)
 		Map<String, Map<String, String>> articles = Utils4Tests
 				.initTestArticles(articleCount);
+		// ... update
 		result = accessor.update(path2UsersIDArticles, DBUtils
 				.convert2Bytes(articles));
 		Assert.assertTrue(result.isOk());
-
-		// TODO UPDATE/CHANGE user's articles
 
 		// FIND links(all new articles)
 		dbResult = accessor.find(path2UsersIDArticles);
@@ -79,7 +77,7 @@ public class TestFMDKspCfIdLinks {
 		Assert.assertEquals(articleCount, dbResult.getColumnOrSuperColumn()
 				.get(0).super_column.columns.size());
 
-		// [debug only] DBUtils.printResult(dbResult);
+		// [DEBUG ONLY] DBUtils.printResult(dbResult);
 
 		// TODO Check cascade deletion one by one records
 		// DELETE(delete links)

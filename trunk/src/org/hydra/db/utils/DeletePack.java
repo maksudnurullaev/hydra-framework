@@ -81,10 +81,10 @@ public class DeletePack extends ALogger {
 	private static void deleteKspCfIdXXX(CassandraVirtualPath inPath,
 			List<DeletePack> inResult, int inRecursionDeep) {
 		
-		String recursionPrefixStr = "";
-		for (int i = 0; i < inRecursionDeep; i++) recursionPrefixStr += " ... ";
+		String recursionDeepPrefixStr = "";
+		for (int i = 0; i < inRecursionDeep; i++) recursionDeepPrefixStr += " ... ";
 		
-		_log.debug(recursionPrefixStr + "Make deletion pack for: " + inPath.getPath());
+		_log.debug(recursionDeepPrefixStr + "Make deletion pack for: " + inPath.getPath());
 		// delete Ksp.Cf.ID
 		DeletePack pack = delete4KspCfXXXEvil(inPath);
 		pack.getCf().setSuper_column(DBUtils.string2UTF8Bytes(inPath.getPathPart(PARTS.P3_KEY)));		
@@ -95,7 +95,7 @@ public class DeletePack extends ALogger {
 		if(childs != null){
 			// ... ... call deleteKspCfIdXXX for each child  
 			for(ColumnFamilyBean childColumnFamilyBean: childs){
-				_log.debug(recursionPrefixStr + " ... found childs: " + childColumnFamilyBean.getName());
+				_log.debug(recursionDeepPrefixStr + " ... found childs: " + childColumnFamilyBean.getName());
 				// get all Ksp.Cf.ID.[cfb.getName()].chilIDs
 				ResultAsListOfColumnOrSuperColumn result = Utils4Tests.getAccessor().getAllLinks4(inPath, 
 						DBUtils.getSlicePredicate(childColumnFamilyBean.getName(), childColumnFamilyBean.getName()));
@@ -105,12 +105,9 @@ public class DeletePack extends ALogger {
 						&& result.getColumnOrSuperColumn().size() != 0){
 					
 					Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
-					ColumnOrSuperColumn superColumn = listIterator.next();
+					ColumnOrSuperColumn columnOrSuperColumn = listIterator.next();
 					
-					Assert.assertTrue(superColumn.isSetSuper_column());
-					Assert.assertEquals(childColumnFamilyBean.getName(), DBUtils.bytes2UTF8String(superColumn.getSuper_column().name));
-					
-					for(Column column:superColumn.getSuper_column().columns){
+					for(Column column:columnOrSuperColumn.getSuper_column().columns){
 						// ... ... deletioin for child
 						String childPathStr = String.format("%s.%s.%s", 
 								inPath._kspBean.getName(),
@@ -120,17 +117,16 @@ public class DeletePack extends ALogger {
 						CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
 								childPathStr);
 						// ... ... recursive delete again
-						inRecursionDeep += 1;
-						deleteKspCfIdXXX(childPath, inResult, inRecursionDeep);
-						inRecursionDeep -= 1;
+						deleteKspCfIdXXX(childPath, inResult, inRecursionDeep + 1);
 					}
 				}else{
-					_log.debug(recursionPrefixStr + " ... but no " + childColumnFamilyBean.getName());					
+					_log.debug(recursionDeepPrefixStr + " ... but no " + childColumnFamilyBean.getName());					
 				}
 			}
 		}
+		
 		if(inRecursionDeep == 0)
-			_log.debug(recursionPrefixStr + "Found " + inResult.size() + " pack(s) for deletion!");			
+			_log.debug(recursionDeepPrefixStr + "Found " + inResult.size() + " pack(s) for deletion!");			
 	}
 
 	//TODO Fix It
