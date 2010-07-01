@@ -46,9 +46,9 @@ public class TestFMDKspCfIdLinks {
 		// init single user for test
 		Map<String, Map<String, String>> user = Utils4Tests.initTestUsers(1);
 		String userID = (String) user.keySet().toArray()[0];
-		CassandraVirtualPath path2Users = new CassandraVirtualPath(descriptor,
-				Utils4Tests.KSMAINTEST_Users);
-		Result result = accessor.update(path2Users, DBUtils.convert2Bytes(user));
+		CassandraVirtualPath path2User = new CassandraVirtualPath(descriptor,
+				Utils4Tests.KSMAINTEST_Users + "." + userID);
+		Result result = accessor.update(path2User, DBUtils.convert2Bytes(user));
 		// ... test result
 		Assert.assertTrue(result.isOk());
 
@@ -87,7 +87,7 @@ public class TestFMDKspCfIdLinks {
 		Assert.assertEquals(PATH_TYPE.KSP___CF___ID___LINKNAME,
 				path2UsersIDArticles.getPathType());
 
-		result = accessor.delete(path2UsersIDArticles);
+		result = accessor.delete(path2User);
 
 		// ... test deletes
 		dbResult = accessor.find(path2UsersIDArticles);
