@@ -30,8 +30,7 @@ public class Mutation2Update extends ALogger{
 			CassandraVirtualPath inPath,
 			Map<byte[], Map<byte[], byte[]>> inBatchMap) {
 		
-		_log.debug("!!!Generate mutation pack!!!");
-		_log.debug(" ... " + inPath.getPath());
+		_log.debug("Mutation pack: " + inPath.getPath());
 		_log.debug(" ... mutation column count: " + inBatchMap.size());
 		
 		Map<String, Map<String, List<Mutation>>> result = 
@@ -43,6 +42,7 @@ public class Mutation2Update extends ALogger{
 		}
 		
 		switch (inPath.getPathType()) {
+		
 		case KSP___CF:
 		case KSP___CF___ID:
 			mutations4KspCf(inPath, inBatchMap, result);
@@ -68,8 +68,6 @@ public class Mutation2Update extends ALogger{
 			Map<byte[], Map<byte[], byte[]>> inMutaionMap,
 			Map<String, Map<String, List<Mutation>>> inResultMap) {
 		
-		_log.debug(" ... mutations4KspCfIDLinks: " + inPath.getPath());
-		
 		// setup access path for links
 		CassandraVirtualPath linksVPath = new CassandraVirtualPath(
 				inPath.getDescriptor(),
@@ -88,10 +86,6 @@ public class Mutation2Update extends ALogger{
 	private static void mutations4Links(CassandraVirtualPath inPath,
 			List<byte[]> linkIDs,
 			Map<String, Map<String, List<Mutation>>> inResultMap) {
-
-		_log.debug(" ... mutations4Links: " + inPath.getPath());
-
-
 
 		// generate list of columns
 		List<Column> listOfColumns = new ArrayList<Column>();
@@ -115,27 +109,16 @@ public class Mutation2Update extends ALogger{
 		List<Mutation> listOfMutation = new ArrayList<Mutation>();
 		listOfMutation.add(mutation);
 
-		DBUtils.joinResults(
+		DBUtils.joinMutationResults(
 				inPath._kspBean.getLinkTableName(), 
 				inPath.getID(), 
 				listOfMutation, 
 				inResultMap);
-		
-		
-//		// setup cf
-//		Map<String, List<Mutation>> mapCfListMutaion = 
-//			new HashMap<String, List<Mutation>>();		
-//		mapCfListMutaion.put(inPath._kspBean.getLinkTableName(), listOfMutation);
-//
-//		// setup key
-//		inResultMap.put(inPath.getID(), mapCfListMutaion);		
 	}
 
 	private static List<byte[]> mutations4KspCf(CassandraVirtualPath inPath,
 			Map<byte[], Map<byte[], byte[]>> inMutaionMap,
 			Map<String, Map<String, List<Mutation>>> inResultMap) {
-		
-		_log.debug(" ... mutations4KspCf: " + inPath.getPath());		
 		
 		List<byte[]> result = new ArrayList<byte[]>();
 
@@ -171,19 +154,11 @@ public class Mutation2Update extends ALogger{
 			result.add(mapIdColsVals.getKey());
 		}
 		
-		DBUtils.joinResults(
+		DBUtils.joinMutationResults(
 				inPath._cfBean.getName(), 
 				Constants.KEY_COLUMNS_DEF, 
 				listOfMutation, 
 				inResultMap);		
-		
-//		// setup cf
-//		Map<String, List<Mutation>> mapCfListMutaion = 
-//			new HashMap<String, List<Mutation>>();		
-//		mapCfListMutaion.put(inPath._cfBean.getName(), listOfMutation);
-//		
-//		// setup key
-//		inResultMap.put(Constants.KEY_COLUMNS_DEF, mapCfListMutaion);
 		
 		return result;
 		

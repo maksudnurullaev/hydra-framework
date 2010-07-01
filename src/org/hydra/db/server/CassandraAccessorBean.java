@@ -11,6 +11,7 @@ import org.apache.cassandra.thrift.SlicePredicate;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.abstracts.ACassandraAccessor;
 import org.hydra.db.utils.DeletePack;
+import org.hydra.db.utils.Mutation2Delete;
 import org.hydra.db.utils.Mutation2Update;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
@@ -158,6 +159,38 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		return result;
 	}
 
+	public Result delete2(CassandraVirtualPath inPath) {
+		// tests path
+		Result result = DBUtils.test4NullKspCf(inPath);
+
+		if (!result.isOk()) {
+			getLog().error(result.getResult());
+			return result;
+		}
+		
+		Client client = clientBorrow();
+		try {
+			client.batch_mutate(
+					inPath._kspBean.getName(), 
+					Mutation2Delete.generate(inPath),
+					ConsistencyLevel.ONE);
+			
+			result.setResult(true);
+			result.setResult("Batch mutate accepted!");
+			getLog().debug("Batch mutate accepted!");
+			
+		} catch (Exception e) {
+			result.setResult(false);
+			result.setResult(e.getMessage());
+			getLog().error(e.getMessage());
+		} finally {
+			clientRelease(client);
+		}
+		
+		return result;		
+
+	}
+	
 	public Result delete(CassandraVirtualPath inPath) {
 		// tests path
 		Result result = DBUtils.test4NullKspCf(inPath);
@@ -208,5 +241,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		return result;
 
 	}
+
+
 
 }
