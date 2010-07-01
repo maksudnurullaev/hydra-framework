@@ -5,12 +5,10 @@ import java.util.Map;
 import org.apache.cassandra.thrift.Cassandra;
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.ColumnParent;
-import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.abstracts.ACassandraAccessor;
-import org.hydra.db.utils.DeletePack;
 import org.hydra.db.utils.Mutation2Delete;
 import org.hydra.db.utils.Mutation2Update;
 import org.hydra.utils.DBUtils;
@@ -127,39 +125,39 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		return result;
 	}
 
-	public Result delete(String inKsp, ColumnPath inCf, String inKey) {
-		return delete(inKsp, inCf, inKey, DBUtils.getCassandraTimestamp(),
-				ConsistencyLevel.ONE);
-	}
+//	public Result delete(String inKsp, ColumnPath inCf, String inKey) {
+//		return delete(inKsp, inCf, inKey, DBUtils.getCassandraTimestamp(),
+//				ConsistencyLevel.ONE);
+//	}
+//
+//	public Result delete(DeletePack inPack) {
+//		return delete(inPack.getKsp(), inPack.getCf(), inPack.getKey(),
+//				inPack.getTimestamp(), inPack.getConsistencyLevel());
+//	}
+//
+//	public Result delete(String inKsp, ColumnPath inCf, String inKey,
+//			long inTimestamp, ConsistencyLevel inConsistencyLevel) {
+//
+//		Result result = new Result();
+//
+//		Client client = clientBorrow();
+//
+//		try {
+//			client.remove(inKsp, inKey, inCf, inTimestamp, inConsistencyLevel);
+//			result.setResult(true);
+//			result.setResult(null);
+//		} catch (Exception e) {
+//			getLog().error(e.getMessage());
+//			result.setResult(false);
+//			result.setResult(e.toString());
+//		} finally {
+//			clientRelease(client);
+//		}
+//
+//		return result;
+//	}
 
-	public Result delete(DeletePack inPack) {
-		return delete(inPack.getKsp(), inPack.getCf(), inPack.getKey(),
-				inPack.getTimestamp(), inPack.getConsistencyLevel());
-	}
-
-	public Result delete(String inKsp, ColumnPath inCf, String inKey,
-			long inTimestamp, ConsistencyLevel inConsistencyLevel) {
-
-		Result result = new Result();
-
-		Client client = clientBorrow();
-
-		try {
-			client.remove(inKsp, inKey, inCf, inTimestamp, inConsistencyLevel);
-			result.setResult(true);
-			result.setResult(null);
-		} catch (Exception e) {
-			getLog().error(e.getMessage());
-			result.setResult(false);
-			result.setResult(e.toString());
-		} finally {
-			clientRelease(client);
-		}
-
-		return result;
-	}
-
-	public Result delete2(CassandraVirtualPath inPath) {
+	public Result delete(CassandraVirtualPath inPath) {
 		// tests path
 		Result result = DBUtils.test4NullKspCf(inPath);
 
@@ -191,25 +189,25 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 
 	}
 	
-	public Result delete(CassandraVirtualPath inPath) {
-		// tests path
-		Result result = DBUtils.test4NullKspCf(inPath);
-
-		if (!result.isOk()) {
-			getLog().error(result.getResult());
-			return result;
-		}
-
-		for (DeletePack pack : DeletePack.getDeletePack(inPath)) {
-			result = delete(pack);
-			if (!result.isOk()) {
-				getLog().error(result.getResult());
-				return result;
-			}
-		}
-
-		return result;
-	}
+//	public Result delete(CassandraVirtualPath inPath) {
+//		// tests path
+//		Result result = DBUtils.test4NullKspCf(inPath);
+//
+//		if (!result.isOk()) {
+//			getLog().error(result.getResult());
+//			return result;
+//		}
+//
+//		for (DeletePack pack : DeletePack.getDeletePack(inPath)) {
+//			result = delete(pack);
+//			if (!result.isOk()) {
+//				getLog().error(result.getResult());
+//				return result;
+//			}
+//		}
+//
+//		return result;
+//	}
 
 	public ResultAsListOfColumnOrSuperColumn getAllLinks4(
 			CassandraVirtualPath inPath, SlicePredicate inPredicate) {

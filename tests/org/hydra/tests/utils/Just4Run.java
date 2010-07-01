@@ -21,7 +21,7 @@ public class Just4Run {
 		
 		System.out.println("Delete2path: " + path2Delete.getPath());
 		
-		accessor.delete2(path2Delete);
+		accessor.delete(path2Delete);
 		// Mutation2Delete.generate(path2Delete);
 		
 		// ############# delete cascade
