@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.beans.ColumnFamilyBean;
 import org.hydra.db.beans.KeyspaceBean;
-import org.hydra.tests.utils.Utils4Tests;
+import org.hydra.utils.BeansUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.BeanFactory;
 
 public class TestKsp {
 	Log _log = LogFactory.getLog(this.getClass());
-	BeanFactory factory = Utils4Tests.getBeanFactory();
+	BeanFactory factory = BeansUtils.getBeanFactory();
 
 	@Before
 	public void test_main() {

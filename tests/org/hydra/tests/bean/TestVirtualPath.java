@@ -10,8 +10,8 @@ import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
-import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.Constants;
+import org.hydra.utils.BeansUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class TestVirtualPath {
 	public static final String LINKID = "articleID";
 	
 	Log _log = LogFactory.getLog(this.getClass());
-	BeanFactory factory = Utils4Tests.getBeanFactory();
+	BeanFactory factory = BeansUtils.getBeanFactory();
 	CassandraDescriptorBean cassandraDescriptorBean = null;
 
 	@Before

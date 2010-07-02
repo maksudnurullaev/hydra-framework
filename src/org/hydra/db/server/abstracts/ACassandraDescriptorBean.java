@@ -12,7 +12,7 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
 import org.hydra.utils.Constants;
 import org.hydra.utils.MessagesManager;
-import org.hydra.utils.SessionManager;
+import org.hydra.utils.SessionUtils;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraDescriptorBean extends ALogger {

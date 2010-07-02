@@ -17,6 +17,7 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
+import org.hydra.utils.BeansUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +29,8 @@ public class TestFMDKspCfId {
 	static Map<String, Map<String, String>> testUsersMap = null;
 	
 	Log _log = LogFactory.getLog(this.getClass());
-	static CassandraAccessorBean accessor = Utils4Tests.getAccessor();
-	static CassandraDescriptorBean descriptor = Utils4Tests.getDescriptor();
+	static CassandraAccessorBean accessor = DBUtils.getAccessor();
+	static CassandraDescriptorBean descriptor = DBUtils.getDescriptor();
 	
 	public static void clearAllTestUsers() {
 		// clean up users data
@@ -64,7 +65,7 @@ public class TestFMDKspCfId {
 		
 			
 		// create access path for batch insert
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) Utils4Tests.getBean(Constants._beans_cassandra_descriptor);
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
 		
 		path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 

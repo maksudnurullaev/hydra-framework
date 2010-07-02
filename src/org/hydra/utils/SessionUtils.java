@@ -5,32 +5,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
-import org.hydra.db.server.CassandraAccessorBean;
-import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
 
-public final class SessionManager {
-	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionManager");
-	
-	public static WebApplicationContext getWebApplicationContext() {
-		return ContextLoader.getCurrentWebApplicationContext();
-	}
-	
-	public static Result getBean(String inBeanId){
-		Result result = new Result();
-		try{
-			result.setObject(getWebApplicationContext().getBean(inBeanId));
-			result.setResult(true);
-		}catch(Exception e){
-			result.setResult(e.getMessage());
-		}
-		
-		return result;
-	}
+public final class SessionUtils {
+	static Log _log = LogFactory.getLog("org.hydra.utils.SessionManager");
 	
 	/**
 	 * Attache session data (locale, userId and etc.)
@@ -72,6 +52,7 @@ public final class SessionManager {
 	 * @return 
 	 */
 	public static void detachIMessageSessionData(IMessage inMessage) {
+		//TODO we remove it later if it's necessary!!!
 //		if(inMessage != null && inMessage.getData() != null && !AppContext.isDebugMode()){
 //			inMessage.getData().remove(IMessage._data_handler);
 //			inMessage.getData().remove(IMessage._data_sessionId);
@@ -83,27 +64,5 @@ public final class SessionManager {
 
 	public static boolean isDebug() {
 		return AppContext.getApplicationContext().containsBean(Constants._debug_mode);
-	}
-	
-	public static CassandraDescriptorBean getCassandraDescriptor() {
-		Result result = getBean(Constants._beans_cassandra_descriptor);
-		
-		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
-			_log.debug("Found bean: " + Constants._beans_cassandra_descriptor);
-			return (CassandraDescriptorBean) result.getObject();
-		}
-		_log.fatal("Could not find bean: " + Constants._beans_cassandra_descriptor);
-		return null;
-	}	
-	
-	public static CassandraAccessorBean getCassandraAccessor() {
-		Result result = getBean(Constants._beans_cassandra_accessor);
-		
-		if(result.isOk() && result.getObject() instanceof CassandraAccessorBean){
-			_log.debug("Found bean: " + Constants._beans_cassandra_accessor);
-			return (CassandraAccessorBean) result.getObject();
-		}
-		_log.fatal("Could not find bean: " + Constants._beans_cassandra_accessor);
-		return null;
 	}		
 }

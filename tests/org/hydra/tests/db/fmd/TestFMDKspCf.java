@@ -17,6 +17,7 @@ import org.hydra.utils.CryptoManager;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
+import org.hydra.utils.BeansUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,7 +33,7 @@ public class TestFMDKspCf {
 	static Map<String, Map<String, String>> users = new HashMap<String, Map<String, String>>();
 	
 	Log _log = LogFactory.getLog(this.getClass());
-	static BeanFactory beanFactory = Utils4Tests.getBeanFactory();
+	static BeanFactory beanFactory = BeansUtils.getBeanFactory();
 	static CassandraAccessorBean accessor = (CassandraAccessorBean) beanFactory.getBean(Constants._beans_cassandra_accessor);
 	static CassandraDescriptorBean descriptor = (CassandraDescriptorBean) beanFactory.getBean(Constants._beans_cassandra_descriptor);
 	

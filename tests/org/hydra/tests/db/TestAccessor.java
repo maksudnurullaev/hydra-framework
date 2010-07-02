@@ -17,6 +17,7 @@ import org.hydra.utils.CryptoManager;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
+import org.hydra.utils.BeansUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +30,7 @@ public class TestAccessor {
 	static Map<String, Map<String, String>> users = new HashMap<String, Map<String, String>>();
 	
 	Log _log = LogFactory.getLog(this.getClass());
-	static BeanFactory beanFactory = Utils4Tests.getBeanFactory();
+	static BeanFactory beanFactory = BeansUtils.getBeanFactory();
 	static CassandraAccessorBean accessor = (CassandraAccessorBean) beanFactory.getBean(Constants._beans_cassandra_accessor);
 	static CassandraDescriptorBean descriptor = (CassandraDescriptorBean) beanFactory.getBean(Constants._beans_cassandra_descriptor);
 	
@@ -42,7 +43,7 @@ public class TestAccessor {
 		users = Utils4Tests.initTestUsers(testUsersCount);
 			
 		// Create access path for batch insert
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) Utils4Tests.getBean(Constants._beans_cassandra_descriptor);
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
 		
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 

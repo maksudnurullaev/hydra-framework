@@ -9,11 +9,8 @@ import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
+import org.hydra.utils.BeansUtils;
 import org.junit.Assert;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
 /**
  * To use this test we should create 1000 test users
@@ -31,24 +28,11 @@ public final class Utils4Tests {
 	public static final String KSMAINTEST_Articles = "KSMainTEST.Articles";
 	public static final String KSMAINTEST_Users_S_Articles = "KSMainTEST.Users.%s.Articles";
 	
-	public final static Resource res = new FileSystemResource(Constants._path2ApplicationContext_xml);
-	
 	private static final String ARTICLE_S = "article%s";
 	private static final String ARTICLE_TITLE_S = "article title %s";
 	private static final String ARTICLE_TEXT_S = "article text %s";
 	private static final String ARTICLE_TITLE = "Title";
 	private static final String ARTICLE_TEXT = "Text";
-	
-	public static XmlBeanFactory factory = new XmlBeanFactory(res);
-	
-	
-	public static BeanFactory getBeanFactory(){
-		return factory;
-	}
-	
-	public static Object getBean(String inName){
-		return factory.getBean(inName);
-	}
 	
 	public static Map<String, Map<String, String>> initTestUsers(int count) {
 		
@@ -73,7 +57,7 @@ public final class Utils4Tests {
 	public static Map<String, Map<String, String>> initTestArticles(int count) {
 		Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
 		
-		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
+		CassandraAccessorBean accessor = (CassandraAccessorBean) BeansUtils.getBean(Constants._beans_cassandra_accessor);
 		if(!accessor.isValid())accessor.setup();
 		
 		// 1. Iterate over the user count and create Map<String, Map<String,String>> for batch insert
@@ -94,8 +78,8 @@ public final class Utils4Tests {
 	}
 	
 	public static Result deleteAllTestUsers() {
-		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);
+		CassandraAccessorBean accessor = (CassandraAccessorBean) BeansUtils.getBean(Constants._beans_cassandra_accessor);
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
 		
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSMAINTEST_Users);
 		
@@ -106,20 +90,9 @@ public final class Utils4Tests {
 		return accessor.delete(path);		
 	}
 	
-	public static CassandraAccessorBean getAccessor() {
-		CassandraAccessorBean accessor = (CassandraAccessorBean) Utils4Tests.getBean(Constants._beans_cassandra_accessor);
-		if(!accessor.isValid()) accessor.setup();
-		return accessor;
-	}
-
-	public static CassandraDescriptorBean getDescriptor() {
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) Utils4Tests.getBean(Constants._beans_cassandra_descriptor);
-		return descriptor;
-	}
-
 	public static Result deleteAllTestArticles() {
-		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);
+		CassandraAccessorBean accessor = (CassandraAccessorBean) BeansUtils.getBean(Constants._beans_cassandra_accessor);
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
 		
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, KSMAINTEST_Articles);
 		

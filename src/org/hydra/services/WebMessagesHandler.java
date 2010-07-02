@@ -11,7 +11,8 @@ import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
-import org.hydra.utils.SessionManager;
+import org.hydra.utils.SessionUtils;
+import org.hydra.utils.BeansUtils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
@@ -20,7 +21,7 @@ public class WebMessagesHandler extends ALogger {
 		
 		// -1. Attach session's data
 		getLog().debug("WebContextFactory.get(): " + WebContextFactory.get());
-		SessionManager.attachIMessageSessionData(inMessage, WebContextFactory.get());
+		SessionUtils.attachIMessageSessionData(inMessage, WebContextFactory.get());
 		
 		// 0. Debug part
 		if(getLog().isDebugEnabled()){
@@ -38,14 +39,14 @@ public class WebMessagesHandler extends ALogger {
 		
 		// 2. Send message to default pipe
 		getLog().debug("Send message to default pipe...");
-		Result result = SessionManager.getBean(Constants._beans_main_input_pipe);
+		Result result = BeansUtils.getWebSessionBean(Constants._beans_main_input_pipe);
 		if(result.isOk() && result.getObject() instanceof Pipe){
 			((Pipe)result.getObject()).setMessage(inMessage);
 		}else{
 			getLog().fatal("Could not initialize " + Constants._beans_main_input_pipe + " object");
 			inMessage.setError("Could not initialize " + Constants._beans_main_input_pipe + " object");
 			
-			SessionManager.detachIMessageSessionData(inMessage);
+			SessionUtils.detachIMessageSessionData(inMessage);
 			_result.add(inMessage);
 			return _result;
 		}
@@ -56,7 +57,7 @@ public class WebMessagesHandler extends ALogger {
 		
 		// 4. Waiting for response
 		getLog().debug("START: Waiting for response...");
-		result = SessionManager.getBean(Constants._beans_main_message_collector);
+		result = BeansUtils.getWebSessionBean(Constants._beans_main_message_collector);
 		if(result.isOk() && result.getObject() instanceof MessagesCollector){
 			MessagesCollector messagesCollector = (MessagesCollector)result.getObject();
 
@@ -66,7 +67,7 @@ public class WebMessagesHandler extends ALogger {
 					inMessage.setError("Waiting time limit is over...");				
 					getLog().error("Waiting time limit is over...");
 					
-					SessionManager.detachIMessageSessionData(inMessage);
+					SessionUtils.detachIMessageSessionData(inMessage);
 					_result.add(inMessage);				
 					return _result;
 				}
@@ -77,13 +78,13 @@ public class WebMessagesHandler extends ALogger {
 			IMessage messageBean = null;
 			while((messageBean = messagesCollector.getMessage(inMessage.getData().get(IMessage._data_sessionId))) != null){
 				
-				SessionManager.detachIMessageSessionData(messageBean);
+				SessionUtils.detachIMessageSessionData(messageBean);
 				_result.add((MessageBean)messageBean);
 			}
 			return _result;		
 		}
 		
-		SessionManager.detachIMessageSessionData(inMessage);
+		SessionUtils.detachIMessageSessionData(inMessage);
 		inMessage.setError("Could not initialize " + Constants._beans_main_message_collector + " object");
 		_result.add(inMessage);
 		

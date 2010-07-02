@@ -2,31 +2,26 @@ package org.hydra.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.management.ImmutableDescriptor;
-
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.beans.ColumnBean;
 import org.hydra.db.beans.ColumnFamilyBean;
+import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.messages.handlers.AdminMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.spring.AppContext;
 import org.junit.Assert;
 
 /**
@@ -318,6 +313,17 @@ public final class DBUtils {
 			}
 		}
 		
+	}
+
+	public static CassandraAccessorBean getAccessor() {
+		CassandraAccessorBean accessor = (CassandraAccessorBean) BeansUtils.getBean(Constants._beans_cassandra_accessor);
+		if(!accessor.isValid()) accessor.setup();
+		return accessor;
+	}
+
+	public static CassandraDescriptorBean getDescriptor() {
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
+		return descriptor;
 	}
 
 }
