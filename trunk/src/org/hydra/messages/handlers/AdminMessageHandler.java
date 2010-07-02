@@ -17,7 +17,7 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
-import org.hydra.utils.SessionManager;
+import org.hydra.utils.BeansUtils;
 
 public class AdminMessageHandler extends AMessageHandler {
 	public static final String _handler_name = "AdminMessage";
@@ -66,7 +66,7 @@ public class AdminMessageHandler extends AMessageHandler {
 					inMessage.setError(errorStr);
 					return inMessage;
 				}	
-				DBUtils.describeColumn(SessionManager.getCassandraDescriptor(), inMessage);		
+				DBUtils.describeColumn(BeansUtils.getCassandraDescriptor(), inMessage);		
 		}else if(inMessage.getData().get(IMessage._data_action).equals(_action_cs_select_column)){
 				if(!testParameters(inMessage, IMessage._data_cs_ksp, IMessage._data_cs_cf, IMessage._data_cs_key, IMessage._data_cs_col)){
 					String errorStr = "Missing parameters _cs_key or _cs_col!";
@@ -135,7 +135,7 @@ public class AdminMessageHandler extends AMessageHandler {
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		KeyspaceBean kspBean = SessionManager.getCassandraDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
+		KeyspaceBean kspBean = BeansUtils.getCassandraDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
 		
 		if(kspBean == null){
 			inMessage.setError(trace + "Could not find Ksp: " + inMessage.getData().get(IMessage._data_cs_ksp));
@@ -184,7 +184,7 @@ public class AdminMessageHandler extends AMessageHandler {
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		KeyspaceBean ksp = SessionManager.getCassandraDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
+		KeyspaceBean ksp = BeansUtils.getCassandraDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
 		
 		if(ksp != null){
 			inMessage.setHtmlContent(ksp.getCfHTMLDescription());
@@ -194,7 +194,7 @@ public class AdminMessageHandler extends AMessageHandler {
 	}
 
 	private void describeCassandra(IMessage inMessage){
-		CassandraAccessorBean cassandraAccessorBean =SessionManager.getCassandraAccessor();
+		CassandraAccessorBean cassandraAccessorBean =BeansUtils.getCassandraAccessor();
 		
 		String result = "";
 		String format = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
@@ -210,7 +210,7 @@ public class AdminMessageHandler extends AMessageHandler {
 	}
 	
 	private void describeHydra(IMessage inMessage) {
-		Result result = SessionManager.getBean(Constants._beans_statistics_collector);
+		Result result = BeansUtils.getWebSessionBean(Constants._beans_statistics_collector);
 		
 		if(result.isOk() && result.getObject() instanceof StatisticsCollector){
 			StatisticsCollector statisticsCollector = (StatisticsCollector) result.getObject();

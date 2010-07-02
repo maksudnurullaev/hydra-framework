@@ -24,8 +24,8 @@ public class TestFMDKspCfIdLinks {
 	static Map<String, Map<String, String>> testUsersMap = null;
 
 	Log _log = LogFactory.getLog(this.getClass());
-	static CassandraAccessorBean accessor = Utils4Tests.getAccessor();
-	static CassandraDescriptorBean descriptor = Utils4Tests.getDescriptor();
+	static CassandraAccessorBean accessor = DBUtils.getAccessor();
+	static CassandraDescriptorBean descriptor = DBUtils.getDescriptor();
 
 	@Before
 	public void before() {

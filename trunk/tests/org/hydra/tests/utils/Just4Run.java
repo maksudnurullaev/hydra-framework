@@ -10,8 +10,8 @@ import org.hydra.utils.Result;
 
 public class Just4Run {
 	static String userID = "user0";
-	static CassandraAccessorBean accessor = Utils4Tests.getAccessor();
-	static CassandraDescriptorBean descriptor = Utils4Tests.getDescriptor();
+	static CassandraAccessorBean accessor = DBUtils.getAccessor();
+	static CassandraDescriptorBean descriptor = DBUtils.getDescriptor();
 	
 	public static void main(String[] args) {
 		initTestData();

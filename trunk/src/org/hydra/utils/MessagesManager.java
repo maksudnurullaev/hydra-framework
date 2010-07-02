@@ -19,8 +19,8 @@ public final class MessagesManager{
 	
 	public MessagesManager(){
 		// 1. Try to get bean from springs
-		if(SessionManager.getWebApplicationContext() != null){
-			_textManager = (TextManager) SessionManager.getWebApplicationContext().getBean(Constants._beans_text_manager);
+		if(BeansUtils.getWebApplicationContext() != null){
+			_textManager = (TextManager) BeansUtils.getWebApplicationContext().getBean(Constants._beans_text_manager);
 			_log.debug("Found spring's default TextManager bean dictionary!");
 		// 2. If not 
 		}else{
