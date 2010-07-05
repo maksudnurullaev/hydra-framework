@@ -40,27 +40,38 @@ public final class BeansUtils {
 		
 		return result;
 	}
-
-	public static CassandraDescriptorBean getCassandraDescriptor() {
-		Result result = getWebSessionBean(Constants._beans_cassandra_descriptor);
-		
-		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
-			_log.debug("Found bean: " + Constants._beans_cassandra_descriptor);
-			return (CassandraDescriptorBean) result.getObject();
-		}
-		_log.fatal("Could not find bean: " + Constants._beans_cassandra_descriptor);
-		return null;
+	
+	public static CassandraAccessorBean getAccessor() {
+		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
+		if(!accessor.isValid()) accessor.setup();
+		return accessor;
 	}
 
-	public static CassandraAccessorBean getCassandraAccessor() {
-		Result result = getWebSessionBean(Constants._beans_cassandra_accessor);
-		
-		if(result.isOk() && result.getObject() instanceof CassandraAccessorBean){
-			_log.debug("Found bean: " + Constants._beans_cassandra_accessor);
-			return (CassandraAccessorBean) result.getObject();
-		}
-		_log.fatal("Could not find bean: " + Constants._beans_cassandra_accessor);
-		return null;
-	}
+	public static CassandraDescriptorBean getDescriptor() {
+		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);
+		return descriptor;
+	}	
+
+//	public static CassandraDescriptorBean getCassandraDescriptor2() {
+//		Result result = getWebSessionBean(Constants._beans_cassandra_descriptor);
+//		
+//		if(result.isOk() && result.getObject() instanceof CassandraDescriptorBean){
+//			_log.debug("Found bean: " + Constants._beans_cassandra_descriptor);
+//			return (CassandraDescriptorBean) result.getObject();
+//		}
+//		_log.fatal("Could not find bean: " + Constants._beans_cassandra_descriptor);
+//		return null;
+//	}
+//
+//	public static CassandraAccessorBean getCassandraAccessor2() {
+//		Result result = getWebSessionBean(Constants._beans_cassandra_accessor);
+//		
+//		if(result.isOk() && result.getObject() instanceof CassandraAccessorBean){
+//			_log.debug("Found bean: " + Constants._beans_cassandra_accessor);
+//			return (CassandraAccessorBean) result.getObject();
+//		}
+//		_log.fatal("Could not find bean: " + Constants._beans_cassandra_accessor);
+//		return null;
+//	}
 
 }

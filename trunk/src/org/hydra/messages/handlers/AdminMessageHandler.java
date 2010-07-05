@@ -66,7 +66,7 @@ public class AdminMessageHandler extends AMessageHandler {
 					inMessage.setError(errorStr);
 					return inMessage;
 				}	
-				DBUtils.describeColumn(BeansUtils.getCassandraDescriptor(), inMessage);		
+				DBUtils.describeColumn(BeansUtils.getDescriptor(), inMessage);		
 		}else if(inMessage.getData().get(IMessage._data_action).equals(_action_cs_select_column)){
 				if(!testParameters(inMessage, IMessage._data_cs_ksp, IMessage._data_cs_cf, IMessage._data_cs_key, IMessage._data_cs_col)){
 					String errorStr = "Missing parameters _cs_key or _cs_col!";
@@ -135,7 +135,7 @@ public class AdminMessageHandler extends AMessageHandler {
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		KeyspaceBean kspBean = BeansUtils.getCassandraDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
+		KeyspaceBean kspBean = BeansUtils.getDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
 		
 		if(kspBean == null){
 			inMessage.setError(trace + "Could not find Ksp: " + inMessage.getData().get(IMessage._data_cs_ksp));
@@ -184,7 +184,7 @@ public class AdminMessageHandler extends AMessageHandler {
 			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		KeyspaceBean ksp = BeansUtils.getCassandraDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
+		KeyspaceBean ksp = BeansUtils.getDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
 		
 		if(ksp != null){
 			inMessage.setHtmlContent(ksp.getCfHTMLDescription());
@@ -194,7 +194,7 @@ public class AdminMessageHandler extends AMessageHandler {
 	}
 
 	private void describeCassandra(IMessage inMessage){
-		CassandraAccessorBean cassandraAccessorBean =BeansUtils.getCassandraAccessor();
+		CassandraAccessorBean cassandraAccessorBean =BeansUtils.getAccessor();
 		
 		String result = "";
 		String format = MessagesManager.getTemplate("template.html.Strongtext.Text.br");

@@ -13,8 +13,10 @@ import org.apache.cassandra.thrift.Mutation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.beans.ColumnFamilyBean;
+import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
+import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
@@ -39,8 +41,7 @@ public class Mutation2Delete extends ALogger{
 		
 		switch (inPath.getPathType()) {
 		case KSP___CF:
-			mutations4KspCf(inPath, result);
-			// [remove later] _log.error("[[[mutations4KspCf(inPath, result)]]]it's not implemented yet!");
+			mutations4KspCf(inPath, result, 0);
 			break;
 		case KSP___CF___ID:
 			mutations4KspCfId(inPath, result, 0);
@@ -50,6 +51,11 @@ public class Mutation2Delete extends ALogger{
 			//TODO mutations4KspCfIDLinks(inPath, result);
 			_log.error("[[[mutations4KspCfIDLinks(inPath, result)]]] it's not implemented yet!");
 			break;
+			
+		case KSP___CF___ID___LINKNAME__LINKID:
+			//TODO mutations4KspCfIDLinksID(inPath, result);
+			_log.error("[[[mutations4KspCfIDLinksID(inPath, result)]]] it's not implemented yet!");
+			break;			
 
 		default:
 			_log.error(String.format("Unknow path(%s) and type(%s) to update!",
@@ -64,9 +70,31 @@ public class Mutation2Delete extends ALogger{
 	}
 	
 	private static void mutations4KspCf(CassandraVirtualPath inPath,
-			Map<String, Map<String, List<Mutation>>> result) {
-		// TODO Auto-generated method stub
+			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep)  {
 		
+		CassandraAccessorBean accessor = BeansUtils.getAccessor();
+		
+		ResultAsListOfColumnOrSuperColumn result = accessor.find(inPath);
+		if(!result.isOk()){
+			_log.error("mutations4KspCf: " + result.getResult());
+			return;
+		}
+		
+		for(ColumnOrSuperColumn columnOrSuperColumn:result.getColumnOrSuperColumn()){
+			
+			if(!columnOrSuperColumn.isSetSuper_column()){
+				_log.error("mutations4KspCf: result sould be super column!");
+				continue;			
+			}
+			
+			String superColumnID = DBUtils.bytes2UTF8String(columnOrSuperColumn.super_column.name);
+			_log.error("mutations4KspCf: DELETE for super column: " + superColumnID);
+			
+			CassandraVirtualPath path = new CassandraVirtualPath(BeansUtils.getDescriptor(),
+					inPath.getPath() + "." + superColumnID);
+			
+			mutations4KspCfId(path, inResultMap, inRecursionDeep + 1);			
+		}		
 	}
 
 	private static void mutations4KspCfId(CassandraVirtualPath inPath,

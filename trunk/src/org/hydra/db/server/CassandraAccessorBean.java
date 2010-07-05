@@ -160,7 +160,6 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 	public Result delete(CassandraVirtualPath inPath) {
 		// tests path
 		Result result = DBUtils.test4NullKspCf(inPath);
-
 		if (!result.isOk()) {
 			getLog().error(result.getResult());
 			return result;

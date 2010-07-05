@@ -1,7 +1,10 @@
 package org.hydra.tests.db.fmd;
 
+import java.util.List;
 import java.util.Map;
 
+import org.apache.cassandra.thrift.ColumnOrSuperColumn;
+import org.apache.cassandra.thrift.SuperColumn;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.server.CassandraAccessorBean;
@@ -19,13 +22,15 @@ import org.junit.Test;
 
 public class TestFMDKspCfIdLinks {
 	/**
-	 * FUD - (Find, Update, Delete)
+	 * FMD - (Find, Mutate/Delete)
 	 */
 	static Map<String, Map<String, String>> testUsersMap = null;
 
 	Log _log = LogFactory.getLog(this.getClass());
 	static CassandraAccessorBean accessor = DBUtils.getAccessor();
 	static CassandraDescriptorBean descriptor = DBUtils.getDescriptor();
+
+	private static String userID = null;
 
 	@Before
 	public void before() {
@@ -41,46 +46,34 @@ public class TestFMDKspCfIdLinks {
 
 	@Test
 	public void test_fmd4user_with_articles() {
-		int articleCount = 10;
+		Result result = null;
 		
-		// init single user for test
-		Map<String, Map<String, String>> user = Utils4Tests.initTestUsers(1);
-		String userID = (String) user.keySet().toArray()[0];
-		CassandraVirtualPath path2User = new CassandraVirtualPath(descriptor,
-				Utils4Tests.KSMAINTEST_Users + "." + userID);
-		Result result = accessor.update(path2User, DBUtils.convert2Bytes(user));
-		// ... test result
-		Assert.assertTrue(result.isOk());
+		// [DEBUG ONLY] DBUtils.printResult(dbResult);
+		// ***MUTATE*** - mutate certain article				
+		// ... init single user with articles
+		Assert.assertTrue(initTestDataStage1User());
+		Assert.assertTrue(initTestDataStage2Articles());
 
-		// FIND links (initial count)
-		CassandraVirtualPath path2UsersIDArticles = new CassandraVirtualPath(
-				descriptor,
-				String.format(Utils4Tests.KSMAINTEST_Users_S_Articles, userID));
-		// ... find
+		// ... find  initial
 		ResultAsListOfColumnOrSuperColumn dbResult = accessor
 				.find(path2UsersIDArticles);
 		Assert.assertTrue(dbResult.isOk());
-		int initialArticleCount = dbResult.getColumnOrSuperColumn().size();
-
-		// UPDATE/INSERT (insert articles for users)
-		Map<String, Map<String, String>> articles = Utils4Tests
-				.initTestArticles(articleCount);
-		// ... update
-		result = accessor.update(path2UsersIDArticles, DBUtils
-				.convert2Bytes(articles));
-		Assert.assertTrue(result.isOk());
-
-		// FIND links(all new articles)
+		
+		// ***FIND*** - all articles
 		dbResult = accessor.find(path2UsersIDArticles);
 		Assert.assertTrue(dbResult.isOk());
 		Assert.assertEquals(1, dbResult.getColumnOrSuperColumn().size());
-		Assert.assertEquals(articleCount, dbResult.getColumnOrSuperColumn()
-				.get(0).super_column.columns.size());
-
-		// [DEBUG ONLY] DBUtils.printResult(dbResult);
-
-		// TODO Check cascade deletion one by one records
-		// DELETE(delete links)
+		
+		List<ColumnOrSuperColumn> listOfCOSArticles = dbResult.getColumnOrSuperColumn();
+		Assert.assertEquals(1, listOfCOSArticles.size());
+		
+		ColumnOrSuperColumn cOs = listOfCOSArticles.get(0);
+		Assert.assertTrue(cOs.isSetSuper_column());
+		
+		SuperColumn superColumn = cOs.getSuper_column();
+		Assert.assertEquals(articleCount, superColumn.columns.size());
+		
+		// ***MUTATE(DELETE) - delete user & his articles
 		Assert.assertEquals(String.format(
 				Utils4Tests.KSMAINTEST_Users_S_Articles, userID),
 				path2UsersIDArticles.getPath());
@@ -88,12 +81,12 @@ public class TestFMDKspCfIdLinks {
 				path2UsersIDArticles.getPathType());
 
 		result = accessor.delete(path2User);
+		Assert.assertTrue(result.isOk());
 
 		// ... test deletes
 		dbResult = accessor.find(path2UsersIDArticles);
 		Assert.assertTrue(dbResult.isOk());
-		Assert.assertEquals(initialArticleCount, dbResult
-				.getColumnOrSuperColumn().size());
+		Assert.assertEquals(0, dbResult.getColumnOrSuperColumn().size());
 	}
 
 	// ### UTILS ### 
@@ -112,4 +105,55 @@ public class TestFMDKspCfIdLinks {
 		Assert.assertNotNull(accessor);
 		Assert.assertNotNull(descriptor);
 	}	
+	
+	public static boolean initTestDataStage1User() {
+		userMap = Utils4Tests.initTestUsers(1);
+		userID = (String) userMap.keySet().toArray()[0];
+		CassandraVirtualPath path2Users = new CassandraVirtualPath(
+				descriptor,
+				Utils4Tests.KSMAINTEST_Users);
+		Result result = accessor.update(path2Users, DBUtils.convert2Bytes(userMap));
+		
+		if(result.isOk())
+			System.out.println("Initial user data merged!");
+		else{
+			System.out.println(result.getResult());
+			return false;
+		}
+		
+		path2User = new CassandraVirtualPath(descriptor,
+				Utils4Tests.KSMAINTEST_Users + "." + userID);
+		
+		return true;
+				
+	}	
+	
+	public static boolean initTestDataStage2Articles() {
+		articlesMap = Utils4Tests.initTestArticles(articleCount);
+		path2UsersIDArticles = new CassandraVirtualPath(
+				descriptor,
+				String.format(Utils4Tests.KSMAINTEST_Users_S_Articles, userID));
+		Result result = accessor.update(path2UsersIDArticles, DBUtils
+				.convert2Bytes(articlesMap));
+		
+		if(result.isOk())
+			System.out.println("Initial linked articles data merged!");
+		else{
+			System.out.println(result.getResult());
+			return false;
+		}
+		
+		path2UsersIDArticles = new CassandraVirtualPath(
+				descriptor,
+				String.format(Utils4Tests.KSMAINTEST_Users_S_Articles, userID));
+		
+		return true;
+	}
+	
+	static Map<String, Map<String, String>> userMap = null;
+	static Map<String, Map<String, String>> articlesMap = null;
+	static CassandraVirtualPath path2User = null;
+	static CassandraVirtualPath path2UsersIDArticles = null;
+	static int articleCount = 10;
+	
 }
