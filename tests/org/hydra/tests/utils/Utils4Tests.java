@@ -24,9 +24,9 @@ public final class Utils4Tests {
 	public static final String USER_PASSWORD = "Password";
 	public static final String USER_EMAIL = "Email";
 	public static final String USER_TEST_S_MAIL_COM = "test%s@mail.com";
-	public static final String KSMAINTEST_Users = "KSMainTEST.Users";
-	public static final String KSMAINTEST_Articles = "KSMainTEST.Articles";
-	public static final String KSMAINTEST_Users_S_Articles = "KSMainTEST.Users.%s.Articles";
+	public static final String KSMAINTEST_Users = "KSMainTEST--->Users";
+	public static final String KSMAINTEST_Articles = "KSMainTEST--->Articles";
+	public static final String KSMAINTEST_Users_S_Articles = "KSMainTEST--->Users--->%s--->Articles";
 	
 	private static final String ARTICLE_S = "article%s";
 	private static final String ARTICLE_TITLE_S = "article title %s";

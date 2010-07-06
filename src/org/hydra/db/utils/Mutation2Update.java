@@ -71,7 +71,7 @@ public class Mutation2Update extends ALogger{
 		// setup access path for links
 		CassandraVirtualPath linksVPath = new CassandraVirtualPath(
 				inPath.getDescriptor(),
-				String.format("%s.%s", inPath._kspBean.getName(),
+				String.format("%s" + CassandraVirtualPath.PATH_DELIMETER + "%s", inPath._kspBean.getName(),
 						inPath._cfLinkBean.getName()));
 		// create mutation
 		List<byte[]> linkIDs = mutations4KspCf(linksVPath,

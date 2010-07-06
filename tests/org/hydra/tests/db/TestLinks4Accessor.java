@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 
 public class TestLinks4Accessor {
+	private static final String KS_MAIN_TEST_ARTICLES = "KSMainTEST--->Articles";
 	private static final String TEST_MAIL_COM = "test@mail.com";
 	private static final String PASSWORD = "Password";
 	private static final String EMAIL = "Email";
@@ -106,7 +107,7 @@ public class TestLinks4Accessor {
 		accessor.delete(path);
 		
 		// delete all articles
-		path = new CassandraVirtualPath(descriptor, "KSMainTEST.Articles");
+		path = new CassandraVirtualPath(descriptor, KS_MAIN_TEST_ARTICLES);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);

@@ -51,8 +51,6 @@ FMD
 	Delete(Remove
 *. Создать тесты для FMD подхода
 	*. (+) KSP___CF,			
-	*. KSP___CF___COLUMNS 		
-	*. KSP___CF___LINKS 		
-	*. (+)KSP___CF___ID	
-	*. KSP___CF___ID___LINKNAME
+	*. (+) KSP___CF___ID	
+	*. (+) KSP___CF___ID___LINKNAME
 	*. KSP___CF___ID___LINKNAME__LINKID 

@@ -91,7 +91,7 @@ public class Mutation2Delete extends ALogger{
 			_log.error("mutations4KspCf: DELETE for super column: " + superColumnID);
 			
 			CassandraVirtualPath path = new CassandraVirtualPath(BeansUtils.getDescriptor(),
-					inPath.getPath() + "." + superColumnID);
+					inPath.getPath() + CassandraVirtualPath.PATH_DELIMETER + superColumnID);
 			
 			mutations4KspCfId(path, inResultMap, inRecursionDeep + 1);			
 		}		
@@ -162,7 +162,8 @@ public class Mutation2Delete extends ALogger{
 							
 							for(Column column:columnOrSuperColumn.getSuper_column().columns){
 								// ... ... deletioin for child
-								String childPathStr = String.format("%s.%s.%s", 
+								String childPathStr = String.format("%s" + CassandraVirtualPath.PATH_DELIMETER 
+										+ "%s" + CassandraVirtualPath.PATH_DELIMETER + "%s", 
 										inPath._kspBean.getName(),
 										childColumnFamilyBean.getName(),
 										DBUtils.bytes2UTF8String(column.name));
