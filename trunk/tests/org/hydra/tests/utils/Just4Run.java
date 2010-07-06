@@ -1,40 +1,19 @@
 package org.hydra.tests.utils;
 
-import org.hydra.db.server.CassandraAccessorBean;
-import org.hydra.db.server.CassandraDescriptorBean;
-import org.hydra.tests.db.fmd.TestFMDKspCfIdLinks;
-import org.hydra.utils.DBUtils;
 
 public class Just4Run {
-	static String userID = "user0";
-	static CassandraAccessorBean accessor = DBUtils.getAccessor();
-	static CassandraDescriptorBean descriptor = DBUtils.getDescriptor();
+
 	
 	public static void main(String[] args) {
-		TestFMDKspCfIdLinks.initTestDataStage1User();
-		TestFMDKspCfIdLinks.initTestDataStage2Articles();
+		String testString1 = "KSMainTEST--->Users--->3cb92fbd-5ebd-42a7-86d5-05be37c8b91d";
+		String testString2 = "KSMainTEST--->Users--->2010.07.06 16:55:37 459 - 7eeca97e-e0d9-4489-959f-bacf8ee26f7d";
 		
-//		CassandraVirtualPath path2Delete = new CassandraVirtualPath(descriptor,
-//				Utils4Tests.KSMAINTEST_Users + "." + userID);		
-//		
-//		System.out.println("Delete2path: " + path2Delete.getPath());
-//		
-//		accessor.delete(path2Delete);
-//		// Mutation2Delete.generate(path2Delete);
+		String[] test1 = testString1.split("--->");
+		String[] test2 = testString2.split("--->");		
 		
-		// ############# delete cascade
-//		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, 
-//				String.format(Utils4Tests.KSMAINTEST_Users_S_Articles, "user0"));
+		for(String string:test1) System.out.println(string);
+		for(String string:test2) System.out.println(string);		
 		
-//		// init single user for test
-//		Map<String, Map<String, String>> user = Utils4Tests.initTestUsers(1);
-//		CassandraVirtualPath path = new CassandraVirtualPath(Utils4Tests.getDescriptor(),
-//				Utils4Tests.KSMAINTEST_Users);		
-//		Result result = Utils4Tests.getAccessor().update(path, DBUtils.convert2Bytes(user));				
-//		Assert.assertTrue(result.isOk());
-//		
-//		result = Utils4Tests.getAccessor().delete(path);		
-//		Assert.assertTrue(result.isOk());
 	}
 
 }

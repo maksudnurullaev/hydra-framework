@@ -88,7 +88,7 @@ public class CassandraVirtualPath extends ALogger {
 	String[] _pathDefs = null;
 
 	// Access path string delimeter
-	final String PATH_DELIMETER = "\\.";
+	public static final String PATH_DELIMETER = "--->";
 
 
 	public CassandraVirtualPath(

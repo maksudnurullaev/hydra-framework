@@ -48,7 +48,6 @@ public class TestFMDKspCfIdLinks {
 	public void test_fmd4user_with_articles() {
 		Result result = null;
 		
-		// [DEBUG ONLY] DBUtils.printResult(dbResult);
 		// ***MUTATE*** - mutate certain article				
 		// ... init single user with articles
 		Assert.assertTrue(initTestDataStage1User());
@@ -122,7 +121,7 @@ public class TestFMDKspCfIdLinks {
 		}
 		
 		path2User = new CassandraVirtualPath(descriptor,
-				Utils4Tests.KSMAINTEST_Users + "." + userID);
+				Utils4Tests.KSMAINTEST_Users + CassandraVirtualPath.PATH_DELIMETER + userID);
 		
 		return true;
 				

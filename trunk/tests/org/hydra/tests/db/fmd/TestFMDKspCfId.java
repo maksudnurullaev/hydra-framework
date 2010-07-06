@@ -2,27 +2,23 @@ package org.hydra.tests.db.fmd;
 
 import java.util.Map;
 
-import org.apache.cassandra.thrift.Column;
-import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.SuperColumn;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
-import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
-import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
 import org.hydra.tests.utils.Utils4Tests;
-import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
-import org.hydra.utils.BeansUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestFMDKspCfId {
+	private static final String KS_MAIN_TEST_USERS_S = "KSMainTEST--->Users--->%s";
+
 	/**
 	 * FMD - (Find, Mutate(Insert/Update), Delete) 
 	 */
@@ -47,67 +43,53 @@ public class TestFMDKspCfId {
 	
 	@Test
 	public void test_1_users(){
-		String format = "KSMainTEST.Users.%s";		
 		// clean up users data
 		clearAllTestUsers();
-		//!!!------------------ FIND (nothing) ------------------!!!
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, 
-				String.format(format, "ZZZ"));
-		Assert.assertEquals(PATH_TYPE.KSP___CF___ID, path.getPathType());
-		Assert.assertEquals(ERR_CODES.NO_ERROR, path.getErrorCode());
-		ResultAsListOfColumnOrSuperColumn resultAsListOfUsers = accessor.find(path);
-		Assert.assertTrue(resultAsListOfUsers.isOk());
-		Assert.assertEquals(0, resultAsListOfUsers.getColumnOrSuperColumn().size());
-		// create single user for test
-		Map<String, Map<String, String>> user = Utils4Tests.initTestUsers(1);
-		// .. get test user id		
-		String userID = (String) user.keySet().toArray()[0];
 		
-			
-		// create access path for batch insert
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
+		// ***FIND*** - nothing
+		CassandraVirtualPath path2UnkownUser = new CassandraVirtualPath(descriptor, 
+				String.format(KS_MAIN_TEST_USERS_S, "ZZZ"));
+		ResultAsListOfColumnOrSuperColumn result = accessor.find(path2UnkownUser);
+		Assert.assertTrue(result.isOk());
+		Assert.assertEquals(0, result.getColumnOrSuperColumn().size());
 		
-		path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
-		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertTrue(path._kspBean != null);
-		Assert.assertTrue(path._cfBean != null);
-		Assert.assertTrue(user.containsKey(userID));
-		Assert.assertTrue(user.size() == 1);
-		Assert.assertTrue(DBUtils.validateFields(path._cfBean, user.get(userID)));
-		
-		// send Map<String, Map<String,String>> to batch insert
-		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(user));
-		
-		// test result
+		// ***MUTATE*** - add new user
+		Map<String, Map<String, String>> userMap = Utils4Tests.initTestUsers(1);
+		// ... get test user id		
+		String userID = (String) userMap.keySet().toArray()[0];
+		// ... setup path
+		CassandraVirtualPath path2Users = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
+		// ... mutate
+		Result batchInsertResult = accessor.update(path2Users, DBUtils.convert2Bytes(userMap));
+		// ... test result
 		Assert.assertTrue(batchInsertResult.isOk());		
+		Assert.assertTrue(userMap.size() == 1);
 		
-		Assert.assertTrue(user.size() == 1);
-		//!!!------------------ FIND (single) ------------------!!!
-		path = new CassandraVirtualPath(descriptor,	String.format(format, userID));
-		resultAsListOfUsers = accessor.find(path);
-		if(resultAsListOfUsers.getColumnOrSuperColumn().size() != 1){
-			System.out.println("ERROR!!! Size: " + resultAsListOfUsers.getColumnOrSuperColumn().size());
-			System.out.println("ERROR!!! Path: " + path.getPath());
-		}
-		Assert.assertEquals(1, resultAsListOfUsers.getColumnOrSuperColumn().size());
-		SuperColumn superColumn = resultAsListOfUsers.getColumnOrSuperColumn().get(0).super_column;
+		// ***FIND*** - user
+		CassandraVirtualPath path2User = new CassandraVirtualPath(descriptor,	String.format(KS_MAIN_TEST_USERS_S, userID));
+		result = accessor.find(path2User);
+		// ... test result
+		Assert.assertEquals(1, result.getColumnOrSuperColumn().size());
+		
+		SuperColumn superColumn = result.getColumnOrSuperColumn().get(0).super_column;
 		Assert.assertEquals(userID, DBUtils.bytes2UTF8String(superColumn.name));
-		//!!!------------------ MUTATE (change) ------------------!!!
-		Assert.assertTrue(user.get(userID).containsKey(Utils4Tests.USER_EMAIL));
-		String testMail = "zzzz@zzz.zzz";
-		user.get(userID).put(Utils4Tests.USER_EMAIL, testMail);
-		batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(user));
+		
+		// ***MUTATE*** - change user's email address
+		String newMail = "zzzz@zzz.zzz";
+		userMap.get(userID).put(Utils4Tests.USER_EMAIL, newMail);
+		batchInsertResult = accessor.update(path2User, DBUtils.convert2Bytes(userMap));
 		Assert.assertTrue(batchInsertResult.isOk());
-		resultAsListOfUsers = accessor.find(path);
-		Map<String, byte[]> mapStringBytes = 
-			DBUtils.converMapStringByteA(resultAsListOfUsers.getColumnOrSuperColumn().get(0).super_column.columns);
-		Assert.assertTrue(mapStringBytes.containsKey(Utils4Tests.USER_EMAIL));
-		Assert.assertEquals(testMail, DBUtils.bytes2UTF8String(mapStringBytes.get(Utils4Tests.USER_EMAIL)));
-		//TODO !!!------------------ DELETE ------------------!!!
-		Result delColResult = accessor.delete(path);
+		result = accessor.find(path2User);
+		Map<String, byte[]> mapNameValue = 
+			DBUtils.converMapStringByteA(result.getColumnOrSuperColumn().get(0).super_column.columns);
+		Assert.assertTrue(mapNameValue.containsKey(Utils4Tests.USER_EMAIL));
+		Assert.assertEquals(newMail, DBUtils.bytes2UTF8String(mapNameValue.get(Utils4Tests.USER_EMAIL)));
+		
+		// ***FIND*** - nothing
+		Result delColResult = accessor.delete(path2User);
 		Assert.assertTrue(delColResult.isOk());		
-		resultAsListOfUsers = accessor.find(path);
-		Assert.assertTrue(resultAsListOfUsers.getColumnOrSuperColumn().size() == 0);		
+		result = accessor.find(path2User);
+		Assert.assertTrue(result.getColumnOrSuperColumn().size() == 0);		
 	}
 
 }

@@ -89,28 +89,6 @@ public final class DBUtils {
 		}
 		return result;
 	}	
-	
-	public static void printResult(ResultAsListOfColumnOrSuperColumn result) {
-		if(result.getColumnOrSuperColumn() != null &&
-				result.getColumnOrSuperColumn().size() != 0){
-			Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
-			while(listIterator.hasNext()){
-				ColumnOrSuperColumn superColumn = listIterator.next();
-				Assert.assertTrue(superColumn.isSetSuper_column());
-				System.out.println(String.format("SuperCol.Name = %s\n",
-						DBUtils.bytes2UTF8String(superColumn.super_column.name, 32)));											
-				for(Column column:superColumn.getSuper_column().columns){
-					System.out.println(String.format("--> Col.Name = %s\n----> Value = %s\n----> Timestamp = %s\n",
-							DBUtils.bytes2UTF8String(column.name, 32), 
-							DBUtils.bytes2UTF8String(column.value, 32),
-							column.timestamp));							
-				}
-			}
-			_log.debug("Column count: " + result.getColumnOrSuperColumn().size()); 
-		}else{
-			_log.warn("Nothing to print!");				
-		}
-	}
 
 	public static boolean validateFields(ColumnFamilyBean cf,
 			Map<String, ?> inMap) {
@@ -325,5 +303,35 @@ public final class DBUtils {
 		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
 		return descriptor;
 	}
+
+	public static void printResult(List<ColumnOrSuperColumn> columns) {
+		for(ColumnOrSuperColumn column:columns)
+			printResult(column);
+		
+	}
+	
+	private static void printResult(ColumnOrSuperColumn superColumn) {
+		Assert.assertTrue(superColumn.isSetSuper_column());
+		System.out.println(String.format("SuperCol.Name = %s\n",
+				DBUtils.bytes2UTF8String(superColumn.super_column.name, 32)));											
+		for(Column column:superColumn.getSuper_column().columns){
+			System.out.println(String.format("--> Col.Name = %s\n----> Value = %s\n----> Timestamp = %s\n",
+					DBUtils.bytes2UTF8String(column.name, 32), 
+					DBUtils.bytes2UTF8String(column.value, 32),
+					column.timestamp));							
+		}
+	}
+
+	public static void printResult(ResultAsListOfColumnOrSuperColumn result) {
+		if(result.getColumnOrSuperColumn() != null &&
+				result.getColumnOrSuperColumn().size() != 0){
+			Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
+			while(listIterator.hasNext())printResult(listIterator.next());
+			_log.debug("Column count: " + result.getColumnOrSuperColumn().size()); 
+		}else{
+			_log.warn("Nothing to print!");				
+		}
+	}
+	
 
 }

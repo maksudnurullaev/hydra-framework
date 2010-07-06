@@ -125,38 +125,6 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		return result;
 	}
 
-//	public Result delete(String inKsp, ColumnPath inCf, String inKey) {
-//		return delete(inKsp, inCf, inKey, DBUtils.getCassandraTimestamp(),
-//				ConsistencyLevel.ONE);
-//	}
-//
-//	public Result delete(DeletePack inPack) {
-//		return delete(inPack.getKsp(), inPack.getCf(), inPack.getKey(),
-//				inPack.getTimestamp(), inPack.getConsistencyLevel());
-//	}
-//
-//	public Result delete(String inKsp, ColumnPath inCf, String inKey,
-//			long inTimestamp, ConsistencyLevel inConsistencyLevel) {
-//
-//		Result result = new Result();
-//
-//		Client client = clientBorrow();
-//
-//		try {
-//			client.remove(inKsp, inKey, inCf, inTimestamp, inConsistencyLevel);
-//			result.setResult(true);
-//			result.setResult(null);
-//		} catch (Exception e) {
-//			getLog().error(e.getMessage());
-//			result.setResult(false);
-//			result.setResult(e.toString());
-//		} finally {
-//			clientRelease(client);
-//		}
-//
-//		return result;
-//	}
-
 	public Result delete(CassandraVirtualPath inPath) {
 		// tests path
 		Result result = DBUtils.test4NullKspCf(inPath);
@@ -188,26 +156,6 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 
 	}
 	
-//	public Result delete(CassandraVirtualPath inPath) {
-//		// tests path
-//		Result result = DBUtils.test4NullKspCf(inPath);
-//
-//		if (!result.isOk()) {
-//			getLog().error(result.getResult());
-//			return result;
-//		}
-//
-//		for (DeletePack pack : DeletePack.getDeletePack(inPath)) {
-//			result = delete(pack);
-//			if (!result.isOk()) {
-//				getLog().error(result.getResult());
-//				return result;
-//			}
-//		}
-//
-//		return result;
-//	}
-
 	public ResultAsListOfColumnOrSuperColumn getAllLinks4(
 			CassandraVirtualPath inPath, SlicePredicate inPredicate) {
 		// ===

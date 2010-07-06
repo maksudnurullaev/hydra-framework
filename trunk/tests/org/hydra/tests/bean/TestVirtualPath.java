@@ -2,7 +2,6 @@ package org.hydra.tests.bean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.db.beans.ColumnBean;
 import org.hydra.db.beans.ColumnFamilyBean;
 import org.hydra.db.beans.KeyspaceBean;
 import org.hydra.db.server.CassandraDescriptorBean;
@@ -10,24 +9,24 @@ import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
-import org.hydra.utils.Constants;
 import org.hydra.utils.BeansUtils;
+import org.hydra.utils.Constants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 
 public class TestVirtualPath {
-	public static final String VALID_PATH_KSMAINTEST_USERS = "KSMainTEST.Users";
-	public static final String VALID_PATH_KSMAINTEST_USERS_USERID  = "KSMainTEST.Users.userID";
-	public static final String VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES = "KSMainTEST.Users.userID.Articles";
-	public static final String VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES_ARTICLEID = "KSMainTEST.Users.userID.Articles.articleID";
+	public static final String VALID_PATH_KSMAINTEST_USERS = "KSMainTEST--->Users";
+	public static final String VALID_PATH_KSMAINTEST_USERS_USERID  = "KSMainTEST--->Users--->userID";
+	public static final String VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES = "KSMainTEST--->Users--->userID--->Articles";
+	public static final String VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES_ARTICLEID = "KSMainTEST--->Users--->userID--->Articles--->articleID";
 	
 	public static final String INVALID_PATH_KSMAINTEST = "KSMainTEST";
-	public static final String INVALID_PATH_UNKNOWN_ARTICLES = "UnknownKSMain.Articles";
-	public static final String INVALID_PATH_KSMAINTEST_UNKNOWN = "KSMainTEST.UknownArticles";
-	public static final String INVALID_PATH_KSMAINTEST_ARTICELES_ID_UNKNOWN = "KSMainTEST.Articles.ID.UnkownColumn";
-	public static final String INVALID_PATH_KSMAINTEST_ARTICLES_ID_TITLE_UUU_XXX = "KSMainTEST.Articles.ID.Title.Extended.Field";
+	public static final String INVALID_PATH_UNKNOWN_ARTICLES = "UnknownKSMain--->Articles";
+	public static final String INVALID_PATH_KSMAINTEST_UNKNOWN = "KSMainTEST--->UknownArticles";
+	public static final String INVALID_PATH_KSMAINTEST_ARTICELES_ID_UNKNOWN = "KSMainTEST--->Articles--->ID--->UnkownColumn";
+	public static final String INVALID_PATH_KSMAINTEST_ARTICLES_ID_TITLE_UUU_XXX = "KSMainTEST--->Articles--->ID--->Title--->Extended--->Field";
 	
 	public static final String KSP = "KSMainTEST";
 	public static final String CF = "Users";
