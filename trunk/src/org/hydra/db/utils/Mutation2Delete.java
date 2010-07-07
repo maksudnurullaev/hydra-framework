@@ -136,11 +136,10 @@ public class Mutation2Delete extends ALogger{
 		
 		// ... process over all childs
 		if(inPath._cfBean.getChilds() != null){
-			for(ColumnFamilyBean childColumnFamilyBean: inPath._cfBean.getChilds()){
-				_log.debug(recursionDeepPrefixStr + " ... found childs: " + childColumnFamilyBean.getName());
+			for(ColumnFamilyBean childCFBean: inPath._cfBean.getChilds()){
+				_log.debug(recursionDeepPrefixStr + " ... found childs: " + childCFBean.getName());
 				
-				ResultAsListOfColumnOrSuperColumn result = DBUtils.getAccessor().getAllLinks4(inPath, 
-						DBUtils.getSlicePredicate(childColumnFamilyBean.getName(), childColumnFamilyBean.getName()));
+				ResultAsListOfColumnOrSuperColumn result = DBUtils.getAccessor().getLinks4(inPath, childCFBean.getName());
 				
 				if(result.isOk() 
 						&& result.getColumnOrSuperColumn() != null 
@@ -165,7 +164,7 @@ public class Mutation2Delete extends ALogger{
 								String childPathStr = String.format("%s" + CassandraVirtualPath.PATH_DELIMETER 
 										+ "%s" + CassandraVirtualPath.PATH_DELIMETER + "%s", 
 										inPath._kspBean.getName(),
-										childColumnFamilyBean.getName(),
+										childCFBean.getName(),
 										DBUtils.bytes2UTF8String(column.name));
 								
 								CassandraVirtualPath childPath = 
@@ -175,12 +174,12 @@ public class Mutation2Delete extends ALogger{
 							}
 							
 						}else{
-							_log.error(recursionDeepPrefixStr + " ... no proper super column found for: " + childColumnFamilyBean.getName());												
+							_log.error(recursionDeepPrefixStr + " ... no proper super column found for: " + childCFBean.getName());												
 						}
 					}
 					
 				}else{
-					_log.debug(recursionDeepPrefixStr + " ... but no " + childColumnFamilyBean.getName());					
+					_log.debug(recursionDeepPrefixStr + " ... but no " + childCFBean.getName());					
 				}
 			}
 		}		

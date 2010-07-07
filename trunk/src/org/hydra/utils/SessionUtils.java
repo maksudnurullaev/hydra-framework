@@ -52,7 +52,7 @@ public final class SessionUtils {
 	 * @return 
 	 */
 	public static void detachIMessageSessionData(IMessage inMessage) {
-		//TODO we remove it later if it's necessary!!!
+		//TODO [later] ... we remove it later if it's necessary!!!
 //		if(inMessage != null && inMessage.getData() != null && !AppContext.isDebugMode()){
 //			inMessage.getData().remove(IMessage._data_handler);
 //			inMessage.getData().remove(IMessage._data_sessionId);
