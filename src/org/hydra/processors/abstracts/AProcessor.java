@@ -58,7 +58,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements IProcesso
 				,path2MessageHandler));
 
 		getLog().debug("Try to create instance of " + path2MessageHandler);
-		try {//TODO ... is it possible to find more faster alternative for this method of creating instance?
+		try {//TODO [later] ... is it possible to find more faster alternative for this method of creating instance?
 			Object object = Class.forName(path2MessageHandler).newInstance();
 
 			getLog().debug(String.format("Instance of (%s) created successfully!",path2MessageHandler));
@@ -239,7 +239,6 @@ public abstract class AProcessor extends AStatisticsApplyer implements IProcesso
 		
 		if(_result.isOk()){
 			if(_result.getObject() instanceof IMessageHandler){
-				//TODO ... may be better return to return Result class instead of void here	
 				IMessageHandler messageHandler = (IMessageHandler) _result.getObject();
 				
 				messageHandler.handleMessage(inMessage);

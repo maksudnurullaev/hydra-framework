@@ -49,9 +49,10 @@ public class Mutation2Update extends ALogger{
 			break;
 
 		case KSP___CF___ID___LINKNAME:
+		case KSP___CF___ID___LINKNAME__LINKID:
 			mutations4KspCfIDLinks(inPath, inBatchMap, result);
 			break;
-
+			
 		default:
 			_log.error(String.format("Unknow path(%s) and type(%s) to update!",
 						inPath.getPath(), 

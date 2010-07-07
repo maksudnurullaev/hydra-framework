@@ -66,6 +66,10 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
+		case KSP___CF___ID___LINKNAME__LINKID:
+			//TODO Not implemented yet
+			getLog().error("Not implemented yet");
+			break;
 		default:
 			String errStr = String.format("Unknow path(%s) to get db records!",
 					inPath.getPath());
@@ -156,23 +160,28 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 
 	}
 	
-	public ResultAsListOfColumnOrSuperColumn getAllLinks4(
-			CassandraVirtualPath inPath, SlicePredicate inPredicate) {
-		// ===
+	public ResultAsListOfColumnOrSuperColumn getLinks4(
+			CassandraVirtualPath inPath, String inLinkName) {
+		
 		String ksp = inPath.getPathPart(PARTS.P1_KSP);
 		ColumnParent cf = new ColumnParent(inPath._kspBean.getLinkTableName());
 		String key = inPath.getPathPart(PARTS.P3_KEY);
 		ConsistencyLevel cLevel = ConsistencyLevel.ONE;
 
-		// init new result
 		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();
 
-		// try to get records
 		Cassandra.Client client = clientBorrow();
 
 		try {
 			result.setColumnOrSuperColumn(
-					client.get_slice(ksp, key, cf, inPredicate, cLevel));
+					client.get_slice(
+							ksp, 
+							key, 
+							cf, 
+							DBUtils.getSlicePredicate(
+									inLinkName, 
+									inLinkName), 
+							cLevel));
 			result.setResult(true);
 		} catch (Exception e) {
 			result.setResult(false);
@@ -182,7 +191,6 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			clientRelease(client);
 		}
 
-		// ===
 		return result;
 
 	}
