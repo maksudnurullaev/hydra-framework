@@ -67,7 +67,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P4_SUPER));
 			key = KEY_COLUMNS_DEF;			
 			predicate = DBUtils.getSlicePredicateStr(inPath.getPathPart(PARTS.P5_COL));
-			
+			cLevel = ConsistencyLevel.ONE;			
 			break;
 		default:
 			String errStr = String.format("Unknow path(%s) to get db records!",
