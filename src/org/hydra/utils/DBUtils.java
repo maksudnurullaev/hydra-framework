@@ -60,6 +60,8 @@ public final class DBUtils {
 	}
 	
 	public static byte[] string2UTF8Bytes(String inString){
+		if(inString == null) return null;
+		
 		byte[] result = null;
 		try {
 			result = inString.getBytes("UTF8");
@@ -122,27 +124,27 @@ public final class DBUtils {
 		return result;
 	}	
 	
-	public static SlicePredicate getSlicePredicate(String inStartSliceRange, String inFinishSliceRange){
-		// setup slice range
+	public static SlicePredicate getSlicePredicateStr(String inSliceRange){	
+		return getSlicePredicateByte(string2UTF8Bytes(inSliceRange));
+	}
+	
+	public static SlicePredicate getSlicePredicateByte(byte[] inSliceRange){
+		
         SlicePredicate predicate = new SlicePredicate();
         SliceRange sliceRange = new SliceRange();
         
-        if(inStartSliceRange == null){
+        if(inSliceRange == null){
 	        sliceRange.setStart(new byte[0]);
-        }else{
-	        sliceRange.setStart(string2UTF8Bytes(inStartSliceRange));        	
-        }
-        
-        if(inFinishSliceRange == null){
         	sliceRange.setFinish(new byte[0]);
         }else{
-        	sliceRange.setFinish(string2UTF8Bytes(inFinishSliceRange));
-        }	
-
+	        sliceRange.setStart(inSliceRange);        	
+        	sliceRange.setFinish(inSliceRange);
+        }
+        
         predicate.setSlice_range(sliceRange);		
 		
 		return predicate;		
-	}
+	}	
 	
 	public static void describeColumn(CassandraDescriptorBean descriptor, IMessage inMessage){
 		String keyspaceName = inMessage.getData().get(IMessage._data_cs_ksp);

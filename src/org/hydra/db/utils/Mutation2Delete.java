@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hydra.db.beans.ColumnFamilyBean;
 import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraVirtualPath;
+import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
 import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
@@ -109,7 +110,7 @@ public class Mutation2Delete extends ALogger{
 				
 		// ... setup list of mutations
 		List<Mutation> listOfMutations = new ArrayList<Mutation>();
-		listOfMutations.add(getDeleteMutation4SuperColumn(inPath.getID()));
+		listOfMutations.add(getDeleteMutation4SuperColumn(inPath.getID(), null));
 		
 		// ... setup result
 		DBUtils.joinMutationResults(
@@ -117,16 +118,72 @@ public class Mutation2Delete extends ALogger{
 				Constants.KEY_COLUMNS_DEF, 
 				listOfMutations, inResultMap);
 		
-		// ... delete childs if exists
-		mutations4ChildsIfExists4KfpCfID(inPath, inResultMap, inRecursionDeep + 1);
+		// ... delete childs
+		//TODO impove, transform to some kind of mutations4KspCfIdLinks
+		if(inPath._cfBean.hasChilds()){
+			for(ColumnFamilyBean child:inPath._cfBean.getChilds()){
+				CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
+						inPath.getPath() + CassandraVirtualPath.PATH_DELIMETER + child.getName());
+				mutations4KspCfIdLinks(childPath, inResultMap, inRecursionDeep + 1);
+			}
+		}
+		// mutations4KfpCfID_Links(inPath, inResultMap, inRecursionDeep + 1);
 	}
 
-	private static void mutations4ChildsIfExists4KfpCfID(CassandraVirtualPath inPath,
-			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {	
-		
+	private static void mutations4KspCfIdLinks(CassandraVirtualPath inPath,
+			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {
 		// ... test path
-		if(inPath.getPathType() != PATH_TYPE.KSP___CF___ID){
-			_log.error("Path type should be: PATH_TYPE.KSP___CF___ID");
+		if(inPath.getPathType() != PATH_TYPE.KSP___CF___ID___LINKNAME){
+			_log.error("Path type should be: PATH_TYPE.KSP___CF___ID___LINKNAME");
+			return;
+		}		
+				
+		// ... setup prefix
+		String recursionDeepPrefixStr = "";
+		for (int i = 0; i < inRecursionDeep; i++) recursionDeepPrefixStr += " ... ";		
+
+		// ... process over links
+		ResultAsListOfColumnOrSuperColumn result = DBUtils.getAccessor().find(inPath);
+		
+		if(result.isOk() 
+		&& result.getColumnOrSuperColumn() != null 
+		&& result.getColumnOrSuperColumn().size() != 0){
+			
+			for(ColumnOrSuperColumn cos:result.getColumnOrSuperColumn()){
+				// ... LINKS
+				if(inRecursionDeep == 0){
+					/**
+					 * inRecursionDeep != 0 means that parent mutation already
+					 * removed links records
+					 */
+					List<Mutation> listOfMutations = new ArrayList<Mutation>();
+					listOfMutations.add(getDeleteMutation4SuperColumn(cos.super_column.name, null));
+					
+					DBUtils.joinMutationResults(
+							inPath._kspBean.getLinkTableName(), 
+							inPath.getID(), 
+							listOfMutations, inResultMap);
+				}
+				
+				// ... CHILDS
+				for(Column col: cos.super_column.columns){
+					CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
+							inPath.getPath() + CassandraVirtualPath.PATH_DELIMETER + DBUtils.bytes2UTF8String(col.name));
+					mutations4KspCfIdLinksId(childPath, inResultMap, inRecursionDeep + 1);
+				}
+			}
+		}else{
+			_log.debug(recursionDeepPrefixStr + " ... but no " + inPath.getLinkName());					
+		}
+	}
+		
+	
+	private static void mutations4KspCfIdLinksId(
+			CassandraVirtualPath inPath,
+			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {
+		// ... test path
+		if(inPath.getPathType() != PATH_TYPE.KSP___CF___ID___LINKNAME__LINKID){
+			_log.error("Path type should be: PATH_TYPE.KSP___CF___ID___LINKNAME__LINKID");
 			return;
 		}		
 				
@@ -134,71 +191,130 @@ public class Mutation2Delete extends ALogger{
 		String recursionDeepPrefixStr = "";
 		for (int i = 0; i < inRecursionDeep; i++) recursionDeepPrefixStr += " ... ";
 		
-		// ... process over all childs
-		if(inPath._cfBean.getChilds() != null){
-			for(ColumnFamilyBean childCFBean: inPath._cfBean.getChilds()){
-				_log.debug(recursionDeepPrefixStr + " ... found childs: " + childCFBean.getName());
-				
-				ResultAsListOfColumnOrSuperColumn result = DBUtils.getAccessor().getLinks4(inPath, childCFBean.getName());
-				
-				if(result.isOk() 
-						&& result.getColumnOrSuperColumn() != null 
-						&& result.getColumnOrSuperColumn().size() != 0){
+		// ... main process
+		ResultAsListOfColumnOrSuperColumn result = DBUtils.getAccessor().find(inPath);
+		
+		if(result.isOk() 
+		&& result.getColumnOrSuperColumn() != null 
+		&& result.getColumnOrSuperColumn().size() != 0){
+			
+			for(ColumnOrSuperColumn cos:result.getColumnOrSuperColumn()){
+				// ... LINKS
+				if(inRecursionDeep == 0){
+					/**
+					 * inRecursionDeep != 0 means that parent mutation already
+					 * removed links records
+					 */
+					List<Mutation> listOfMutations = new ArrayList<Mutation>();
+					listOfMutations.add(
+							getDeleteMutation4SuperColumn(
+									inPath.getPathPart(PARTS.P4_SUPER),
+									inPath.getPathPart(PARTS.P5_COL)
+								)
+						);
 					
-					Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
-					while(listIterator.hasNext()){
-						ColumnOrSuperColumn columnOrSuperColumn = listIterator.next();
-						if(columnOrSuperColumn.isSetSuper_column()){
-							
-							// ... setup result for LINKS
-							List<Mutation> listOfMutations = new ArrayList<Mutation>();
-							listOfMutations.add(getDeleteMutation4SuperColumn(columnOrSuperColumn.super_column.name));
-							
-							DBUtils.joinMutationResults(
-									inPath._kspBean.getLinkTableName(), 
-									inPath.getID(), 
-									listOfMutations, inResultMap);							
-							
-							for(Column column:columnOrSuperColumn.getSuper_column().columns){
-								// ... ... deletioin for child
-								String childPathStr = String.format("%s" + CassandraVirtualPath.PATH_DELIMETER 
-										+ "%s" + CassandraVirtualPath.PATH_DELIMETER + "%s", 
-										inPath._kspBean.getName(),
-										childCFBean.getName(),
-										DBUtils.bytes2UTF8String(column.name));
-								
-								CassandraVirtualPath childPath = 
-									new CassandraVirtualPath(inPath.getDescriptor(), childPathStr);
-								
-								mutations4KspCfId(childPath, inResultMap, inRecursionDeep + 1);
-							}
-							
-						}else{
-							_log.error(recursionDeepPrefixStr + " ... no proper super column found for: " + childCFBean.getName());												
-						}
-					}
+					DBUtils.joinMutationResults(
+							inPath._kspBean.getLinkTableName(), 
+							inPath.getID(), 
+							listOfMutations, inResultMap);
+				}
+				
+				// ... CHILDS
+				for(Column col: cos.super_column.columns){
+					_log.debug(recursionDeepPrefixStr + " ... found childs: " + DBUtils.bytes2UTF8String(col.name));
 					
-				}else{
-					_log.debug(recursionDeepPrefixStr + " ... but no " + childCFBean.getName());					
+					CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
+							inPath.getPath() + CassandraVirtualPath.PATH_DELIMETER + DBUtils.bytes2UTF8String(col.name));
+					mutations4KspCfIdLinksId(childPath, inResultMap, inRecursionDeep + 1);
 				}
 			}
+		}else{
+			_log.debug(recursionDeepPrefixStr + " ... but no " + inPath.getLinkName());					
 		}		
+		
 	}
 	
+//	private static void mutations4KfpCfID_Links(CassandraVirtualPath inPath,
+//			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {	
+//		
+//		// ... test path
+//		if(inPath.getPathType() != PATH_TYPE.KSP___CF___ID){
+//			_log.error("Path type should be: PATH_TYPE.KSP___CF___ID");
+//			return;
+//		}		
+//				
+//		// ... setup prefix
+//		String recursionDeepPrefixStr = "";
+//		for (int i = 0; i < inRecursionDeep; i++) recursionDeepPrefixStr += " ... ";
+//		
+//		// ... process over all childs
+//		if(inPath._cfBean.getChilds() != null){
+//			for(ColumnFamilyBean childCFBean: inPath._cfBean.getChilds()){
+//				_log.debug(recursionDeepPrefixStr + " ... found childs: " + childCFBean.getName());
+//				
+//				ResultAsListOfColumnOrSuperColumn result = DBUtils.getAccessor().getLinks4(inPath, childCFBean.getName());
+//				
+//				if(result.isOk() 
+//						&& result.getColumnOrSuperColumn() != null 
+//						&& result.getColumnOrSuperColumn().size() != 0){
+//					
+//					Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
+//					while(listIterator.hasNext()){
+//						ColumnOrSuperColumn columnOrSuperColumn = listIterator.next();
+//						if(columnOrSuperColumn.isSetSuper_column()){
+//							
+//							// ... setup result for LINKS
+//							List<Mutation> listOfMutations = new ArrayList<Mutation>();
+//							listOfMutations.add(getDeleteMutation4SuperColumn(columnOrSuperColumn.super_column.name));
+//							
+//							DBUtils.joinMutationResults(
+//									inPath._kspBean.getLinkTableName(), 
+//									inPath.getID(), 
+//									listOfMutations, inResultMap);							
+//							
+//							for(Column column:columnOrSuperColumn.getSuper_column().columns){
+//								// ... ... deletioin for child
+//								String childPathStr = String.format("%s" + CassandraVirtualPath.PATH_DELIMETER 
+//										+ "%s" + CassandraVirtualPath.PATH_DELIMETER + "%s", 
+//										inPath._kspBean.getName(),
+//										childCFBean.getName(),
+//										DBUtils.bytes2UTF8String(column.name));
+//								
+//								CassandraVirtualPath childPath = 
+//									new CassandraVirtualPath(inPath.getDescriptor(), childPathStr);
+//								
+//								mutations4KspCfId(childPath, inResultMap, inRecursionDeep + 1);
+//							}
+//							
+//						}else{
+//							_log.error(recursionDeepPrefixStr + " ... no proper super column found for: " + childCFBean.getName());												
+//						}
+//					}
+//					
+//				}else{
+//					_log.debug(recursionDeepPrefixStr + " ... but no " + childCFBean.getName());					
+//				}
+//			}
+//		}		
+//	}
+
+
 	// ### UTILS
-	private static Mutation getDeleteMutation4SuperColumn(String inKey){
-		return getDeleteMutation4SuperColumn(DBUtils.string2UTF8Bytes(inKey));
+	private static Mutation getDeleteMutation4SuperColumn(String inSuper, String inCol){
+		return getDeleteMutation4SuperColumn(DBUtils.string2UTF8Bytes(inSuper), DBUtils.string2UTF8Bytes(inCol));
 	}
-	
-	private static Mutation getDeleteMutation4SuperColumn(byte[] inKeyAsBytes) {		
+		
+	private static Mutation getDeleteMutation4SuperColumn(byte[] inSuper, byte[] inCol) {		
 		Deletion deletion = new Deletion(DBUtils.getCassandraTimestamp());
-		deletion.setSuper_column(inKeyAsBytes);
+		deletion.setSuper_column(inSuper);
+		
+		if(inCol != null) deletion.setPredicate(DBUtils.getSlicePredicateByte(inCol));
 		
 		Mutation mutation = new Mutation();
 		mutation.setDeletion(deletion);		
 		
 		return mutation;
-	}
+	}	
 
 	
 }

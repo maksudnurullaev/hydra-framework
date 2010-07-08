@@ -33,24 +33,24 @@ public class Mutation2Update extends ALogger{
 		_log.debug("Mutation pack: " + inPath.getPath());
 		_log.debug(" ... mutation column count: " + inBatchMap.size());
 		
-		Map<String, Map<String, List<Mutation>>> result = 
+		Map<String, Map<String, List<Mutation>>> resultMutationMap = 
 			new HashMap<String, Map<String,List<Mutation>>>();
 		
 		if(inBatchMap.size() == 0){
 			_log.warn("Nothing to mutate!");
-			return result;
+			return resultMutationMap;
 		}
 		
 		switch (inPath.getPathType()) {
 		
 		case KSP___CF:
 		case KSP___CF___ID:
-			mutations4KspCf(inPath, inBatchMap, result);
+			mutations4KspCf(inPath, inBatchMap, resultMutationMap);
 			break;
 
 		case KSP___CF___ID___LINKNAME:
 		case KSP___CF___ID___LINKNAME__LINKID:
-			mutations4KspCfIDLinks(inPath, inBatchMap, result);
+			mutations4KspCfIDLinks(inPath, inBatchMap, resultMutationMap);
 			break;
 			
 		default:
@@ -60,9 +60,9 @@ public class Mutation2Update extends ALogger{
 		}		
 
 		if(_log.isDebugEnabled()){
-			DBUtils.debugMutationResult(result);		
+			DBUtils.debugMutationResult(resultMutationMap);		
 		}
-		return result;
+		return resultMutationMap;
 	}
 
 	private static void mutations4KspCfIDLinks(CassandraVirtualPath inPath,

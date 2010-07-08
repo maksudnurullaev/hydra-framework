@@ -153,6 +153,6 @@ public class TestFMDKspCfIdLinks {
 	static Map<String, Map<String, String>> articlesMap = null;
 	static CassandraVirtualPath path2User = null;
 	static CassandraVirtualPath path2UsersIDArticles = null;
-	static int articleCount = 10;
+	static int articleCount = 2;
 	
 }
