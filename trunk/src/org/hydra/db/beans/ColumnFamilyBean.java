@@ -105,4 +105,13 @@ public class ColumnFamilyBean extends ALogger {
 	public Set<ColumnFamilyBean> getChilds() {
 		return this.cfChilds;		
 	}
+
+	
+	public boolean hasChilds() {
+		return cfChilds != null;
+	}
+	
+	public boolean hasLinks() {
+		return cfLinks != null;
+	}
 }

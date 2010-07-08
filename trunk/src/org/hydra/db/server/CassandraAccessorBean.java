@@ -42,7 +42,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
 			key = KEY_COLUMNS_DEF;
-			predicate = DBUtils.getSlicePredicate(null, null);
+			predicate = DBUtils.getSlicePredicateByte(null);
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
@@ -50,9 +50,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
 			key = KEY_COLUMNS_DEF;
-			predicate = DBUtils.getSlicePredicate(
-							inPath.getPathPart(PARTS.P3_KEY),
-							inPath.getPathPart(PARTS.P3_KEY));
+			predicate = DBUtils.getSlicePredicateStr(inPath.getPathPart(PARTS.P3_KEY));
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
@@ -60,15 +58,16 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath._kspBean.getLinkTableName());
 			key = inPath.getPathPart(PARTS.P3_KEY);
-			predicate = DBUtils.getSlicePredicate(
-							inPath.getPathPart(PARTS.P4_SUPER),
-							inPath.getPathPart(PARTS.P4_SUPER));
+			predicate = DBUtils.getSlicePredicateStr(inPath.getPathPart(PARTS.P4_SUPER));
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
 		case KSP___CF___ID___LINKNAME__LINKID:
-			//TODO Not implemented yet
-			getLog().error("Not implemented yet");
+			ksp = inPath.getPathPart(PARTS.P1_KSP);
+			cf = new ColumnParent(inPath.getPathPart(PARTS.P4_SUPER));
+			key = KEY_COLUMNS_DEF;			
+			predicate = DBUtils.getSlicePredicateStr(inPath.getPathPart(PARTS.P5_COL));
+			
 			break;
 		default:
 			String errStr = String.format("Unknow path(%s) to get db records!",
@@ -178,9 +177,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 							ksp, 
 							key, 
 							cf, 
-							DBUtils.getSlicePredicate(
-									inLinkName, 
-									inLinkName), 
+							DBUtils.getSlicePredicateStr(inLinkName), 
 							cLevel));
 			result.setResult(true);
 		} catch (Exception e) {
@@ -194,7 +191,5 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		return result;
 
 	}
-
-
 
 }
