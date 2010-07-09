@@ -125,26 +125,23 @@ public final class DBUtils {
 	}	
 	
 	public static SlicePredicate getSlicePredicateStr(String inSliceRange){	
-		return getSlicePredicateByte(string2UTF8Bytes(inSliceRange));
+		return getSlicePredicate4Col(string2UTF8Bytes(inSliceRange));
 	}
 	
-	public static SlicePredicate getSlicePredicateByte(byte[] inSliceRange){
+	public static SlicePredicate getSlicePredicate4Col(byte[] inCol){
+	    List<byte[]> columns = new ArrayList<byte[]>();
+	    columns.add(inCol);
+	    
+	    return getSlicePredicate4Col(columns);
+	}
+	
+	public static SlicePredicate getSlicePredicate4Col(List<byte[]> inColNames){
 		
         SlicePredicate predicate = new SlicePredicate();
-        SliceRange sliceRange = new SliceRange();
-        
-        if(inSliceRange == null){
-	        sliceRange.setStart(new byte[0]);
-        	sliceRange.setFinish(new byte[0]);
-        }else{
-	        sliceRange.setStart(inSliceRange);        	
-        	sliceRange.setFinish(inSliceRange);
-        }
-        
-        predicate.setSlice_range(sliceRange);		
+        predicate.setColumn_names(inColNames);
 		
 		return predicate;		
-	}	
+	}		
 	
 	public static void describeColumn(CassandraDescriptorBean descriptor, IMessage inMessage){
 		String keyspaceName = inMessage.getData().get(IMessage._data_cs_ksp);
@@ -232,7 +229,7 @@ public final class DBUtils {
 	}
 
 	public static long getCassandraTimestamp() {
-		int factor = 1000000; 
+		int factor = 1000; 
 		long timestamp = System.currentTimeMillis() * factor;
 		return timestamp;
 	}
@@ -280,11 +277,11 @@ public final class DBUtils {
 						if(mutation.deletion.isSetSuper_column())
 							debugStr += "SUPER COLUMN: " + DBUtils.bytes2UTF8String(mutation.deletion.super_column, 32);							
 						if(mutation.deletion.isSetPredicate()){
-							debugStr += "PREDICATE: ";
+							debugStr += " PREDICATE: ";
 							if(mutation.deletion.predicate.isSetColumn_names())
-								debugStr += "COLUMN NAMES SIZE: " + mutation.deletion.predicate.column_names.size();								
+								debugStr += " COLUMN NAMES SIZE: " + mutation.deletion.predicate.column_names.size();								
 							if(mutation.deletion.predicate.isSetSlice_range())
-								debugStr += "SLICE RANGE: " + mutation.deletion.predicate.slice_range;				
+								debugStr += " SLICE RANGE: " + mutation.deletion.predicate.slice_range;				
 						}
 					}else
 						debugStr += " UNKNOWN!!!";

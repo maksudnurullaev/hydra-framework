@@ -10,8 +10,11 @@ import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Deletion;
 import org.apache.cassandra.thrift.Mutation;
+import org.apache.cassandra.thrift.SlicePredicate;
+import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.tests.db.fmd.TestFMDKspCfIdLinks;
 import org.hydra.utils.DBUtils;
+import org.hydra.utils.Result;
 
 
 public class Just4Run {
@@ -30,15 +33,22 @@ public class Just4Run {
 //		TestFMDKspCfIdLinks.initTestDataStage2Articles();
 		
 		// delete4KspCfKeySuper("KSMainTEST", "Links", "user0", "Articles");
-		 delete4KspCfKeySuperCol("KSMainTEST", "Links", "user0", "Articles", "article0");
-		 delete4KspCfKeySuper("KSMainTEST", "Links", "user0", "Articles");
-		 delete4KspCfKey("KSMainTEST", "Links", "user0");
+		// delete4KspCfKeySuperCol("KSMainTEST", "Links", "user0", "Articles", "article0");
+//		 delete4KspCfKeySuper("KSMainTEST", "Links", "user0", "Articles");
+//		 delete4KspCfKey("KSMainTEST", "Links", "user0");
+		CassandraVirtualPath path1 = new CassandraVirtualPath(DBUtils.getDescriptor(), "KSMainTEST--->Users--->user0--->Articles--->article0");
+		Result result = DBUtils.getAccessor().delete(path1);
+		if(!result.isOk()) System.out.println(result.getResult());
+		
+		CassandraVirtualPath path2 = new CassandraVirtualPath(DBUtils.getDescriptor(), "KSMainTEST--->Users--->user0--->Articles");
+		result = DBUtils.getAccessor().delete(path2);
+		if(!result.isOk()) System.out.println(result.getResult());
 		
 		System.out.println("Done!");
 		
 	}
 	
-//	public static void delete4KspCfKeySuper(String inKsp, String inCf, String inKey, String inSuper){
+//	public static void delete4KspCfKeySuperCol(String inKsp, String inCf, String inKey, String inSuper, String inCol){
 //		Client client = DBUtils.getAccessor().clientBorrow();
 //		
 //		Map<String, Map<String, List<Mutation>>> result = 
@@ -54,6 +64,13 @@ public class Just4Run {
 //		
 //		deletion.setSuper_column(DBUtils.string2UTF8Bytes(inSuper));
 //		//TODO [we expect it at Cassadnras 0.7 release] deletion.setPredicate(DBUtils.getSlicePredicateStr("article0"));
+//		if(inCol != null){
+//			 SlicePredicate predicate = new SlicePredicate();
+//			 List<byte[]> column_names = new ArrayList<byte[]>();
+//			 column_names.add(DBUtils.string2UTF8Bytes(inCol));
+//			 predicate.setColumn_names(column_names );
+//			 deletion.setPredicate(predicate);
+//		}
 //		
 //		
 //		mutation.setDeletion(deletion);
@@ -77,29 +94,29 @@ public class Just4Run {
 //		}						
 //	}
 	
-	public static void delete4KspCfKeySuperCol(String inKsp, String inCf, String inKey, String inSuper, String inCol){
-		Client client = DBUtils.getAccessor().clientBorrow();
-		
-		ColumnPath cfPath = new ColumnPath(inCf);
-		
-		if(inSuper != null)cfPath.setSuper_column(DBUtils.string2UTF8Bytes(inSuper));
-		if(inCol != null) cfPath.setColumn(DBUtils.string2UTF8Bytes(inCol));
-		
-		
-		try {
-			client.remove(inKsp, inKey, cfPath , DBUtils.getCassandraTimestamp(), ConsistencyLevel.ONE);			
-		} catch (Exception e) {
-			System.out.println(e);
-		} finally {
-			DBUtils.getAccessor().clientRelease(client);
-		}
-	}
-	
-	public static void delete4KspCfKeySuper(String inKsp, String inCf, String inKey, String inSuper){
-		delete4KspCfKeySuperCol(inKsp, inCf, inKey, inSuper, null);
-	}	
-
-	public static void delete4KspCfKey(String inKsp, String inCf, String inKey){
-		delete4KspCfKeySuperCol(inKsp, inCf, inKey, null, null);
-	}
+//	public static void delete4KspCfKeySuperCol(String inKsp, String inCf, String inKey, String inSuper, String inCol){
+//		Client client = DBUtils.getAccessor().clientBorrow();
+//		
+//		ColumnPath cfPath = new ColumnPath(inCf);
+//		
+//		if(inSuper != null)cfPath.setSuper_column(DBUtils.string2UTF8Bytes(inSuper));
+//		if(inCol != null) cfPath.setColumn(DBUtils.string2UTF8Bytes(inCol));
+//		
+//		
+//		try {
+//			client.remove(inKsp, inKey, cfPath , DBUtils.getCassandraTimestamp(), ConsistencyLevel.ONE);			
+//		} catch (Exception e) {
+//			System.out.println(e);
+//		} finally {
+//			DBUtils.getAccessor().clientRelease(client);
+//		}
+//	}
+//	
+//	public static void delete4KspCfKeySuper(String inKsp, String inCf, String inKey, String inSuper){
+//		delete4KspCfKeySuperCol(inKsp, inCf, inKey, inSuper, null);
+//	}	
+//
+//	public static void delete4KspCfKey(String inKsp, String inCf, String inKey){
+//		delete4KspCfKeySuperCol(inKsp, inCf, inKey, null, null);
+//	}
 }

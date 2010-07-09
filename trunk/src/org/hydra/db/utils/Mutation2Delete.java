@@ -49,13 +49,13 @@ public class Mutation2Delete extends ALogger{
 			break;
 
 		case KSP___CF___ID___LINKNAME:
-			//TODO mutations4KspCfIDLinks(inPath, result);
-			_log.error("[[[mutations4KspCfIDLinks(inPath, result)]]] it's not implemented yet!");
+			mutations4KspCfIdLinks(inPath, result, 0);
+			//TODO [remove later] _log.error("[[[mutations4KspCfIDLinks(inPath, result)]]] it's not implemented yet!");
 			break;
 			
 		case KSP___CF___ID___LINKNAME__LINKID:
-			//TODO mutations4KspCfIDLinksID(inPath, result);
-			_log.error("[[[mutations4KspCfIDLinksID(inPath, result)]]] it's not implemented yet!");
+			mutations4KspCfIdLinksId(inPath, result, 0);
+			//TODO [remove later] _log.error("[[[mutations4KspCfIDLinksID(inPath, result)]]] it's not implemented yet!");
 			break;			
 
 		default:
@@ -221,47 +221,35 @@ public class Mutation2Delete extends ALogger{
 		String recursionDeepPrefixStr = "";
 		for (int i = 0; i < inRecursionDeep; i++) recursionDeepPrefixStr += " ... ";
 		
-		// ... main process
-		ResultAsListOfColumnOrSuperColumn result = DBUtils.getAccessor().find(inPath);
-		
-		if(result.isOk() 
-		&& result.getColumnOrSuperColumn() != null 
-		&& result.getColumnOrSuperColumn().size() != 0){
+		// ... remove for links
+		if(inRecursionDeep == 0){
+			/**
+			 * inRecursionDeep != 0 means that parent mutation already
+			 * removed links records
+			 */
+			List<Mutation> listOfMutations = new ArrayList<Mutation>();
+			listOfMutations.add(
+					getDeleteMutation4SuperColumn(
+							inPath.getPathPart(PARTS.P4_SUPER),
+							inPath.getPathPart(PARTS.P5_COL)
+						)
+				);
 			
-			for(ColumnOrSuperColumn cos:result.getColumnOrSuperColumn()){
-				// ... LINKS
-				if(inRecursionDeep == 0){
-					/**
-					 * inRecursionDeep != 0 means that parent mutation already
-					 * removed links records
-					 */
-					List<Mutation> listOfMutations = new ArrayList<Mutation>();
-					listOfMutations.add(
-							getDeleteMutation4SuperColumn(
-									inPath.getPathPart(PARTS.P4_SUPER),
-									inPath.getPathPart(PARTS.P5_COL)
-								)
-						);
-					
-					DBUtils.joinMutationResults(
-							inPath._kspBean.getLinkTableName(), 
-							inPath.getID(), 
-							listOfMutations, inResultMap);
-				}
+			DBUtils.joinMutationResults(
+					inPath._kspBean.getLinkTableName(), 
+					inPath.getID(), 
+					listOfMutations, inResultMap);
+		}
 				
-				// ... CHILDS
-				for(Column col: cos.super_column.columns){
-					_log.debug(recursionDeepPrefixStr + " ... found childs: " + DBUtils.bytes2UTF8String(col.name));
-					
-					CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
-							inPath.getPath() + CassandraVirtualPath.PATH_DELIMETER + DBUtils.bytes2UTF8String(col.name));
-					mutations4KspCfIdLinksId(childPath, inResultMap, inRecursionDeep + 1);
-				}
-			}
-		}else{
-			_log.debug(recursionDeepPrefixStr + " ... but no " + inPath.getLinkName());					
-		}		
-		
+		// ... CHILDS
+		CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
+				inPath._kspBean.getName() +           // ksp
+				CassandraVirtualPath.PATH_DELIMETER +
+				inPath.getPathPart(PARTS.P4_SUPER) +  // cf
+				CassandraVirtualPath.PATH_DELIMETER +
+				inPath.getPathPart(PARTS.P5_COL));    // id					
+			
+			mutations4KspCfId(childPath, inResultMap, inRecursionDeep + 1);		
 	}
 	
 //	private static void mutations4KfpCfID_Links(CassandraVirtualPath inPath,
@@ -338,7 +326,7 @@ public class Mutation2Delete extends ALogger{
 		Deletion deletion = new Deletion(DBUtils.getCassandraTimestamp());
 		deletion.setSuper_column(inSuper);
 		
-		if(inCol != null) deletion.setPredicate(DBUtils.getSlicePredicateByte(inCol));
+		if(inCol != null) deletion.setPredicate(DBUtils.getSlicePredicate4Col(inCol));
 		
 		Mutation mutation = new Mutation();
 		mutation.setDeletion(deletion);		
