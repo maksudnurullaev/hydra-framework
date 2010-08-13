@@ -1,85 +1,40 @@
 package org.hydra.tests.db;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
-import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.tests.utils.Utils4Tests;
+import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
-import org.hydra.utils.CryptoManager;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
-import org.hydra.utils.BeansUtils;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.beans.factory.BeanFactory;
 
 public class TestAccessor {
 	private static final int testUsersCount = 5;
-	static Map<String, Map<String, String>> users = new HashMap<String, Map<String, String>>();
-	
-	Log _log = LogFactory.getLog(this.getClass());
-	static BeanFactory beanFactory = BeansUtils.getBeanFactory();
-	static CassandraAccessorBean accessor = (CassandraAccessorBean) beanFactory.getBean(Constants._beans_cassandra_accessor);
-	static CassandraDescriptorBean descriptor = (CassandraDescriptorBean) beanFactory.getBean(Constants._beans_cassandra_descriptor);
-	
-	@BeforeClass
-	public static void initTestData(){
-		if(!accessor.isValid())
-			accessor.setup();
-		
-		// init test users
-		users = Utils4Tests.initTestUsers(testUsersCount);
-			
-		// Create access path for batch insert
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
-		
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
-		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertTrue(path._kspBean != null);
-		Assert.assertTrue(path._cfBean != null);
-		
-		// Send Map<String, Map<String,String>> to batch insert
-		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(users));
-		
-		// Test result
-		Assert.assertTrue(batchInsertResult.isOk());
-				
-	}
+	static Map<String, Map<String, String>> users = null;
 
-	@AfterClass
-	public static void clearTestData(){
-		clearTestUsers();		
-	}
-
-	private static void clearTestUsers() {
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
-		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
-		Assert.assertTrue(path._kspBean != null);
-		Assert.assertTrue(path._cfBean != null);
-	}
+	static CassandraAccessorBean accessor = (CassandraAccessorBean) BeansUtils.getBean(Constants._beans_cassandra_accessor);
+	static CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
+	static CassandraVirtualPath path = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);	
 	
+
 	@Before
-	public void before(){
-		Assert.assertNotNull(beanFactory);
-		Assert.assertNotNull(_log);
-		Assert.assertNotNull(accessor);
-		Assert.assertNotNull(descriptor);		
+	public void initTest(){
+		Utils4Tests.deleteAllTestUsers();
+		initTestUsers();
 	}
-	
+
 	@Test
 	public void test_1_users(){
+		
 		Assert.assertTrue(users.size() == testUsersCount);
 		// get users from database
 		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, Utils4Tests.KSMAINTEST_Users);
@@ -105,4 +60,22 @@ public class TestAccessor {
 
 		}
 	}
+
+	private static boolean initTestUsers() {
+		users = Utils4Tests.initTestUsers(testUsersCount);
+		CassandraVirtualPath path2Users = new CassandraVirtualPath(
+				descriptor,
+				Utils4Tests.KSMAINTEST_Users);
+		Result result = accessor.update(path2Users, DBUtils.convert2Bytes(users));
+		
+		if(result.isOk())
+			System.out.println("Initial user data merged!");
+		else{
+			System.out.println(result.getResult());
+			return false;
+		}
+		
+		return true;
+				
+	}		
 }

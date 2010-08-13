@@ -64,7 +64,7 @@ public class TestLinks4Accessor {
 		// 3. setup access path
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR);
-		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF___ID___LINKNAME);
+		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF___KEY___SUPER);
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		// 3. validate columns

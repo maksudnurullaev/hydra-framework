@@ -47,11 +47,11 @@ public class CassandraVirtualPath extends ALogger {
 
 	// Result types
 	public enum PATH_TYPE {
-		UNDEFINED,							/* undefined */
-		KSP___CF,							/* all super columns */
-		KSP___CF___ID,				 		/* super column */
-		KSP___CF___ID___LINKNAME,			/* all links */
-		KSP___CF___ID___LINKNAME__LINKID,	/* link */ 
+		UNDEFINED,					/* undefined */
+		KSP___CF,					/* all super columns */
+		KSP___CF___KEY,				/* super column */
+		KSP___CF___KEY___SUPER,		/* all links */
+		KSP___CF___KEY___SUPER__ID,	/* link */ 
 	};
 
 	// fields according to path type
@@ -64,20 +64,20 @@ public class CassandraVirtualPath extends ALogger {
 	PATH_TYPE _pathType = PATH_TYPE.UNDEFINED;
 	// ... others
 	private String _path = null;
-	private String _ID = null;
-	private String _linkName = null;
-	private String _linkID = null;
+	private String _key = null;
+	private String _super = null;
+	private String _id = null;
 	public String getPath(){
 		return _path;
 	}
-	public String getID() {
-		return _ID;
+	public String getKey() {
+		return _key;
 	}
-	public String getLinkName() {
-		return _linkName;
+	public String getSuper() {
+		return _super;
 	}
-	public String getLinkID() {
-		return _linkID;
+	public String getId() {
+		return _id;
 	}
 
 	// Map contains parsed parts of access path
@@ -181,17 +181,17 @@ public class CassandraVirtualPath extends ALogger {
 			return false;
 		}
 		// finish
-		_linkID  = _pathMap.get(PARTS.P5_COL);
+		_id  = _pathMap.get(PARTS.P5_COL);
 		_errCode = ERR_CODES.NO_ERROR;
-		_pathType = PATH_TYPE.KSP___CF___ID___LINKNAME__LINKID;
+		_pathType = PATH_TYPE.KSP___CF___KEY___SUPER__ID;
 		return true;
 	}
 
 	private boolean init4Parameters() {
 		if(_cfBean.containsRelation(_pathMap.get(PARTS.P4_SUPER))){
-			_linkName = _pathMap.get(PARTS.P4_SUPER);
+			_super = _pathMap.get(PARTS.P4_SUPER);
 			_cfLinkBean = _kspBean.getColumnFamilyByName(_pathMap.get(PARTS.P4_SUPER));
-			_pathType = PATH_TYPE.KSP___CF___ID___LINKNAME;
+			_pathType = PATH_TYPE.KSP___CF___KEY___SUPER;
 			_errCode = ERR_CODES.NO_ERROR;
 			return true;
 		}		
@@ -203,8 +203,8 @@ public class CassandraVirtualPath extends ALogger {
 	}
 
 	private boolean init3Parameters() {
-		_pathType = PATH_TYPE.KSP___CF___ID;
-		_ID = _pathMap.get(PARTS.P3_KEY);
+		_pathType = PATH_TYPE.KSP___CF___KEY;
+		_key = _pathMap.get(PARTS.P3_KEY);
 		_errCode = ERR_CODES.NO_ERROR;
 		return true;
 	}

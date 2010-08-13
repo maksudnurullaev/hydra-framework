@@ -73,19 +73,19 @@ public class TestFMDKspCfIdLinks {
 		Assert.assertEquals(articleCount, superColumn.columns.size());
 		
 		// ***MUTATE(DELETE) - delete user & his articles
-//		Assert.assertEquals(String.format(
-//				Utils4Tests.KSMAINTEST_Users_S_Articles, userID),
-//				path2UsersIDArticles.getPath());
-//		Assert.assertEquals(PATH_TYPE.KSP___CF___ID___LINKNAME,
-//				path2UsersIDArticles.getPathType());
-//
-//		result = accessor.delete(path2User);
-//		Assert.assertTrue(result.isOk());
-//
-//		// ... test deletes
-//		dbResult = accessor.find(path2UsersIDArticles);
-//		Assert.assertTrue(dbResult.isOk());
-//		Assert.assertEquals(0, dbResult.getColumnOrSuperColumn().size());
+		Assert.assertEquals(String.format(
+				Utils4Tests.KSMAINTEST_Users_S_Articles, userID),
+				path2UsersIDArticles.getPath());
+		Assert.assertEquals(PATH_TYPE.KSP___CF___KEY___SUPER,
+				path2UsersIDArticles.getPathType());
+
+		result = accessor.delete(path2User);
+		Assert.assertTrue(result.isOk());
+
+		// ... test deletes
+		dbResult = accessor.find(path2UsersIDArticles);
+		Assert.assertTrue(dbResult.isOk());
+		Assert.assertEquals(0, dbResult.getColumnOrSuperColumn().size());
 	}
 
 	// ### UTILS ### 
