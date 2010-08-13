@@ -135,6 +135,16 @@ public final class DBUtils {
 	    return getSlicePredicate4Col(columns);
 	}
 	
+	public static SlicePredicate getSlicePredicate4SliceRange(byte[] inCol){
+		SlicePredicate resultPredicate = new SlicePredicate();
+		SliceRange sliceRange = new SliceRange();
+		sliceRange.setStart(inCol);
+		sliceRange.setFinish(inCol);
+		resultPredicate.setSlice_range(sliceRange);
+	    
+	    return resultPredicate;
+	}	
+	
 	public static SlicePredicate getSlicePredicate4Col(List<byte[]> inColNames){
 		
         SlicePredicate predicate = new SlicePredicate();

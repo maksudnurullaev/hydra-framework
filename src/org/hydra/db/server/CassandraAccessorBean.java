@@ -1,6 +1,5 @@
 package org.hydra.db.server;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.cassandra.thrift.Cassandra;
@@ -8,8 +7,8 @@ import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.ColumnParent;
 import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
-import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
+import org.apache.cassandra.thrift.SliceRange;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.abstracts.ACassandraAccessor;
 import org.hydra.db.utils.Mutation2Delete;
@@ -45,11 +44,17 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
 			key = KEY_COLUMNS_DEF;
+			
 			predicate = new SlicePredicate();
+			SliceRange sliceRange = new SliceRange();
+			sliceRange.setStart(new byte[0]);
+			sliceRange.setFinish(new byte[0]);
+			predicate.setSlice_range(sliceRange);
+			
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
-		case KSP___CF___ID:
+		case KSP___CF___KEY:
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
 			key = KEY_COLUMNS_DEF;
@@ -57,7 +62,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
-		case KSP___CF___ID___LINKNAME:
+		case KSP___CF___KEY___SUPER:
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath._kspBean.getLinkTableName());
 			key = inPath.getPathPart(PARTS.P3_KEY);
@@ -65,7 +70,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
-		case KSP___CF___ID___LINKNAME__LINKID:
+		case KSP___CF___KEY___SUPER__ID:
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P4_SUPER));
 			key = KEY_COLUMNS_DEF;			
@@ -140,33 +145,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		}
 		
 		Client client = clientBorrow();
-		try {
-			Map<String, Map<String, List<Mutation>>> deletions = 
-				Mutation2Delete.generate(inPath);
-//			for(Map.Entry<String, Map<String, List<Mutation>>> mapKeyMapCfMutations: deletions.entrySet()){
-//				for(Map.Entry<String, List<Mutation>> mapCfMutations: mapKeyMapCfMutations.getValue().entrySet()){
-//					List<Mutation> listOfMutaions = mapCfMutations.getValue();
-//					for(Mutation mutation:listOfMutaions){
-//						if(mutation.isSetDeletion() && 
-//								mutation.getDeletion().isSetSuper_column() &&
-//								mutation.getDeletion().isSetPredicate() && 
-//								mutation.getDeletion().getPredicate().isSetSlice_range()
-//								)
-//						{
-//							delete4version6without_mutation(
-//									inPath._kspBean.getName(), // Ksp 
-//									mapCfMutations.getKey(),
-//									mapKeyMapCfMutations.getKey(), 
-//									mutation.getDeletion().super_column, 
-//									mutation.getDeletion().getPredicate().slice_range.getStart());
-//							// ... remove db
-//							// ... remove from list of mutation
-//							listOfMutaions.remove(mutation);
-//						}
-//					}
-//				}
-//			}
-				
+		try {	
 			client.batch_mutate(
 					inPath._kspBean.getName(), 
 					Mutation2Delete.generate(inPath),
@@ -213,43 +192,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			System.out.println(e);
 		} finally {
 			DBUtils.getAccessor().clientRelease(client);
-		}
-		
+		}		
 		return result;		
 	}
-	
-	//TODO [test and if not used, remove it later]	
-	public ResultAsListOfColumnOrSuperColumn getLinks4(
-			CassandraVirtualPath inPath, String inLinkName) {
-		
-		String ksp = inPath.getPathPart(PARTS.P1_KSP);
-		ColumnParent cf = new ColumnParent(inPath._kspBean.getLinkTableName());
-		String key = inPath.getPathPart(PARTS.P3_KEY);
-		ConsistencyLevel cLevel = ConsistencyLevel.ONE;
-
-		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();
-
-		Cassandra.Client client = clientBorrow();
-
-		try {
-			result.setColumnOrSuperColumn(
-					client.get_slice(
-							ksp, 
-							key, 
-							cf, 
-							DBUtils.getSlicePredicateStr(inLinkName), 
-							cLevel));
-			result.setResult(true);
-		} catch (Exception e) {
-			result.setResult(false);
-			getLog().error(e.toString());
-			result.setResult(e.toString());
-		} finally {
-			clientRelease(client);
-		}
-
-		return result;
-
-	}
-
 }

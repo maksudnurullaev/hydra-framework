@@ -1,25 +1,33 @@
 package org.hydra.tests.utils;
 
-import org.hydra.collectors.StatisticsCollector;
-import org.hydra.collectors.StatisticsCollector.StatisticsTypes;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class Just4Statistics {
 
-	/**
-	 * @param args
-	 */
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		StatisticsCollector stat = new StatisticsCollector();
-		stat.setStatistics("TestObject1", StatisticsTypes.ACCEPTED);
-		stat.setStatistics("TestObject1", StatisticsTypes.ACCEPTED);
-		stat.setStatistics("TestObject3", StatisticsTypes.ACCEPTED);
-		stat.setStatistics("TestObject1", StatisticsTypes.BYPASSED);
-		stat.setStatistics("TestObject2", StatisticsTypes.WITH_ERRORS);
-		stat.setStatistics("TestObject2", StatisticsTypes.WITH_ERRORS);
-		System.out.print(stat.getTxtReport());
+	public static void main(String args[]) {
+
+		try {
+			byte bWrite[] = { 11, 21, 3, 40, 5 };
+			OutputStream os = new FileOutputStream("C:/test.txt");
+			for (int x = 0; x < bWrite.length; x++) {
+				os.write(bWrite[x]); // writes the bytes
+			}
+			os.close();
+
+			InputStream is = new FileInputStream("C:/test.txt");
+			int size = is.available();
+
+			for (int i = 0; i < size; i++) {
+				System.out.print((char) is.read() + "  ");
+			}
+			is.close();
+		} catch (IOException e) {
+			System.out.print("Exception");
+		}
 	}
 
 }

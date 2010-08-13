@@ -36,14 +36,19 @@ public class Just4Run {
 		// delete4KspCfKeySuperCol("KSMainTEST", "Links", "user0", "Articles", "article0");
 //		 delete4KspCfKeySuper("KSMainTEST", "Links", "user0", "Articles");
 //		 delete4KspCfKey("KSMainTEST", "Links", "user0");
-		CassandraVirtualPath path1 = new CassandraVirtualPath(DBUtils.getDescriptor(), "KSMainTEST--->Users--->user0--->Articles--->article0");
-		Result result = DBUtils.getAccessor().delete(path1);
-		if(!result.isOk()) System.out.println(result.getResult());
+		Result result;
 		
-		CassandraVirtualPath path2 = new CassandraVirtualPath(DBUtils.getDescriptor(), "KSMainTEST--->Users--->user0--->Articles");
-		result = DBUtils.getAccessor().delete(path2);
+//		CassandraVirtualPath path1 = new CassandraVirtualPath(DBUtils.getDescriptor(), "KSMainTEST--->Users--->user0--->Articles--->article0");
+//		result = DBUtils.getAccessor().delete(path1);
+//		if(!result.isOk()) System.out.println(result.getResult());
+//		
+//		CassandraVirtualPath path2 = new CassandraVirtualPath(DBUtils.getDescriptor(), "KSMainTEST--->Users--->user0--->Articles");
+//		result = DBUtils.getAccessor().delete(path2);
+//		if(!result.isOk()) System.out.println(result.getResult());
+//		
+		CassandraVirtualPath path3 = new CassandraVirtualPath(DBUtils.getDescriptor(), "KSMainTEST--->Users--->user0");
+		result = DBUtils.getAccessor().delete(path3);
 		if(!result.isOk()) System.out.println(result.getResult());
-		
 		System.out.println("Done!");
 		
 	}

@@ -44,12 +44,12 @@ public class Mutation2Update extends ALogger{
 		switch (inPath.getPathType()) {
 		
 		case KSP___CF:
-		case KSP___CF___ID:
+		case KSP___CF___KEY:
 			mutations4KspCf(inPath, inBatchMap, resultMutationMap);
 			break;
 
-		case KSP___CF___ID___LINKNAME:
-		case KSP___CF___ID___LINKNAME__LINKID:
+		case KSP___CF___KEY___SUPER:
+		case KSP___CF___KEY___SUPER__ID:
 			mutations4KspCfIDLinks(inPath, inBatchMap, resultMutationMap);
 			break;
 			
@@ -112,7 +112,7 @@ public class Mutation2Update extends ALogger{
 
 		DBUtils.joinMutationResults(
 				inPath._kspBean.getLinkTableName(), 
-				inPath.getID(), 
+				inPath.getKey(), 
 				listOfMutation, 
 				inResultMap);
 	}
