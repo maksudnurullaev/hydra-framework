@@ -148,7 +148,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		try {	
 			client.batch_mutate(
 					inPath._kspBean.getName(), 
-					Mutation2Delete.generate(inPath),
+					Mutation2Delete.generate(this, inPath),
 					ConsistencyLevel.ONE);
 			
 			result.setResult(true);
@@ -177,10 +177,10 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 	 * @param inCol - optional
 	 * @return Result
 	 */
-	public Result delete4version6without_mutation(String inKsp, String inCf, String inKey, String inSuper, String inCol){
+	public Result delete4version6without_mutation(CassandraAccessorBean accessor, String inKsp, String inCf, String inKey, String inSuper, String inCol){
 		Result result = new Result();
 		
-		Client client = DBUtils.getAccessor().clientBorrow();		
+		Client client = accessor.clientBorrow();		
 		ColumnPath cfPath = new ColumnPath(inCf);
 		
 		if(inSuper != null)cfPath.setSuper_column(DBUtils.string2UTF8Bytes(inSuper));
@@ -191,7 +191,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
-			DBUtils.getAccessor().clientRelease(client);
+			accessor.clientRelease(client);
 		}		
 		return result;		
 	}

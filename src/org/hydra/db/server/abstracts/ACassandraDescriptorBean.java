@@ -4,19 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hydra.db.beans.ColumnBean;
 import org.hydra.db.beans.KeyspaceBean;
-import org.hydra.db.server.CassandraVirtualPath;
-import org.hydra.messages.handlers.AdminMessageHandler;
-import org.hydra.messages.interfaces.IMessage;
-import org.hydra.spring.AppContext;
-import org.hydra.utils.Constants;
-import org.hydra.utils.MessagesManager;
-import org.hydra.utils.SessionUtils;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraDescriptorBean extends ALogger {
 
+	/**
+	 * In future we should use keyspaces to separate each applications data
+	 */
 	private Map<String, KeyspaceBean> _keyspaces = new HashMap<String, KeyspaceBean>();
 	private KeyspaceBean rootKeyspace = null;
 	

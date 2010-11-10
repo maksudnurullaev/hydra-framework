@@ -32,6 +32,7 @@ public class Mutation2Delete extends ALogger{
 	 * 
 	 */
 	public static Map<String, Map<String, List<Mutation>>> generate(
+			CassandraAccessorBean accessor,
 			CassandraVirtualPath inPath) {
 		
 		_log.debug("Generate delete mutation pack for: " + inPath.getPath());
@@ -42,18 +43,18 @@ public class Mutation2Delete extends ALogger{
 		
 		switch (inPath.getPathType()) {
 		case KSP___CF:
-			mutations4KspCf(inPath, result, 0);
+			mutations4KspCf(accessor, inPath, result, 0);
 			break;
 		case KSP___CF___KEY:
-			mutations4KspCfKey(inPath, result, 0);
+			mutations4KspCfKey(accessor, inPath, result, 0);
 			break;
 
 		case KSP___CF___KEY___SUPER:
-			mutations4KspCfKeySuper(inPath, result, 0);
+			mutations4KspCfKeySuper(accessor, inPath, result, 0);
 			break;
 			
 		case KSP___CF___KEY___SUPER__ID:
-			mutations4KspCfKeySuperId(inPath, result, 0);
+			mutations4KspCfKeySuperId(accessor, inPath, result, 0);
 			break;			
 
 		default:
@@ -68,8 +69,11 @@ public class Mutation2Delete extends ALogger{
 		return result;
 	}
 	
-	private static void mutations4KspCf(CassandraVirtualPath inPath,
-			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep)  {
+	private static void mutations4KspCf(
+			CassandraAccessorBean accessor,
+			CassandraVirtualPath inPath,
+			Map<String, Map<String, List<Mutation>>> inResultMap, 
+			int inRecursionDeep)  {
 		
 		// ... test path
 		if(inPath.getPathType() != PATH_TYPE.KSP___CF){
@@ -85,7 +89,6 @@ public class Mutation2Delete extends ALogger{
 		_log.debug(recursionDeepPrefixStr + "Make deletion pack for: " + inPath.getPath());				
 		
 		// ... main process
-		CassandraAccessorBean accessor = BeansUtils.getAccessor();
 		ResultAsListOfColumnOrSuperColumn result = accessor.find(inPath);
 		if(!result.isOk()){
 			_log.error("mutations4KspCf: " + result.getResult());
@@ -110,11 +113,13 @@ public class Mutation2Delete extends ALogger{
 					CassandraVirtualPath.PATH_DELIMETER +
 					superColumnID);             // key			
 			
-			mutations4KspCfKey(childPath, inResultMap, inRecursionDeep + 1);			
+			mutations4KspCfKey(accessor, childPath, inResultMap, inRecursionDeep + 1);			
 		}		
 	}
 
-	private static void mutations4KspCfKey(CassandraVirtualPath inPath,
+	private static void mutations4KspCfKey(
+			CassandraAccessorBean accessor,
+			CassandraVirtualPath inPath,
 			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {
 		
 		// ... setup prefix
@@ -146,13 +151,17 @@ public class Mutation2Delete extends ALogger{
 						CassandraVirtualPath.PATH_DELIMETER +
 						child.getName());           // super				
 
-				mutations4KspCfKeySuper(childPath, inResultMap, inRecursionDeep + 1);
+				mutations4KspCfKeySuper(accessor, childPath, inResultMap, inRecursionDeep + 1);
 			}
 		}
 	}
 
-	private static void mutations4KspCfKeySuper(CassandraVirtualPath inPath,
-			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {
+	private static void mutations4KspCfKeySuper(
+			CassandraAccessorBean accessor,
+			CassandraVirtualPath inPath,
+			Map<String, Map<String, 
+			List<Mutation>>> inResultMap, 
+			int inRecursionDeep) {
 		// ... test path
 		if(inPath.getPathType() != PATH_TYPE.KSP___CF___KEY___SUPER){
 			_log.error("Path type should be: PATH_TYPE.KSP___CF___ID___LINKNAME");
@@ -167,7 +176,7 @@ public class Mutation2Delete extends ALogger{
 		_log.debug(recursionDeepPrefixStr + "Make deletion pack for: " + inPath.getPath());			
 		
 		// ... process over links
-		ResultAsListOfColumnOrSuperColumn result = DBUtils.getAccessor().find(inPath);
+		ResultAsListOfColumnOrSuperColumn result = accessor.find(inPath);
 		
 		if(result.isOk() 
 		&& result.getColumnOrSuperColumn() != null 
@@ -196,7 +205,7 @@ public class Mutation2Delete extends ALogger{
 							CassandraVirtualPath.PATH_DELIMETER +
 							DBUtils.bytes2UTF8String(col.name)); // col
 							
-					mutations4KspCfKeySuperId(childPath, inResultMap, inRecursionDeep + 1);
+					mutations4KspCfKeySuperId(accessor, childPath, inResultMap, inRecursionDeep + 1);
 				}
 			}
 		}else{
@@ -205,8 +214,10 @@ public class Mutation2Delete extends ALogger{
 	}
 			
 	private static void mutations4KspCfKeySuperId(
+			CassandraAccessorBean accessor,
 			CassandraVirtualPath inPath,
-			Map<String, Map<String, List<Mutation>>> inResultMap, int inRecursionDeep) {
+			Map<String, Map<String, List<Mutation>>> inResultMap, 
+			int inRecursionDeep) {
 		// ... test path
 		if(inPath.getPathType() != PATH_TYPE.KSP___CF___KEY___SUPER__ID){
 			_log.error("Path type should be: PATH_TYPE.KSP___CF___ID___LINKNAME__LINKID");
@@ -245,11 +256,13 @@ public class Mutation2Delete extends ALogger{
 				CassandraVirtualPath.PATH_DELIMETER +
 				inPath.getPathPart(PARTS.P5_COL));    // id					
 			
-			mutations4KspCfKey(childPath, inResultMap, inRecursionDeep + 1);		
+			mutations4KspCfKey(accessor, childPath, inResultMap, inRecursionDeep + 1);		
 	}
 
 	// ### UTILS
-	private static Mutation getDeleteMutation4SuperColumn(String inSuper, String inCol){
+	private static Mutation getDeleteMutation4SuperColumn(
+			String inSuper, 
+			String inCol){
 		return getDeleteMutation4SuperColumn(DBUtils.string2UTF8Bytes(inSuper), DBUtils.string2UTF8Bytes(inCol));
 	}
 		

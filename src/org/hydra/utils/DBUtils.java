@@ -17,7 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.db.beans.ColumnBean;
 import org.hydra.db.beans.ColumnFamilyBean;
-import org.hydra.db.server.CassandraAccessorBean;
+import org.hydra.db.beans.KeyspaceBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.messages.handlers.AdminMessageHandler;
@@ -36,7 +36,7 @@ public final class DBUtils {
 	private static Log _log = LogFactory.getLog("org.hydra.utils.DBUtils");
 	
 	// **** defaults
-	
+	public static final String _action_cs_get_all_columns_id    = "cs_get_all_columns_id"; 	
 	public static final String _utf8_encoding = "UTF8";
 	
 	// **** static functions
@@ -158,11 +158,11 @@ public final class DBUtils {
 		String columnFamilyName = inMessage.getData().get(IMessage._data_cs_cf); 
 		String columnName = inMessage.getData().get(IMessage._data_cs_col); 
 		
-		String pathStr = String.format("%s.%s", keyspaceName, columnFamilyName);
+		String pathStr = String.format("%s--->%s", keyspaceName, columnFamilyName);
 		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, pathStr);
 		
 		if(!path.isValid()){
-			inMessage.setError("Invalid path!");
+			inMessage.setError("Path to DB objects is valid: " + pathStr);
 			return;
 		}
 		
@@ -179,7 +179,8 @@ public final class DBUtils {
 		String inputBoxID = keyspaceName + columnFamilyName;
 		String inputBoxVal = inputBoxID + "ID";
 		String resultDivID = inputBoxID + "Div";
-		inMessage.setHtmlContent(String.format(String.format(formatStrong, "Column", PATH2COLUMN5), 
+		
+		inMessage.setHtmlContent(String.format(String.format(formatStrong, "Column", PATH2COLUMN4), 
 				keyspaceName,
 				columnFamilyName,
 				String.format(MessagesManager.getTemplate("template.html.custom.input.ID.Value"), inputBoxID, inputBoxVal),
@@ -192,7 +193,8 @@ public final class DBUtils {
 							IMessage._data_cs_ksp, keyspaceName,     // 5,6
 							IMessage._data_cs_cf, columnFamilyName,     // 7,8
 							IMessage._data_cs_key, inputBoxID  // 9,10
-							),
+							)
+/*							,
 				Constants.makeJSLink(column.getName(), 
 						"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s',%s:'%s',%s:$('%s').value",
 						//         1         2   3   4   5   6   7   8   9  10  11    12  
@@ -204,6 +206,7 @@ public final class DBUtils {
 						IMessage._data_cs_col, column.getName(),      // 9,10
 						IMessage._data_cs_key, inputBoxID  // 11,12
 						)
+*/
 				)
 				+
 				String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), resultDivID)
@@ -301,13 +304,15 @@ public final class DBUtils {
 		}
 		
 	}
-
+	
+/* TODO Remove later
 	public static CassandraAccessorBean getAccessor() {
 		CassandraAccessorBean accessor = (CassandraAccessorBean) BeansUtils.getBean(Constants._beans_cassandra_accessor);
 		if(!accessor.isValid()) accessor.setup();
 		return accessor;
 	}
-
+*/
+	
 	public static CassandraDescriptorBean getDescriptor() {
 		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) BeansUtils.getBean(Constants._beans_cassandra_descriptor);
 		return descriptor;
@@ -340,6 +345,17 @@ public final class DBUtils {
 		}else{
 			_log.warn("Nothing to print!");				
 		}
+	}
+
+	public static String getJSLinkShowAllColumns(KeyspaceBean kspBean,
+			ColumnFamilyBean cfBean) {
+		return Constants.makeJSLink("Show all",
+				"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s'",
+				AdminMessageHandler._handler_name,
+				AdminMessageHandler._admin_col_divId,
+				IMessage._data_action, _action_cs_get_all_columns_id,
+				IMessage._data_cs_ksp, kspBean.getName(),
+				IMessage._data_cs_cf, cfBean.getName());
 	}
 	
 

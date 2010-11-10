@@ -18,11 +18,21 @@ public final class SessionUtils {
 	 * @param inSession 
 	 */
 	public static void attachIMessageSessionData(MessageBean inMessage, WebContext inWebContext) {
-		_log.debug("Attach new data to session with id: " 
-				+ inWebContext.getSession().getId());
-		inMessage.getData().put(IMessage._data_sessionId,inWebContext.getSession().getId());
-		inMessage.getData().put(IMessage._data_locale, getLocale(inWebContext.getSession()));
-		inMessage.getData().put(IMessage._data_userId, getUserId(inWebContext.getSession()));
+		_log.debug("inWebContext.getSession() is not null: " + (inWebContext.getSession() != null));
+		_log.debug("Attach new data to session with id: " + inWebContext.getSession().getId());
+		
+		String tempString = null;
+		tempString = inWebContext.getSession().getId();
+		_log.debug("Set session Id: " + tempString);
+		inMessage.getData().put(IMessage._data_sessionId, tempString);
+		
+		tempString = getLocale(inWebContext.getSession());
+		inMessage.getData().put(IMessage._data_locale, tempString);
+		_log.debug("Set session locale: " + tempString);
+		
+		tempString = getUserId(inWebContext.getSession());
+		inMessage.getData().put(IMessage._data_userId, tempString);
+		_log.debug("Set userId: " + tempString);
 		
 		inMessage.setHttpSession(inWebContext.getSession());
 	}
@@ -36,8 +46,16 @@ public final class SessionUtils {
 	}	
 	
 	public static String getLocale(HttpSession session) {
-		if(session.getAttribute(IMessage._data_locale) != null)
-			return (String) session.getAttribute(IMessage._data_locale);
+		_log.debug("Try to get 'locale' defenition from web session!");
+		_log.debug("Web session is not null: " + (session != null));
+		Object testObject = session.getAttribute(IMessage._data_locale);
+		if(testObject != null){
+			_log.debug("Locale from incoming message structure : " + (String)testObject);
+			return (String) testObject;
+		}else{
+			_log.warn("Could not find 'locale' definition from web session object!");
+		}
+		_log.debug("Get default locale: " + MessagesManager.getTextManager().getDefaultLocale());
 		return MessagesManager.getTextManager().getDefaultLocale();
 	}
 

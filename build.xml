@@ -153,7 +153,7 @@ tests.failed=${tests.failed}
 			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestAccessor.class" />
+					<include name="**/TestLinks4Accessor.class" />
 				</fileset>
 			</batchtest>
 			

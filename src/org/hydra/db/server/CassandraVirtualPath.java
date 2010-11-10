@@ -116,7 +116,7 @@ public class CassandraVirtualPath extends ALogger {
 		_pathDefs = inPath.split(PATH_DELIMETER);
 		// * validate access path parts length...
 		if (_pathDefs.length < 2 || _pathDefs.length > PARTS.values().length) {
-			setError("Cassandra access path definition length(tokens) is valid: " + inPath);
+			setError("Path to DB objects is valid: " + inPath);
 			_errCode = ERR_CODES.INVALID_PATH_STRUCTURE;
 			return false;
 		}

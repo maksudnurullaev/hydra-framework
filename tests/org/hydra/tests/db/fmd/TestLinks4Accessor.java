@@ -1,32 +1,25 @@
-package org.hydra.tests.db;
+package org.hydra.tests.db.fmd;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hydra.db.server.CassandraAccessorBean;
-import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
-import org.hydra.tests.bean.TestVirtualPath;
-import org.hydra.utils.Constants;
+import org.hydra.tests.bean.Test0;
+import org.hydra.tests.db.path.TestVirtualPath;
 import org.hydra.utils.CryptoManager;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;
-import org.hydra.utils.BeansUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.beans.factory.BeanFactory;
 
-public class TestLinks4Accessor {
+public class TestLinks4Accessor extends Test0 {
 	private static final String KS_MAIN_TEST_ARTICLES = "KSMainTEST--->Articles";
 	private static final String TEST_MAIL_COM = "test@mail.com";
 	private static final String PASSWORD = "Password";
@@ -36,16 +29,8 @@ public class TestLinks4Accessor {
 	static Map<String, Map<String, String>> testUserMap = new HashMap<String, Map<String, String>>();
 	static Map<String, Map<String, String>> testArticleMap = new HashMap<String, Map<String, String>>();
 	
-	Log _log = LogFactory.getLog(this.getClass());
-	static BeanFactory beanFactory = BeansUtils.getBeanFactory();
-	static CassandraAccessorBean accessor = (CassandraAccessorBean) beanFactory.getBean(Constants._beans_cassandra_accessor);
-	static CassandraDescriptorBean descriptor = (CassandraDescriptorBean) beanFactory.getBean(Constants._beans_cassandra_descriptor);
-	
 	@BeforeClass
 	public static void generateTestData(){
-		// 0. setup accessor
-		if(!accessor.isValid())
-			accessor.setup();	
 		// clear old data
 		clearTestData();		
 		// 1. init test data
@@ -62,7 +47,7 @@ public class TestLinks4Accessor {
 		testArticleMap.put(ARTICLEID, fieldValueMap);
 				
 		// 3. setup access path
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES);
+		CassandraVirtualPath path = new CassandraVirtualPath(_cassandraDescriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS_USERID_ARTICLES);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR);
 		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF___KEY___SUPER);
 		Assert.assertTrue(path._kspBean != null);
@@ -71,7 +56,7 @@ public class TestLinks4Accessor {
 		Assert.assertNotNull(path._cfLinkBean);
 		Assert.assertTrue(DBUtils.validateFields(path._cfLinkBean, fieldValueMap));
 		// 4. insert data
-		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(testArticleMap));
+		Result batchInsertResult = _cassandraAccessor.update(path, DBUtils.convert2Bytes(testArticleMap));
 		// 5. test result
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
@@ -84,14 +69,14 @@ public class TestLinks4Accessor {
 		// 2. setup user map
 		testUserMap.put(TestVirtualPath.ID, fieldValueMap);
 		// 3. setup access path
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS);
+		CassandraVirtualPath path = new CassandraVirtualPath(_cassandraDescriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertEquals(path.getPathType(), PATH_TYPE.KSP___CF);
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		Assert.assertTrue(DBUtils.validateFields(path._cfBean, fieldValueMap));
 		// 4. insert data to db
-		Result batchInsertResult = accessor.update(path, DBUtils.convert2Bytes(testUserMap));
+		Result batchInsertResult = _cassandraAccessor.update(path, DBUtils.convert2Bytes(testUserMap));
 		// 5. Test result
 		Assert.assertTrue(batchInsertResult.isOk());
 	}
@@ -99,34 +84,26 @@ public class TestLinks4Accessor {
 	@AfterClass
 	public static void clearTestData() {
 		// delete all users
-		CassandraVirtualPath path = new CassandraVirtualPath(descriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS);
+		CassandraVirtualPath path = new CassandraVirtualPath(_cassandraDescriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
 		
-		accessor.delete(path);
+		_cassandraAccessor.delete(path);
 		
 		// delete all articles
-		path = new CassandraVirtualPath(descriptor, KS_MAIN_TEST_ARTICLES);
+		path = new CassandraVirtualPath(_cassandraDescriptor, KS_MAIN_TEST_ARTICLES);
 		Assert.assertEquals(path.getErrorCode(), ERR_CODES.NO_ERROR); 
 		Assert.assertTrue(path._kspBean != null);
 		Assert.assertTrue(path._cfBean != null);
-		accessor.delete(path);
+		_cassandraAccessor.delete(path);
 	}
-	
-	@Before
-	public void before(){
-		Assert.assertNotNull(beanFactory);
-		Assert.assertNotNull(_log);
-		Assert.assertNotNull(accessor);
-		Assert.assertNotNull(descriptor);		
-	}
-	
+
 	@Test
 	public void test_1_links(){
 		// get users from database
-		CassandraVirtualPath testPath = new CassandraVirtualPath(descriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS);
-		ResultAsListOfColumnOrSuperColumn result = accessor.find(testPath);
+		CassandraVirtualPath testPath = new CassandraVirtualPath(_cassandraDescriptor, TestVirtualPath.VALID_PATH_KSMAINTEST_USERS);
+		ResultAsListOfColumnOrSuperColumn result = _cassandraAccessor.find(testPath);
 		// test result
 		Assert.assertTrue(result.isOk());
 		// test compare resultMap & result
