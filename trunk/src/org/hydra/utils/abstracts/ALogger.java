@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 public abstract class ALogger {
 	
-	private Log _log = 	LogFactory.getLog(this.getClass());
+	protected Log _log = 	LogFactory.getLog(this.getClass());
 	protected String trace = null;
 
 	public void setLog(Log _log) {

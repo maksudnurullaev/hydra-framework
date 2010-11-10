@@ -42,7 +42,7 @@ public final class Constants {
 	public static final String _message_handler_class_prefix = "org.hydra.messages.handlers.";
 	public static final String _file_name_delimiter = "_";
 	public static final String _beans_text_manager = "_text_manager";
-	public static final String _path2ApplicationContext_xml = "WebContext/WEB-INF/applicationContext.xml";
+	//public static final String _path2ApplicationContext_xml = "/applicationContext.xml";
 	
 	// **** Deafult response waiting time (in milliseconds)
 	public static final long _max_response_wating_time = 3000;

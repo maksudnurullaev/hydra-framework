@@ -15,7 +15,6 @@ import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.processors.Processor;
 import org.hydra.processors.exceptions.NullProcessorException;
 import org.hydra.processors.interfaces.IProcessor.ProcessorStatus;
-import org.hydra.utils.Constants;
 import org.junit.Assert;
 import org.junit.Test;
 

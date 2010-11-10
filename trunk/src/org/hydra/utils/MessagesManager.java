@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.text.TextManager;
 import org.hydra.utils.abstracts.ALogger;
+import org.springframework.web.context.WebApplicationContext;
 
 public final class MessagesManager{
 	private static Log _log = LogFactory.getLog("org.hydra.utils.MessagesManager");	
@@ -18,11 +19,11 @@ public final class MessagesManager{
 	}
 	
 	public MessagesManager(){
-		// 1. Try to get bean from springs
-		if(BeansUtils.getWebApplicationContext() != null){
-			_textManager = (TextManager) BeansUtils.getWebApplicationContext().getBean(Constants._beans_text_manager);
+		_log.debug("Try to get bean from springs");
+		WebApplicationContext webContext = BeansUtils.getWebApplicationContext();
+		if(webContext != null){
+			_textManager = (TextManager) webContext.getBean(Constants._beans_text_manager);
 			_log.debug("Found spring's default TextManager bean dictionary!");
-		// 2. If not 
 		}else{
 			_textManager = new TextManager();
 			_log.debug("Create local TextManager instance, not Spring's one!");

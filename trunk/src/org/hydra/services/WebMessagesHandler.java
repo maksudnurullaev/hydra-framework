@@ -20,7 +20,8 @@ public class WebMessagesHandler extends ALogger {
 	public List<MessageBean> sendMessage(MessageBean inMessage) throws RichedMaxCapacityException{
 		
 		// -1. Attach session's data
-		getLog().debug("WebContextFactory.get(): " + WebContextFactory.get());
+		getLog().debug("WebContextFactory.get() is not null: " + (WebContextFactory.get() != null));
+		getLog().debug("Incoming message as not null: " + (inMessage != null));
 		SessionUtils.attachIMessageSessionData(inMessage, WebContextFactory.get());
 		
 		// 0. Debug part

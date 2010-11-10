@@ -9,15 +9,15 @@ import org.hydra.db.beans.ColumnBean;
 import org.hydra.db.beans.ColumnFamilyBean;
 import org.hydra.db.beans.KeyspaceBean;
 import org.hydra.db.server.CassandraAccessorBean;
-import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.spring.AppContext;
+import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
-import org.hydra.utils.BeansUtils;
+import org.hydra.utils.Utils;
 
 public class AdminMessageHandler extends AMessageHandler {
 	public static final String _handler_name = "AdminMessage";
@@ -61,7 +61,7 @@ public class AdminMessageHandler extends AMessageHandler {
 			describeCf(inMessage);
 		}else if(inMessage.getData().get(IMessage._data_action).equals(_action_cs_describe_column)){
 				if(!testParameters(inMessage,IMessage._data_cs_ksp, IMessage._data_cs_cf, IMessage._data_cs_col)){
-					String errorStr = "Missing parameters _cs_key or _cs_col!";
+					String errorStr = "Missing parameters 'ksp', 'cf' or 'col'!";
 					getLog().error(errorStr);
 					inMessage.setError(errorStr);
 					return inMessage;
@@ -153,7 +153,10 @@ public class AdminMessageHandler extends AMessageHandler {
 		int counter = 0;
 		String resultLinks = "";
 		
-		String result = String.format(formatStrong, "Column family", cfBean.getName());
+		String result = String.format(formatStrong, "Column family", cfBean.getName()
+				+ "&nbsp;" 
+				+ Utils.wrap2HTMLTag("sup", DBUtils.getJSLinkShowAllColumns(kspBean, cfBean)));
+		
 		
 		for(Map.Entry<String, ColumnBean> entryCFKey: cfBean.columns.entrySet()){
 			if(counter++ != 0)
@@ -177,7 +180,7 @@ public class AdminMessageHandler extends AMessageHandler {
 
 		inMessage.setHtmlContent(result);
 	}	
-	
+
 	private void describeKsp(IMessage inMessage) {
 		// Spring Debug Mode
 		if(AppContext.isDebugMode()){
