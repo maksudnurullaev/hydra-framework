@@ -2,7 +2,7 @@ package org.hydra.utils;
 
 import java.util.Map;
 
-import org.hydra.db.beans.ColumnBean;
+import org.hydra.beans.db.ColumnBean;
 
 public class ResultAsMapOfStringAndColumnBean {
 	private boolean _result = false;

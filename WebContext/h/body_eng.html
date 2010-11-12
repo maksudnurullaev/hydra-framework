@@ -14,10 +14,10 @@
 						<font color="#ffffff">
 							Eng&nbsp;&nbsp;
 							<a style="color:#ffffff;" href="#" onclick="javascript:void(Globals.sendMessage(
-									{handler:'SessionMessage',
-									 action:'change_locale', 
+									{handler:'General',
+									 action:'changeLocale', 
 									 key:'rus', 
-									 dest:'body'}))">Рус</a>
+									 dest:'body'})); return false;">Рус</a>
 							&nbsp;&nbsp;
 						</font>
 					</td>
@@ -44,11 +44,11 @@
 							<tbody>
 								<tr>
 									<td style="padding-top: 9px;">
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="home">What is Hydra?</a><br />
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="agreement">Lisense</a><br />
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="docs">Documentation</a><br />
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="faq">FAQ</a><br /><br />
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="admin">Administration</a><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="home">What is Hydra?</a><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="agreement">Lisense</a><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="docs">Documentation</a><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="faq">FAQ</a><br /><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="admin">Administration</a><br />
 										<br />
 									</td>
 								</tr>

@@ -1,4 +1,4 @@
-package org.hydra.db.beans;
+package org.hydra.beans.db;
 
 import org.hydra.utils.abstracts.ALogger;
 

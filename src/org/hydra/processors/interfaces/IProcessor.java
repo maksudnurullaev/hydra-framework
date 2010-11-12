@@ -1,6 +1,6 @@
 package org.hydra.processors.interfaces;
 
-import org.hydra.collectors.interfaces.ICollector;
+import org.hydra.beans.interfaces.ICollector;
 import org.hydra.events.IPipeEventListener;
 import org.hydra.events.PipeEvent;
 import org.hydra.messages.interfaces.IMessage;

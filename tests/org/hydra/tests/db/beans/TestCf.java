@@ -1,6 +1,6 @@
 package org.hydra.tests.db.beans;
 
-import org.hydra.db.beans.ColumnFamilyBean;
+import org.hydra.beans.db.ColumnFamilyBean;
 import org.hydra.tests.bean.Test0;
 import org.hydra.tests.utils.BeansUtils4Tests;
 import org.junit.Assert;

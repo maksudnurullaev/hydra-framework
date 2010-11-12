@@ -1,8 +1,8 @@
-package org.hydra.collectors.abstracts;
+package org.hydra.beans.abstracts;
 
-import org.hydra.collectors.StatisticsCollector;
-import org.hydra.collectors.StatisticsCollector.StatisticsTypes;
-import org.hydra.collectors.interfaces.IStatisticsApplyer;
+import org.hydra.beans.StatisticsCollector;
+import org.hydra.beans.StatisticsCollector.StatisticsTypes;
+import org.hydra.beans.interfaces.IStatisticsApplyer;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class AStatisticsApplyer extends ALogger implements IStatisticsApplyer {

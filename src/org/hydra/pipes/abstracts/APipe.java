@@ -6,8 +6,8 @@ import java.util.NoSuchElementException;
 
 import javax.swing.event.EventListenerList;
 
-import org.hydra.collectors.StatisticsCollector.StatisticsTypes;
-import org.hydra.collectors.abstracts.AStatisticsApplyer;
+import org.hydra.beans.StatisticsCollector.StatisticsTypes;
+import org.hydra.beans.abstracts.AStatisticsApplyer;
 import org.hydra.events.IPipeEventListener;
 import org.hydra.events.PipeEvent;
 import org.hydra.messages.interfaces.IMessage;

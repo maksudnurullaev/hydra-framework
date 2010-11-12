@@ -2,8 +2,8 @@ package org.hydra.tests.db.path;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.db.beans.ColumnFamilyBean;
-import org.hydra.db.beans.KeyspaceBean;
+import org.hydra.beans.db.ColumnFamilyBean;
+import org.hydra.beans.db.KeyspaceBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;

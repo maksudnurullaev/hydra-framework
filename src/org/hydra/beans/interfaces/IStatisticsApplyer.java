@@ -1,7 +1,8 @@
-package org.hydra.collectors.interfaces;
+package org.hydra.beans.interfaces;
 
-import org.hydra.collectors.StatisticsCollector;
-import org.hydra.collectors.StatisticsCollector.StatisticsTypes;
+import org.hydra.beans.StatisticsCollector;
+import org.hydra.beans.StatisticsCollector.StatisticsTypes;
+
 
 public interface IStatisticsApplyer {
 	public void setStatisticsCollector(StatisticsCollector inStatisticsObject);

@@ -2,8 +2,7 @@ package org.hydra.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.text.TextManager;
-import org.hydra.utils.abstracts.ALogger;
+import org.hydra.beans.TextManager;
 import org.springframework.web.context.WebApplicationContext;
 
 public final class MessagesManager{

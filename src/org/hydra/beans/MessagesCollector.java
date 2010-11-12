@@ -1,11 +1,11 @@
-package org.hydra.collectors;
+package org.hydra.beans;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.collectors.interfaces.ICollector;
+import org.hydra.beans.interfaces.ICollector;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;

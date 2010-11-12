@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hydra.db.beans.KeyspaceBean;
+import org.hydra.beans.db.KeyspaceBean;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraDescriptorBean extends ALogger {

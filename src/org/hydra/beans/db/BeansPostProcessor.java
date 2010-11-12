@@ -1,7 +1,6 @@
-package org.hydra.db.beans;
+package org.hydra.beans.db;
 
 import org.hydra.db.server.CassandraAccessorBean;
-import org.hydra.db.server.abstracts.ACassandraDescriptorBean;
 import org.hydra.utils.abstracts.ALogger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
