@@ -1,8 +1,8 @@
 package org.hydra.tests.text;
 
+import org.hydra.beans.TextManager;
 import org.hydra.tests.bean.Test0;
 import org.hydra.tests.utils.BeansUtils4Tests;
-import org.hydra.text.TextManager;
 import org.hydra.utils.Constants;
 import org.junit.Assert;
 import org.junit.Test;

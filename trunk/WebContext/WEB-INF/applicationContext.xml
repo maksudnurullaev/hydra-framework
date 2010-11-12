@@ -13,12 +13,12 @@
 
 	<!-- Cassandra's beans -->
 	<import resource="cassandra.xml"/>
-	
-	<!-- My Bean initialization [pre|post]processor -->
-	<bean class="org.hydra.db.beans.BeansPostProcessor"/>
 
+	<!-- Sessions manager -->
+	<bean id="_session_mamager" class="org.hydra.beans.SessionManager">
+	</bean>
 	<!-- Text Resources object -->
-	<bean id="_text_manager" class="org.hydra.text.TextManager">
+	<bean id="_text_manager" class="org.hydra.beans.TextManager">
 	    <!-- Set locales -->
 	    <property name="locales">
 	    	<map>
@@ -33,7 +33,7 @@
 	</bean>
 	
 	<!-- Hydra statistics object -->
-	<bean id="_statisticsCollector" class="org.hydra.collectors.StatisticsCollector"/>
+	<bean id="_statisticsCollector" class="org.hydra.beans.StatisticsCollector"/>
 
 	<!-- Executor Bean -->
 	<bean id="_chached_thead_pool" class="org.hydra.executors.Executor">
@@ -96,7 +96,7 @@
 	</bean>		
 	
 	<!-- Messages Collector for all sessions -->
-	<bean id="_main_message_collector" class="org.hydra.collectors.MessagesCollector">
+	<bean id="_main_message_collector" class="org.hydra.beans.MessagesCollector">
 		<property name="name" value="Simple Message Collector" />
 	</bean>
 </beans>

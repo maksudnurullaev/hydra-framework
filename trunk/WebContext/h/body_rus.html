@@ -13,10 +13,10 @@
 					<td nowrap="nowrap" id="languageSelectionBar">
 							<font color="#ffffff">
 								<a style="color:#ffffff;" href="#" onclick="javascript:void(Globals.sendMessage(
-										{handler:'SessionMessage',
-										 action:'change_locale', 
+										{handler:'General',
+										 action:'changeLocale', 
 										 key:'eng', 
-										 dest:'body'}))">Eng</a>
+										 dest:'body'})); return false;">Eng</a>
 								&nbsp;&nbsp;Рус&nbsp;&nbsp;
 							</font>	
 						</td>
@@ -43,11 +43,11 @@
 							<tbody>
 								<tr>
 									<td style="padding-top: 9px;">
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="home">Что такое Hydra?</a><br />
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="agreement">Лицензия</a><br />
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="docs">Документация</a><br />
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="faq">Вопросы и Ответы</a><br /><br />
-										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this))" id="admin">Администрирование</a><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="home">Что такое Hydra?</a><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="agreement">Лицензия</a><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="docs">Документация</a><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="faq">Вопросы и Ответы</a><br /><br />
+										<b>&nbsp;·&nbsp;</b><a href="#" onclick="javascript:void(GlobalsNav.onClick(this)); return false;" id="admin">Администрирование</a><br />
 										<br />
 									</td>
 								</tr>

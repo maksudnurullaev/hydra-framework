@@ -1,4 +1,4 @@
-package org.hydra.collectors.interfaces;
+package org.hydra.beans.interfaces;
 
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.interfaces.IPipe;

@@ -11,7 +11,7 @@ import org.apache.cassandra.thrift.Deletion;
 import org.apache.cassandra.thrift.Mutation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.db.beans.ColumnFamilyBean;
+import org.hydra.beans.db.ColumnFamilyBean;
 import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;

@@ -2,8 +2,8 @@ package org.hydra.db.server;
 
 import java.util.EnumMap;
 
-import org.hydra.db.beans.ColumnFamilyBean;
-import org.hydra.db.beans.KeyspaceBean;
+import org.hydra.beans.db.ColumnFamilyBean;
+import org.hydra.beans.db.KeyspaceBean;
 import org.hydra.utils.abstracts.ALogger;
 
 public class CassandraVirtualPath extends ALogger {

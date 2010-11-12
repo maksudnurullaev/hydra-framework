@@ -1,4 +1,4 @@
-package org.hydra.text.abstracts;
+package org.hydra.beans.abstracts;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,13 +12,10 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.abstracts.ALogger;
 
-import com.lowagie.text.Font;
-
-public abstract class PropertyLoader extends ALogger {
+public abstract class APropertyLoader extends ALogger {
 	/**
 	 * Looks up a resource named 'name' in the classpath. The resource must map
 	 * to a file with .properties extention. The name is assumed to be absolute

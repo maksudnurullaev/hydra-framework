@@ -1,13 +1,9 @@
-package org.hydra.db.beans;
+package org.hydra.beans.db;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hydra.messages.handlers.AdminMessageHandler;
-import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Constants;
-import org.hydra.utils.MessagesManager;
 import org.hydra.utils.abstracts.ALogger;
 
 /**
@@ -20,16 +16,16 @@ public class KeyspaceBean extends ALogger {
 	private String name = null;
 	private String linkTableName = null;
 
-	// HTML IDs
-	public static final String _ksp_desc_divId = "_ksp_desc_div";
-
-	
 	public void setColumnFamilies(Set<ColumnFamilyBean> inColumnFamilies) {
 		_columnFamilies.clear();
 		for(ColumnFamilyBean entryCF: inColumnFamilies)
 			_columnFamilies.put(entryCF.getName(), entryCF);
 		
 		getLog().debug(String.format("ColumnFamily(%s) added to Keyspace(%s)", _columnFamilies.size(), getName()));		
+	}
+	
+	public Map<String, ColumnFamilyBean> getColFamilies(){
+		return _columnFamilies;
 	}
 	
 	public void setName(String name) {
@@ -39,39 +35,6 @@ public class KeyspaceBean extends ALogger {
 	
 	public String getName() {
 		return name;
-	}
-	
-	public String getCfHTMLDescription() {
-		String formatStrong = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
-		
-		int counter = 0;
-		String result = String.format(formatStrong, "Keyspace", getName());
-		
-		String cfLinks = "";
-				
-		
-		for(String keyName: _columnFamilies.keySet()){
-			if(counter++ != 0)
-				cfLinks += ", ";
-			cfLinks += Constants.makeJSLink(keyName,
-					"handler:'%s',dest:'%s',%s:'%s',%s:'%s',%s:'%s'", 
-						AdminMessageHandler._handler_name,
-						AdminMessageHandler._admin_cf_divId,
-						IMessage._data_action, AdminMessageHandler._action_describe_cassandra_cf,
-						IMessage._data_cs_ksp, getName(),
-						IMessage._data_cs_cf, keyName						
-					);
-		}
-		
-		// Append all column family links
-		result += String.format(formatStrong, "Column families", cfLinks.toString());
-		
-		// Append tail div for child elements
-		if(counter > 0)
-			result += String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), 
-					AdminMessageHandler._admin_cf_divId);
-		
-		return result.toString();		
 	}
 	
 	public ColumnFamilyBean getColumnFamilyByName(String inCfName){

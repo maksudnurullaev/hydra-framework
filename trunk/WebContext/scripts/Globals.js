@@ -86,13 +86,10 @@ Globals.loadStage2 = function(){
 		return;
 	}
 	
-	// alert("!!!Start STAGE 2 - Load Full Page Content!!!");
 	Globals.sendMessage(
-		{handler:'SessionMessage',
-		 action:'_none_', 
-		 key:'_none_', 
+		{handler:'General',
+		 action:'getInitialHTMLBody',
 		 dest:'body'});
-
 };
 
 Globals.clearContent = function(destId, saveTag){

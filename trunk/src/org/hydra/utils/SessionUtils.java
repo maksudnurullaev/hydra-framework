@@ -48,13 +48,12 @@ public final class SessionUtils {
 	public static String getLocale(HttpSession session) {
 		_log.debug("Try to get 'locale' defenition from web session!");
 		_log.debug("Web session is not null: " + (session != null));
-		Object testObject = session.getAttribute(IMessage._data_locale);
-		if(testObject != null){
-			_log.debug("Locale from incoming message structure : " + (String)testObject);
-			return (String) testObject;
-		}else{
-			_log.warn("Could not find 'locale' definition from web session object!");
+		String result = (String)session.getAttribute(IMessage._data_locale);
+		if(result != null){
+			_log.debug("Get 'locale' definition from current session: " + result);
+			return result;
 		}
+		_log.debug("Could not find 'locale' definition from web session object!");
 		_log.debug("Get default locale: " + MessagesManager.getTextManager().getDefaultLocale());
 		return MessagesManager.getTextManager().getDefaultLocale();
 	}

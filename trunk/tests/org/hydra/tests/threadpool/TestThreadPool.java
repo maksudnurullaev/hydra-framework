@@ -4,11 +4,10 @@ import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.collectors.MessagesCollector;
-import org.hydra.collectors.StatisticsCollector;
+import org.hydra.beans.MessagesCollector;
+import org.hydra.beans.StatisticsCollector;
 import org.hydra.executors.Executor;
 import org.hydra.messages.MessageBean;
-import org.hydra.messages.handlers.MessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
@@ -84,8 +83,8 @@ public class TestThreadPool {
 			for (int i = 0; i < messageCount; i++) {
 				message = new MessageBean();
 				message.setData(new HashMap<String, String>());
-				message.getData().put(IMessage._data_handler,"Message");
-				message.getData().put(IMessage._data_action, MessageHandler._action_get_html_content);
+				message.getData().put(IMessage._handler_id,"General");
+				message.getData().put(IMessage._action_id, "getTextByKey");
 				message.getData().put(IMessage._data_key, "home.context");
 				message.getData().put(IMessage._data_sessionId, String.format("Test Message #%d", i));
 				_main_inPipe.setMessage(message);

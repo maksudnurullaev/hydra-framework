@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.directwebremoting.WebContextFactory;
-import org.hydra.collectors.MessagesCollector;
+import org.hydra.beans.MessagesCollector;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
@@ -20,13 +20,11 @@ public class WebMessagesHandler extends ALogger {
 	public List<MessageBean> sendMessage(MessageBean inMessage) throws RichedMaxCapacityException{
 		
 		// -1. Attach session's data
-		getLog().debug("WebContextFactory.get() is not null: " + (WebContextFactory.get() != null));
-		getLog().debug("Incoming message as not null: " + (inMessage != null));
 		SessionUtils.attachIMessageSessionData(inMessage, WebContextFactory.get());
 		
 		// 0. Debug part
 		if(getLog().isDebugEnabled()){
-			getLog().debug("\nMESSAGE BEAN handler: " + inMessage.getData().get(IMessage._data_handler));
+			getLog().debug("\nMESSAGE BEAN handler: " + inMessage.getData().get(IMessage._handler_id));
 			if(inMessage.getData() != null)
 				for(String key:inMessage.getData().keySet())
 					getLog().debug(String.format("\n\tMESSAGE BEAN's data: %s = %s", key, inMessage.getData().get(key)));
@@ -63,6 +61,7 @@ public class WebMessagesHandler extends ALogger {
 			MessagesCollector messagesCollector = (MessagesCollector)result.getObject();
 
 			while(!messagesCollector.hasNewMessages(inMessage.getData().get(IMessage._data_sessionId))){
+				// if timeout
 				if(System.currentTimeMillis() - startTime > Constants._max_response_wating_time){
 					
 					inMessage.setError("Waiting time limit is over...");				

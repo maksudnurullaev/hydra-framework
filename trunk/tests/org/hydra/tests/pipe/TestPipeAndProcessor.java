@@ -2,7 +2,7 @@ package org.hydra.tests.pipe;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.collectors.StatisticsCollector;
+import org.hydra.beans.StatisticsCollector;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;

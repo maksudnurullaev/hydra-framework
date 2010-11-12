@@ -1,4 +1,5 @@
-package org.hydra.collectors.interfaces;
+package org.hydra.beans.interfaces;
+
 
 public interface ICollectorClient {
 	/**

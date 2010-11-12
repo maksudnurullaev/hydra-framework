@@ -1,6 +1,5 @@
 package org.hydra.utils;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,14 +37,13 @@ public final class Constants {
 	public static final String UnknownString = "Unknown";
 	
 	// **** For dispatcher
-	public static final String _message_handler_class_posfix = "Handler";
 	public static final String _message_handler_class_prefix = "org.hydra.messages.handlers.";
 	public static final String _file_name_delimiter = "_";
 	public static final String _beans_text_manager = "_text_manager";
 	//public static final String _path2ApplicationContext_xml = "/applicationContext.xml";
 	
 	// **** Deafult response waiting time (in milliseconds)
-	public static final long _max_response_wating_time = 3000;
+	public static final long _max_response_wating_time = 5000;
 	
 	// **** Cassandra's constants
 	public static final String _cassandra_descriptor_name = "_cassandra_server_descriptor";
@@ -139,9 +137,15 @@ public final class Constants {
 		return String.format(format, "no-stacktrace-found!");
 	}
 	
-	public static String makeJSLink(String inLabelName, String format, Object ...inObjects){
+	public static String makeJSLink(String inLabelName, String ...inStrings){
+		if(inStrings == null || inStrings.length == 0) return "Invalid makeJSLink parameters!";
+		String result = "";
+		for(String name:inStrings){
+			if(result.length() != 0) result += ",";
+			result += name;
+		}
 		return String.format(MessagesManager.getTextManager().getTemplate("template.html.a.onClick.sendmessage.Label"),
-												String.format(format, inObjects),
+												result,
 												inLabelName);	
 	}
 }

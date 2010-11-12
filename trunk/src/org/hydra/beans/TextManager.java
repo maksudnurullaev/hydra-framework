@@ -1,13 +1,13 @@
-package org.hydra.text;
+package org.hydra.beans;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.hydra.text.abstracts.PropertyLoader;
+import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.utils.Constants;
 
-public class TextManager extends PropertyLoader {
+public class TextManager extends APropertyLoader {
 	public static final String _fileMessagesBasename = "messages";
 	public static final String _fileTemplateName = "templates";
 	private Map<String, String> _locales = new HashMap<String, String>();
