@@ -8,12 +8,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.executors.interfaces.IExecutor;
 import org.hydra.processors.interfaces.IProcessor;
+import org.hydra.utils.abstracts.ALogger;
 
-public class Executor implements IExecutor {
+public class Executor extends ALogger implements IExecutor {
 	private static final ExecutorService _pool = Executors.newCachedThreadPool();
 	private static final Executor _self = new Executor();
 	private String _name = "Name is not initilazed!";
-	public Log _log = LogFactory.getLog(this.getClass());
 
 	private Executor() {
 	};
@@ -25,7 +25,7 @@ public class Executor implements IExecutor {
 	 */
 	public void execute(Runnable inProcessor) {
 		if(inProcessor instanceof IProcessor){
-			_log.debug(String.format("New processor(%s) submitted to execute.",((IProcessor) inProcessor).getName()));
+			getLog().debug(String.format("New processor(%s) submitted to execute.",((IProcessor) inProcessor).getName()));
 		}
 		_pool.execute(inProcessor);
 	}

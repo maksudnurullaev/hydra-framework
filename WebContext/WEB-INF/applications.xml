@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<!-- Applications -->
+	<bean id="_hydra_applications" class="org.hydra.beans.Applications">
+		<!-- Set keyspaces -->
+		<property name="applications">
+			<set>
+				<ref bean="Hydra"/>
+				<ref bean="UristUz"/>
+			</set>
+		</property>		
+	</bean>
+	
+	<bean id="Hydra" class="org.hydra.beans.Application">
+		<property name="name" value="hydra.uz" />
+		<property name="urls">
+			<set>
+				<value>^https?://127\.0\.0\.1.*</value>
+				<value>^https?://mnurullayev.*/</value>
+				<value>^https?://(www\.)?hydra\.uz.*</value>
+			</set>
+		</property>
+	</bean>
+
+	<bean id="UristUz" class="org.hydra.beans.Application">
+		<property name="name" value="urist.uz" />
+		<property name="parentApplication" ref="Hydra" />
+		<property name="urls">
+			<set>
+				<value>^https?://(www\.)?urist\.uz.*</value>
+			</set>
+		</property>	
+	</bean>
+</beans>

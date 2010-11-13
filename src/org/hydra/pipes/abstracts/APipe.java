@@ -29,8 +29,7 @@ public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage
 	
 	
 	//### EVENTS PART
-	
-	protected EventListenerList _listenerList = new EventListenerList();
+	private EventListenerList _listenerList = new EventListenerList();
 
 	public void addPipeEventListener(IPipeEventListener inListener){
 		_listenerList.add(IPipeEventListener.class, inListener);	

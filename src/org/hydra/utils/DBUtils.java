@@ -19,7 +19,6 @@ import org.hydra.beans.db.ColumnFamilyBean;
 import org.hydra.beans.db.KeyspaceBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.db.server.CassandraVirtualPath;
-import org.hydra.messages.interfaces.IMessage;
 import org.junit.Assert;
 
 /**
@@ -27,10 +26,7 @@ import org.junit.Assert;
  * @author M.Nurullayev
  * 
  */
-public final class DBUtils {
-	public static final String PATH2COLUMN5 = "%s.%s['%s']['%s']['%s']";
-	public static final String PATH2COLUMN4   = "%s.%s['%s']['%s']";		
-	
+public final class DBUtils {	
 	private static Log _log = LogFactory.getLog("org.hydra.utils.DBUtils");
 	
 	// **** defaults
@@ -260,7 +256,7 @@ public final class DBUtils {
 
 	public static String getJSLinkShowAllColumns(KeyspaceBean kspBean,
 			ColumnFamilyBean cfBean) {
-		return Constants.makeJSLink("Show all", 
+		return Utils.makeJSLink("Show all", 
 				String.format("handler:'%s'", "Administration"),
 				String.format("dest:'%s'", "_admin_col_div"),
 				String.format("action:'%s'", "showAllColumns"),

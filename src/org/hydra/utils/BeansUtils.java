@@ -8,12 +8,13 @@ import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 public final class BeansUtils {	
-	static Log _log = LogFactory.getLog("org.hydra.utils.BeansUtils");
-	public static Object getBean(String inName){
+	private static Log _log = LogFactory.getLog("org.hydra.utils.BeansUtils");
+	
+	protected static Object getBean(String inName){
 		return getWebApplicationContext().getBean(inName);
 	}
 
-	public static WebApplicationContext getWebApplicationContext() {
+	protected static WebApplicationContext getWebApplicationContext() {
 		_log.debug("ContextLoader.getCurrentWebApplicationContext() is not null: " 
 				+ (ContextLoader.getCurrentWebApplicationContext() != null));
 		return ContextLoader.getCurrentWebApplicationContext();

@@ -2,7 +2,7 @@ package org.hydra.pipes.exceptions;
 
 
 public class RichedMaxCapacityException extends Exception{
-	String _error_message;
+	private String _error_message;
 	
 	public RichedMaxCapacityException(){
 		super();

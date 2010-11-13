@@ -10,6 +10,7 @@ public interface IMessage {
 	// *** General fields
 	static final String _handler_id = "handler";		
 	static final String _action_id = "action";
+	static final String _user_id = "_user_id";
 	
 	// *** Result response type
 	static final String _data_what_error_message = "error.message" ;
@@ -17,7 +18,6 @@ public interface IMessage {
 	
 	// **** Session data keys
 	static final String _data_locale = "locale";
-	static final String _data_userId = "userId";
 	static final String _data_sessionId = "sessionId";
 		
 	// **** Other default keys
@@ -31,7 +31,7 @@ public interface IMessage {
 	static final String _data_cs_key   = "cs_key";
 	static final String _data_cs_col   = "cs_col";		
 	
-	void setData(Map<String, String> _data);
+	void setData(Map<String, String> _data); // NO_UCD
 	Map<String, String> getData();
 	
 	void setError(String inErrorMessage);
@@ -40,6 +40,6 @@ public interface IMessage {
 	
 	Result setToHttpSession(String inKey, Object inObj);
 	void setHttpSession(HttpSession inSession);
-	HttpSession withHttpSession();
+	HttpSession getHttpSession();
 		
 }

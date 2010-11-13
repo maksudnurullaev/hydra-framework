@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hydra.beans.interfaces.IStatisticsCollector;
-import org.hydra.messages.handlers.Administration;
-import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Constants;
 import org.hydra.utils.MessagesManager;
+import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class StatisticsCollector extends ALogger implements IStatisticsCollector {
@@ -101,7 +99,7 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		// Table rows
 		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
 			tempString = String.format(MessagesManager.getTemplate("template.table.td"), 
-					Constants.makeJSLink(mapStringTypeInteger.getKey(), 
+					Utils.makeJSLink(mapStringTypeInteger.getKey(), 
 							String.format("handler:'%s'", "Administration"),
 							String.format("dest:'%s'", "admin.content.body"),
 							String.format("action:'%s'", "describeHydra"))

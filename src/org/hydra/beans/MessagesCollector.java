@@ -30,7 +30,7 @@ public class MessagesCollector implements ICollector {
 	 * (could be override by child class)
 	 * @return IPipe<IMessage>
 	 */
-	protected IPipe<IMessage> getNewPipe() {		
+	private IPipe<IMessage> getNewPipe() {		
 		return (new Pipe());
 	}
 

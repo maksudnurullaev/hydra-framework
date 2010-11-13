@@ -11,7 +11,7 @@ public final class MessagesManager{
 	
 	private static MessagesManager _messageMananger = null; 
 	
-	public static MessagesManager GetInstance(){
+	private static MessagesManager GetInstance(){
 		if(_messageMananger == null)
 			_messageMananger = new MessagesManager();
 		return _messageMananger;
