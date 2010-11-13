@@ -7,7 +7,6 @@ import org.hydra.beans.abstracts.AStatisticsApplyer;
 import org.hydra.beans.interfaces.ICollector;
 import org.hydra.events.PipeEvent;
 import org.hydra.executors.interfaces.IExecutor;
-import org.hydra.messages.handlers.intefaces.IMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
@@ -47,7 +46,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 	public Result getMessageHandler(IMessage inMessage) {
 		// Spring Debug Mode
 		if (AppContext.isDebugMode()) {
-			trace = Constants.trace(this, Thread.currentThread()
+			trace = Utils.trace(this, Thread.currentThread()
 					.getStackTrace());
 		} else
 			trace = "";

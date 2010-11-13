@@ -11,6 +11,9 @@
 		<property name="debugMode" value="false"/>
 	</bean>  
 
+	<!-- To describe all applications here -->
+	<import resource="applications.xml"/>
+	
 	<!-- Cassandra's beans -->
 	<import resource="cassandra.xml"/>
 

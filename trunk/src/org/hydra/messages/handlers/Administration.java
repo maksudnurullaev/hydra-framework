@@ -18,7 +18,7 @@ import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
 import org.hydra.utils.Utils;
 
-public class Administration extends AMessageHandler {
+public class Administration extends AMessageHandler { // NO_UCD
 	
 	public IMessage describeHydra(IMessage inMessage) {
 		Result result = BeansUtils.getWebSessionBean(Constants._beans_statistics_collector);
@@ -30,6 +30,33 @@ public class Administration extends AMessageHandler {
 		}
 		getLog().error("Could not find statistics bean object!");
 		inMessage.setError("Could not find statistics bean object!");
+		
+		return inMessage;
+	}
+	
+	public IMessage describeReports(IMessage inMessage){
+		String destination = "_describeReports";
+		String result = Utils.makeJSLink("Hydra",
+				String.format("handler:'%s'", this.getClass().getSimpleName()),
+				String.format("action:'%s'", "describeHydra"),
+				String.format("dest:'%s'", destination)
+				);
+		result += "&nbsp;&nbsp;" + Utils.makeJSLink(MessagesManager.getText("text.Applications", 
+					null, 
+					inMessage.getData().get(IMessage._data_locale)), 
+				String.format("handler:'%s'", this.getClass().getSimpleName()),
+				String.format("action:'%s'", "describeApplications"),
+				String.format("dest:'%s'", destination)
+			);
+		result += String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"),
+				destination);
+		inMessage.setHtmlContent(result);
+		
+		return inMessage;
+	}
+	
+	public IMessage describeApplications(IMessage inMessage){
+		inMessage.setHtmlContent("Not implemented yet!");
 		
 		return inMessage;
 	}
@@ -59,7 +86,7 @@ public class Administration extends AMessageHandler {
 		for(String keyspaceName: inAccessor.getServerKeyspaces()){
 			if(inAccessor.getDescriptor().containsKeyspace(keyspaceName)){
 				if(counter++ != 0) result.append(", ");
-				result.append(Constants.makeJSLink(inAccessor.getDescriptor().getKeyspace(keyspaceName).getName(), 
+				result.append(Utils.makeJSLink(inAccessor.getDescriptor().getKeyspace(keyspaceName).getName(), 
 						String.format("handler:'%s'", this.getClass().getSimpleName()),
 						String.format("dest:'%s'", "_ksp_desc_div"),
 						String.format("action:'%s'","describeKeyspace"),
@@ -75,7 +102,7 @@ public class Administration extends AMessageHandler {
 	public IMessage describeKeyspace(IMessage inMessage) {
 		// Spring Debug Mode
 		if(AppContext.isDebugMode()){
-			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
+			trace = Utils.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
 		KeyspaceBean ksp = BeansUtils.getDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
@@ -86,7 +113,7 @@ public class Administration extends AMessageHandler {
 			for(String cfName: ksp.getColFamilies().keySet()){			
 				if(cfLinks.length() > 0)
 					cfLinks += ", ";
-				cfLinks += Constants.makeJSLink(cfName, 
+				cfLinks += Utils.makeJSLink(cfName, 
 						String.format("handler:'%s'", this.getClass().getSimpleName()),
 						String.format("dest:'%s'", "_admin_cf_div"),
 						String.format("action:'%s'", "getCassabdraColumnsDescription"),
@@ -109,7 +136,7 @@ public class Administration extends AMessageHandler {
 	public IMessage getCassabdraColumnsDescription(IMessage inMessage) {
 		// Spring Debug Mode
 		if(AppContext.isDebugMode()){
-			trace = Constants.trace(this, Thread.currentThread().getStackTrace());
+			trace = Utils.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
 		KeyspaceBean kspBean = BeansUtils.getDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
@@ -138,7 +165,7 @@ public class Administration extends AMessageHandler {
 		for(Map.Entry<String, ColumnBean> entryCFKey: cfBean.columns.entrySet()){
 			if(counter++ != 0)
 				resultLinks += ", ";
-			resultLinks += Constants.makeJSLink(entryCFKey.getKey(), 
+			resultLinks += Utils.makeJSLink(entryCFKey.getKey(), 
 					String.format("handler:'%s'", this.getClass().getSimpleName()),
 					String.format("dest:'%s'", "_admin_col_div"),
 					String.format("action:'%s'", "describeColumn"),
@@ -188,7 +215,7 @@ public class Administration extends AMessageHandler {
 				keyspaceName,
 				columnFamilyName,
 				String.format(MessagesManager.getTemplate("template.html.custom.input.ID.Value"), inputBoxID, inputBoxVal),
-					Constants.makeJSLink(column.getName(), 
+					Utils.makeJSLink(column.getName(), 
 							String.format("handler:'%s'", this.getClass().getSimpleName()),
 							String.format("dest:'%s'", resultDivID),
 							String.format("action:'%s'", "cs_select_super_column"),

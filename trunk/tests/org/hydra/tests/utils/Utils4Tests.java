@@ -9,6 +9,7 @@ import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
+import org.hydra.utils.Utils;
 import org.junit.Assert;
 
 /**
@@ -68,7 +69,7 @@ public final class Utils4Tests {
 			tempMap = new HashMap<String, String>();
 			
 			tempMap.put(ARTICLE_TITLE, String.format(ARTICLE_TITLE_S, articleID )); 
-			tempMap.put(ARTICLE_TEXT, String.format(ARTICLE_TEXT_S, Constants.GetCurrentDateTime()));
+			tempMap.put(ARTICLE_TEXT, String.format(ARTICLE_TEXT_S, Utils.GetCurrentDateTime()));
 			
 			result.put(articleID, tempMap);
 		}		

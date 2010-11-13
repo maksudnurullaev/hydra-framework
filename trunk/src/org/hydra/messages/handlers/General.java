@@ -9,7 +9,7 @@ import org.hydra.utils.DBUtils;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
 
-public class General extends AMessageHandler {
+public class General extends AMessageHandler { // NO_UCD
 	public static final String _body_html_path_format = "/h/body_%s.html";
 
 	public IMessage getTextByKey(IMessage inMessage) {
@@ -36,7 +36,7 @@ public class General extends AMessageHandler {
 			return inMessage;				
 		}else{ // 3. Change message attached locale
 			inMessage.getData().put(IMessage._data_locale, 
-					(String) inMessage.withHttpSession().getAttribute(IMessage._data_locale));
+					(String) inMessage.getHttpSession().getAttribute(IMessage._data_locale));
 		}		
 		return getInitialHTMLBody(inMessage);
 	}
@@ -57,12 +57,12 @@ public class General extends AMessageHandler {
 	}	
 	public String forwardToString(String inPath2HTMLTemplate, IMessage inMessage) {
 		
-		if(inMessage.withHttpSession() == null)
+		if(inMessage.getHttpSession() == null)
 			return "Session does not attached to message!";
 		
 		String result = "Internale error!";
 		
-		result = inMessage.withHttpSession().getServletContext().getRealPath(inPath2HTMLTemplate);
+		result = inMessage.getHttpSession().getServletContext().getRealPath(inPath2HTMLTemplate);
 
 		try {
 			File file = new File(result);

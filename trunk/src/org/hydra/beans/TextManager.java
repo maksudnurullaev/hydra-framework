@@ -8,8 +8,8 @@ import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.utils.Constants;
 
 public class TextManager extends APropertyLoader {
-	public static final String _fileMessagesBasename = "messages";
-	public static final String _fileTemplateName = "templates";
+	private static final String _fileMessagesBasename = "messages";
+	private static final String _fileTemplateName = "templates";
 	private Map<String, String> _locales = new HashMap<String, String>();
 	private String defaultLocale;
 	private Map<String, Properties> _dictionary = new HashMap<String, Properties>();
@@ -79,7 +79,7 @@ public class TextManager extends APropertyLoader {
 		return String.format("<%s id='%s'>%s</%s>", inHtmlWrap, inKey, _dictionary.get(inLocale).getProperty(inKey), inHtmlWrap); 
 	}
 		
-	public String getFileName(String inLocale) {
+	private String getFileName(String inLocale) {
 		return _fileMessagesBasename + Constants._file_name_delimiter + inLocale;
 	}
 

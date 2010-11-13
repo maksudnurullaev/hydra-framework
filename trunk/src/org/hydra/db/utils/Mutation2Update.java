@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
+import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class Mutation2Update extends ALogger{
@@ -92,7 +93,7 @@ public class Mutation2Update extends ALogger{
 		List<Column> listOfColumns = new ArrayList<Column>();
 		for (byte[] id : linkIDs) {
 			listOfColumns.add(new Column(id,
-								DBUtils.string2UTF8Bytes(Constants.GetUUID()),
+								DBUtils.string2UTF8Bytes(Utils.GetUUID()),
 								DBUtils.getCassandraTimestamp()));
 		}
 

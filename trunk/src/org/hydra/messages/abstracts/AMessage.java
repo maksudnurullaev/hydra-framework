@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-import javax.swing.text.html.HTML;
 
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Result;
@@ -26,7 +25,7 @@ public abstract class AMessage implements IMessage {
 	}
 	
 	@Override
-	public HttpSession withHttpSession(){
+	public HttpSession getHttpSession(){
 		return session;
 	}	
 	

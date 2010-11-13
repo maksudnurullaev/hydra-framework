@@ -80,57 +80,11 @@
 			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestDesc*.class" />
+					<include name="**/Test*.class" />
 				</fileset>
 			</batchtest>
 			
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestFMDKspCfId.class" />
-				</fileset>
-			</batchtest>				
-			
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestVirt*.class" />
-				</fileset>
-			</batchtest>
-			
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestByte*.class" />
-				</fileset>
-			</batchtest>
 
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestDesc*.class" />
-				</fileset>
-			</batchtest>
-			
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestAcc*.class" />
-				</fileset>
-			</batchtest>			
-			
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestDBU*.class" />
-				</fileset>
-			</batchtest>			
-
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestLink*.class" />
-				</fileset>
-			</batchtest>
-			
-			<batchtest>
-				<fileset dir="${classes}">
-					<include name="**/TestCrossRef*.class" />
-				</fileset>
-			</batchtest>					
 
 		</junit>
 
@@ -153,7 +107,7 @@ tests.failed=${tests.failed}
 			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/Just4Run.class" />
+					<include name="**/TestApplications.class" />
 				</fileset>
 			</batchtest>
 			
@@ -177,6 +131,11 @@ tests.failed=${tests.failed}
 			<classpath refid="master-classpath" />
 		</javadoc>
 
+		<batchtest>
+			<fileset dir="${classes}">
+				<include name="**/Test*.class" />
+			</fileset>
+		</batchtest>				
 	</target>	
 
 </project>

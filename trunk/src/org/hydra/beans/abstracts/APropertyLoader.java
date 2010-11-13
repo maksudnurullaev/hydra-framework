@@ -44,7 +44,7 @@ public abstract class APropertyLoader extends ALogger {
 	 *             if the resource was not found and THROW_ON_LOAD_FAILURE is
 	 *             true
 	 */
-	public static Properties loadProperties(String name, ClassLoader loader) {
+	private static Properties loadProperties(String name, ClassLoader loader) {
 		if (name == null)
 			throw new IllegalArgumentException("null input: name");
 

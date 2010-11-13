@@ -47,34 +47,6 @@ public class ColumnFamilyBean extends ALogger {
 		return false;
 	}	
 	
-	public Result getRelation(String inName){
-		Result result = new Result();
-		
-		// childs
-		if(cfChilds != null){
-			for(ColumnFamilyBean bean:cfChilds)
-				if(bean.getName().equals(name)){
-					result.setResult(true);
-					result.setObject(bean);
-					return result;
-				}
-		}
-		
-		// links
-		if(cfLinks != null){
-			for(ColumnFamilyBean bean:cfLinks)
-				if(bean.getName().equals(name)){
-					result.setResult(true);
-					result.setObject(bean);
-					return result;
-				}
-		}
-		
-		result.setResult(false);
-		result.setResult("Link not found!");
-		return result;
-	}
-
 	public void setName(String inName) {
 		this.name = inName;
 		getLog().debug("Setup CF name: " + getName());
@@ -98,10 +70,6 @@ public class ColumnFamilyBean extends ALogger {
 		return result;
 	}
 
-	public boolean containsColumn(String columnName) {
-		return columns.containsKey(columnName);
-	}
-
 	public Set<ColumnFamilyBean> getChilds() {
 		return this.cfChilds;		
 	}
@@ -109,9 +77,5 @@ public class ColumnFamilyBean extends ALogger {
 	
 	public boolean hasChilds() {
 		return cfChilds != null;
-	}
-	
-	public boolean hasLinks() {
-		return cfLinks != null;
 	}
 }

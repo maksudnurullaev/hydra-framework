@@ -7,10 +7,9 @@ import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.spring.AppContext;
 
 public final class SessionUtils {
-	static Log _log = LogFactory.getLog("org.hydra.utils.SessionManager");
+	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionManager");
 	
 	/**
 	 * Attache session data (locale, userId and etc.)
@@ -31,21 +30,17 @@ public final class SessionUtils {
 		_log.debug("Set session locale: " + tempString);
 		
 		tempString = getUserId(inWebContext.getSession());
-		inMessage.getData().put(IMessage._data_userId, tempString);
+		inMessage.getData().put(IMessage._user_id, tempString);
 		_log.debug("Set userId: " + tempString);
 		
 		inMessage.setHttpSession(inWebContext.getSession());
 	}
 	
-	public static String getUserId(HttpSession session) {
-		return (String) session.getAttribute(IMessage._data_userId);
+	private static String getUserId(HttpSession session) {
+		return (String) session.getAttribute(IMessage._user_id);
 	}
 
-	public static void setUserId(HttpSession session, String userId) {
-		session.setAttribute(IMessage._data_userId, userId);
-	}	
-	
-	public static String getLocale(HttpSession session) {
+	private static String getLocale(HttpSession session) {
 		_log.debug("Try to get 'locale' defenition from web session!");
 		_log.debug("Web session is not null: " + (session != null));
 		String result = (String)session.getAttribute(IMessage._data_locale);
@@ -58,10 +53,6 @@ public final class SessionUtils {
 		return MessagesManager.getTextManager().getDefaultLocale();
 	}
 
-	public static void setLocale(HttpSession session, String locale) {
-		session.setAttribute(IMessage._data_locale,locale);
-	}	
-	
 	/**
 	 * 
 	 * Detache session data (locale, userId and etc.)
@@ -78,8 +69,5 @@ public final class SessionUtils {
 //			inMessage.getData().remove(IMessage._data_key);			
 //		}
 	}
-
-	public static boolean isDebug() {
-		return AppContext.getApplicationContext().containsBean(Constants._debug_mode);
-	}		
+	
 }
