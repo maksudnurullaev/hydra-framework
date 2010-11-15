@@ -10,7 +10,7 @@ import org.springframework.web.context.WebApplicationContext;
 public final class BeansUtils {	
 	private static Log _log = LogFactory.getLog("org.hydra.utils.BeansUtils");
 	
-	protected static Object getBean(String inName){
+	public static Object getBean(String inName){
 		return getWebApplicationContext().getBean(inName);
 	}
 

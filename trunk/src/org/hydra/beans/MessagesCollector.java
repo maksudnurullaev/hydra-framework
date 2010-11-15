@@ -19,7 +19,6 @@ public class MessagesCollector implements ICollector {
 	private Map<String, IPipe<IMessage>> _groupOfMessages = new HashMap<String, IPipe<IMessage>>();
 	private String _name = Constants.UnknownString;
 	
-
 	@Override
 	public IMessage getMessage(String key) {
 		return getPipe(key).getMessage();

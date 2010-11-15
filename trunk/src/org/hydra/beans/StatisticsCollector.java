@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hydra.beans.interfaces.IStatisticsCollector;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.MessagesManager;
-import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class StatisticsCollector extends ALogger implements IStatisticsCollector {
@@ -59,7 +59,6 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 			result.append(String.format(mainFormat, mapStringTypeInteger.getKey()));
 			for (StatisticsTypes type : StatisticsTypes.values()) {
 				result.append(String.format(mainFormat, mapStringTypeInteger.getValue().get(type)));
-				// Prepare values for table footers
 				totals.put(type, totals.get(type) + mapStringTypeInteger.getValue().get(type));
 			}
 			result.append("\n");
@@ -85,12 +84,14 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		return result;
 	}
 
-	public String getHtmlReport() {
+	public String getHtmlReport(IMessage inMessage) {
 		String result = ""; 
 		String tempString = "";
 		
 		// Table header
-		tempString += String.format(MessagesManager.getTemplate("template.table.th"), "&nbsp;");
+		tempString += String.format(MessagesManager.getTemplate("template.table.th"), MessagesManager.getText("text.Statistics", 
+				null, 
+				inMessage.getData().get(IMessage._data_locale)));
 		for (StatisticsTypes type : StatisticsTypes.values()) {
 			tempString += String.format(MessagesManager.getTemplate("template.table.th"), type.toString());
 		}
@@ -98,12 +99,7 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		
 		// Table rows
 		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
-			tempString = String.format(MessagesManager.getTemplate("template.table.td"), 
-					Utils.makeJSLink(mapStringTypeInteger.getKey(), 
-							String.format("handler:'%s'", "Administration"),
-							String.format("dest:'%s'", "admin.content.body"),
-							String.format("action:'%s'", "describeHydra"))
-					);
+			tempString = String.format("<td><strong>%s</strong></td>",mapStringTypeInteger.getKey());
 			
 			for (StatisticsTypes type : StatisticsTypes.values()) {
 				tempString += String.format(MessagesManager.getTemplate("template.table.td"), 

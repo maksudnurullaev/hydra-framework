@@ -9,15 +9,15 @@ import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
+import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
-import org.hydra.utils.BeansUtils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
 
-	public List<MessageBean> sendMessage(MessageBean inMessage) throws RichedMaxCapacityException{
+	public Object[] sendMessage(MessageBean inMessage) throws RichedMaxCapacityException{
 		
 		// -1. Attach session's data
 		SessionUtils.attachIMessageSessionData(inMessage, WebContextFactory.get());
@@ -47,7 +47,7 @@ public class WebMessagesHandler extends ALogger {
 			
 			SessionUtils.detachIMessageSessionData(inMessage);
 			_result.add(inMessage);
-			return _result;
+			return _result.toArray();
 		}
 		//Constants.getMainInputPipe().setMessage(inMessage);
 		
@@ -69,7 +69,7 @@ public class WebMessagesHandler extends ALogger {
 					
 					SessionUtils.detachIMessageSessionData(inMessage);
 					_result.add(inMessage);				
-					return _result;
+					return _result.toArray();
 				}
 				Thread.yield();
 			}
@@ -81,14 +81,14 @@ public class WebMessagesHandler extends ALogger {
 				SessionUtils.detachIMessageSessionData(messageBean);
 				_result.add((MessageBean)messageBean);
 			}
-			return _result;		
+			return _result.toArray();		
 		}
 		
 		SessionUtils.detachIMessageSessionData(inMessage);
 		inMessage.setError("Could not initialize " + Constants._beans_main_message_collector + " object");
 		_result.add(inMessage);
 		
-		return _result;
+		return _result.toArray();
 		
 	}
 	

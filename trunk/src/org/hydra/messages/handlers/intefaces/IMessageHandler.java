@@ -1,6 +1,5 @@
 package org.hydra.messages.handlers.intefaces;
 
-import org.hydra.messages.interfaces.IMessage;
 
 /**
  * All incoming messages should be defined with:
