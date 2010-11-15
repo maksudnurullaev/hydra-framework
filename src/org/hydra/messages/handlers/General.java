@@ -10,7 +10,7 @@ import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
 
 public class General extends AMessageHandler { // NO_UCD
-	public static final String _body_html_path_format = "/h/body_%s.html";
+	public static final String _body_html_path_format = "/h/index_%s_%s.html";
 
 	public IMessage getTextByKey(IMessage inMessage) {
 		
@@ -28,51 +28,48 @@ public class General extends AMessageHandler { // NO_UCD
 		getLog().debug("Try to change current locale to: " + inMessage.getData().get(IMessage._data_key));
 		
 		// 1. Change session
-		Result result = inMessage.setToHttpSession(IMessage._data_locale, inMessage.getData().get(IMessage._data_key));
+		String changed_locale = inMessage.getData().get(IMessage._data_key);
+		Result result = inMessage.setToHttpSession(IMessage._data_locale, changed_locale);
 		
 		// 2. If something wrong		
 		if(!result.isOk()){
 			inMessage.setError(result.getResult());
 			return inMessage;				
-		}else{ // 3. Change message attached locale
-			inMessage.getData().put(IMessage._data_locale, 
-					(String) inMessage.getHttpSession().getAttribute(IMessage._data_locale));
-		}		
+		}
+		// 3. Change message locale too...
+		inMessage.getData().put(IMessage._data_locale, changed_locale);
 		return getInitialHTMLBody(inMessage);
 	}
 	public IMessage getInitialHTMLBody(IMessage inMessage){
-		// - Get localed html templates
-		String content = "";
+		// - Get locale html templates
 		String locale = inMessage.getData().get(IMessage._data_locale);
 		
 		if(locale == null) locale = MessagesManager.getTextManager().getDefaultLocale();
 		
-		String path2File = String.format(_body_html_path_format, locale);
+		String path2File = String.format(_body_html_path_format,
+				inMessage.getData().get(IMessage._app_id),
+				locale);
 		
-		getLog().debug("Get content of: " + path2File);
-		content = forwardToString(path2File, inMessage);
+		inMessage.setRealPath(path2File, IMessage._temp_value);
+		getLog().debug("Try to get content of: " + inMessage.getData().get(IMessage._temp_value));
 		
-		inMessage.setHtmlContent(content);				
+		Result result = forwardToString(inMessage.getData().get(IMessage._temp_value));		
+		if(result.isOk()) inMessage.setHtmlContent(result.getResult());
+		else inMessage.setError(result.getResult());
+		
 		return inMessage;
-	}	
-	public String forwardToString(String inPath2HTMLTemplate, IMessage inMessage) {
-		
-		if(inMessage.getHttpSession() == null)
-			return "Session does not attached to message!";
-		
-		String result = "Internale error!";
-		
-		result = inMessage.getHttpSession().getServletContext().getRealPath(inPath2HTMLTemplate);
-
+	}		
+	public Result forwardToString(String inPath2File) {
+		Result result = new Result();
 		try {
-			File file = new File(result);
-			result = FileUtils.readFileToString(file, DBUtils._utf8_encoding);
+			File file = new File(inPath2File);
+			result.setResult(FileUtils.readFileToString(file, DBUtils._utf8_encoding));
+			result.setResult(true);
 		} catch (Exception e) {
-			e.printStackTrace();
-			result = e.getMessage();
+			_log.error(e.toString());
+			result.setResult("Internal server error!");
+			result.setResult(false);
 		}
-		
 		return result;
 	}	
-	
 }

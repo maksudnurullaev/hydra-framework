@@ -2,7 +2,6 @@ package org.hydra.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 import java.util.regex.Matcher;
 
 

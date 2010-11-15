@@ -19,3 +19,6 @@ p.definition b { font-weight: normal; }
 
 p.pad { margin: 5px 0px 10px 35px; }
 table.pad { margin-left: 35px; }
+
+.tr { text-align: right; }
+.tl { text-align: left; }

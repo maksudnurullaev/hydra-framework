@@ -1,7 +1,7 @@
 package org.hydra.messages.handlers;
 
 import java.util.Map;
-
+import org.hydra.beans.Applications;
 import org.hydra.beans.StatisticsCollector;
 import org.hydra.beans.db.ColumnBean;
 import org.hydra.beans.db.ColumnFamilyBean;
@@ -25,7 +25,7 @@ public class Administration extends AMessageHandler { // NO_UCD
 		
 		if(result.isOk() && result.getObject() instanceof StatisticsCollector){
 			StatisticsCollector statisticsCollector = (StatisticsCollector) result.getObject();
-			inMessage.setHtmlContent(statisticsCollector.getHtmlReport());
+			inMessage.setHtmlContent(statisticsCollector.getHtmlReport(inMessage));
 			return inMessage;
 		}
 		getLog().error("Could not find statistics bean object!");
@@ -41,13 +41,20 @@ public class Administration extends AMessageHandler { // NO_UCD
 				String.format("action:'%s'", "describeHydra"),
 				String.format("dest:'%s'", destination)
 				);
-		result += "&nbsp;&nbsp;" + Utils.makeJSLink(MessagesManager.getText("text.Applications", 
+		result += " &bull; " + Utils.makeJSLink(MessagesManager.getText("text.Applications", 
 					null, 
 					inMessage.getData().get(IMessage._data_locale)), 
 				String.format("handler:'%s'", this.getClass().getSimpleName()),
 				String.format("action:'%s'", "describeApplications"),
 				String.format("dest:'%s'", destination)
 			);
+		result += " &bull; " + Utils.makeJSLink(MessagesManager.getText("text.Server", 
+				null, 
+				inMessage.getData().get(IMessage._data_locale)), 
+			String.format("handler:'%s'", this.getClass().getSimpleName()),
+			String.format("action:'%s'", "describeServer"),
+			String.format("dest:'%s'", destination)
+		);
 		result += String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"),
 				destination);
 		inMessage.setHtmlContent(result);
@@ -56,13 +63,32 @@ public class Administration extends AMessageHandler { // NO_UCD
 	}
 	
 	public IMessage describeApplications(IMessage inMessage){
-		inMessage.setHtmlContent("Not implemented yet!");
-		
+		Applications apps = (Applications) BeansUtils.getBean(Constants._beans_hydra_applications);
+		inMessage.setHtmlContent(apps.getDescription());
+		return inMessage;
+	}
+	
+	public IMessage describeServer(IMessage inMessage){
+		inMessage.setServerInfo(IMessage._temp_value);
+		String result = String.format(MessagesManager.getTemplate("template.table.with.class"),
+				"table.name.value",
+				String.format("<tr><th colspan='2'>%s</th>", "Server")
+				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", "Type", inMessage.getData().get(IMessage._temp_value))
+				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", "Protocol", inMessage.getData().get(IMessage._url_scheme))
+				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", "Name", inMessage.getData().get(IMessage._url_server_name))
+				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", "Port", inMessage.getData().get(IMessage._url_server_port))
+				);
+
+		inMessage.setHtmlContent(result + "</pre>");
 		return inMessage;
 	}
 	
 	public IMessage describeCassandra(IMessage inMessage){
 		CassandraAccessorBean cassandraAccessorBean = BeansUtils.getAccessor();
+		if(!cassandraAccessorBean.isValid()){
+			inMessage.setError("Could not access to cassandra!");
+			return inMessage;
+		}
 		
 		String result = "";
 		String format = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
@@ -228,7 +254,5 @@ public class Administration extends AMessageHandler { // NO_UCD
 		);		
 		return inMessage;
 	}	
-
-
 
 }

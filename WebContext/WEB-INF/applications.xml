@@ -8,7 +8,6 @@
 
 	<!-- Applications -->
 	<bean id="_hydra_applications" class="org.hydra.beans.Applications">
-		<!-- Set keyspaces -->
 		<property name="applications">
 			<set>
 				<ref bean="Hydra"/>
@@ -18,18 +17,18 @@
 	</bean>
 	
 	<bean id="Hydra" class="org.hydra.beans.Application">
-		<property name="name" value="hydra.uz" />
+		<property name="name" value="hydra_uz" />
 		<property name="urls">
 			<set>
 				<value>^https?://127\.0\.0\.1.*</value>
-				<value>^https?://mnurullayev.*/</value>
+				<value>^https?://localhost.*</value>
 				<value>^https?://(www\.)?hydra\.uz.*</value>
 			</set>
 		</property>
 	</bean>
 
 	<bean id="UristUz" class="org.hydra.beans.Application">
-		<property name="name" value="urist.uz" />
+		<property name="name" value="urist_uz" />
 		<property name="parentApplication" ref="Hydra" />
 		<property name="urls">
 			<set>

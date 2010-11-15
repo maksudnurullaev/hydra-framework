@@ -16,7 +16,6 @@ import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
-import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ResultAsListOfColumnOrSuperColumn;

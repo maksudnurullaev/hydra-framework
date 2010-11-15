@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
+import org.hydra.beans.Applications;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
 
@@ -17,9 +18,23 @@ public final class SessionUtils {
 	 * @param inSession 
 	 */
 	public static void attachIMessageSessionData(MessageBean inMessage, WebContext inWebContext) {
-		_log.debug("inWebContext.getSession() is not null: " + (inWebContext.getSession() != null));
 		_log.debug("Attach new data to session with id: " + inWebContext.getSession().getId());
 		
+		inMessage.getData().put(IMessage._url_scheme, inWebContext.getHttpServletRequest().getScheme());
+		inMessage.getData().put(IMessage._url_server_name, inWebContext.getHttpServletRequest().getServerName());
+		inMessage.getData().put(IMessage._url_server_port, "" + inWebContext.getHttpServletRequest().getLocalPort());
+		
+		Applications apps = (Applications) BeansUtils.getBean(Constants._beans_hydra_applications);
+		String urlPrefix =  inMessage.getData().get(IMessage._url_scheme) 
+			+ "://" + inMessage.getData().get(IMessage._url_server_name);
+			
+		String appID = apps.getValidAppID4Url(urlPrefix);
+		if(appID == null){
+			_log.fatal("Could not find application ID for: " + urlPrefix);
+		}else{
+			inMessage.getData().put(IMessage._app_id, appID);			
+		}
+
 		String tempString = null;
 		tempString = inWebContext.getSession().getId();
 		_log.debug("Set session Id: " + tempString);
@@ -60,14 +75,14 @@ public final class SessionUtils {
 	 * @return 
 	 */
 	public static void detachIMessageSessionData(IMessage inMessage) {
-		//TODO [later] ... we remove it later if it's necessary!!!
-//		if(inMessage != null && inMessage.getData() != null && !AppContext.isDebugMode()){
-//			inMessage.getData().remove(IMessage._data_handler);
-//			inMessage.getData().remove(IMessage._data_sessionId);
-//			inMessage.getData().remove(IMessage._data_locale);
-//			inMessage.getData().remove(IMessage._data_userId);			
-//			inMessage.getData().remove(IMessage._data_key);			
-//		}
+		if(inMessage != null && inMessage.getData() != null){
+			Object[] keys = inMessage.getData().keySet().toArray();
+			for(Object key:keys){
+				if(key.equals("dest") || key.equals("value") || key.equals("what"))
+					continue;
+				else inMessage.getData().remove(key);
+			}
+		}
 	}
 	
 }

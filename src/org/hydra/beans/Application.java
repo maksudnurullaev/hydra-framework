@@ -29,8 +29,13 @@ public class Application extends ALogger{
 	public Application getParentApplication() {
 		return _parentApplication;
 	}
-	public boolean findCorrespondingUrl(String inUrl) {
-		for(Pattern p:_urlPatterns) if(p.matcher(inUrl).matches()) return true;
-		return false;
+	public String findCorrespondingUrl(String inUrl) {
+		for(Pattern p:_urlPatterns) if(p.matcher(inUrl).matches()) return _name;
+		return null;
+	}
+	public String getDescription() {
+		String result = _name + "\n";
+		for(Pattern p:_urlPatterns) result += "\t" + p.pattern() + "\n";
+		return result;
 	}
 }

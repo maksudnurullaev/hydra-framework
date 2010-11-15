@@ -13,8 +13,6 @@ import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.processors.Processor;
 import org.hydra.processors.exceptions.NullProcessorException;
-import org.hydra.processors.interfaces.IProcessor.ProcessorStatus;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class TestThreadPool {
@@ -76,8 +74,7 @@ public class TestThreadPool {
 		_processor12.setOutPipe(_outPipe);		
 		_processor13.setOutPipe(_outPipe);		
 
-		int messageCount = 10;
-
+		int messageCount = 1000;
 		try {
 			MessageBean message = null;
 			for (int i = 0; i < messageCount; i++) {
@@ -93,19 +90,15 @@ public class TestThreadPool {
 			e.printStackTrace();
 		}
 		
-		while(_processor11.getState() != ProcessorStatus.WAITING
-				|| _processor12.getState() != ProcessorStatus.WAITING
-				|| _processor13.getState() != ProcessorStatus.WAITING){
-			// System.out.println("WAITING...");
-			Thread.yield();
-			
+		int totalHandledMessages = _statisticsCollector.getMessagesTotal4(_processor11.getName())
+			+ _statisticsCollector.getMessagesTotal4(_processor12.getName())
+			+ _statisticsCollector.getMessagesTotal4(_processor13.getName());
+		while(messageCount > totalHandledMessages){  
+			Thread.yield();			
+			totalHandledMessages = _statisticsCollector.getMessagesTotal4(_processor11.getName())
+			+ _statisticsCollector.getMessagesTotal4(_processor12.getName())
+			+ _statisticsCollector.getMessagesTotal4(_processor13.getName());		
 		}
-		
-		Assert.assertTrue(messageCount == (
-				_statisticsCollector.getMessagesTotal4(_processor11.getName())
-				+ _statisticsCollector.getMessagesTotal4(_processor12.getName())
-				+ _statisticsCollector.getMessagesTotal4(_processor13.getName())));
-		
 		System.out.println(_statisticsCollector.getTxtReport());
 	}
 }
