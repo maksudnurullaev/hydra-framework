@@ -80,12 +80,13 @@ Globals.loadStage13 = function() {
 };
 
 Globals.loadStage2 = function(){
-	// Check Stage #1
+	// Check that all stages passed #1
 	if(!Globals.isLoadedStage13()){
 		Globals.debug("ERROR: Could not load stage #1");
 		return;
 	}
-	
+	// Load CSS files
+	// Load initial html body
 	Globals.sendMessage(
 		{handler:'General',
 		 action:'getInitialHTMLBody',
