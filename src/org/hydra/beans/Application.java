@@ -9,8 +9,15 @@ import org.hydra.utils.abstracts.ALogger;
 public class Application extends ALogger{
 	private Set<Pattern> _urlPatterns = new HashSet<Pattern>();
 	private Application _parentApplication = null;
-	private String _name;
+	private String _name;	
+	private Set<String> _stylesheets = null;
 	
+	public void setStylesheets(Set<String> stylessheets) {
+		this._stylesheets = stylessheets;
+	}
+	public Set<String> getStylesheets() {
+		return _stylesheets;
+	}
 	public void setUrls(Set<String> inUrlsSet){
 		getLog().debug("Responsible urls size: " + inUrlsSet.size());
 		if(getLog().isDebugEnabled()) for(String url:inUrlsSet) getLog().debug(url);

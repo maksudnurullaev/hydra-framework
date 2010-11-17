@@ -38,9 +38,10 @@ public class General extends AMessageHandler { // NO_UCD
 		}
 		// 3. Change message locale too...
 		inMessage.getData().put(IMessage._data_locale, changed_locale);
-		return getInitialHTMLBody(inMessage);
+		return getInitialHTMLElements(inMessage);
 	}
-	public IMessage getInitialHTMLBody(IMessage inMessage){
+	
+	public IMessage getInitialHTMLElements(IMessage inMessage){
 		// - Get locale html templates
 		String locale = inMessage.getData().get(IMessage._data_locale);
 		
@@ -58,7 +59,8 @@ public class General extends AMessageHandler { // NO_UCD
 		else inMessage.setError(result.getResult());
 		
 		return inMessage;
-	}		
+	}
+	
 	public Result forwardToString(String inPath2File) {
 		Result result = new Result();
 		try {

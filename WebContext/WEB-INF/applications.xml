@@ -25,6 +25,11 @@
 				<value>^https?://(www\.)?hydra\.uz.*</value>
 			</set>
 		</property>
+		<property name="stylesheets">
+			<set>
+				<value>css/style.css</value>
+			</set>
+		</property>
 	</bean>
 
 	<bean id="UristUz" class="org.hydra.beans.Application">
