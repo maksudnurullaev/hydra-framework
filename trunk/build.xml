@@ -73,7 +73,7 @@
 	</target>
 	
 	<target name="local.run.all.tests" depends="local.build" description="Run tests">
-		<junit printsummary="on" fork="false" haltonfailure="false"
+		<junit printsummary="on" fork="true" haltonfailure="false"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />
@@ -107,7 +107,7 @@ tests.failed=${tests.failed}
 			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestThreadPool.class" />
+					<include name="**/TestFMDKspCf.class" />
 				</fileset>
 			</batchtest>			
 		</junit>

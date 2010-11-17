@@ -93,16 +93,16 @@ public class CassandraVirtualPath extends ALogger {
 
 	public CassandraVirtualPath(
 			CassandraDescriptorBean inCassandraDescriptorBean, String inPath) {
-		if(validateAndInitParameters(inCassandraDescriptorBean, inPath)){			
+		if(isValid(inCassandraDescriptorBean, inPath)){			
 			_path = inPath;
 			_descriptor = inCassandraDescriptorBean;
 			
 			getLog().debug("Parsing access path: " + inPath);
-			parseVirtualString();
+			parsePath();
 		}
 	}
 
-	private boolean validateAndInitParameters(CassandraDescriptorBean inCassandraDescriptorBean, String inPath){
+	private boolean isValid(CassandraDescriptorBean inCassandraDescriptorBean, String inPath){
 		if (inCassandraDescriptorBean == null) {
 			setError("CassandraDescriptor is NULL");
 			_errCode = ERR_CODES.INVALID_DESCRIPTOR;
@@ -132,7 +132,7 @@ public class CassandraVirtualPath extends ALogger {
 		return true;
 	}
 	
-	private void parseVirtualString() {		
+	private void parsePath() {		
 		switch (_pathMap.size()) {
 		case 2:
 			if(init2Parameters()){
