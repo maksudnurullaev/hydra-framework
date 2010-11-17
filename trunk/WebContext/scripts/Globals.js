@@ -85,12 +85,23 @@ Globals.loadStage2 = function(){
 		Globals.debug("ERROR: Could not load stage #1");
 		return;
 	}
+	// Clear old stylesheets if exist
+	Globals.clearStyleSheets();
 	// Load CSS files
+	// Asset.css("css/style.css", null);
 	// Load initial html body
 	Globals.sendMessage(
 		{handler:'General',
-		 action:'getInitialHTMLBody',
+		 action:'getInitialHTMLElements',
 		 dest:'body'});
+};
+
+Globals.clearStyleSheets = function(){
+	Array.each(document.head.getElementsByTagName('link'), function(item){
+		if(item.rel && item.rel.test("stylesheet","i") && item.href){
+			item.href = "";
+		};
+	});
 };
 
 Globals.clearContent = function(destId, saveTag){
@@ -109,9 +120,9 @@ Globals.clearContent = function(destId, saveTag){
 	return false;
 };
 
-Globals.disbaleMainNav = function(disable){
-	$each($$('#navlist a'), function(elem){
-		elem.set('disabled', disable);
+Globals.disableElements = function(path, disableState){
+	Array.each($$(path), function(elem){
+		elem.set('disabled', disableState);
 	});
 };
 
@@ -119,7 +130,7 @@ Globals.disbaleMainNav = function(disable){
 Globals.sendMessage = function(data){
 	var message = {data:data};
 
-	Globals.disbaleMainNav(true);
+	Globals.disableElements('#navlist a', true);
 	
 	MessageHandler.sendMessage(message, Globals.applyIncomingMessages);
 };
@@ -149,5 +160,5 @@ Globals.applyIncomingMessages = function(messages){
 			alert("I dont know what to do with 'message.data': " + message.data);
 		}
 	});
-	Globals.disbaleMainNav(false);
+	Globals.disableElements('#navlist a', false);
 };

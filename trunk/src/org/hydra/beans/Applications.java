@@ -5,7 +5,7 @@ import java.util.Set;
 import org.hydra.utils.abstracts.ALogger;
 
 public class Applications extends ALogger {
-	Set<Application> _applications = null;
+	private Set<Application> _applications = null;
 	
 	public void setApplications(Set<Application> inApplicationsSet){
 		getLog().debug("Responsible applications size: " + inApplicationsSet.size());
