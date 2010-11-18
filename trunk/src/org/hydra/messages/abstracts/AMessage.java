@@ -1,7 +1,9 @@
 package org.hydra.messages.abstracts;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,8 +15,24 @@ import org.hydra.utils.Result;
  *
  */
 public abstract class AMessage implements IMessage {	
-	private Map<String, String> _data = new HashMap<String, String>();	
+	private Map<String, String> _internalData = new HashMap<String, String>();
+	private Map<String, String> _htmlContents2 = new HashMap<String, String>();
+	
+	private Set<String> _styleSheets = new HashSet<String>();
+	public Set<String> getStyleSheets() {
+		return _styleSheets;
+	}
+
+	public void setStyleSheets(Set<String> styleSheets) {
+		this._styleSheets = styleSheets;
+	}
+
+	private String _error;
 	private HttpSession _session = null;
+	
+	public void setHtmlContents(String keyElementID, String htmlContent){
+		_htmlContents2.put(keyElementID, htmlContent);
+	}
 	
 	@Override
 	public void setHttpSession(HttpSession inSession){
@@ -39,32 +57,37 @@ public abstract class AMessage implements IMessage {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public void setData(Map<String, String> _data) {
 		if(_data == null){
 			return;
 		}
-		this._data = _data;
+		this._internalData = _data;
 	}
 
 	@Override
 	public Map<String, String> getData() {
-		return _data;
+		return _internalData;
 	}
-	
+
+	public String getError(){
+		return _error;
+	}
 	@Override
-	public void setError(String inErrorMessage){
-		getData().put(_data_what, _data_what_error_message);
-		getData().put(_data_value, inErrorMessage);
+	public void setError(String inErrorString){
+		_error = inErrorString;
 	}
 	
 	@Override
     public void setHtmlContent(String inHtmlContent){
-		getData().put(_data_what, _data_what_html_content);
-		getData().put(_data_value, inHtmlContent);    	
+		setHtmlContents(getData().get("dest"), inHtmlContent);
     }
-
+	
+	public Map<String, String> getHtmlContents(){
+		return _htmlContents2;
+	}
+	
 	@Override
 	public void setRealPath(String path2File, String inDataKey) {
 		getData().put(inDataKey, 

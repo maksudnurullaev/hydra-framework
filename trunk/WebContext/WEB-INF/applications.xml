@@ -17,7 +17,7 @@
 	</bean>
 	
 	<bean id="Hydra" class="org.hydra.beans.Application">
-		<property name="name" value="hydra_uz" />
+		<property name="name" value="Hydra" />
 		<property name="urls">
 			<set>
 				<value>^https?://127\.0\.0\.1.*</value>
@@ -33,7 +33,7 @@
 	</bean>
 
 	<bean id="UristUz" class="org.hydra.beans.Application">
-		<property name="name" value="urist_uz" />
+		<property name="name" value="UristUz" />
 		<property name="parentApplication" ref="Hydra" />
 		<property name="urls">
 			<set>
