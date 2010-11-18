@@ -3,8 +3,10 @@ package org.hydra.messages.handlers;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.hydra.beans.Application;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.BeansUtils;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
@@ -42,18 +44,17 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 	
 	public IMessage getInitialHTMLElements(IMessage inMessage){
-		// - Get locale html templates
 		String locale = inMessage.getData().get(IMessage._data_locale);
-		
+		String appId = inMessage.getData().get(IMessage._app_id);
+		// - Get locale html templates
 		if(locale == null) locale = MessagesManager.getTextManager().getDefaultLocale();
-		
-		String path2File = String.format(_body_html_path_format,
-				inMessage.getData().get(IMessage._app_id),
-				locale);
-		
+		// - Get css
+		Application app = (Application) BeansUtils.getBean(appId);
+		inMessage.setStyleSheets(app.getStylesheets());
+		// - Get html content from file
+		String path2File = String.format(_body_html_path_format,appId,locale);
 		inMessage.setRealPath(path2File, IMessage._temp_value);
 		getLog().debug("Try to get content of: " + inMessage.getData().get(IMessage._temp_value));
-		
 		Result result = forwardToString(inMessage.getData().get(IMessage._temp_value));		
 		if(result.isOk()) inMessage.setHtmlContent(result.getResult());
 		else inMessage.setError(result.getResult());

@@ -77,6 +77,7 @@ public class Administration extends AMessageHandler { // NO_UCD
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", "Protocol", inMessage.getData().get(IMessage._url_scheme))
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", "Name", inMessage.getData().get(IMessage._url_server_name))
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", "Port", inMessage.getData().get(IMessage._url_server_port))
+				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", "Applicication ID", inMessage.getData().get(IMessage._app_id))
 				);
 
 		inMessage.setHtmlContent(result + "</pre>");

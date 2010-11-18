@@ -135,30 +135,36 @@ Globals.sendMessage = function(data){
 	MessageHandler.sendMessage(message, Globals.applyIncomingMessages);
 };
 
+Globals.setHtmlContents = function(contentsMap){
+	Hash.each(contentsMap,function(htmlContent, elemId){
+		if($(elemId) && $(elemId).innerHTML != undefined){
+			$(elemId).innerHTML = htmlContent;
+		};
+	});
+};
+
+Globals.chk = function(obj){
+    return !!(obj || obj === 0);
+};
+
+
 /* GLOBAL - receive message(s) */
 Globals.applyIncomingMessages = function(messages){
-	$each(messages, function(message, messageIndex){		
-		if($chk(message.data)){
-			if($chk(message.data.what)){
-				if(message.data.what.test("error.message","i")){
-					alert(($chk(message.data.value) ? message.data.value : "ERROR: undefined"));
-				}else if(message.data.what.test("html.content","i")){
-					if($chk(message.data.dest)){
-						if($(message.data.dest)){
-							$(message.data.dest).innerHTML = ($chk(message.data.value) ? message.data.value : "undefined");
-						}else{
-							alert("Could not find 'message.data.dest' element: " + message.data.dest);
-						}
-					}
-				}else{
-					alert("I dont know is 'what': " + message.data.what);
-				}
-			}else{
-				alert("I dont know what to do with 'message.data': " + message.data);
-			}
-		}else{
-			alert("I dont know what to do with 'message.data': " + message.data);
-		}
+	Array.each(messages, function(message, messageIndex){
+		// check for error
+		if(Globals.chk(message.error)){
+			alert(message.error);
+			return;
+		};
+		if(Globals.chk(message.styleSheets)){
+			message.styleSheets.each(function(cssPath){
+				Asset.css(cssPath, null);
+			});
+		};
+		// check for html contents
+		if(Globals.chk(message.htmlContents)){
+			Globals.setHtmlContents(message.htmlContents);
+		};		
 	});
 	Globals.disableElements('#navlist a', false);
 };

@@ -1,6 +1,7 @@
 package org.hydra.messages.interfaces;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -38,10 +39,7 @@ public interface IMessage {
 	
 	// **** Temporary keys
 	static final String _temp_value = "_temp_value";
-	
-	void setData(Map<String, String> _data); // NO_UCD
-	Map<String, String> getData();
-	
+		
 	void setError(String inErrorMessage);
 	
 	void setHtmlContent(String inHtmlContent);
@@ -50,5 +48,10 @@ public interface IMessage {
 	void setHttpSession(HttpSession inSession);
 	void setHttpSession2(HttpSession httpSession);
 	void setRealPath(String path2File, String inDataKey);
-	void setServerInfo(String inDataKey);		
+	void setServerInfo(String inDataKey);
+
+	void setData(Map<String, String> data);
+	Map<String, String> getData();
+
+	void setStyleSheets(Set<String> stylesheets);		
 }
