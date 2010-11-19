@@ -12,9 +12,7 @@ import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
 import org.hydra.processors.exceptions.NullPipeException;
 import org.hydra.processors.interfaces.IProcessor;
-import org.hydra.spring.AppContext;
 import org.hydra.utils.Constants;
-import org.hydra.utils.Result;
 import org.hydra.utils.Utils;
 
 public abstract class AProcessor extends AStatisticsApplyer implements
@@ -43,41 +41,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 								.getName()));
 	}
 
-	public Result getMessageHandler(IMessage inMessage) {
-		// Spring Debug Mode
-		if (AppContext.isDebugMode()) {
-			trace = Utils.trace(this, Thread.currentThread()
-					.getStackTrace());
-		} else
-			trace = "";
-
-		Result _result = new Result();
-		String handlerName = inMessage.getData().get(IMessage._handler_id);
-		String path2MessageHandler = Constants._message_handler_class_prefix
-					+ handlerName;
-
-		getLog().debug(
-				String.format("Default handler for message group(%s) is %s "
-						, inMessage.getData().get(IMessage._data_sessionId)
-						, path2MessageHandler));
-
-		getLog().debug("Try to create instance of " + path2MessageHandler);
-		try {
-			Object object = Class.forName(path2MessageHandler).newInstance();
-			getLog().debug(
-					String.format("Instance of (%s) created successfully!",
-							path2MessageHandler));
-			_result.setResult(true);
-			_result.setObject(object);
-
-		} catch (Exception e) {
-			String errorStr = "Error: " + e.toString();
-			_result.setResult(false);
-			_result.setResult(errorStr);
-			getLog().error(e.toString());
-		}
-		return _result;
-	}
+	
 
 	public void setInPipe(IPipe<IMessage> inPipe) {
 		this._inPipe = inPipe;

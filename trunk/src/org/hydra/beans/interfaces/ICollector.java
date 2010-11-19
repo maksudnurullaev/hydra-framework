@@ -34,12 +34,7 @@ public interface ICollector {
 	 */
 	IPipe<IMessage> getPipe(String key);
 	
-	/**
-	 * Removes Message Pipe for certain session
-	 * (i.e. for dormant sessions)
-	 * @param key
-	 */
-	void removePipe(String key);			
+				
 	
 	/**
 	 * Define that collector has new messages for user session 
@@ -53,4 +48,6 @@ public interface ICollector {
 	 * @return int
 	 */	
 	int getTotalMessageCount();
+
+	void removePipe(String key);
 }

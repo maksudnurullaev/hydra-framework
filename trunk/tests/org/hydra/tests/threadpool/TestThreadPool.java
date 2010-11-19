@@ -1,7 +1,5 @@
 package org.hydra.tests.threadpool;
 
-import java.util.HashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.MessagesCollector;
@@ -25,9 +23,9 @@ public class TestThreadPool {
 
 	MessageBean _message1, _message2;
 
-	StatisticsCollector _statisticsCollector;	
+	StatisticsCollector _statisticsCollector;
 	MessagesCollector _messagesCollector;
-	
+
 	@Test
 	public void test_processors_and_messages() {
 		_statisticsCollector = new StatisticsCollector();
@@ -42,13 +40,12 @@ public class TestThreadPool {
 		_processor12.setName("Processor#1.2");
 		_processor12.setStatisticsCollector(_statisticsCollector);
 		_processor12.setMessageCollector(_messagesCollector);
-		
+
 		_processor13 = new Processor();
 		_processor13.setName("Processor#1.3");
-		_processor13.setStatisticsCollector(_statisticsCollector);		
+		_processor13.setStatisticsCollector(_statisticsCollector);
 		_processor13.setMessageCollector(_messagesCollector);
 
-		
 		_main_inPipe = new Pipe();
 		_main_inPipe.setName("Pipe1");
 		_main_inPipe.setStatisticsCollector(_statisticsCollector);
@@ -56,48 +53,54 @@ public class TestThreadPool {
 		_outPipe = new Pipe();
 		_outPipe.setName("Pipe2");
 		_outPipe.setStatisticsCollector(_statisticsCollector);
-		
+
 		_processor11.setExecutor(Executor.getInstance());
 		_processor12.setExecutor(Executor.getInstance());
 		_processor13.setExecutor(Executor.getInstance());
-		
+
 		try {
 			_main_inPipe.setProcessor(_processor11);
 			_main_inPipe.setProcessor(_processor12);
 			_main_inPipe.setProcessor(_processor13);
-						
+
 		} catch (NullProcessorException e1) {
 			e1.printStackTrace();
 		}
 
 		_processor11.setOutPipe(_outPipe);
-		_processor12.setOutPipe(_outPipe);		
-		_processor13.setOutPipe(_outPipe);		
+		_processor12.setOutPipe(_outPipe);
+		_processor13.setOutPipe(_outPipe);
 
 		int messageCount = 1000;
 		try {
 			MessageBean message = null;
 			for (int i = 0; i < messageCount; i++) {
 				message = new MessageBean();
-				message.setData(new HashMap<String, String>());
-				message.getData().put(IMessage._handler_id,"General");
+				message.getData().put(IMessage._handler_id, "General");
 				message.getData().put(IMessage._action_id, "getTextByKey");
 				message.getData().put(IMessage._data_key, "home.context");
-				message.getData().put(IMessage._data_sessionId, String.format("Test Message #%d", i));
+				message.getData().put(IMessage._data_sessionId,
+						String.format("Test Message #%d", i));
 				_main_inPipe.setMessage(message);
 			}
 		} catch (RichedMaxCapacityException e) {
 			e.printStackTrace();
 		}
-		
-		int totalHandledMessages = _statisticsCollector.getMessagesTotal4(_processor11.getName())
-			+ _statisticsCollector.getMessagesTotal4(_processor12.getName())
-			+ _statisticsCollector.getMessagesTotal4(_processor13.getName());
-		while(messageCount > totalHandledMessages){  
-			Thread.yield();			
-			totalHandledMessages = _statisticsCollector.getMessagesTotal4(_processor11.getName())
-			+ _statisticsCollector.getMessagesTotal4(_processor12.getName())
-			+ _statisticsCollector.getMessagesTotal4(_processor13.getName());		
+
+		int totalHandledMessages = _statisticsCollector
+				.getMessagesTotal4(_processor11.getName())
+				+ _statisticsCollector
+						.getMessagesTotal4(_processor12.getName())
+				+ _statisticsCollector
+						.getMessagesTotal4(_processor13.getName());
+		while (messageCount > totalHandledMessages) {
+			Thread.yield();
+			totalHandledMessages = _statisticsCollector
+					.getMessagesTotal4(_processor11.getName())
+					+ _statisticsCollector.getMessagesTotal4(_processor12
+							.getName())
+					+ _statisticsCollector.getMessagesTotal4(_processor13
+							.getName());
 		}
 		System.out.println(_statisticsCollector.getTxtReport());
 	}

@@ -14,10 +14,7 @@ public class NullProcessorException extends Exception {
 		_error_message = "Processor is null!";
 	}
 	
-	public NullProcessorException(String err){
-		super(err);
-		_error_message = err;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Throwable#getMessage()

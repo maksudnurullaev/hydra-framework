@@ -67,11 +67,6 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		return result.toString();
 	}
 
-	public int getMessagesStatistics4(String inObjectName, StatisticsTypes inStatisticsType) {
-		if(!_statistics.containsKey(inObjectName)) return -1;
-		return _statistics.get(inObjectName).get(inStatisticsType);
-	}
-
 	public int getMessagesTotal4(String inObjectName) {
 		if(!_statistics.containsKey(inObjectName)) return -1;
 		

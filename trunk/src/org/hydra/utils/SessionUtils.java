@@ -75,14 +75,9 @@ public final class SessionUtils {
 	 * @return 
 	 */
 	public static void detachIMessageSessionData(IMessage inMessage) {
-		if(inMessage != null && inMessage.getData() != null){
-			Object[] keys = inMessage.getData().keySet().toArray();
-			for(Object key:keys){
-				if(key.equals("dest") || key.equals("value") || key.equals("what"))
-					continue;
-				else inMessage.getData().remove(key);
-			}
-		}
+		if(inMessage != null && inMessage.getData() != null)
+			for(Object key:inMessage.getData().keySet().toArray()) 
+				inMessage.getData().remove(key);
 	}
 	
 }

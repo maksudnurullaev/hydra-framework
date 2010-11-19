@@ -3,12 +3,11 @@ package org.hydra.db.server;
 import java.util.Map;
 
 import org.apache.cassandra.thrift.Cassandra;
-import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.ColumnParent;
-import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
+import org.apache.cassandra.thrift.Cassandra.Client;
 import org.hydra.db.server.CassandraVirtualPath.PARTS;
 import org.hydra.db.server.abstracts.ACassandraAccessor;
 import org.hydra.db.utils.Mutation2Delete;
@@ -166,33 +165,5 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		return result;		
 	}
 	
-	/**
-	 * We use it because have a deletion problem for Mutation+Deletion+Predicate
-	 * and have error: "Deletion does not yet support SliceRange predicates."
-	 * <blockquote><strong>Note:</strong> We hope that will be fixed at nearest versions of Cassnadra!!!</blockquote>
-	 * @param inKsp - mandatory
-	 * @param inCf - madatory
-	 * @param inKey - mandatory
-	 * @param inSuper - optional
-	 * @param inCol - optional
-	 * @return Result
-	 */
-	public Result delete4version6without_mutation(CassandraAccessorBean accessor, String inKsp, String inCf, String inKey, String inSuper, String inCol){
-		Result result = new Result();
-		
-		Client client = accessor.clientBorrow();		
-		ColumnPath cfPath = new ColumnPath(inCf);
-		
-		if(inSuper != null)cfPath.setSuper_column(DBUtils.string2UTF8Bytes(inSuper));
-		if(inCol != null) cfPath.setColumn(DBUtils.string2UTF8Bytes(inCol));
-		
-		try {
-			client.remove(inKsp, inKey, cfPath , DBUtils.getCassandraTimestamp(), ConsistencyLevel.ONE);			
-		} catch (Exception e) {
-			System.out.println(e);
-		} finally {
-			accessor.clientRelease(client);
-		}		
-		return result;		
-	}
+	
 }

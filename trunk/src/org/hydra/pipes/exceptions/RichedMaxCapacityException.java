@@ -9,10 +9,7 @@ public class RichedMaxCapacityException extends Exception{
 		_error_message = "Pipe riched Maximal Capacity";
 	}
 	
-	public RichedMaxCapacityException(String err){
-		super(err);
-		_error_message = err;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Throwable#getMessage()

@@ -28,14 +28,7 @@ public class AppContext extends ALogger{
         ctx = applicationContext;
     }
 
-    /**
-     * Get access to the Spring ApplicationContext from everywhere in your Application.
-     *
-     * @return
-     */
-    public static ApplicationContext getApplicationContext() {
-        return ctx;
-    }
+    
     
     public static boolean isDebugMode(){
     	_log.debug("AppContext: get debug mode: " + debugMode);

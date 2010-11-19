@@ -12,10 +12,10 @@ public interface IExecutor {
 	public abstract void setName(String _name);
 
 	public abstract String getName();
-	
-	public abstract void shutdownAndAwaitTermination(long inTimeOut, TimeUnit inTimeUnit);
 
 	public abstract void awaitTermination(long inTimeOut, TimeUnit inTimeUnit);
 
 	ExecutorService getThreadsPool();
+
+	void shutdownAndAwaitTermination(long inTimeOut, TimeUnit inTimeUnit);
 }

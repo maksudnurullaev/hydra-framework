@@ -31,7 +31,7 @@ public class General extends AMessageHandler { // NO_UCD
 		
 		// 1. Change session
 		String changed_locale = inMessage.getData().get(IMessage._data_key);
-		Result result = inMessage.setToHttpSession(IMessage._data_locale, changed_locale);
+		Result result = inMessage.set2HttpSession(IMessage._data_locale, changed_locale);
 		
 		// 2. If something wrong		
 		if(!result.isOk()){

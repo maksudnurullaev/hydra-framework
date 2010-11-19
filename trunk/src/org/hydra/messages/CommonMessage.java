@@ -1,4 +1,4 @@
-package org.hydra.messages.abstracts;
+package org.hydra.messages;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,45 +12,47 @@ import org.hydra.utils.Result;
 
 /**
  * @author M.Nurullayev
- *
+ * 
  */
-public abstract class AMessage implements IMessage {	
-	private Map<String, String> _internalData = new HashMap<String, String>();
-	private Map<String, String> _htmlContents2 = new HashMap<String, String>();
-	
+public class CommonMessage implements IMessage {
+	private Map<String, String> _requestDataMap = new HashMap<String, String>();
+	private Map<String, String> _htmlContents = new HashMap<String, String>();
 	private Set<String> _styleSheets = new HashSet<String>();
+	private String _error;
+	private HttpSession _session = null;
+
+	@Override
 	public Set<String> getStyleSheets() {
 		return _styleSheets;
 	}
 
+	@Override
 	public void setStyleSheets(Set<String> styleSheets) {
 		this._styleSheets = styleSheets;
 	}
 
-	private String _error;
-	private HttpSession _session = null;
-	
-	public void setHtmlContents(String keyElementID, String htmlContent){
-		_htmlContents2.put(keyElementID, htmlContent);
-	}
-	
 	@Override
-	public void setHttpSession(HttpSession inSession){
+	public void setHtmlContents(String keyElementID, String htmlContent) {
+		_htmlContents.put(keyElementID, htmlContent);
+	}
+
+	@Override
+	public void setHttpSession(HttpSession inSession) {
 		_session = inSession;
 	}
-	
+
 	@Override
-	public Result setToHttpSession(String inKey, Object inObj){
+	public Result set2HttpSession(String inKey, Object inObj) {
 		Result result = new Result();
-		
-		if(_session == null){
+
+		if (_session == null) {
 			result.setResult(false);
 			result.setResult("Invalid session!");
-		}else{
-			try{
+		} else {
+			try {
 				_session.setAttribute(inKey, inObj);
 				result.setResult(true);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				result.setResult(e.getMessage());
 				result.setResult(false);
 			}
@@ -60,47 +62,46 @@ public abstract class AMessage implements IMessage {
 
 	@Override
 	public void setData(Map<String, String> _data) {
-		if(_data == null){
-			return;
-		}
-		this._internalData = _data;
+		this._requestDataMap = _data;
 	}
 
 	@Override
 	public Map<String, String> getData() {
-		return _internalData;
+		return _requestDataMap;
 	}
 
-	public String getError(){
+	@Override
+	public String getError() {
 		return _error;
 	}
+
 	@Override
-	public void setError(String inErrorString){
+	public void setError(String inErrorString) {
 		_error = inErrorString;
 	}
-	
+
 	@Override
-    public void setHtmlContent(String inHtmlContent){
+	public void setHtmlContent(String inHtmlContent) {
 		setHtmlContents(getData().get("dest"), inHtmlContent);
-    }
-	
-	public Map<String, String> getHtmlContents(){
-		return _htmlContents2;
 	}
-	
+
+	public Map<String, String> getHtmlContents() {
+		return _htmlContents;
+	}
+
 	@Override
 	public void setRealPath(String path2File, String inDataKey) {
-		getData().put(inDataKey, 
+		getData().put(inDataKey,
 				_session.getServletContext().getRealPath(path2File));
 	}
 
 	@Override
-	public void setServerInfo(String inDataKey){
+	public void setServerInfo(String inDataKey) {
 		getData().put(inDataKey, _session.getServletContext().getServerInfo());
 	}
-	
+
 	@Override
-	public void setHttpSession2(HttpSession httpSession) {
+	public void bindHttpSessionWith(HttpSession httpSession) {
 		httpSession = _session;
-	}	
+	}
 }
