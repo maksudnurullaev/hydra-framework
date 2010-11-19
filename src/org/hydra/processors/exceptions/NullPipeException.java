@@ -14,10 +14,7 @@ public class NullPipeException extends Exception {
 		_error_message = "Pipe is null!";
 	}
 	
-	public NullPipeException(String err){
-		super(err);
-		_error_message = err;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Throwable#getMessage()

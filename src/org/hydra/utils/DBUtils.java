@@ -3,7 +3,6 @@ package org.hydra.utils;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,7 +11,6 @@ import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
-import org.apache.cassandra.thrift.SliceRange;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.db.ColumnFamilyBean;
@@ -128,15 +126,7 @@ public final class DBUtils {
 	    return getSlicePredicate4Col(columns);
 	}
 	
-	public static SlicePredicate getSlicePredicate4SliceRange(byte[] inCol){
-		SlicePredicate resultPredicate = new SlicePredicate();
-		SliceRange sliceRange = new SliceRange();
-		sliceRange.setStart(inCol);
-		sliceRange.setFinish(inCol);
-		resultPredicate.setSlice_range(sliceRange);
-	    
-	    return resultPredicate;
-	}	
+		
 	
 	public static SlicePredicate getSlicePredicate4Col(List<byte[]> inColNames){
 		
@@ -225,11 +215,7 @@ public final class DBUtils {
 		return descriptor;
 	}
 
-	public static void printResult(List<ColumnOrSuperColumn> columns) {
-		for(ColumnOrSuperColumn column:columns)
-			printResult(column);
-		
-	}
+	
 	
 	private static void printResult(ColumnOrSuperColumn superColumn) {
 		Assert.assertTrue(superColumn.isSetSuper_column());
@@ -243,16 +229,7 @@ public final class DBUtils {
 		}
 	}
 
-	public static void printResult(ResultAsListOfColumnOrSuperColumn result) {
-		if(result.getColumnOrSuperColumn() != null &&
-				result.getColumnOrSuperColumn().size() != 0){
-			Iterator<ColumnOrSuperColumn> listIterator =  result.getColumnOrSuperColumn().iterator();
-			while(listIterator.hasNext())printResult(listIterator.next());
-			_log.debug("Column count: " + result.getColumnOrSuperColumn().size()); 
-		}else{
-			_log.warn("Nothing to print!");				
-		}
-	}
+	
 
 	public static String getJSLinkShowAllColumns(KeyspaceBean kspBean,
 			ColumnFamilyBean cfBean) {

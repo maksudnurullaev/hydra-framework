@@ -34,24 +34,22 @@ public interface IMessage {
 	// **** Cassandra keys
 	static final String _data_cs_ksp   = "cs_ksp";
 	static final String _data_cs_cf    = "cs_cf";
-	static final String _data_cs_key   = "cs_key";
 	static final String _data_cs_col   = "cs_col";
 	
 	// **** Temporary keys
 	static final String _temp_value = "_temp_value";
 		
+	void bindHttpSessionWith(HttpSession httpSession);
+	Map<String, String> getData();
+	String getError();
+	Set<String> getStyleSheets();
+	Result set2HttpSession(String inKey, Object inObj);
+	void setData(Map<String, String> data);
 	void setError(String inErrorMessage);
-	
 	void setHtmlContent(String inHtmlContent);
-	
-	Result setToHttpSession(String inKey, Object inObj);
+	void setHtmlContents(String keyElementID, String htmlContent);
 	void setHttpSession(HttpSession inSession);
-	void setHttpSession2(HttpSession httpSession);
 	void setRealPath(String path2File, String inDataKey);
 	void setServerInfo(String inDataKey);
-
-	void setData(Map<String, String> data);
-	Map<String, String> getData();
-
 	void setStyleSheets(Set<String> stylesheets);		
 }

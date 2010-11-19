@@ -64,11 +64,7 @@ public interface IPipe<E> {
 	 */
 	public boolean isEmpty();
 
-	/**
-	 * Remove listener
-	 * @param IPipeEventListener inListener
-	 */
-	public void removePipeEventListener(IPipeEventListener inListener);
+	
 	
 	/**
 	 * Get count of listeners

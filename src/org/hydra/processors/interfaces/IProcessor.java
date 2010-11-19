@@ -53,11 +53,7 @@ public interface IProcessor extends Runnable, IPipeEventListener {
 	 */
 	IPipe<IMessage> getOutpipe();
 
-	/**
-	 * Define that processor has valid default incoming pipe
-	 * @return boolean
-	 */
-	boolean isValidDefaultInPipe();
+	
 	
 	/**
 	 * Define that processor has valid default outgoing pipe
