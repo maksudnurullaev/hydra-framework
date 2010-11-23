@@ -8,16 +8,17 @@
 
 	<!-- Applications -->
 	<bean id="_hydra_applications" class="org.hydra.beans.Applications">
+		<property name="cassandraAccessor"><ref bean="_cassandra_accessor" /></property>
 		<property name="applications">
 			<set>
-				<ref bean="Hydra"/>
+				<ref bean="HydraUz"/>
 				<ref bean="UristUz"/>
 			</set>
 		</property>		
 	</bean>
 	
-	<bean id="Hydra" class="org.hydra.beans.Application">
-		<property name="name" value="Hydra" />
+	<bean id="HydraUz" class="org.hydra.beans.Application">
+		<property name="id" value="HydraUz" />
 		<property name="urls">
 			<set>
 				<value>^https?://127\.0\.0\.1.*</value>
@@ -33,8 +34,7 @@
 	</bean>
 
 	<bean id="UristUz" class="org.hydra.beans.Application">
-		<property name="name" value="UristUz" />
-		<property name="parentApplication" ref="Hydra" />
+		<property name="id" value="UristUz" />
 		<property name="urls">
 			<set>
 				<value>^https?://(www\.)?urist\.uz.*</value>

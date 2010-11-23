@@ -4,50 +4,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hydra.beans.db.KeyspaceBean;
+import org.hydra.beans.db.ColumnFamilyBean;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class ACassandraDescriptorBean extends ALogger {
+	private Map<String, ColumnFamilyBean> _columnFamilies = new HashMap<String, ColumnFamilyBean>();
+	private String linkTableName = null;
 
-	/**
-	 * In future we should use keyspaces to separate each applications data
-	 */
-	private Map<String, KeyspaceBean> _keyspaces = new HashMap<String, KeyspaceBean>();
-	private KeyspaceBean rootKeyspace = null;
-	
-	public boolean containsKeyspace(String keyspaceName) {
-		return _keyspaces.containsKey(keyspaceName);
-	}	
-	
-	public ACassandraDescriptorBean() {
-		super();
-	}
-
-	public void setKeyspaces(Set<KeyspaceBean> inKeyspaces) {
-		_keyspaces.clear();
-		for(KeyspaceBean entryKsp: inKeyspaces)
-			_keyspaces.put(entryKsp.getName(), entryKsp);
-	}
-
-	public KeyspaceBean getKeyspace(String inKeyspaceName) {
-		if(_keyspaces.containsKey(inKeyspaceName)){
-			getLog().debug("Get keyspace: " + inKeyspaceName);
-			return _keyspaces.get(inKeyspaceName);
+	public void setColumnFamilies(Set<ColumnFamilyBean> inColumnFamilies) {
+		_columnFamilies.clear();
+		for(ColumnFamilyBean entryCF: inColumnFamilies){
+			getLog().debug("Add CF: " + entryCF.getName());
+			_columnFamilies.put(entryCF.getName(), entryCF);
 		}
-		getLog().warn("Could not find keyspace: " + inKeyspaceName);
+	}
+	
+	public Map<String, ColumnFamilyBean> getColFamilies(){
+		return _columnFamilies;
+	}
+	
+	public ColumnFamilyBean getColumnFamilyByName(String inCfName){
+		if(_columnFamilies.containsKey(inCfName)){
+			getLog().debug("Found CF: " + inCfName); 
+			return _columnFamilies.get(inCfName);
+		}
+		getLog().warn("Could not find CF: " + inCfName);
 		return null;
 	}
-
-	public void setRootKeyspace(KeyspaceBean rootKeyspace) {
-		this.rootKeyspace = rootKeyspace;
-	}
-
-	public KeyspaceBean getRootKeyspace() {
-		return rootKeyspace;
+	
+	public void setLinkTableName(String linkTableName) {
+		this.linkTableName = linkTableName;
 	}
 	
+	public String getLinkTableName() {
+		return linkTableName;
+	}
 
+	public boolean containsColumnFamily(String inColumnFamilyName) {
+		if(_columnFamilies != null)
+			return _columnFamilies.containsKey(inColumnFamilyName);
+		return false;
+	}
 
-
-
+	public String getName(){ return null;} //TODO Remove it later
 }

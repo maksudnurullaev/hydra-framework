@@ -111,16 +111,17 @@ public class Administration extends AMessageHandler { // NO_UCD
 		int counter = 0;
 		
 		for(String keyspaceName: inAccessor.getServerKeyspaces()){
-			if(inAccessor.getDescriptor().containsKeyspace(keyspaceName)){
-				if(counter++ != 0) result.append(", ");
-				result.append(Utils.makeJSLink(inAccessor.getDescriptor().getKeyspace(keyspaceName).getName(), 
-						String.format("handler:'%s'", this.getClass().getSimpleName()),
-						String.format("dest:'%s'", "_ksp_desc_div"),
-						String.format("action:'%s'","describeKeyspace"),
-						String.format("cs_ksp:'%s'", keyspaceName)));
-				
-			}else
-				getLog().warn("Could not find description for keyspace: " + keyspaceName);
+//			if(inAccessor.getDescriptor().containsKeyspace(keyspaceName)){
+//				if(counter++ != 0) result.append(", ");
+//				result.append(Utils.makeJSLink(inAccessor.getDescriptor().getKeyspace(keyspaceName).getName(), 
+//						String.format("handler:'%s'", this.getClass().getSimpleName()),
+//						String.format("dest:'%s'", "_ksp_desc_div"),
+//						String.format("action:'%s'","describeKeyspace"),
+//						String.format("cs_ksp:'%s'", keyspaceName)));
+//				
+//			}else
+//				getLog().warn("Could not find description for keyspace: " + keyspaceName);
+//TODO Fix it later			
 		}
 		
 		return result.toString();
@@ -132,7 +133,9 @@ public class Administration extends AMessageHandler { // NO_UCD
 			trace = Utils.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		KeyspaceBean ksp = BeansUtils.getDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
+//		KeyspaceBean ksp = BeansUtils.getDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
+		KeyspaceBean ksp = new KeyspaceBean();
+//TODO Fix it later		
 		if(ksp != null){
 			String formatStrong = MessagesManager.getTemplate("template.html.Strongtext.Text.br");
 			String result = String.format(formatStrong, "Keyspace", ksp.getName());			
@@ -166,8 +169,9 @@ public class Administration extends AMessageHandler { // NO_UCD
 			trace = Utils.trace(this, Thread.currentThread().getStackTrace());
 		} else trace = "";
 		
-		KeyspaceBean kspBean = BeansUtils.getDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
-		
+//		KeyspaceBean kspBean = BeansUtils.getDescriptor().getKeyspace(inMessage.getData().get(IMessage._data_cs_ksp));
+		KeyspaceBean kspBean = new KeyspaceBean();
+		//TODO Fix it later				
 		if(kspBean == null){
 			inMessage.setError(trace + "Could not find Ksp: " + inMessage.getData().get(IMessage._data_cs_ksp));
 			return inMessage;

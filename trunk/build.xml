@@ -107,7 +107,7 @@ tests.failed=${tests.failed}
 			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestFMDKspCf.class" />
+					<include name="**/TestApplications.class" />
 				</fileset>
 			</batchtest>			
 		</junit>
