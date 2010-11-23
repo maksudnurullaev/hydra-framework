@@ -8,13 +8,15 @@
 
 	<!-- Cassandra descriptor bean -->
 	<bean id="_cassandra_descriptor" class="org.hydra.db.server.CassandraDescriptorBean">		
-		<!-- Set keyspaces -->
-		<property name="keyspaces">
+		<property name="linkTableName" value="Links"/>		
+		<property name="columnFamilies">
 			<set>
-				<ref bean="KSMain"/>
-				<ref bean="KSMainTEST"/>
+				<ref bean="Tags"/>
+				<ref bean="Users"/>
+				<ref bean="Articles"/>
+				<ref bean="Comments"/>
 			</set>
-		</property>					
+		</property>			
 	</bean>
 	
 	<!-- Cassandra accessor bean -->
@@ -27,35 +29,7 @@
 		<property name="host" value="localhost"/>
 		<property name="port"><value type="int">9160</value></property>
 		<property name="poolSizeMin"><value type="int">5</value></property>
-	</bean>
-	
-	<!-- Ksp description -->
-	<bean id="KSMain" class="org.hydra.beans.db.KeyspaceBean">
-		<property name="name" value="KSMain"/>
-		<property name="linkTableName" value="Links"/>		
-		<property name="columnFamilies">
-			<set>
-				<ref bean="Tags"/>
-				<ref bean="Users"/>
-				<ref bean="Articles"/>
-				<ref bean="Comments"/>
-			</set>
-		</property>
-	</bean>	
-		
-	<!-- JUST4TEST - Test ksp description - JUST4TEST-->
-	<bean id="KSMainTEST" class="org.hydra.beans.db.KeyspaceBean">
-		<property name="name" value="KSMainTEST"/>
-		<property name="linkTableName" value="Links"/>		
-		<property name="columnFamilies">
-			<set>
-				<ref bean="Tags"/>
-				<ref bean="Users"/>
-				<ref bean="Articles"/>
-				<ref bean="Comments"/>
-			</set>
-		</property>
-	</bean>			
+	</bean>		
 		
 	<!--ColumnFamilies & Columns description -->
 	<bean id="Articles" class="org.hydra.beans.db.ColumnFamilyBean">
@@ -64,8 +38,7 @@
 			<set>
 				<bean class="org.hydra.beans.db.ColumnBean">
 					<property name="name" value="Title"/>
-				</bean>
-				
+				</bean>				
 				<bean class="org.hydra.beans.db.ColumnBean">
 					<property name="name" value="Text"/>
 				</bean>

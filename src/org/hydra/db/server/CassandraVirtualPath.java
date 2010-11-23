@@ -211,14 +211,14 @@ public class CassandraVirtualPath extends ALogger {
 
 	private boolean init2Parameters() {
 		// * [Mandatory] validate keyspace...
-		getLog().debug("Validate for keyspace: " + getPathPart(PARTS.P1_KSP));
-		if (!_descriptor.containsKeyspace(getPathPart(PARTS.P1_KSP))) {
-			setError("Could not find keyspace: " + getPathPart(PARTS.P1_KSP));
-			_errCode = ERR_CODES.INVALID_KS;
-			return false;
-		}
-		_kspBean = _descriptor.getKeyspace(getPathPart(PARTS.P1_KSP));
-
+//		getLog().debug("Validate for keyspace: " + getPathPart(PARTS.P1_KSP));
+//		if (!_descriptor.containsKeyspace(getPathPart(PARTS.P1_KSP))) {
+//			setError("Could not find keyspace: " + getPathPart(PARTS.P1_KSP));
+//			_errCode = ERR_CODES.INVALID_KS;
+//			return false;
+//		}
+//		_kspBean = _descriptor.getKeyspace(getPathPart(PARTS.P1_KSP));
+//TODO Fix it later
 		// * [Mandatory] validate column family...
 		getLog().debug("Validate for column family: " + getPathPart(PARTS.P2_CF));
 		if (!_kspBean.containsColumnFamily(getPathPart(PARTS.P2_CF))) {
