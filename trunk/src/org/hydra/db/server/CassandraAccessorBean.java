@@ -21,8 +21,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 
 		getLog().debug("Try to get data for path: " + inPath.getPath());
 
-		ResultAsListOfColumnOrSuperColumn result =
-				new ResultAsListOfColumnOrSuperColumn();
+		ResultAsListOfColumnOrSuperColumn result = new ResultAsListOfColumnOrSuperColumn();
 
 		Result tempResult = DBUtils.test4NullKspCf(inPath);
 
@@ -43,13 +42,13 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
 			key = KEY_COLUMNS_DEF;
-			
+
 			predicate = new SlicePredicate();
 			SliceRange sliceRange = new SliceRange();
 			sliceRange.setStart(new byte[0]);
 			sliceRange.setFinish(new byte[0]);
 			predicate.setSlice_range(sliceRange);
-			
+
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
@@ -57,7 +56,8 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P2_CF));
 			key = KEY_COLUMNS_DEF;
-			predicate = DBUtils.getSlicePredicateStr(inPath.getPathPart(PARTS.P3_KEY));
+			predicate = DBUtils.getSlicePredicateStr(inPath
+					.getPathPart(PARTS.P3_KEY));
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
@@ -65,16 +65,18 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath._kspBean.getLinkTableName());
 			key = inPath.getPathPart(PARTS.P3_KEY);
-			predicate = DBUtils.getSlicePredicateStr(inPath.getPathPart(PARTS.P4_SUPER));
+			predicate = DBUtils.getSlicePredicateStr(inPath
+					.getPathPart(PARTS.P4_SUPER));
 			cLevel = ConsistencyLevel.ONE;
 			break;
 
 		case KSP___CF___KEY___SUPER__ID:
 			ksp = inPath.getPathPart(PARTS.P1_KSP);
 			cf = new ColumnParent(inPath.getPathPart(PARTS.P4_SUPER));
-			key = KEY_COLUMNS_DEF;			
-			predicate = DBUtils.getSlicePredicateStr(inPath.getPathPart(PARTS.P5_COL));
-			cLevel = ConsistencyLevel.ONE;			
+			key = KEY_COLUMNS_DEF;
+			predicate = DBUtils.getSlicePredicateStr(inPath
+					.getPathPart(PARTS.P5_COL));
+			cLevel = ConsistencyLevel.ONE;
 			break;
 		default:
 			String errStr = String.format("Unknow path(%s) to get db records!",
@@ -89,8 +91,8 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		Cassandra.Client client = clientBorrow();
 
 		try {
-			result.setColumnOrSuperColumn(
-					client.get_slice(ksp, key, cf, predicate, cLevel));
+			result.setColumnOrSuperColumn(client.get_slice(ksp, key, cf,
+					predicate, cLevel));
 			result.setResult(true);
 		} catch (Exception e) {
 			result.setResult(false);
@@ -115,15 +117,14 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 
 		Client client = clientBorrow();
 		try {
-			client.batch_mutate(
-					inPath._kspBean.getName(), 
+			client.batch_mutate(inPath._kspBean.getName(),
 					Mutation2Update.generate(inPath, inBatchMap),
 					ConsistencyLevel.ONE);
-			
+
 			result.setResult(true);
 			result.setResult("Batch mutate accepted!");
 			getLog().debug("Batch mutate accepted!");
-			
+
 		} catch (Exception e) {
 			result.setResult(false);
 			result.setResult(e.getMessage());
@@ -131,7 +132,7 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		} finally {
 			clientRelease(client);
 		}
-		
+
 		return result;
 	}
 
@@ -142,18 +143,17 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 			getLog().error(result.getResult());
 			return result;
 		}
-		
+
 		Client client = clientBorrow();
-		try {	
-			client.batch_mutate(
-					inPath._kspBean.getName(), 
+		try {
+			client.batch_mutate(inPath._kspBean.getName(),
 					Mutation2Delete.generate(this, inPath),
 					ConsistencyLevel.ONE);
-			
+
 			result.setResult(true);
 			result.setResult("Batch mutate accepted!");
 			getLog().debug("Batch mutate accepted!");
-			
+
 		} catch (Exception e) {
 			result.setResult(false);
 			result.setResult(e.getMessage());
@@ -161,9 +161,8 @@ public class CassandraAccessorBean extends ACassandraAccessor {
 		} finally {
 			clientRelease(client);
 		}
-		
-		return result;		
+
+		return result;
 	}
-	
-	
+
 }

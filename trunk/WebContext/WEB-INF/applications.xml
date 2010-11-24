@@ -7,8 +7,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<!-- Applications -->
-	<bean id="_hydra_applications" class="org.hydra.beans.Applications">
-		<property name="cassandraAccessor"><ref bean="_cassandra_accessor" /></property>
+	<bean id="_hydra_applications" class="org.hydra.beans.WebApplications">
 		<property name="applications">
 			<set>
 				<ref bean="HydraUz"/>
@@ -17,7 +16,7 @@
 		</property>		
 	</bean>
 	
-	<bean id="HydraUz" class="org.hydra.beans.Application">
+	<bean id="HydraUz" class="org.hydra.beans.WebApplication">
 		<property name="id" value="HydraUz" />
 		<property name="urls">
 			<set>
@@ -33,7 +32,7 @@
 		</property>
 	</bean>
 
-	<bean id="UristUz" class="org.hydra.beans.Application">
+	<bean id="UristUz" class="org.hydra.beans.WebApplication">
 		<property name="id" value="UristUz" />
 		<property name="urls">
 			<set>

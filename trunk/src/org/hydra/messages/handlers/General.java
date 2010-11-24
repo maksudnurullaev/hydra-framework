@@ -3,7 +3,7 @@ package org.hydra.messages.handlers;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.hydra.beans.Application;
+import org.hydra.beans.WebApplication;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.BeansUtils;
@@ -49,7 +49,7 @@ public class General extends AMessageHandler { // NO_UCD
 		// - Get locale html templates
 		if(locale == null) locale = MessagesManager.getTextManager().getDefaultLocale();
 		// - Get css
-		Application app = (Application) BeansUtils.getBean(appId);
+		WebApplication app = (WebApplication) BeansUtils.getBean(appId);
 		inMessage.setStyleSheets(app.getStylesheets());
 		// - Get html content from file
 		String path2File = String.format(_body_html_path_format,appId,locale);

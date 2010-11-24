@@ -39,7 +39,7 @@ public interface IMessage {
 	// **** Temporary keys
 	static final String _temp_value = "_temp_value";
 		
-	void bindHttpSessionWith(HttpSession httpSession);
+//	void bindHttpSessionWith(HttpSession httpSession);
 	Map<String, String> getData();
 	String getError();
 	Set<String> getStyleSheets();

@@ -100,8 +100,9 @@ public class CommonMessage implements IMessage {
 		getData().put(inDataKey, _session.getServletContext().getServerInfo());
 	}
 
-	@Override
+/*	@Override
 	public void bindHttpSessionWith(HttpSession httpSession) {
 		httpSession = _session;
 	}
+*/	
 }

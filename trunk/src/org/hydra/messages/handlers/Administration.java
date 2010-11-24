@@ -1,7 +1,7 @@
 package org.hydra.messages.handlers;
 
 import java.util.Map;
-import org.hydra.beans.Applications;
+import org.hydra.beans.WebApplications;
 import org.hydra.beans.StatisticsCollector;
 import org.hydra.beans.db.ColumnBean;
 import org.hydra.beans.db.ColumnFamilyBean;
@@ -63,7 +63,7 @@ public class Administration extends AMessageHandler { // NO_UCD
 	}
 	
 	public IMessage describeApplications(IMessage inMessage){
-		Applications apps = (Applications) BeansUtils.getBean(Constants._beans_hydra_applications);
+		WebApplications apps = (WebApplications) BeansUtils.getBean(Constants._beans_hydra_applications);
 		inMessage.setHtmlContent(apps.getDescription());
 		return inMessage;
 	}
