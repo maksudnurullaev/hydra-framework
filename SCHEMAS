@@ -1,0 +1,5 @@
+WebApplications
+	getValidApplication
+	WebApplication
+		isMineUrl
+		getSessionValue

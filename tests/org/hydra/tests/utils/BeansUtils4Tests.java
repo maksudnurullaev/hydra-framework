@@ -2,6 +2,7 @@ package org.hydra.tests.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.beans.WebApplications;
 import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.utils.Constants;
@@ -41,6 +42,10 @@ public final class BeansUtils4Tests {
 	public static CassandraDescriptorBean getDescriptor() {
 		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);
 		return descriptor;
+	}
+
+	public static WebApplications getWebAppsMngr() {
+		return (WebApplications) getBean(Constants._beans_hydra_applications);
 	}	
 
 }

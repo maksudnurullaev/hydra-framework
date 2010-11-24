@@ -107,7 +107,7 @@ tests.failed=${tests.failed}
 			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestApplications.class" />
+					<include name="**/TestWebApplications.class" />
 				</fileset>
 			</batchtest>			
 		</junit>

@@ -5,7 +5,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
-import org.hydra.beans.Applications;
+import org.hydra.beans.WebApplication;
+import org.hydra.beans.WebApplications;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
 
@@ -24,15 +25,15 @@ public final class SessionUtils {
 		inMessage.getData().put(IMessage._url_server_name, inWebContext.getHttpServletRequest().getServerName());
 		inMessage.getData().put(IMessage._url_server_port, "" + inWebContext.getHttpServletRequest().getLocalPort());
 		
-		Applications apps = (Applications) BeansUtils.getBean(Constants._beans_hydra_applications);
+		WebApplications apps = (WebApplications) BeansUtils.getBean(Constants._beans_hydra_applications);
 		String urlPrefix =  inMessage.getData().get(IMessage._url_scheme) 
 			+ "://" + inMessage.getData().get(IMessage._url_server_name);
 			
-		String appID = apps.getValidAppID4Url(urlPrefix);
-		if(appID == null){
+		WebApplication webApplication = apps.getValidAppliction(urlPrefix);
+		if(webApplication == null){
 			_log.fatal("Could not find application ID for: " + urlPrefix);
 		}else{
-			inMessage.getData().put(IMessage._app_id, appID);			
+			inMessage.getData().put(IMessage._app_id, webApplication.getId());			
 		}
 
 		String tempString = null;

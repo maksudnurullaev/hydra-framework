@@ -3,10 +3,9 @@ package org.hydra.beans;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import org.hydra.utils.abstracts.ALogger;
 
-public class Application extends ALogger {
+public class WebApplication extends ALogger {
 	private String _id;
 	private Set<Pattern> _urlPatterns = new HashSet<Pattern>();
 	private Set<String> _stylesheets = null;
@@ -14,10 +13,11 @@ public class Application extends ALogger {
 	public String getId() {
 		return _id;
 	}
+
 	public void setId(String inId) {
 		this._id = inId;
 	}
-	
+
 	public void setStylesheets(Set<String> stylessheets) {
 		this._stylesheets = stylessheets;
 	}
@@ -34,12 +34,12 @@ public class Application extends ALogger {
 		for (String ulrPattern : inUrlsSet)
 			_urlPatterns.add(Pattern.compile(ulrPattern));
 	}
-	
-	public String findCorrespondingUrl(String inUrl) {
+
+	public boolean isMineUrl(String inUrl) {
 		for (Pattern p : _urlPatterns)
 			if (p.matcher(inUrl).matches())
-				return _id;
-		return null;
+				return true;
+		return false;
 	}
 
 	public String getDescription() {
