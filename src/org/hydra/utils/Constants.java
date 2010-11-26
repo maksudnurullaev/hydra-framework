@@ -34,6 +34,7 @@ public final class Constants {
 	public static final long _max_response_wating_time = 5000;
 	
 	// **** Cassandra's constants
-	public static final String _attention_str = "-!!!-!!!- ";
-	public static final String KEY_COLUMNS_DEF = "COLUMNS";	
+	public static final String _attention_error_str = "-!!!-!!!- ";
+	public static final String KEY_COLUMNS_DEF = "COLUMNS";
+	public static final String _known_web_application = "###ONKNOWN_WEB_APPLICATION###";	
 }

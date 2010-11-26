@@ -51,5 +51,6 @@ public interface IMessage {
 	void setHttpSession(HttpSession inSession);
 	void setRealPath(String path2File, String inDataKey);
 	void setServerInfo(String inDataKey);
-	void setStyleSheets(Set<String> stylesheets);		
+	void setStyleSheets(Set<String> stylesheets);
+	void setAppId(String appId);		
 }

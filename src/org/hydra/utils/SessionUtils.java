@@ -11,7 +11,7 @@ import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
 
 public final class SessionUtils {
-	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionManager");
+	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionUtils");
 	
 	/**
 	 * Attache session data (locale, userId and etc.)
@@ -19,23 +19,22 @@ public final class SessionUtils {
 	 * @param inSession 
 	 */
 	public static void attachIMessageSessionData(MessageBean inMessage, WebContext inWebContext) {
-		_log.debug("Attach new data to session with id: " + inWebContext.getSession().getId());
-		
+		// 1. set web application id
+		WebApplications webApplications = (WebApplications) BeansUtils.getBean(Constants._beans_hydra_applications);
+		String urlPrefix =  inMessage.getData().get(IMessage._url_scheme) 
+			+ "://" + inMessage.getData().get(IMessage._url_server_name);
+			
+		WebApplication webApplication = webApplications.getValidAppliction(urlPrefix);
+		if(webApplication == null){
+			_log.fatal("Could not find application ID for: " + urlPrefix);
+			return;
+		}
+		// 2. set other data
+		inMessage.getData().put(IMessage._app_id, webApplication.getId());			
 		inMessage.getData().put(IMessage._url_scheme, inWebContext.getHttpServletRequest().getScheme());
 		inMessage.getData().put(IMessage._url_server_name, inWebContext.getHttpServletRequest().getServerName());
 		inMessage.getData().put(IMessage._url_server_port, "" + inWebContext.getHttpServletRequest().getLocalPort());
 		
-		WebApplications apps = (WebApplications) BeansUtils.getBean(Constants._beans_hydra_applications);
-		String urlPrefix =  inMessage.getData().get(IMessage._url_scheme) 
-			+ "://" + inMessage.getData().get(IMessage._url_server_name);
-			
-		WebApplication webApplication = apps.getValidAppliction(urlPrefix);
-		if(webApplication == null){
-			_log.fatal("Could not find application ID for: " + urlPrefix);
-		}else{
-			inMessage.getData().put(IMessage._app_id, webApplication.getId());			
-		}
-
 		String tempString = null;
 		tempString = inWebContext.getSession().getId();
 		_log.debug("Set session Id: " + tempString);
