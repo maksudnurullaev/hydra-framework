@@ -3,3 +3,8 @@ WebApplications
 	WebApplication
 		isMineUrl
 		getSessionValue
+Message
+	appId
+	userId
+	sessionObj
+	

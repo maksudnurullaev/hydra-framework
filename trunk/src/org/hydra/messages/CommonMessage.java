@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 
 /**
@@ -18,8 +19,17 @@ public class CommonMessage implements IMessage {
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
 	private Map<String, String> _htmlContents = new HashMap<String, String>();
 	private Set<String> _styleSheets = new HashSet<String>();
-	private String _error;
+	private String _error = null;
 	private HttpSession _session = null;
+	private String appId = Constants._known_web_application;
+
+	public String getAppId() {
+		return appId;
+	}
+
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
 
 	@Override
 	public Set<String> getStyleSheets() {
@@ -50,7 +60,7 @@ public class CommonMessage implements IMessage {
 			result.setResult("Invalid session!");
 		} else {
 			try {
-				_session.setAttribute(inKey, inObj);
+				_session.setAttribute(appId + inKey, inObj);
 				result.setResult(true);
 			} catch (Exception e) {
 				result.setResult(e.getMessage());

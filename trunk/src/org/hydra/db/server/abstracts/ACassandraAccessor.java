@@ -193,7 +193,7 @@ public abstract class ACassandraAccessor extends ALogger {
 			clientRelease(client);
 			_valid = true;
 		} catch (Exception e) {
-			getLog().fatal(Constants._attention_str + e.getMessage());
+			getLog().fatal(Constants._attention_error_str + e.getMessage());
 			_valid = false;
 		}
 	}
