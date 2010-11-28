@@ -17,9 +17,10 @@
 	<!-- Cassandra's beans -->
 	<import resource="cassandra.xml"/>
 
-	<!-- Sessions manager -->
+	<!-- Sessions manager
 	<bean id="_session_mamager" class="org.hydra.beans.SessionManager">
 	</bean>
+	 -->
 	<!-- Text Resources object -->
 	<bean id="_text_manager" class="org.hydra.beans.TextManager">
 	    <!-- Set locales -->

@@ -21,8 +21,10 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		}
 		
 		_statistics.get(inObjectName).put(inStatType, (_statistics.get(inObjectName).get(inStatType) + 1));			
-		
-		getLog().debug(String.format("Fixed %s statistics type for: %s", inStatType.toString(), inObjectName));
+		if(inStatType == StatisticsTypes.ACCEPTED)
+			getLog().debug(String.format("Fixed %s statistics type for: %s", inStatType.toString(), inObjectName));
+		else
+			getLog().warn(String.format("Fixed %s statistics type for: %s", inStatType.toString(), inObjectName));
 	}
 
 	private Map<StatisticsTypes,Integer> newBlankMap() {
@@ -75,32 +77,26 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		for (StatisticsTypes type : StatisticsTypes.values()) {
 			result += _statistics.get(inObjectName).get(type);
 		}
-		
 		return result;
 	}
 
 	public String getHtmlReport(IMessage inMessage) {
 		String result = ""; 
-		String tempString = "";
-		
+		String tempString = "";		
 		// Table header
-		tempString += String.format(MessagesManager.getTemplate("template.table.th"), MessagesManager.getText("text.Statistics", 
-				null, 
-				inMessage.getData().get(IMessage._data_locale)));
+		tempString += String.format("<td>%s</td>", "&nbsp;");
 		for (StatisticsTypes type : StatisticsTypes.values()) {
-			tempString += String.format(MessagesManager.getTemplate("template.table.th"), type.toString());
+			tempString += String.format("<td>&nbsp;&nbsp;&nbsp;<u>%s</u></td>", type.toString());
 		}
 		result += String.format(MessagesManager.getTemplate("template.table.tr"), tempString);
-		
 		// Table rows
 		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
-			tempString = String.format("<td><strong>%s</strong></td>",mapStringTypeInteger.getKey());
-			
+			tempString = String.format("<td><u>%s</u>:</td>",mapStringTypeInteger.getKey());			
 			for (StatisticsTypes type : StatisticsTypes.values()) {
-				tempString += String.format(MessagesManager.getTemplate("template.table.td"), 
+				tempString += String.format("<td>%s</td>", 
 						mapStringTypeInteger.getValue().get(type));
 			}
-			result += String.format(MessagesManager.getTemplate("template.table.tr"), tempString);
+			result += String.format("<tr class='tr'>%s</tr>", tempString);
 		}
 		
 		return String.format(MessagesManager.getTemplate("template.table.with.class"), "statistics", result);

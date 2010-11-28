@@ -1,5 +1,6 @@
 package org.hydra.processors.interfaces;
 
+import org.hydra.beans.StatisticsCollector;
 import org.hydra.beans.interfaces.ICollector;
 import org.hydra.events.IPipeEventListener;
 import org.hydra.events.PipeEvent;
@@ -104,5 +105,7 @@ public interface IProcessor extends Runnable, IPipeEventListener {
 	 * @param inMessage
 	 * @return boolean
 	 */
-	abstract boolean isExpectedMessage(IMessage inMessage);	
+	public void setStatisticsCollector(StatisticsCollector inStatisticsObject);
+	
+
 }
