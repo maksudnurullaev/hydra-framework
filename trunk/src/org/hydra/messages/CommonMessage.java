@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpSession;
-
+import org.directwebremoting.WebContext;
+import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 
 /**
@@ -16,20 +14,15 @@ import org.hydra.utils.Result;
  * 
  */
 public class CommonMessage implements IMessage {
+	public WebApplication _web_application = null;
+	public WebContext _web_context = null;
+	public String _locale = null;
+	public String _session_id = null;
+	
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
 	private Map<String, String> _htmlContents = new HashMap<String, String>();
 	private Set<String> _styleSheets = new HashSet<String>();
 	private String _error = null;
-	private HttpSession _session = null;
-	private String appId = Constants._known_web_application;
-
-	public String getAppId() {
-		return appId;
-	}
-
-	public void setAppId(String appId) {
-		this.appId = appId;
-	}
 
 	@Override
 	public Set<String> getStyleSheets() {
@@ -47,20 +40,15 @@ public class CommonMessage implements IMessage {
 	}
 
 	@Override
-	public void setHttpSession(HttpSession inSession) {
-		_session = inSession;
-	}
-
-	@Override
 	public Result set2HttpSession(String inKey, Object inObj) {
 		Result result = new Result();
 
-		if (_session == null) {
+		if (_web_context == null || _web_context.getSession() == null) {
 			result.setResult(false);
 			result.setResult("Invalid session!");
 		} else {
 			try {
-				_session.setAttribute(appId + inKey, inObj);
+				_web_context.getSession().setAttribute(_web_application.getId() + inKey, inObj);
 				result.setResult(true);
 			} catch (Exception e) {
 				result.setResult(e.getMessage());
@@ -98,21 +86,4 @@ public class CommonMessage implements IMessage {
 	public Map<String, String> getHtmlContents() {
 		return _htmlContents;
 	}
-
-	@Override
-	public void setRealPath(String path2File, String inDataKey) {
-		getData().put(inDataKey,
-				_session.getServletContext().getRealPath(path2File));
-	}
-
-	@Override
-	public void setServerInfo(String inDataKey) {
-		getData().put(inDataKey, _session.getServletContext().getServerInfo());
-	}
-
-/*	@Override
-	public void bindHttpSessionWith(HttpSession httpSession) {
-		httpSession = _session;
-	}
-*/	
 }

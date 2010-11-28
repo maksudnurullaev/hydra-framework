@@ -22,13 +22,9 @@ public abstract class AStatisticsApplyer extends ALogger implements IStatisticsA
 	@Override
 	public boolean isValidStatistics() {
 		return _statictics != null;
-	}
-
+	}	
 	@Override
 	public void setStatisticsCollector(StatisticsCollector inStatisticsObject) {
 		_statictics = inStatisticsObject;
-	}
-	
-
-
+	}	
 }

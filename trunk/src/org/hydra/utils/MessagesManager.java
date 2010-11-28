@@ -39,9 +39,6 @@ public final class MessagesManager{
 	}
 	
 	public static String getText(String inKey, String inHtmlWrap, String inLocale){
-		if(!getTextManager().getLocales().containsKey(inLocale))
-			return  "error.locale.not.found" ;
-		
 		if(inLocale == null)
 			inLocale = getTextManager().getDefaultLocale();		
 		

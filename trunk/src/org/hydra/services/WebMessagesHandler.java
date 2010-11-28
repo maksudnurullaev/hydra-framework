@@ -17,79 +17,73 @@ import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
 
-	public Object[] sendMessage(MessageBean inMessage) throws RichedMaxCapacityException{
-		
-		// -1. Attach session's data
-		SessionUtils.attachIMessageSessionData(inMessage, WebContextFactory.get());
-		
-		// 0. Debug part
-		if(getLog().isDebugEnabled()){
-			getLog().debug("\nMESSAGE BEAN handler: " + inMessage.getData().get(IMessage._handler_id));
-			if(inMessage.getData() != null)
-				for(String key:inMessage.getData().keySet())
-					getLog().debug(String.format("\n\tMESSAGE BEAN's data: %s = %s", key, inMessage.getData().get(key)));
-			else
-				getLog().debug("\n\tMESSAGE BEAN's data: null");
+	public Object[] sendMessage(MessageBean inMessage)
+			throws RichedMaxCapacityException {
+		// return result messages array
+		List<MessageBean> _return_result = new ArrayList<MessageBean>();
+		// set message collector
+		MessagesCollector messagesCollector = null;
+		Result result = BeansUtils
+				.getWebSessionBean(Constants._beans_main_message_collector);
+		if (result.isOk() && result.getObject() instanceof MessagesCollector)
+			messagesCollector = (MessagesCollector) result.getObject();
+		else {
+			inMessage.setError("Could not initialize "
+					+ Constants._beans_main_message_collector + " object");
+			_return_result.add(inMessage);
+			return _return_result.toArray();
 		}
-		
-		// 1. Create array for MessageBean's
-		getLog().debug("Create array for MessageBean's...");
-		List<MessageBean> _result = new ArrayList<MessageBean>();
-		
-		// 2. Send message to default pipe
+		// Attach session's data
+		result = SessionUtils
+				.setSessionData(inMessage, WebContextFactory.get());
+		if (!result.isOk()) {
+			inMessage.setError(result.getResult());
+			SessionUtils.removeSessionData(inMessage);
+			_return_result.add(inMessage);
+			return _return_result.toArray();
+		}
+		// Send message to default pipe
 		getLog().debug("Send message to default pipe...");
-		Result result = BeansUtils.getWebSessionBean(Constants._beans_main_input_pipe);
-		if(result.isOk() && result.getObject() instanceof Pipe){
-			((Pipe)result.getObject()).setMessage(inMessage);
-		}else{
-			getLog().fatal("Could not initialize " + Constants._beans_main_input_pipe + " object");
-			inMessage.setError("Could not initialize " + Constants._beans_main_input_pipe + " object");
-			
-			SessionUtils.detachIMessageSessionData(inMessage);
-			_result.add(inMessage);
-			return _result.toArray();
-		}
-		//Constants.getMainInputPipe().setMessage(inMessage);
-		
-		// 3. Setup waiting condition values
-		long startTime = System.currentTimeMillis();
-		
-		// 4. Waiting for response
-		getLog().debug("START: Waiting for response...");
-		result = BeansUtils.getWebSessionBean(Constants._beans_main_message_collector);
-		if(result.isOk() && result.getObject() instanceof MessagesCollector){
-			MessagesCollector messagesCollector = (MessagesCollector)result.getObject();
+		result = BeansUtils.getWebSessionBean(Constants._beans_main_input_pipe);
+		if (result.isOk() && result.getObject() instanceof Pipe) {
+			((Pipe) result.getObject()).setMessage(inMessage);
+		} else {
+			getLog().fatal(
+					"Could not initialize " + Constants._beans_main_input_pipe
+							+ " object");
+			inMessage.setError("Could not initialize "
+					+ Constants._beans_main_input_pipe + " object");
 
-			while(!messagesCollector.hasNewMessages(inMessage.getData().get(IMessage._data_sessionId))){
-				// if timeout
-				if(System.currentTimeMillis() - startTime > Constants._max_response_wating_time){
-					
-					inMessage.setError("Waiting time limit is over...");				
-					getLog().error("Waiting time limit is over...");
-					
-					SessionUtils.detachIMessageSessionData(inMessage);
-					_result.add(inMessage);				
-					return _result.toArray();
-				}
-				Thread.yield();
-			}
-			getLog().debug("END: Waiting for response...");
-			// 5. If response messages exist	
-			IMessage messageBean = null;
-			while((messageBean = messagesCollector.getMessage(inMessage.getData().get(IMessage._data_sessionId))) != null){
-				
-				SessionUtils.detachIMessageSessionData(messageBean);
-				_result.add((MessageBean)messageBean);
-			}
-			return _result.toArray();		
+			SessionUtils.removeSessionData(inMessage);
+			_return_result.add(inMessage);
+			return _return_result.toArray();
 		}
-		
-		SessionUtils.detachIMessageSessionData(inMessage);
-		inMessage.setError("Could not initialize " + Constants._beans_main_message_collector + " object");
-		_result.add(inMessage);
-		
-		return _result.toArray();
-		
+		// Setup waiting condition values
+		long startTime = System.currentTimeMillis();
+		// Waiting for response
+		while (!messagesCollector.hasNewMessages(inMessage.getData().get(inMessage._session_id))) {
+			// if timeout
+			if (System.currentTimeMillis() - startTime > Constants._max_response_wating_time) {
+
+				inMessage.setError("Waiting time limit is over...");
+				getLog().error("Waiting time limit is over...");
+
+				SessionUtils.removeSessionData(inMessage);
+				_return_result.add(inMessage);
+				return _return_result.toArray();
+			}
+			Thread.yield();
+		}
+		getLog().debug("END: Waiting for response...");
+		// If response messages exist
+		IMessage messageBean = null;
+		while ((messageBean = messagesCollector.getMessage(inMessage.getData()
+				.get(inMessage._session_id))) != null) {
+
+			SessionUtils.removeSessionData(messageBean);
+			_return_result.add((MessageBean) messageBean);
+		}
+		return _return_result.toArray();
 	}
-	
+
 }

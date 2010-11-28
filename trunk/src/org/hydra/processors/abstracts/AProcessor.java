@@ -7,6 +7,7 @@ import org.hydra.beans.abstracts.AStatisticsApplyer;
 import org.hydra.beans.interfaces.ICollector;
 import org.hydra.events.PipeEvent;
 import org.hydra.executors.interfaces.IExecutor;
+import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
@@ -177,12 +178,14 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 			// Log message
 			getLog().debug(String.format(
 					"Processor(%s) handle message for group(%s)", getName(),
-					message.getData().get(IMessage._data_sessionId)));
+					message.getData().get(Constants._data_sessionId)));
 
-			if (isExpectedMessage(message)) {
-				applyMessage(message);
-			} else
-				sendToOutPipe(message);
+			if (message instanceof CommonMessage) {
+				applyMessage((CommonMessage)message);
+			} else{
+				message.setError("Expected CommonMessage type!");
+				getMessageCollector().putMessage(message);
+			}
 
 		}
 		// Stop
@@ -191,34 +194,35 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 		// ****
 	}
 
-	public void applyMessage(IMessage inMessage) {
+	private void applyMessage(CommonMessage inMessage) {
 		getLog().debug(
 				String.format("Handle new message for group(%s)...", inMessage
-						.getData().get(IMessage._data_sessionId)));
+						.getData().get(Constants._data_sessionId)));
 
-		String handlerName = inMessage.getData().get(IMessage._handler_id);
-		String actionName = inMessage.getData().get(IMessage._action_id);
+		String handlerName = inMessage.getData().get(Constants._handler_id);
+		String methodName = inMessage.getData().get(Constants._action_id);
 
 		_log.debug("check for valid handler and action");
 		if (Utils.isInvalidString(handlerName)) {
 			setStatistics(getName(), StatisticsTypes.WITH_ERRORS);
 			inMessage.setError("Null or empty message's handler!");
 			getMessageCollector().putMessage(inMessage);
-		} else if (Utils.isInvalidString(actionName)) {
+		} else if (Utils.isInvalidString(methodName)) {
 			setStatistics(getName(), StatisticsTypes.WITH_ERRORS);
 			inMessage.setError("Null or empty message handler's action!");
 			getMessageCollector().putMessage(inMessage);
 		} else {
 
-			String path2MessageHandler = Constants._message_handler_class_prefix
-					+ handlerName;
+			String path2MessageHandler = 
+				Constants._message_handler_class_prefix + handlerName;
 
 			try {
-				_log.debug("try to handle message by action");
+				_log.debug(String.format("Handle by class(%s) and it's method(%s)", 
+						path2MessageHandler, methodName));
 				Class<?> c = Class.forName(path2MessageHandler);
 				Class<?> parameterTypes[] = new Class[1];
-				parameterTypes[0] = IMessage.class;
-				Method m = c.getMethod(actionName, parameterTypes);
+				parameterTypes[0] = CommonMessage.class;
+				Method m = c.getMethod(methodName, parameterTypes);
 				Object result = m.invoke(c.newInstance(), inMessage);
 				if (result instanceof IMessage) {
 					setStatistics(getName(), StatisticsTypes.ACCEPTED);
@@ -229,6 +233,8 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 					getMessageCollector().putMessage(inMessage);
 				}
 			} catch (Exception e) {
+				_log.error(String.format("Could not handle by class(%s) and it's method(%s)", 
+						path2MessageHandler, methodName));
 				_log.error(e.toString());
 				setStatistics(getName(), StatisticsTypes.WITH_ERRORS);
 				inMessage.setError(e.toString());
@@ -255,10 +261,5 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 		 * setStatistics(getName(), StatisticsTypes.WITH_ERRORS);
 		 * inMessage.setError(_result.getResult()); }
 		 */
-	}
-
-	@Override
-	public boolean isExpectedMessage(IMessage message) {
-		return true;
 	}
 }

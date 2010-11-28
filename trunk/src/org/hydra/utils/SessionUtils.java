@@ -1,11 +1,9 @@
 package org.hydra.utils;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
-import org.hydra.beans.WebApplication;
+import org.directwebremoting.WebContextFactory;
 import org.hydra.beans.WebApplications;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
@@ -18,63 +16,46 @@ public final class SessionUtils {
 	 * @param inMessage
 	 * @param inSession 
 	 */
-	public static void attachIMessageSessionData(MessageBean inMessage, WebContext inWebContext) {
-		// 1. set web application id
+	public static Result setSessionData(MessageBean inMessage, WebContext inWebContext) {
+		Result result = new Result();
+		// set web context
+		inMessage._web_context = WebContextFactory.get();
+		// set web application
 		WebApplications webApplications = (WebApplications) BeansUtils.getBean(Constants._beans_hydra_applications);
-		String urlPrefix =  inMessage.getData().get(IMessage._url_scheme) 
-			+ "://" + inMessage.getData().get(IMessage._url_server_name);
-			
-		WebApplication webApplication = webApplications.getValidAppliction(urlPrefix);
-		if(webApplication == null){
-			_log.fatal("Could not find application ID for: " + urlPrefix);
-			return;
-		}
-		// 2. set other data
-		inMessage.getData().put(IMessage._app_id, webApplication.getId());			
-		inMessage.getData().put(IMessage._url_scheme, inWebContext.getHttpServletRequest().getScheme());
-		inMessage.getData().put(IMessage._url_server_name, inWebContext.getHttpServletRequest().getServerName());
-		inMessage.getData().put(IMessage._url_server_port, "" + inWebContext.getHttpServletRequest().getLocalPort());
+		String urlPrefix =  inMessage._web_context.getHttpServletRequest().getScheme() 
+			+ "://" + inMessage._web_context.getHttpServletRequest().getServerName();
+		// test message
+		inMessage._web_application = webApplications.getValidAppliction(urlPrefix);
 		
-		String tempString = null;
-		tempString = inWebContext.getSession().getId();
-		_log.debug("Set session Id: " + tempString);
-		inMessage.getData().put(IMessage._data_sessionId, tempString);
-		
-		tempString = getLocale(inWebContext.getSession());
-		inMessage.getData().put(IMessage._data_locale, tempString);
-		_log.debug("Set session locale: " + tempString);
-		
-		tempString = getUserId(inWebContext.getSession());
-		inMessage.getData().put(IMessage._user_id, tempString);
-		_log.debug("Set userId: " + tempString);
-		
-		inMessage.setHttpSession(inWebContext.getSession());
-	}
-	
-	private static String getUserId(HttpSession session) {
-		return (String) session.getAttribute(IMessage._user_id);
-	}
-
-	private static String getLocale(HttpSession session) {
-		_log.debug("Try to get 'locale' defenition from web session!");
-		_log.debug("Web session is not null: " + (session != null));
-		String result = (String)session.getAttribute(IMessage._data_locale);
-		if(result != null){
-			_log.debug("Get 'locale' definition from current session: " + result);
+		if(inMessage._web_application == null ||
+				inMessage._web_context == null){
+			_log.fatal("Could not find web application for: " + urlPrefix);
+			result.setResult("Could not find web application for: " + urlPrefix);
+			result.setResult(false);
 			return result;
 		}
-		_log.debug("Could not find 'locale' definition from web session object!");
-		_log.debug("Get default locale: " + MessagesManager.getTextManager().getDefaultLocale());
-		return MessagesManager.getTextManager().getDefaultLocale();
+		// set locale if exist
+		if(inMessage._web_context.getSession().getAttribute(
+				inMessage._web_application.getId() + Constants._data_locale) != null){
+			_log.debug("Set preserved locale session's locale: " + inMessage._web_context.getSession().getAttribute(
+					inMessage._web_application.getId() + Constants._data_locale));
+			inMessage._locale = (String) inMessage._web_context.getSession().getAttribute(
+					inMessage._web_application.getId() + Constants._data_locale);
+		}else{
+			_log.debug("Set default locale to session: " 
+					+ MessagesManager.getTextManager().getDefaultLocale());
+			inMessage._locale = MessagesManager.getTextManager().getDefaultLocale();
+		}
+		// set group id
+		inMessage._session_id = inMessage._web_context.getSession().getId();
+		
+		result.setResult(true);
+		return result;
 	}
-
 	/**
-	 * 
-	 * Detache session data (locale, userId and etc.)
 	 * @param inMessage
-	 * @return 
 	 */
-	public static void detachIMessageSessionData(IMessage inMessage) {
+	public static void removeSessionData(IMessage inMessage) {
 		if(inMessage != null && inMessage.getData() != null)
 			for(Object key:inMessage.getData().keySet().toArray()) 
 				inMessage.getData().remove(key);

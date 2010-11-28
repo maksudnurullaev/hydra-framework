@@ -3,10 +3,10 @@ package org.hydra.messages.handlers;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.hydra.beans.WebApplication;
+import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.BeansUtils;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
@@ -14,51 +14,45 @@ import org.hydra.utils.Result;
 public class General extends AMessageHandler { // NO_UCD
 	public static final String _body_html_path_format = "/h/index_%s_%s.html";
 
-	public IMessage getTextByKey(IMessage inMessage) {
-		
-		if(!testParameters(inMessage, "key")) return inMessage;		
-		
-		String locale = inMessage.getData().get(IMessage._data_locale);
-		String textKey = inMessage.getData().get(IMessage._data_key);			
-		inMessage.setHtmlContent(MessagesManager.getText(textKey, "div", locale));
+	public IMessage getTextByKey(CommonMessage inMessage) {
+		if(!testParameters(	inMessage, Constants._data_key)) return inMessage;			
+		inMessage.setHtmlContent(MessagesManager.getText(
+				inMessage.getData().get(Constants._data_key), 
+				"div", 
+				inMessage.getData().get(Constants._data_locale)));
 			
 		return inMessage;
 	}	
-	public IMessage changeLocale(IMessage inMessage){
-		if(!testParameters(inMessage, "key")) return inMessage;		
+
+	public IMessage changeLocale(CommonMessage inMessage){
+		if(!testParameters(inMessage, Constants._data_key)) return inMessage;				
+		getLog().debug("Try to change current locale to: " + inMessage.getData().get(Constants._data_key));
 		
-		getLog().debug("Try to change current locale to: " + inMessage.getData().get(IMessage._data_key));
-		
-		// 1. Change session
-		String changed_locale = inMessage.getData().get(IMessage._data_key);
-		Result result = inMessage.set2HttpSession(IMessage._data_locale, changed_locale);
-		
-		// 2. If something wrong		
+		// change session
+		String new_locale = inMessage.getData().get(Constants._data_key);
+		Result result = inMessage.set2HttpSession(Constants._data_locale, new_locale);
+		// if something wrong		
 		if(!result.isOk()){
 			inMessage.setError(result.getResult());
 			return inMessage;				
 		}
-		// 3. Change message locale too...
-		inMessage.getData().put(IMessage._data_locale, changed_locale);
+		getLog().debug("Locale sucessefully changed to: " + new_locale);
+		// Change message locale too...
+		inMessage._locale = new_locale;
 		return getInitialHTMLElements(inMessage);
 	}
 	
-	public IMessage getInitialHTMLElements(IMessage inMessage){
-		String locale = inMessage.getData().get(IMessage._data_locale);
-		String appId = inMessage.getData().get(IMessage._app_id);
-		// - Get locale html templates
-		if(locale == null) locale = MessagesManager.getTextManager().getDefaultLocale();
-		// - Get css
-		WebApplication app = (WebApplication) BeansUtils.getBean(appId);
-		inMessage.setStyleSheets(app.getStylesheets());
-		// - Get html content from file
-		String path2File = String.format(_body_html_path_format,appId,locale);
-		inMessage.setRealPath(path2File, IMessage._temp_value);
-		getLog().debug("Try to get content of: " + inMessage.getData().get(IMessage._temp_value));
-		Result result = forwardToString(inMessage.getData().get(IMessage._temp_value));		
+	public IMessage getInitialHTMLElements(CommonMessage inMessage){
+		getLog().debug("get stylesheets");
+		inMessage.setStyleSheets(inMessage._web_application.getStylesheets());
+		String path2File = String.format(_body_html_path_format, 
+				inMessage._web_application.getId(),
+				inMessage._locale);
+		path2File = inMessage._web_context.getServletContext().getRealPath(path2File);
+		getLog().debug("get html content from file: " + path2File);
+		Result result = forwardToString(path2File);		
 		if(result.isOk()) inMessage.setHtmlContent(result.getResult());
 		else inMessage.setError(result.getResult());
-		
 		return inMessage;
 	}
 	
