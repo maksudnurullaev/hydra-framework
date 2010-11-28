@@ -14,7 +14,6 @@ import org.hydra.utils.abstracts.ALogger;
 public class ColumnFamilyBean extends ALogger {
 	public Map<String, ColumnBean> columns = new HashMap<String, ColumnBean>();
 	private Set<ColumnFamilyBean> cfLinks = null;
-	private Set<ColumnFamilyBean> cfChilds = null;
 	private String name = null;
 
 	public void setColumns(Set<ColumnBean> inColumns) {
@@ -24,28 +23,6 @@ public class ColumnFamilyBean extends ALogger {
 		}
 		getLog().debug(String.format("%s fields added to %s", inColumns.size(), getName()));
 	}
-	
-	public void setChilds( Set<ColumnFamilyBean> inChilds){
-		this.cfChilds = inChilds;
-	}
-	
-	public void setLinks( Set<ColumnFamilyBean> inLinks){
-		this.cfLinks = inLinks;
-	}
-	
-	public boolean containsRelation(String inName){
-		// links
-		if(cfLinks != null)
-			for(ColumnFamilyBean bean:cfChilds)
-				if(bean.getName().equals(inName)) return true;
-		
-		// childs
-		if(cfChilds != null)
-			for(ColumnFamilyBean bean:cfChilds)
-				if(bean.getName().equals(inName)) return true;
-		
-		return false;
-	}	
 	
 	public void setName(String inName) {
 		this.name = inName;
@@ -70,12 +47,15 @@ public class ColumnFamilyBean extends ALogger {
 		return result;
 	}
 
-	public Set<ColumnFamilyBean> getChilds() {
-		return this.cfChilds;		
+	public void setLinks( Set<ColumnFamilyBean> inLinks){
+		this.cfLinks = inLinks;
+	}
+	
+	public Set<ColumnFamilyBean> getLinks() {
+		return this.cfLinks;		
 	}
 
-	
-	public boolean hasChilds() {
-		return cfChilds != null;
+	public boolean hasLink(String inName) {
+		return (columns != null && columns.containsKey(inName));
 	}
 }

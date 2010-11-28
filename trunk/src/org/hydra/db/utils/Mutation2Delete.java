@@ -139,19 +139,16 @@ public class Mutation2Delete extends ALogger{
 				listOfMutations, inResultMap);
 		
 		// ... delete childs
-		if(inPath._cfBean.hasChilds()){
-			for(ColumnFamilyBean child:inPath._cfBean.getChilds()){
-				CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
-						inPath._kspBean.getName() + // ksp
-						CassandraVirtualPath.PATH_DELIMETER +
-						inPath._cfBean.getName() +  // cf
-						CassandraVirtualPath.PATH_DELIMETER +
-						inPath.getKey() +            // key
-						CassandraVirtualPath.PATH_DELIMETER +
-						child.getName());           // super				
-
-				mutations4KspCfKeySuper(accessor, childPath, inResultMap, inRecursionDeep + 1);
-			}
+		for(ColumnFamilyBean child:inPath._cfBean.getLinks()){
+			CassandraVirtualPath childPath = new CassandraVirtualPath(inPath.getDescriptor(),
+					inPath._kspBean.getName() + // ksp
+					CassandraVirtualPath.PATH_DELIMETER +
+					inPath._cfBean.getName() +  // cf
+					CassandraVirtualPath.PATH_DELIMETER +
+					inPath.getKey() +            // key
+					CassandraVirtualPath.PATH_DELIMETER +
+					child.getName());           // super				
+			mutations4KspCfKeySuper(accessor, childPath, inResultMap, inRecursionDeep + 1);
 		}
 	}
 

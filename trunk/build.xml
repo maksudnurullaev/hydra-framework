@@ -76,19 +76,13 @@
 		<junit printsummary="on" fork="true" haltonfailure="false"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
-			<formatter type="brief" usefile="false" />
-			
+			<formatter type="brief" usefile="false" />			
 			<batchtest>
 				<fileset dir="${classes}">
 					<include name="**/Test*.class" />
 				</fileset>
 			</batchtest>
-			
-
-
 		</junit>
-
-
 		<fail if="tests.failed">
 tests.failed=${tests.failed}
 ***********************************************************
@@ -97,22 +91,18 @@ tests.failed=${tests.failed}
 ***********************************************************
 ***********************************************************
         </fail>
-	</target>
-	
+	</target>	
 	<target name="local.run.test" depends="local.build" description="Run tests">
 		<junit printsummary="on" fork="false" haltonfailure="false"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />			
-			
 			<batchtest>
 				<fileset dir="${classes}">
 					<include name="**/TestWebApplications.class" />
 				</fileset>
 			</batchtest>			
 		</junit>
-
-
 		<fail if="tests.failed">
 tests.failed=${tests.failed}
 ***********************************************************
