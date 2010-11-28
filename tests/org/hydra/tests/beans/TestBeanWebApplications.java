@@ -1,10 +1,11 @@
-package org.hydra.tests.bean;
+package org.hydra.tests.beans;
 
 
+import org.hydra.tests.Test0;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestWebApplications extends Test0 {
+public class TestBeanWebApplications extends Test0 {
 	@Test
 	public void test_1(){
 		Assert.assertNotNull(_hydra_applicatons.getValidAppliction("http://127.0.0.1"));

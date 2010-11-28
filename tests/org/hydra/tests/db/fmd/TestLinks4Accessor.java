@@ -8,7 +8,7 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.ERR_CODES;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
-import org.hydra.tests.bean.Test0;
+import org.hydra.tests.Test0;
 import org.hydra.tests.db.path.TestVirtualPath;
 import org.hydra.utils.CryptoManager;
 import org.hydra.utils.DBUtils;

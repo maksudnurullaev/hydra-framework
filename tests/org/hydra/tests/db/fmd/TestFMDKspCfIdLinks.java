@@ -7,7 +7,7 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.SuperColumn;
 import org.hydra.db.server.CassandraVirtualPath;
 import org.hydra.db.server.CassandraVirtualPath.PATH_TYPE;
-import org.hydra.tests.bean.Test0;
+import org.hydra.tests.Test0;
 import org.hydra.tests.utils.Utils4Tests;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Result;

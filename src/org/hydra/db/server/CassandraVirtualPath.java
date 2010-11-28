@@ -23,13 +23,13 @@ public class CassandraVirtualPath extends ALogger {
 		INVALID_LINKID,
 	};
 
-	ERR_CODES _errCode = ERR_CODES.UNDEFINED;
+	private ERR_CODES _errCode = ERR_CODES.UNDEFINED;
 	
 	public ERR_CODES getErrorCode() {
 		return _errCode;
 	}
 	
-	String _errString = null;
+	private String _errString = null;
 	
 	public String getError(){
 		return _errString;
@@ -61,7 +61,7 @@ public class CassandraVirtualPath extends ALogger {
 	public ColumnFamilyBean _cfBean = null;
 	public ColumnFamilyBean _cfLinkBean = null;	
 	// ... path && path type
-	PATH_TYPE _pathType = PATH_TYPE.UNDEFINED;
+	private PATH_TYPE _pathType = PATH_TYPE.UNDEFINED;
 	// ... others
 	private String _path = null;
 	private String _key = null;
@@ -81,7 +81,7 @@ public class CassandraVirtualPath extends ALogger {
 	}
 
 	// Map contains parsed parts of access path
-	public EnumMap<PARTS, String> _pathMap = new EnumMap<PARTS, String>(
+	private EnumMap<PARTS, String> _pathMap = new EnumMap<PARTS, String>(
 			PARTS.class);
 
 	// Path definitions as array
@@ -188,7 +188,7 @@ public class CassandraVirtualPath extends ALogger {
 	}
 
 	private boolean init4Parameters() {
-		if(_cfBean.containsRelation(_pathMap.get(PARTS.P4_SUPER))){
+		if(_cfBean.hasLink(_pathMap.get(PARTS.P4_SUPER))){
 			_super = _pathMap.get(PARTS.P4_SUPER);
 			_cfLinkBean = _kspBean.getColumnFamilyByName(_pathMap.get(PARTS.P4_SUPER));
 			_pathType = PATH_TYPE.KSP___CF___KEY___SUPER;
