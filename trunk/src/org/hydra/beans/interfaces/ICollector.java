@@ -42,12 +42,10 @@ public interface ICollector {
 	 * @return boolean
 	 */
 	boolean hasNewMessages(String key);
-	
-	/**
-	 * Get total accepted message count for collector 
-	 * @return int
-	 */	
-	int getTotalMessageCount();
-
 	void removePipe(String key);
+	int getTotalMessageCount();
+	
+	
+
+	
 }

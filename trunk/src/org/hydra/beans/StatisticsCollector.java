@@ -22,9 +22,9 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		
 		_statistics.get(inObjectName).put(inStatType, (_statistics.get(inObjectName).get(inStatType) + 1));			
 		if(inStatType == StatisticsTypes.ACCEPTED)
-			getLog().debug(String.format("Fixed %s statistics type for: %s", inStatType.toString(), inObjectName));
+			getLog().debug(String.format("Collected %s statistics type for: %s", inStatType.toString(), inObjectName));
 		else
-			getLog().warn(String.format("Fixed %s statistics type for: %s", inStatType.toString(), inObjectName));
+			getLog().warn(String.format("Collected %s statistics type for: %s", inStatType.toString(), inObjectName));
 	}
 
 	private Map<StatisticsTypes,Integer> newBlankMap() {

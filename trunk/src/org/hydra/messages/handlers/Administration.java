@@ -1,12 +1,8 @@
 package org.hydra.messages.handlers;
 
-import java.util.Set;
-
-import org.hydra.db.server.CassandraAccessorBean;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Utils;
@@ -40,6 +36,7 @@ public class Administration extends AMessageHandler { // NO_UCD
 	}
 
 	public IMessage describeCassandra(CommonMessage inMessage) {
+		/*
 		CassandraAccessorBean cassandraAccessorBean = BeansUtils.getAccessor();
 		if (!cassandraAccessorBean.isValid()) {
 			inMessage.setError("Could not access to cassandra!");
@@ -76,37 +73,39 @@ public class Administration extends AMessageHandler { // NO_UCD
 				MessagesManager.getTemplate("template.html.hr.divId.dots"),
 				_destination);
 		inMessage.setHtmlContent(result);
+		*/
+		inMessage.setHtmlContent("IMessage org.hydra.messages.handlers.Administration.describeCassandra");
 		return inMessage;
 	}
 
-	private String getColumnFamiliesJSLinks(
-			CassandraAccessorBean cassandraAccessorBean) {
-		Set<String> cfNamesSet = cassandraAccessorBean.getDescriptor()
-				.getColFamilies().keySet();
-		String result = "";
-		for (String cfName : cfNamesSet) {
-			if (result.length() > 0)
-				result += ", ";
-			result += Utils.makeJSLink(
-					cfName,
-					String.format("handler:'%s'",
-							AdmCassandra.class.getSimpleName()),
-					String.format("dest:'%s'", _destination),
-					String.format("action:'%s'", "getCFDescription"),
-					String.format("key:'%s'", cfName));
-		}
-		return result;
-	}
+//	private String getColumnFamiliesJSLinks(
+//			CassandraAccessorBean cassandraAccessorBean) {
+//		Set<String> cfNamesSet = cassandraAccessorBean.getDescriptor()
+//				.getColFamilies().keySet();
+//		String result = "";
+//		for (String cfName : cfNamesSet) {
+//			if (result.length() > 0)
+//				result += ", ";
+//			result += Utils.makeJSLink(
+//					cfName,
+//					String.format("handler:'%s'",
+//							AdmCassandra.class.getSimpleName()),
+//					String.format("dest:'%s'", _destination),
+//					String.format("action:'%s'", "getCFDescription"),
+//					String.format("key:'%s'", cfName));
+//		}
+//		return result;
+//	}
 
-	private String getKeyspaces(CassandraAccessorBean inAccessor) {
-		StringBuffer result = new StringBuffer();
-		int counter = 0;
-
-		for (String keyspaceName : inAccessor.getServerKeyspaces()) {
-			if (counter++ != 0)
-				result.append(", ");
-			result.append(keyspaceName);
-		}
-		return result.toString();
-	}
+//	private String getKeyspaces(CassandraAccessorBean inAccessor) {
+//		StringBuffer result = new StringBuffer();
+//		int counter = 0;
+//
+//		for (KsDef keyspaceName : inAccessor.getServerKeyspaces()) {
+//			if (counter++ != 0)
+//				result.append(", ");
+//			result.append(keyspaceName);
+//		}
+//		return result.toString();
+//	}
 }

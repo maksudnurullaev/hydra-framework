@@ -21,17 +21,12 @@
 	
 	<!-- Cassandra accessor bean -->
 	<bean id="_cassandra_accessor" class="org.hydra.db.server.CassandraAccessorBean">
-		<!-- Set cassandra descriptor -->
-		<property name="descriptor">
-			<ref bean="_cassandra_descriptor"/>
-		</property>
-		
 		<property name="host" value="localhost"/>
 		<property name="port"><value type="int">9160</value></property>
 		<property name="poolSizeMin"><value type="int">5</value></property>
 	</bean>		
 		
-	<!--ColumnFamilies & Columns description -->
+	<!-- ColumnFamilies & Columns description -->
 	<bean id="Articles" class="org.hydra.beans.db.ColumnFamilyBean">
 		<property name="name" value="Articles" />
 		<property name="columns">

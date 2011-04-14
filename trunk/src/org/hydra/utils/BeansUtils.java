@@ -2,8 +2,6 @@ package org.hydra.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.db.server.CassandraAccessorBean;
-import org.hydra.db.server.CassandraDescriptorBean;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -31,16 +29,5 @@ public final class BeansUtils {
 		
 		return result;
 	}
-	
-	public static CassandraAccessorBean getAccessor() {
-		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
-		if(!accessor.isValid()) accessor.setup();
-		return accessor;
-	}
-
-	public static CassandraDescriptorBean getDescriptor() {
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);
-		return descriptor;
-	}	
 
 }

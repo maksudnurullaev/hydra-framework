@@ -35,7 +35,7 @@ public class WebApplication extends ALogger {
 			_urlPatterns.add(Pattern.compile(ulrPattern));
 	}
 
-	public boolean isMineUrl(String inUrl) {
+	protected boolean isValidUrl(String inUrl) {
 		for (Pattern p : _urlPatterns)
 			if (p.matcher(inUrl).matches())
 				return true;

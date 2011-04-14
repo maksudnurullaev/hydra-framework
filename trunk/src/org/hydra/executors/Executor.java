@@ -55,7 +55,7 @@ public class Executor extends ALogger implements IExecutor {
 		return _name;
 	}
 
-	public static Executor getInstance() {
+	public static Executor getInstance() { // NO_UCD
 		if(_self == null)
 			throw new NullPointerException("SimpleExecutor is NULL") ;
 		return _self;

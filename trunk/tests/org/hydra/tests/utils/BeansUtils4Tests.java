@@ -3,8 +3,6 @@ package org.hydra.tests.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.WebApplications;
-import org.hydra.db.server.CassandraAccessorBean;
-import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -31,17 +29,6 @@ public final class BeansUtils4Tests {
 		}
 		
 		return result;
-	}
-	
-	public static CassandraAccessorBean getAccessor() {
-		CassandraAccessorBean accessor = (CassandraAccessorBean) getBean(Constants._beans_cassandra_accessor);
-		if(!accessor.isValid()) accessor.setup();
-		return accessor;
-	}
-
-	public static CassandraDescriptorBean getDescriptor() {
-		CassandraDescriptorBean descriptor = (CassandraDescriptorBean) getBean(Constants._beans_cassandra_descriptor);
-		return descriptor;
 	}
 
 	public static WebApplications getWebAppsMngr() {

@@ -15,8 +15,7 @@
 	<fileset id="web.libs" dir="${appserver.lib}">
 		<include name="servlet*.jar" />
 	</fileset>	
-
-	
+		
 	<path id="master-classpath">
 		<pathelement path="${classes}"/>
 		<fileset refid="local.libs"/>
@@ -99,7 +98,7 @@ tests.failed=${tests.failed}
 			<formatter type="brief" usefile="false" />			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestWebApplications.class" />
+					<include name="**/TestThread*.class" />
 				</fileset>
 			</batchtest>			
 		</junit>

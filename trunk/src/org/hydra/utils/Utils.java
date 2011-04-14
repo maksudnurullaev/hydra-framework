@@ -80,4 +80,9 @@ public final class Utils {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		return String.format(sdf.format(new Date()));
 	}
+
+	public static String getNewLine() {
+		// TODO Auto-generated method stub
+		return String.format("%n");
+	}
 }
