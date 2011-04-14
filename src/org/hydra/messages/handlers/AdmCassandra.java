@@ -2,9 +2,6 @@ package org.hydra.messages.handlers;
 
 import java.util.Map;
 
-import org.hydra.beans.db.ColumnBean;
-import org.hydra.beans.db.ColumnFamilyBean;
-import org.hydra.db.server.CassandraDescriptorBean;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
@@ -19,6 +16,7 @@ public class AdmCassandra extends AMessageHandler { // NO_UCD
 		// test parameters
 		if(!testParameters(	inMessage, Constants._data_key)) return inMessage;			
 		String cfName = inMessage.getData().get(Constants._data_key);
+		/*
 		CassandraDescriptorBean descriptor = BeansUtils.getDescriptor();
 		// get & check bean
 		ColumnFamilyBean cfBean = descriptor.getColumnFamilyByName(cfName);
@@ -63,6 +61,8 @@ public class AdmCassandra extends AMessageHandler { // NO_UCD
 		result += String.format(MessagesManager.getTemplate("template.html.hr.divId.dots"), sub_div);
 		// finish
 		inMessage.setHtmlContent(result);
+		*/
+		inMessage.setHtmlContent("IMessage org.hydra.messages.handlers.AdmCassandra.getCFDescription");
 		return inMessage;
 	}
 }

@@ -7,7 +7,7 @@ public class NullPipeException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	String _error_message;
+	private String _error_message;
 	
 	public NullPipeException(){
 		super();

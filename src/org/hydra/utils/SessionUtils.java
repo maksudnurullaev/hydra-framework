@@ -25,7 +25,7 @@ public final class SessionUtils {
 		String urlPrefix =  inMessage._web_context.getHttpServletRequest().getScheme() 
 			+ "://" + inMessage._web_context.getHttpServletRequest().getServerName();
 		// test message
-		inMessage._web_application = webApplications.getValidAppliction(urlPrefix);
+		inMessage._web_application = webApplications.getValidApplication(urlPrefix);
 		
 		if(inMessage._web_application == null ||
 				inMessage._web_context == null){

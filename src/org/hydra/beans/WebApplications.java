@@ -14,9 +14,9 @@ public class WebApplications extends ALogger {
 		_applications = inApplicationsSet;
 	}
 	
-	public WebApplication getValidAppliction(String inUrl) {
+	public WebApplication getValidApplication(String inUrl) {
 		for(WebApplication webApplication:_applications)
-			if(webApplication.isMineUrl(inUrl)) return webApplication;		
+			if(webApplication.isValidUrl(inUrl)) return webApplication;		
 		return null;
 	}
 	

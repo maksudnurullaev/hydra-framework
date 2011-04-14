@@ -7,7 +7,7 @@ public class NullProcessorException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	String _error_message;
+	private String _error_message;
 	
 	public NullProcessorException(){
 		super();
