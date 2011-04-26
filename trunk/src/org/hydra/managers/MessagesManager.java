@@ -1,12 +1,13 @@
-package org.hydra.utils;
+package org.hydra.managers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.beans.TextManager;
-import org.springframework.web.context.WebApplicationContext;
+import org.hydra.utils.BeansUtils;
+import org.hydra.utils.Constants;
+import org.hydra.utils.Result;
 
 public final class MessagesManager{
-	private static Log _log = LogFactory.getLog("org.hydra.utils.MessagesManager");	
+	private static Log _log = LogFactory.getLog("org.hydra.managers.MessagesManager");	
 	private static TextManager _textManager = null;	
 	
 	private static MessagesManager _messageMananger = null; 
@@ -18,10 +19,11 @@ public final class MessagesManager{
 	}
 	
 	public MessagesManager(){
+		Result result = new Result();
 		_log.debug("Try to get bean from springs");
-		WebApplicationContext webContext = BeansUtils.getWebApplicationContext();
-		if(webContext != null){
-			_textManager = (TextManager) webContext.getBean(Constants._beans_text_manager);
+		BeansUtils.getWebContextBean(result, Constants._beans_text_manager);
+		if(result.isOk() && result.getObject() instanceof TextManager){
+			_textManager = (TextManager) result.getObject();
 			_log.debug("Found spring's default TextManager bean dictionary!");
 		}else{
 			_textManager = new TextManager();
@@ -42,7 +44,8 @@ public final class MessagesManager{
 		if(inLocale == null)
 			inLocale = getTextManager().getDefaultLocale();		
 		
-		_log.debug(String.format("Try to find text by key(%s) and locale(%s)", inKey, inLocale));
+		_log.debug(String.format("Find text by key/locale: %s/%s", inKey, inLocale));
+		
 		return getTextManager().getTextByKey(inKey, inHtmlWrap, inLocale);
 	}
 		

@@ -7,12 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import me.prettyprint.cassandra.dao.SimpleCassandraDao;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * 
  * @author M.Nurullayev
  * 
  */
-public final class DBUtils {		
+public final class DBUtils {
+	private static final Log _log = LogFactory.getLog("org.hydra.utils.DBUtils");
+
 	// **** defaults
 	public static final String _utf8_encoding = "UTF8";
 	
@@ -91,4 +98,42 @@ public final class DBUtils {
 		
 	}
 
+	public static Result getFromKey(
+			String inWhat, 
+			String inKey,
+			String inApplicationID,
+			String inСolumnName) {
+		
+		String appIdCfBean = "cf" + inApplicationID + inWhat;
+		
+		_log.debug("Try to find bean: " + appIdCfBean);		
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result , appIdCfBean);
+		
+		if(result.isOk()){
+			if(result.getObject() instanceof SimpleCassandraDao){	
+				SimpleCassandraDao s = (SimpleCassandraDao) result.getObject();
+				_log.debug("... try to find value by key: " + inKey);
+				String temp = s.get(inKey, inСolumnName);
+				if(temp != null){
+					_log.debug("... found!");
+					result.setObject(temp);
+					result.setResult(true);
+					
+				}else{
+					result.setResult("... exception: seems not found data in: " + appIdCfBean);
+					result.setResult(false);
+				}
+			}else{
+				_log.error("Bean is not istance of SimpleCassandraDao!");
+				result.setResult("Bean is not istance of SimpleCassandraDao!");
+				result.setResult(false);
+			}
+		}else{
+			_log.error("Bean is not istance of SimpleCassandraDao!");
+			result.setResult("Bean is not istance of SimpleCassandraDao!");
+			result.setResult(false);			
+		}
+		return result;
+	}
 }

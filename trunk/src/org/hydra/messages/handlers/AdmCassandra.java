@@ -2,20 +2,20 @@ package org.hydra.messages.handlers;
 
 import java.util.Map;
 
+import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
-import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Utils;
 
 public class AdmCassandra extends AMessageHandler { // NO_UCD
 	static final String sub_div = "_adm._subdiv";
 	public IMessage getCFDescription(CommonMessage inMessage) {
 		// test parameters
-		if(!testParameters(	inMessage, Constants._data_key)) return inMessage;			
-		String cfName = inMessage.getData().get(Constants._data_key);
+		if(!testParameters(	inMessage, "key")) return inMessage;			
+		String cfName = inMessage.getData().get("key");
 		/*
 		CassandraDescriptorBean descriptor = BeansUtils.getDescriptor();
 		// get & check bean

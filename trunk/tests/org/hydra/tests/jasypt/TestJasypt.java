@@ -1,6 +1,6 @@
 package org.hydra.tests.jasypt;
 
-import org.hydra.utils.CryptoManager;
+import org.hydra.managers.CryptoManager;
 import org.junit.Assert;
 import org.junit.Test;
 

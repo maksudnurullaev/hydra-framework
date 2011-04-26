@@ -27,7 +27,7 @@
 		</property>
 		<property name="stylesheets">
 			<set>
-				<value>css/style.css</value>
+				<value>css/HydraUz.css</value>
 			</set>
 		</property>
 	</bean>

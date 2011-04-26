@@ -1,4 +1,4 @@
-package org.hydra.utils;
+package org.hydra.managers;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 

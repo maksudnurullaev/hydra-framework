@@ -10,20 +10,20 @@
 		<constructor-arg value="localhost:9160" />
 	</bean>
 
-	<bean id="_cassnadra_cluster" class="me.prettyprint.cassandra.service.ThriftCluster">
+	<bean id="_cassandra_cluster" class="me.prettyprint.cassandra.service.ThriftCluster">
 		<constructor-arg value="Hydra Cluster" />
 		<constructor-arg ref="cassandraHostConfigurator" />
 	</bean>
 
-	<bean id="keyspaceHydraUz" class="me.prettyprint.hector.api.factory.HFactory"
+	<bean id="kspHydraUz" class="me.prettyprint.hector.api.factory.HFactory"
 		factory-method="createKeyspace">
-		<constructor-arg value="Hydra" />
-		<constructor-arg ref="_cassnadra_cluster" />
+		<constructor-arg value="HydraUz" />
+		<constructor-arg ref="_cassandra_cluster" />
 	</bean>
 
-	<bean id="simpleUsersDao" class="me.prettyprint.cassandra.dao.SimpleCassandraDao">
-		<property name="keyspace" ref="keyspaceHydraUz" />
-		<property name="columnFamilyName" value="Users" />
+	<bean id="cfHydraUzText" class="me.prettyprint.cassandra.dao.SimpleCassandraDao">
+		<property name="keyspace" ref="kspHydraUz" />
+		<property name="columnFamilyName" value="Text" />
 	</bean>
 	
 </beans>

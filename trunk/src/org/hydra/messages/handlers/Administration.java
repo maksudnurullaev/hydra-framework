@@ -1,10 +1,10 @@
 package org.hydra.messages.handlers;
 
+import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
-import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Utils;
 
 public class Administration extends AMessageHandler { // NO_UCD

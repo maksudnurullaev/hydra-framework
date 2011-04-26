@@ -1,4 +1,4 @@
-package org.hydra.beans;
+package org.hydra.managers;
 
 import java.util.HashMap;
 import java.util.Map;
