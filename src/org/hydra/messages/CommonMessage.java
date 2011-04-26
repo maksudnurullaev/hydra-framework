@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import org.directwebremoting.WebContext;
 import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Result;
+import org.hydra.utils.Utils;
 
 /**
  * @author M.Nurullayev
@@ -17,6 +19,7 @@ public class CommonMessage implements IMessage {
 	public WebApplication _web_application = null;
 	public WebContext _web_context = null;
 	public String _locale = null;
+	public String _user_id = null;
 	public String _session_id = null;
 	
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
@@ -48,7 +51,7 @@ public class CommonMessage implements IMessage {
 			result.setResult("Invalid session!");
 		} else {
 			try {
-				_web_context.getSession().setAttribute(_web_application.getId() + inKey, inObj);
+				_web_context.getSession().setAttribute(_web_application.getId()	+ inKey, inObj);
 				result.setResult(true);
 			} catch (Exception e) {
 				result.setResult(e.getMessage());

@@ -18,7 +18,7 @@
 	<import resource="hector.xml"/>
 
 	<!-- Text Resources object -->
-	<bean id="_text_manager" class="org.hydra.beans.TextManager">
+	<bean id="_text_manager" class="org.hydra.managers.TextManager">
 	    <!-- Set locales -->
 	    <property name="locales">
 	    	<map>

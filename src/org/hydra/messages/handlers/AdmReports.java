@@ -2,19 +2,20 @@ package org.hydra.messages.handlers;
 
 import org.hydra.beans.WebApplications;
 import org.hydra.beans.StatisticsCollector;
+import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
-import org.hydra.utils.MessagesManager;
 import org.hydra.utils.Result;
 
 public class AdmReports extends AMessageHandler { // NO_UCD
 	
 
 	public IMessage describeHydra(CommonMessage inMessage) {
-		Result result = BeansUtils.getWebSessionBean(Constants._beans_statistics_collector);
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result, Constants._beans_statistics_collector);
 		if(result.isOk() && result.getObject() instanceof StatisticsCollector){
 			StatisticsCollector statisticsCollector = (StatisticsCollector) result.getObject();
 			inMessage.setHtmlContent(statisticsCollector.getHtmlReport(inMessage));
@@ -25,8 +26,16 @@ public class AdmReports extends AMessageHandler { // NO_UCD
 		return inMessage;
 	}
 	public IMessage describeApplications(CommonMessage inMessage){
-		WebApplications apps = (WebApplications) BeansUtils.getBean(Constants._beans_hydra_applications);
-		inMessage.setHtmlContent(apps.getDescription());
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result, Constants._beans_hydra_applications);
+		
+		if(result.isOk() && result.getObject() instanceof WebApplications){
+			WebApplications apps = (WebApplications) result.getObject();
+			inMessage.setHtmlContent(apps.getDescription());
+		}else{
+			inMessage.setError(result.getResult());
+		}
+		
 		return inMessage;
 	}
 	

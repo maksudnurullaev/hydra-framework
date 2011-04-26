@@ -1,6 +1,6 @@
 package org.hydra.tests.text;
 
-import org.hydra.beans.TextManager;
+import org.hydra.managers.TextManager;
 import org.hydra.tests.BaseTest;
 import org.hydra.tests.utils.BeansUtils4Tests;
 import org.hydra.utils.Constants;

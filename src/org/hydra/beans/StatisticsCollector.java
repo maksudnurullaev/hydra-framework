@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hydra.beans.interfaces.IStatisticsCollector;
+import org.hydra.managers.MessagesManager;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.MessagesManager;
 import org.hydra.utils.abstracts.ALogger;
 
 public class StatisticsCollector extends ALogger implements IStatisticsCollector {

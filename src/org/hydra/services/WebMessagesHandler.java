@@ -23,8 +23,8 @@ public class WebMessagesHandler extends ALogger {
 		List<MessageBean> _return_result = new ArrayList<MessageBean>();
 		// set message collector
 		MessagesCollector messagesCollector = null;
-		Result result = BeansUtils
-				.getWebSessionBean(Constants._beans_main_message_collector);
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result, Constants._beans_main_message_collector);
 		if (result.isOk() && result.getObject() instanceof MessagesCollector)
 			messagesCollector = (MessagesCollector) result.getObject();
 		else {
@@ -34,33 +34,32 @@ public class WebMessagesHandler extends ALogger {
 			return _return_result.toArray();
 		}
 		// Attach session's data
-		result = SessionUtils
-				.setSessionData(inMessage, WebContextFactory.get());
+		SessionUtils.attachSessionData(result, inMessage, WebContextFactory.get());
 		if (!result.isOk()) {
 			inMessage.setError(result.getResult());
-			SessionUtils.removeSessionData(inMessage);
 			_return_result.add(inMessage);
 			return _return_result.toArray();
 		}
 		// Send message to default pipe
-		getLog().debug("Send message to default pipe...");
-		result = BeansUtils.getWebSessionBean(Constants._beans_main_input_pipe);
+		getLog().debug("Send message to main input pipe...");
+		BeansUtils.getWebContextBean(result, Constants._beans_main_input_pipe);
 		if (result.isOk() && result.getObject() instanceof Pipe) {
 			((Pipe) result.getObject()).setMessage(inMessage);
 		} else {
 			getLog().fatal(
-					"Could not initialize " + Constants._beans_main_input_pipe
-							+ " object");
+					"Could not initialize " 
+						+ Constants._beans_main_input_pipe
+						+ " object");
 			inMessage.setError("Could not initialize "
 					+ Constants._beans_main_input_pipe + " object");
 
-			SessionUtils.removeSessionData(inMessage);
 			_return_result.add(inMessage);
 			return _return_result.toArray();
 		}
 		// Setup waiting condition values
 		long startTime = System.currentTimeMillis();
 		// Waiting for response
+		getLog().debug("START: Waiting...");
 		while (!messagesCollector.hasNewMessages(inMessage.getData().get(inMessage._session_id))) {
 			// if timeout
 			if (System.currentTimeMillis() - startTime > Constants._max_response_wating_time) {
@@ -68,19 +67,19 @@ public class WebMessagesHandler extends ALogger {
 				inMessage.setError("Waiting time limit is over...");
 				getLog().error("Waiting time limit is over...");
 
-				SessionUtils.removeSessionData(inMessage);
 				_return_result.add(inMessage);
 				return _return_result.toArray();
 			}
 			Thread.yield();
 		}
-		getLog().debug("END: Waiting for response...");
+		getLog().debug("... we have new message ...");
+		getLog().debug("END: Waiting...");
 		// If response messages exist
 		IMessage messageBean = null;
-		while ((messageBean = messagesCollector.getMessage(inMessage.getData()
-				.get(inMessage._session_id))) != null) {
-
-			SessionUtils.removeSessionData(messageBean);
+		while ((messageBean = 
+			messagesCollector.getMessage(inMessage.getData().get(inMessage._session_id))) != null) 
+		{
+			if(messageBean.getData() != null) messageBean.getData().clear();
 			_return_result.add((MessageBean) messageBean);
 		}
 		return _return_result.toArray();
