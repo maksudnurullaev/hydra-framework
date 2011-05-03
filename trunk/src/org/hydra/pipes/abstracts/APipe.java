@@ -108,7 +108,7 @@ public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage
 		
 		
 		getLog().debug(String.format("New message with groupID(%s) added to pipe(%s)", 
-				inMessage.getData().get(Constants._data_sessionId), 
+				inMessage.getData().get(Constants._session_id), 
 				getName()));
 		
 		// Event part

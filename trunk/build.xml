@@ -98,7 +98,7 @@ tests.failed=${tests.failed}
 			<formatter type="brief" usefile="false" />			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestUrls.class" />
+					<include name="**/TestModer.class" />
 				</fileset>
 			</batchtest>			
 		</junit>

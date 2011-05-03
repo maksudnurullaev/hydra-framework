@@ -8,8 +8,8 @@ import java.util.Set;
 import org.directwebremoting.WebContext;
 import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Moder;
 import org.hydra.utils.Result;
-import org.hydra.utils.Utils;
 
 /**
  * @author M.Nurullayev
@@ -26,6 +26,7 @@ public class CommonMessage implements IMessage {
 	private Map<String, String> _htmlContents = new HashMap<String, String>();
 	private Set<String> _styleSheets = new HashSet<String>();
 	private String _error = null;
+	public Moder _moder = new Moder(null);
 
 	@Override
 	public Set<String> getStyleSheets() {

@@ -32,12 +32,22 @@ public final class Constants {
 	// **** Deafult response waiting time (in milliseconds)
 	public static final long _max_response_wating_time = 5000;
 	
-	// **** Session data keys
-	public static final String _data_locale = "locale";
-	public static final String _data_sessionId = "sessionId";
+	// **** Message action keys
 	public static final String _handler_id = "handler";
 	public static final String _action_id = "action";
 	
-	// **** Constant tempaltes
-	public static final String _language_bar_a_template = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({handler:'General',action:'changeLocale', key:'%s', dest:'body'})); return false;\">%s</a>";
+	// **** Session keys
+	public static final String _session_locale = "locale";
+	public static final String _session_url = "url";
+	public static final String _session_id = "sessionId";
+	
+	// **** Constant templates
+	public static final String _language_bar_a_template = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({handler:'General',action:'changeLocale', locale:'%s', dest:'body', url: document.URL })); return false;\">%s</a>";
+	
+	// **** Constant error strings
+	public static final String _error_db = "ERROR_DB";
+	
+	// **** Constants for access modes
+	public static final String _mode_edit_templates = "edit_templates";
+	public static final String _utf8 = "UTF8";
 }

@@ -178,7 +178,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 			// Log message
 			getLog().debug(String.format(
 					"Processor(%s) handle message for group(%s)", getName(),
-					message.getData().get(Constants._data_sessionId)));
+					message.getData().get(Constants._session_id)));
 
 			if (message instanceof CommonMessage) {
 				applyMessage((CommonMessage)message);
@@ -197,7 +197,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 	private void applyMessage(CommonMessage inMessage) {
 		getLog().debug(
 				String.format("Handle new message for group(%s)...", inMessage
-						.getData().get(Constants._data_sessionId)));
+						.getData().get(Constants._session_id)));
 
 		String handlerName = inMessage.getData().get(Constants._handler_id);
 		String methodName = inMessage.getData().get(Constants._action_id);

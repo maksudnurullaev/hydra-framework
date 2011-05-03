@@ -54,15 +54,15 @@ public class MessagesCollector implements ICollector {
 	@Override
 	public void putMessage(IMessage inMessage) {
 		try {
-			getPipe(inMessage.getData().get(Constants._data_sessionId)).setMessage(inMessage);
+			getPipe(inMessage.getData().get(Constants._session_id)).setMessage(inMessage);
 			_log.debug(String.format("New message(%s) added to pipe(%s), total %d", 
 					inMessage.toString(), 
-					inMessage.getData().get(Constants._data_sessionId), 
-					getPipe(inMessage.getData().get(Constants._data_sessionId)).getMessagesCount()));
+					inMessage.getData().get(Constants._session_id), 
+					getPipe(inMessage.getData().get(Constants._session_id)).getMessagesCount()));
 		} catch (RichedMaxCapacityException e) {
 			_log.error(String.format("Could not add message(%s) to group(%s)", 
 					inMessage.toString(), 
-					inMessage.getData().get(Constants._data_sessionId)));
+					inMessage.getData().get(Constants._session_id)));
 		}
 		// Increase message statistics
 		synchronized (this) {
