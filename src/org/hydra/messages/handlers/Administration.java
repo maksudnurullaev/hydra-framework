@@ -17,13 +17,13 @@ public class Administration extends AMessageHandler { // NO_UCD
 				String.format("dest:'%s'", _destination));
 		result += " &bull; "
 				+ Utils.makeJSLink(MessagesManager.getText("text.Applications",
-						null, inMessage.getData().get(Constants._data_locale)),
+						null, inMessage.getData().get(Constants._session_locale)),
 						String.format("handler:'%s'", "AdmReports"), String
 								.format("action:'%s'", "describeApplications"),
 						String.format("dest:'%s'", _destination));
 		result += " &bull; "
 				+ Utils.makeJSLink(MessagesManager.getText("text.Server", null,
-						inMessage.getData().get(Constants._data_locale)),
+						inMessage.getData().get(Constants._session_locale)),
 						String.format("handler:'%s'", "AdmReports"), String
 								.format("action:'%s'", "describeServer"),
 						String.format("dest:'%s'", _destination));

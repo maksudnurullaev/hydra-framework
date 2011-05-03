@@ -52,10 +52,10 @@ public class TestPipeAndProcessor{
 		_outPipe.setStatisticsCollector(_statisticsCollector);
 
 		_message1 = new MessageBean();
-		_message1.getData().put(Constants._data_sessionId, "Test Message1");
+		_message1.getData().put(Constants._session_id, "Test Message1");
 		
 		_message2 = new MessageBean();
-		_message2.getData().put(Constants._data_sessionId, "Test Message2");
+		_message2.getData().put(Constants._session_id, "Test Message2");
 	}
 
 	@Test
@@ -130,7 +130,7 @@ public class TestPipeAndProcessor{
 		for (int i = 0; i < (messageCount * 2); i++) {
 			counter++;
 			message = new MessageBean();
-			message.getData().put(Constants._data_sessionId, String.format("Message #%d", i));
+			message.getData().put(Constants._session_id, String.format("Message #%d", i));
 			_inPipe.setMessage(message);
 		}
 	}

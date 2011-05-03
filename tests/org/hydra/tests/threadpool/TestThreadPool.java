@@ -79,7 +79,7 @@ public class TestThreadPool {
 				message.getData().put(Constants._handler_id, "General");
 				message.getData().put(Constants._action_id, "getTextByKey");
 				message.getData().put("key", "home.context");
-				message.getData().put(Constants._data_sessionId,
+				message.getData().put(Constants._session_id,
 						String.format("Test Message #%d", i));
 				_main_inPipe.setMessage(message);
 			}

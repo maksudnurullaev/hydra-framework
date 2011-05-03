@@ -17,98 +17,90 @@ public final class SessionUtils {
 	 * @param inMessage
 	 * @param inSession
 	 */
-	public static Result attachSessionData(Result result,
-			CommonMessage inMessage, WebContext inWebContext) {
+	public static Result attachSessionData(
+			Result inResult,
+			CommonMessage inMessage, 
+			WebContext inWebContext) {
 		// 1. set web context
 		inMessage._web_context = WebContextFactory.get();
 		if (inMessage._web_context == null) {
-			result.setResult("Could not find web context!");
-			result.setResult(false);
-			return result;
+			inResult.setResult("Could not find web context!");
+			inResult.setResult(false);
+			return inResult;
 		}
 		// 2. set web application
-		setWebApplication(result, inMessage, inMessage._web_context);
-		if (!result.isOk())
-			return result;
+		setWebApplication(inResult, inMessage, inMessage._web_context);
+		if (!inResult.isOk())
+			return inResult;
 		// 3. set session id
 		inMessage._session_id = inMessage._web_context.getSession().getId();
 		// 4. set locale
-		getSessionData(result, inMessage);
-
-		_log.debug("Web Application id: " + inMessage._web_application.getId());
-		_log.debug("Web Application locale: " + inMessage._locale);
-
-		return result;
-	}
-
-	public static void setLocaleID(Result result, CommonMessage inMessage) {
-		if (inMessage == null || inMessage._web_application == null) {
-			result.setResult("Could not define LocalID");
-			result.setResult(false);
-			return;
+		getSessionData(inResult, inMessage, Constants._session_locale);
+		if(inResult.isOk()){
+			inMessage._locale = (String) inResult.getObject();
+		}else{
+			inMessage._locale = MessagesManager.getTextManager().getDefaultLocale();
 		}
-		result.setObject(inMessage._web_application.getId()
-				+ Constants._data_locale);
-		result.setResult(true);
-	}
-
-	private static void generateSessionDataKey(Result result,
-			CommonMessage commonMessage, String key) {
-		if (commonMessage._web_application == null || key == null) {
-			result.setObject("Could not generate Session Data Key!");
+		// 5. set URL Object
+		getSessionURLWrapper(inResult, inMessage);
+		
+		inResult.setResult(true);
+		return inResult;
+	};
+	
+	public static void getSessionURLWrapper(Result inResult, CommonMessage inMessage) {
+		getSessionData(inResult, inMessage, Constants._session_url);
+		if(inResult.isOk())
+			inMessage._moder = new Moder((String) inResult.getObject());
+	};
+	public static void setSessionURLWrapper(Result result, CommonMessage inMessage) {
+		SessionUtils.setSessionData(result , inMessage, Constants._session_url, inMessage.getData().get(Constants._session_url));
+		if(!result.isOk()){
+			inMessage.setError(result.getResult());
+			result.setResult(false);		
+		}
+	};
+	
+	private static void generateSessionDataKey(
+			Result inResult,
+			CommonMessage inCommonMessage, 
+			String inKey) {
+		if (inCommonMessage._web_application == null || inKey == null) {
+			inResult.setObject("Could not generate Session Data Key!");
 			_log.warn("Could not generate Session Data Key!");
-			result.setResult(false);
+			inResult.setResult(false);
 			return;
 		}
-		result.setObject(commonMessage._web_application.getId() + key);
-		result.setResult(true);
+		inResult.setObject(inCommonMessage._web_application.getId() + inKey);
+		inResult.setResult(true);
 	};
 
-	private static void getSessionData(Result result,
-			CommonMessage commonMessage) {
-		generateSessionDataKey(result, commonMessage, Constants._data_locale);
-		if (!result.isOk())
-			return;
-
-		setLocaleID(result, commonMessage);
-
-		String localeKey = commonMessage._web_application.getId()
-				+ Constants._data_locale;
-		String localeValue = (String) commonMessage._web_context.getSession()
-				.getAttribute(localeKey);
-		if (localeValue == null)
-			localeValue = MessagesManager.getTextManager().getDefaultLocale();
-
-		commonMessage._locale = localeValue;
-
-		result.setResult(true);
-	};
-
-	public static void setWebApplication(Result result,
-			CommonMessage inMessage, WebContext webContext) {
-		if (inMessage == null || webContext == null) {
-			result.setResult("CommonMessage or WebContext equal NULL!");
-			result.setResult(false);
+	public static void setWebApplication(
+			Result inResult,
+			CommonMessage inMessage, 
+			WebContext inWebContext) {
+		if (inMessage == null || inWebContext == null) {
+			inResult.setResult("CommonMessage or WebContext equal NULL!");
+			inResult.setResult(false);
 			return;
 		}
 
-		String urlPrefix = webContext.getHttpServletRequest().getScheme()
-				+ "://" + webContext.getHttpServletRequest().getServerName();
+		String urlPrefix = inWebContext.getHttpServletRequest().getScheme()
+				+ "://" + inWebContext.getHttpServletRequest().getServerName();
 
-		BeansUtils.getWebContextBean(result,
+		BeansUtils.getWebContextBean(inResult,
 				Constants._beans_hydra_applications);
-		if (!result.isOk() || !(result.getObject() instanceof WebApplications))
+		if (!inResult.isOk() || !(inResult.getObject() instanceof WebApplications))
 			return;
 
-		WebApplications webApplications = (WebApplications) result.getObject();
-		inMessage._web_application = webApplications
-				.getValidApplication(urlPrefix);
+		WebApplications webApplications = (WebApplications) inResult.getObject();
+		inMessage._web_application = webApplications.getValidApplication(urlPrefix);
 
 		if (inMessage._web_application == null) {
-			result.setResult("Could not initialize WebApplication object!");
-			result.setResult(false);
+			inResult.setResult("Could not initialize WebApplication object!");
+			inResult.setResult(false);
 		} else
-			result.setResult(true);
+			inResult.setResult(true);
 	};
 
 	public static void setSessionData(
@@ -116,7 +108,9 @@ public final class SessionUtils {
 			CommonMessage inCommonMessage,
 			String inKey,
 			Object inValue) {
-
+		generateSessionDataKey(inResult, inCommonMessage, inKey);
+		if(!inResult.isOk()) return;
+		String sessionKey = (String) inResult.getObject();
 		if (inCommonMessage == null
 					|| inCommonMessage._web_context == null
 					|| inCommonMessage._web_application == null
@@ -125,16 +119,37 @@ public final class SessionUtils {
 			inResult.setResult(false);
 			inResult.setResult("Invalid session!");
 		} else {
-			// try {
 			inCommonMessage._web_context.getSession().setAttribute(
-					inCommonMessage._web_application.getId() + inKey,
+					sessionKey,
 					inValue);
 			inResult.setResult(true);
-			// } catch (Exception e) {
-			// inResult.setResult(e.getMessage());
-			// inResult.setResult(false);
-			// }
 		}
 	};
+	
+	public static void getSessionData(
+			Result inResult,
+			CommonMessage inCommonMessage,
+			String inKey) {
+		generateSessionDataKey(inResult, inCommonMessage, inKey);
+		if (!inResult.isOk()){
+			inResult.setResult("Could not generate unique session ID");
+			inResult.setResult(false);
+			return;
+		}
+		
+		String sessionKey = (String) inResult.getObject();
+		_log.debug("Try to get session data by key: " + sessionKey);		
+		String sessionValue = (String) inCommonMessage._web_context.getSession()
+				.getAttribute(sessionKey);
+		if (sessionValue == null){
+			_log.warn("Could not get session session data for key: " + sessionKey);
+			inResult.setResult(false);
+			return;
+		}
+
+		inResult.setObject(sessionValue);
+		inResult.setResult(true);
+	}
+
 
 }

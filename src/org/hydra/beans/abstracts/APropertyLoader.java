@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.abstracts.ALogger;
 
@@ -112,8 +113,7 @@ public abstract class APropertyLoader extends ALogger {
 
 	private static void parsePropertyFile(Properties result, InputStream in)
 			throws UnsupportedEncodingException, IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in,
-				DBUtils._utf8_encoding));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in,Constants._utf8));
 
 		String line = null;
 		String curKey = null;

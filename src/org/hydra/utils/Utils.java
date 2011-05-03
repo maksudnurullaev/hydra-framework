@@ -1,21 +1,26 @@
 package org.hydra.utils;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.cassandra.thrift.Cassandra.insert_args;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.managers.MessagesManager;
-import org.hydra.managers.TextManager;
+import org.hydra.messages.CommonMessage;
+import org.hydra.utils.Moder.MODE;
 
 /**
  * @author M.Nurullayev
  */
-public final class Utils {
+public final class Utils {	
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.Utils");
+	
+	public static Pattern pattern4Deployer = Pattern.compile("\\[\\[(\\S+)\\|(\\S+)\\|(\\S+)\\|(\\S+)\\]\\]");
 	
 	public static String wrap2HTMLTag(String inHTMLTagName, String inContent) {
 		return String.format("<%s>%s</%s>", inHTMLTagName, inContent, inHTMLTagName);
@@ -92,40 +97,67 @@ public final class Utils {
 
 	/* **** Content Deployment **** */
 	public static String deployContent(
-			String htmlContent, 
+			String inContent, 
 			String inApplicationID, 
 			String inLocale, 
-			String inUserID) {
-		String patternStr = "\\[\\[(\\S+)\\|(\\S+)\\|(\\S+)\\|(\\S+)\\]\\]";
+			String inUserID, 
+			Moder inModer) {
+		_log.debug("ApplicationID: " + inApplicationID);
+		_log.debug("Locale: " + inLocale);
+		_log.debug("UserID: " + inUserID);
+		_log.debug("Moder Type: " + inModer.getMode());
+		_log.debug("Moder Id: " + inModer.getId());		
+		return deployContent(inContent, inApplicationID, inLocale, inUserID, inModer, 0);
+	}
 
-		Pattern pattern = Pattern.compile(patternStr);
-		Matcher matcher = pattern.matcher(htmlContent);
+	public static String deployContent(
+			String inContent, 
+			String inApplicationID, 
+			String inLocale, 
+			String inUserID, 
+			Moder inModer,
+			int recursionCount) {
+		
+		if(++recursionCount > 10){
+			_log.warn("No more recursion permited!!!");
+			return inContent;
+		}
+		
+		Matcher matcher = pattern4Deployer.matcher(inContent);
 
 		StringBuffer buf = new StringBuffer();
 		while ((matcher.find())) {
 			_log.debug("WHERE: " + matcher.group(1));
 			_log.debug("FROM: " + matcher.group(2));
 			_log.debug("KEY: " + matcher.group(3));
-			_log.debug("HOW: " + matcher.group(4));
-			_log.debug("ApplicationID: " + inApplicationID);
-			_log.debug("Locale: " + inLocale);
-			_log.debug("UserID: " + inUserID);
-			
-			matcher.appendReplacement(buf,  
-					getWhereWhatKeyHow(
+			_log.debug("HOW: " + matcher.group(4));	
+			String tempContent 
+				= getWhereWhatKeyHow(
 							matcher.group(1),  // WHERE
 							matcher.group(2),  // WHAT
 							matcher.group(3),  // KEY
 							matcher.group(4),  // HOW
 							inApplicationID, 
 							inLocale,
-							inUserID)
+							inUserID,
+							inModer);
+			 
+			matcher.appendReplacement(
+					buf,
+					tempContent				
 					);
 		}
 		matcher.appendTail(buf);
+		// finish
+		matcher = pattern4Deployer.matcher(buf.toString());
+		if(matcher.find()){
+			_log.debug("Found recursive entring, recursionCount: " + recursionCount);
+			return(deployContent(buf.toString(), inApplicationID, inLocale, inUserID, inModer,recursionCount));
+		}
 		return(buf.toString());
-	}
-
+		//return(buf.toString());
+	};	
+	
 	private static String getWhereWhatKeyHow(
 			String inWhere, 
 			String inWhat,
@@ -133,98 +165,66 @@ public final class Utils {
 			String inHow,
 			String inApplicationID, 
 			String inLocale,
-			String inUserID
-			) {
+			String inUserID, 
+			Moder inModer) {
 		if(inWhere.compareToIgnoreCase("db") == 0)
-			return getDbWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID);
+			return DeployerDb.getDbWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, inModer);
 		else if(inWhere.compareToIgnoreCase("system") == 0)
-			return getSystemWhatKeyHow(inWhat, inKey, inHow, inLocale);
+			return DeployerSystem.getSystemWhatKeyHow(inWhat, inKey, inHow, inLocale);
 		return "Could not find WHERE part: " + inWhere ;
 	}
 
-	private static String getSystemWhatKeyHow(
-			String inWhat, 
-			String inKey,
-			String inHow, 
-			String inLocale) {
-		if(inWhat.compareToIgnoreCase("LanguageBar") == 0)
-			return getSystemLanguagebarKeyHow(inKey, inHow, inLocale);
-		return "Could not find WHERE part: " + inWhat;
-	}
-
-	private static String getSystemLanguagebarKeyHow(
-			String inKey, // IGNORE 
-			String inHow, 
-			String inLocale) {
-		if(inHow.compareToIgnoreCase("a") == 0) // HTML <a>...</a>
-			return getSystemLanguagebarKeyA(inKey, inLocale);
-		return "Could not find HOW part: " + inHow;
-	}
-
-	private static String getSystemLanguagebarKeyA(
-			String inKey, // IGNORE 
-			String inLocale) {
-		Result result = new Result();
-		BeansUtils.getWebContextBean(result, Constants._beans_text_manager);
-		if(result.isOk() && result.getObject() instanceof TextManager){ // generate language bar
-			TextManager tm = (TextManager) result.getObject();
-			String resultStr = "";
-			for (Map.Entry<String, String> entry:tm.getLocales().entrySet()) {
-				if(entry.getKey().compareToIgnoreCase(inLocale) == 0){ // selected
-					resultStr += entry.getValue();
-				}else{
-					resultStr += String.format(Constants._language_bar_a_template, entry.getKey(), entry.getValue());
-				}
-				if(!resultStr.isEmpty())
-					resultStr += "&nbsp;&nbsp;";
-			}
-			return resultStr;
+	public static void getFileAsString(Result inResult, String inPath2File) {
+		try {
+			File file = new File(inPath2File);
+			inResult.setObject(FileUtils.readFileToString(file, Constants._utf8));
+			inResult.setResult(true);
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+			inResult.setResult("Internal server error: INITIAL_FILE_NOT_FOUND");
+			inResult.setResult(false);
 		}
-		return "Could not find TextManager instance!";
 	}
 
-	private static String getDbWhatKeyHow(
-			String inWhat, 
-			String inKey,
-			String inHow,
-			String inApplicationID, 
-			String inLocale,
-			String inUserID
-			) {
-		if(inWhat.compareToIgnoreCase("text") == 0)
-			return getDbTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID);
-		return "Could not find What part : " + inWhat ;
+	public static String deployContent(
+			String inContent,
+			CommonMessage inMessage) {
+		return deployContent(
+				inContent, 
+				inMessage._web_application.getId(), 
+				inMessage._locale, 
+				inMessage._user_id,
+				inMessage._moder);
 	}
-
-	private static String getDbTextKeyHow(
-			String inKey,
-			String inHow,
-			String inApplicationID, 
-			String inLocale,
-			String inUserID
-			){
-		if(inHow.compareToIgnoreCase("div") == 0)
-			return getDbTextKeyDiv(inKey, inApplicationID, inLocale, inUserID);
-		return "Could not find HOW part : " + inHow ;
-	};
 	
-	private static String getDbTextKeyDiv(
-			String inKey,
-			String inApplicationID, 
-			String inLocale,
-			String inUserID
-			) {
-		Result result = DBUtils.getFromKey("Text", inKey, inApplicationID, inLocale);
-		StringBuffer resultBuffer = new StringBuffer();
-		resultBuffer.append("<sup>");
-		resultBuffer.append(" <a onclick=\"javascript:void(Globals.editIt('").append(inKey).append("')); return false;\" href=\"#\">Edit</a>");
-		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.viewIt('").append(inKey).append("')); return false;\" href=\"#\">View</a>");
-		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.uploadIt('").append(inKey).append("')); return false;\" href=\"#\">Upload</a>");
-		resultBuffer.append("</sup>");
-		resultBuffer.append("<div id='").append(inKey).append("'>")
-			.append(result.isOk()?result.getObject():String.format("[[DB|Text|%s|div]]",inKey))
-			.append("</div>");
-		return resultBuffer.toString();
+	
+	// **** Moders & Rights
+	public static boolean hasRight4Text(
+			String inApplicationID,
+			String inUserID, 
+			Moder inModer) {
+		return (
+				inModer != null 
+				&& inModer.getMode() == MODE.MODE_TEXT
+				);	
+	}
+
+	public static boolean hasRight4Template(
+			String inApplicationID,
+			String inUserID, 
+			Moder inModer) {
+		return (
+				inModer != null 
+				&& inModer.getMode() == MODE.MODE_TEMPLATE
+				);	
+	}
+
+	public static String shrinkString(String inString) {
+		if(inString == null) return "NULL";
+		inString = inString.trim();
+		if(inString.length() > 10 )
+			inString = inString.substring(0, 7) + "...";
+		return inString;
 	}
 
 }
