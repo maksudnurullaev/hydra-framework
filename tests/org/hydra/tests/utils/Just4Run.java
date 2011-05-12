@@ -1,5 +1,8 @@
 package org.hydra.tests.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hydra.utils.Moder;
 import org.hydra.utils.Utils;
 
@@ -16,7 +19,8 @@ public class Just4Run {
 		String inUserID = "testUserId";
 		Moder inModer = new Moder(null);
 		
-		String resString = Utils.deployContent(content, "HydraUz", inLocale , inUserID , inModer );
+		List<String> links = new ArrayList<String>();
+		String resString = Utils.deployContent(content, "HydraUz", inLocale , inUserID , inModer, links);
 		
 		System.out.println(resString);
 	}

@@ -2,9 +2,12 @@ package org.hydra.utils;
 
 import java.util.Map;
 
+import me.prettyprint.cassandra.dao.SimpleCassandraDao;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.managers.TextManager;
+import org.hydra.beans.WebApplication;
+import org.hydra.beans.WebApplications;
 
 public final class DeployerSystem {
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.DeployerSystem");
@@ -13,18 +16,93 @@ public final class DeployerSystem {
 			String inWhat, 
 			String inKey,
 			String inHow, 
-			String inLocale) {
+			String inLocale, 
+			String inApplicationID) {
 		if(inWhat.compareToIgnoreCase("LanguageBar") == 0)
-			return getSystemLanguagebarKeyHow(inKey, inHow, inLocale);
-		return "Could not find WHERE part: " + inWhat;
+			return getSystemLanguagebarKeyHow(inKey, inHow, inLocale, inApplicationID);
+		else if(inWhat.compareToIgnoreCase("Applications") == 0)
+			return getSystemApplicationsKeyHow(inKey, inHow, inLocale, inApplicationID);
+		else if(inWhat.compareToIgnoreCase("Users") == 0)
+			return getSystemUsersAppHow(inKey, inHow, inLocale, inApplicationID);
+		return "Could not find WHAT part: " + inWhat;
 	}
 	
+	private static String getSystemUsersAppHow(
+			String inKey, 
+			String inHow,
+			String inLocale, 
+			String inApplicationID) {
+		if(inHow.compareToIgnoreCase("Options") == 0)
+			return getSystemUsersAppOptions(inKey, inLocale, inApplicationID);
+		return "Could not find HOW part: " + inHow;
+	}
+
+	private static String getSystemUsersAppOptions(
+			String inKey, // AppId
+			String inLocale, 
+			String inApplicationID) {
+		String cfBeanId = Utils.getCfBeanId(inKey, "User");
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result, cfBeanId);
+		if(result.isOk() && result.getObject() instanceof SimpleCassandraDao){
+			SimpleCassandraDao user = (SimpleCassandraDao) result.getObject();
+			//TODO continue...
+		}
+		
+		return("Could not find Users for " + inKey);		
+	}
+
+	private static String getSystemApplicationsKeyHow(
+			String inKey,
+			String inHow, 
+			String inLocale, 
+			String inApplicationID) {
+		if(inKey.compareToIgnoreCase("All") == 0)
+			return getSystemApplicationsAllHow(inHow, inLocale, inApplicationID);
+		return "Could not find KEY part: " + inKey;
+	}
+
+	private static String getSystemApplicationsAllHow(
+			String inHow,
+			String inLocale, 
+			String inApplicationID) {
+		if(inHow.compareToIgnoreCase("Options") == 0)
+			return getSystemApplicationsAllOptions(inLocale, inApplicationID);
+		return "Could not find HOW part: " + inHow;
+	}
+
+	private static String getSystemApplicationsAllOptions(
+			String inLocale,
+			String inApplicationID) {
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result, Constants._bean_hydra_web_applications);
+		
+		if(result.isOk() && result.getObject() instanceof WebApplications){
+			WebApplications apps = (WebApplications) result.getObject();
+			if(apps.getApplications() != null){
+				StringBuffer content = new StringBuffer();
+				content.append("Application: ");
+				content.append("<select id=\"admin.select.applications\" onchange=\"javascript:void(Globals.sendMessage({handler: 'AdmUsers',action: 'getUsers4', key:this.value, dest: 'admin.users'})); return false;\">");
+				content.append(" <option value=''>Select...</option>");
+				for(WebApplication app: apps.getApplications()){
+					content.append(String.format("<option value='%s'>%s</option>", app.getId(), app.getId()));
+				}
+				content.append("</select>");
+				content.append("<hr /><div id='admin.users'>...</div>");
+				return(content.toString());
+			}
+			return("No applications!");
+		}
+		return("Could not find web applications!");
+	}
+
 	private static String getSystemLanguagebarKeyHow(
 			String inKey, // IGNORE 
 			String inHow, 
-			String inLocale) {
+			String inLocale, 
+			String inApplicationID) {
 		if(inHow.compareToIgnoreCase("a") == 0) // HTML <a>...</a>
-			return getSystemLanguagebarKeyA(inKey, inLocale);
+			return getSystemLanguagebarKeyA(inKey, inLocale, inApplicationID);
 		
 		String tempStr = String.format("{{System|Languagebar|%s|%s}}",inKey, inHow);
 		_log.warn("Could not find HOW part for: " + tempStr);
@@ -33,13 +111,14 @@ public final class DeployerSystem {
 
 	private static String getSystemLanguagebarKeyA(
 			String inKey, // IGNORE 
-			String inLocale) {
+			String inLocale, 
+			String inApplicationID) {
 		Result result = new Result();
-		BeansUtils.getWebContextBean(result, Constants._beans_text_manager);
-		if(result.isOk() && result.getObject() instanceof TextManager){ // generate language bar
-			TextManager tm = (TextManager) result.getObject();
+		BeansUtils.getWebContextBean(result, (inApplicationID + Constants._bean_web_app_id_postfix));
+		if(result.isOk() && result.getObject() instanceof WebApplication){ // generate language bar
+			WebApplication app = (WebApplication) result.getObject();
 			String resultStr = "";
-			for (Map.Entry<String, String> entry:tm.getLocales().entrySet()) {
+			for (Map.Entry<String, String> entry:app.getLocales().entrySet()) {
 				if(entry.getKey().compareToIgnoreCase(inLocale) == 0){ // selected
 					resultStr += entry.getValue();
 				}else{
@@ -50,7 +129,7 @@ public final class DeployerSystem {
 			}
 			return resultStr;
 		}
-		return "Could not find TextManager instance!";
+		return ("Could not define locale for:" + inApplicationID);
 	}
 
 

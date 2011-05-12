@@ -3,6 +3,7 @@ package org.hydra.utils;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,13 +102,14 @@ public final class Utils {
 			String inApplicationID, 
 			String inLocale, 
 			String inUserID, 
-			Moder inModer) {
+			Moder inModer,
+			List<String> links) {
 		_log.debug("ApplicationID: " + inApplicationID);
 		_log.debug("Locale: " + inLocale);
 		_log.debug("UserID: " + inUserID);
 		_log.debug("Moder Type: " + inModer.getMode());
 		_log.debug("Moder Id: " + inModer.getId());		
-		return deployContent(inContent, inApplicationID, inLocale, inUserID, inModer, 0);
+		return deployContent(inContent, inApplicationID, inLocale, inUserID, inModer, 0, links);
 	}
 
 	public static String deployContent(
@@ -116,7 +118,8 @@ public final class Utils {
 			String inLocale, 
 			String inUserID, 
 			Moder inModer,
-			int recursionCount) {
+			int recursionCount,
+			List<String> links) {
 		
 		if(++recursionCount > 10){
 			_log.warn("No more recursion permited!!!");
@@ -140,7 +143,8 @@ public final class Utils {
 							inApplicationID, 
 							inLocale,
 							inUserID,
-							inModer);
+							inModer,
+							links);
 			 
 			matcher.appendReplacement(
 					buf,
@@ -152,7 +156,7 @@ public final class Utils {
 		matcher = pattern4Deployer.matcher(buf.toString());
 		if(matcher.find()){
 			_log.debug("Found recursive entring, recursionCount: " + recursionCount);
-			return(deployContent(buf.toString(), inApplicationID, inLocale, inUserID, inModer,recursionCount));
+			return(deployContent(buf.toString(), inApplicationID, inLocale, inUserID, inModer,recursionCount,links));
 		}
 		return(buf.toString());
 		//return(buf.toString());
@@ -166,11 +170,12 @@ public final class Utils {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			Moder inModer) {
+			Moder inModer,
+			List<String> links) {
 		if(inWhere.compareToIgnoreCase("db") == 0)
-			return DeployerDb.getDbWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, inModer);
+			return DeployerDb.getDbWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
 		else if(inWhere.compareToIgnoreCase("system") == 0)
-			return DeployerSystem.getSystemWhatKeyHow(inWhat, inKey, inHow, inLocale);
+			return DeployerSystem.getSystemWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
 		return "Could not find WHERE part: " + inWhere ;
 	}
 
@@ -188,35 +193,24 @@ public final class Utils {
 
 	public static String deployContent(
 			String inContent,
-			CommonMessage inMessage) {
+			CommonMessage inMessage,
+			List<String> links) {
 		return deployContent(
 				inContent, 
 				inMessage._web_application.getId(), 
 				inMessage._locale, 
 				inMessage._user_id,
-				inMessage._moder);
+				inMessage._moder,
+				links);
 	}
 	
 	
 	// **** Moders & Rights
-	public static boolean hasRight4Text(
+	public static boolean hasRight2Edit(
 			String inApplicationID,
 			String inUserID, 
 			Moder inModer) {
-		return (
-				inModer != null 
-				&& inModer.getMode() == MODE.MODE_TEXT
-				);	
-	}
-
-	public static boolean hasRight4Template(
-			String inApplicationID,
-			String inUserID, 
-			Moder inModer) {
-		return (
-				inModer != null 
-				&& inModer.getMode() == MODE.MODE_TEMPLATE
-				);	
+		return(inModer != null && (inModer.getMode() != MODE.MODE_UKNOWN));	
 	}
 
 	public static String shrinkString(String inString) {
@@ -225,6 +219,20 @@ public final class Utils {
 		if(inString.length() > 10 )
 			inString = inString.substring(0, 7) + "...";
 		return inString;
+	}
+
+	public static String formatEditLinks(List<String> links) {
+		if(links == null || links.size() == 0) return "";
+		StringBuffer result = new StringBuffer();
+		for (String link : links) {
+			if(result.length() != 0)	result.append(" ");
+			result.append(link);
+		}
+		return result.toString();	
+	}
+
+	public static String getCfBeanId(String inAppId, String inCFName) {
+		return("cf" + inAppId + inCFName);
 	}
 
 }

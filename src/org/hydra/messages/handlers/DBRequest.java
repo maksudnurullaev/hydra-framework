@@ -1,5 +1,8 @@
 package org.hydra.messages.handlers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.prettyprint.cassandra.dao.SimpleCassandraDao;
 
 import org.hydra.messages.CommonMessage;
@@ -18,15 +21,15 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			String updateHandlerName,
 			String updateHandlerMethodName){
 		
-		String cfBeanName = "cf" + inMessage._web_application.getId() + inCFName;	
+		String cfBeanId = Utils.getCfBeanId(inMessage._web_application.getId(),inCFName);
 		String key = inMessage.getData().get("key");
 		
-		_log.debug("Edit action for:" + cfBeanName);
+		_log.debug("Edit action for:" + cfBeanId);
 		_log.debug("... key:" + key);
 		_log.debug("... columnName:" + inColumnName);
 		
 		Result result = new Result();
-		BeansUtils.getWebContextBean(result, cfBeanName);
+		BeansUtils.getWebContextBean(result, cfBeanId);
 		if(!result.isOk()){
 			inMessage.setError(result.getResult());
 			return;
@@ -93,7 +96,12 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		SimpleCassandraDao dbCf = (SimpleCassandraDao) result.getObject();
 		
 		dbCf.insert(key, inColumnName, value);		
-		inMessage.setHtmlContent(Utils.deployContent(dbCf.get(key, inColumnName), inMessage));
+
+		List<String> links = new ArrayList<String>();
+		String htmlContent = Utils.deployContent(dbCf.get(key, inColumnName), inMessage, links);
+		inMessage.setHtmlContent(htmlContent);
+		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
+		
 	}
 	
 	public IMessage updateText(CommonMessage inMessage){
