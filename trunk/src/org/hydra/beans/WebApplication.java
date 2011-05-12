@@ -1,6 +1,8 @@
 package org.hydra.beans;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.hydra.utils.abstracts.ALogger;
@@ -9,6 +11,10 @@ public class WebApplication extends ALogger {
 	private String _id;
 	private Set<Pattern> _urlPatterns = new HashSet<Pattern>();
 	private Set<String> _stylesheets = null;
+	
+	private Map<String, String> _locales = new HashMap<String, String>();	
+	private String _defaultLocale = null;
+	private String _jscript = null;
 
 	public String getId() {
 		return _id;
@@ -47,6 +53,30 @@ public class WebApplication extends ALogger {
 		for (Pattern p : _urlPatterns)
 			result += "\t" + p.pattern() + "\n";
 		return result;
+	}
+
+	public void setLocales(Map<String, String> _locales) {
+		this._locales = _locales;
+	}
+
+	public Map<String, String> getLocales() {
+		return _locales;
+	}
+
+	public void setDefaultLocale(String defaultLocale) {
+		this._defaultLocale = defaultLocale;
+	}
+
+	public String getDefaultLocale() {
+		return _defaultLocale;
+	}
+
+	public void setJscript(String jscript) {
+		this._jscript = jscript;
+	}
+
+	public String getJscript() {
+		return _jscript;
 	}
 
 }

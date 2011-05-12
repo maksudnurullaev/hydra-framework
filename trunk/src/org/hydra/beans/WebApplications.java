@@ -14,10 +14,14 @@ public class WebApplications extends ALogger {
 		_applications = inApplicationsSet;
 	}
 	
-	public WebApplication getValidApplication(String inUrl) {
+	public WebApplication getValidApplication4(String inUrl) {
 		for(WebApplication webApplication:_applications)
 			if(webApplication.isValidUrl(inUrl)) return webApplication;		
 		return null;
+	}
+	
+	public Set<WebApplication> getApplications(){
+		return _applications;
 	}
 	
 	public String getDescription() {

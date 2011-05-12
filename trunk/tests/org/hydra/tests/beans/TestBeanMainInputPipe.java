@@ -11,7 +11,7 @@ import org.junit.Test;
 public class TestBeanMainInputPipe extends BaseTest {	
 	@Test
 	public void test_mainPipe(){
-		Assert.assertNotNull(BeansUtils4Tests.getBean(Constants._beans_main_input_pipe));
-		Assert.assertTrue(BeansUtils4Tests.getBean(Constants._beans_main_input_pipe) instanceof IPipe);
+		Assert.assertNotNull(BeansUtils4Tests.getBean(Constants._bean_main_input_pipe));
+		Assert.assertTrue(BeansUtils4Tests.getBean(Constants._bean_main_input_pipe) instanceof IPipe);
 	}	
 }

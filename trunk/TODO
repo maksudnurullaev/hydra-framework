@@ -1,3 +1,2 @@
-Create DIV objects for DOM with IDs:
-	- "workspace" (DIV, SHOWED) as cental show;
-	- "workspace.edit" (DIV, HIDDEN) time by time to work with different editable objects. 
+1. Move LanguageBar defenitions (Spring, xml)
+2. Create JavaScript files defenitions for each Application (Spring, xml) 

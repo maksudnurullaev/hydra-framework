@@ -1,12 +1,14 @@
 package org.hydra.messages.handlers;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
-import org.hydra.utils.Moder;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
@@ -51,6 +53,51 @@ public class General extends AMessageHandler { // NO_UCD
 		
 		return getInitalBody(inMessage);
 	}
+	
+	public IMessage getContent(CommonMessage inMessage){
+		if (!testParameters(inMessage, "key"))
+			return inMessage;
+		
+		String content = inMessage.getData().get("key");
+		getLog().debug("Try to get content for: " + content);
+		
+		if(!content.isEmpty()){
+			List<String> links = new ArrayList<String>();
+			String htmlContent = Utils.deployContent(content,inMessage, links);
+			inMessage.setHtmlContent(htmlContent);
+			inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
+		} else {
+			inMessage.setError("_error_empty_request_");
+		}
+		return inMessage;
+	};
+	
+	public IMessage getInitialJscript(CommonMessage inMessage){
+		if (!testParameters(inMessage, Constants._session_url))
+			return inMessage;
+
+		if (!testParameters(inMessage, Constants._session_url))
+			return inMessage;
+		
+		Result result = new Result();
+		
+		// **** save session's URL
+		SessionUtils.setSessionURLWrapper(result, inMessage);
+		
+		// **** get session's URL
+		SessionUtils.getSessionURLWrapper(result, inMessage);
+
+		// **** stylesheets
+		getLog().debug("get stylesheets");
+		inMessage.setStyleSheets(inMessage._web_application.getStylesheets());
+		
+		// **** html's personal initial jscript
+		inMessage.setJscript(
+				String.format("jscripts/%s.js", inMessage._web_application.getId())
+				, "Globals.setHtmlBody");
+		
+		return inMessage;
+	}
 
 	public IMessage getInitialHTMLElements(CommonMessage inMessage) {
 		if (!testParameters(inMessage, Constants._session_url))
@@ -58,10 +105,10 @@ public class General extends AMessageHandler { // NO_UCD
 		
 		Result result = new Result();
 		
-		// **** save session's moder
+		// **** save session's URL
 		SessionUtils.setSessionURLWrapper(result, inMessage);
 		
-		// **** set new URLWrapper
+		// **** get session's URL
 		SessionUtils.getSessionURLWrapper(result, inMessage);
 
 		// **** stylesheets
@@ -76,7 +123,7 @@ public class General extends AMessageHandler { // NO_UCD
 
 	private IMessage getInitalBody(CommonMessage inMessage) {
 		Result result = new Result();
-		String path2File = String.format("/h/body_%s.html",inMessage._web_application.getId());
+		String path2File = String.format("/h/%s.html",inMessage._web_application.getId());
 		path2File = inMessage._web_context.getServletContext().getRealPath(path2File);
 		getLog().debug("get html's body from: " + path2File);
 		
@@ -91,10 +138,14 @@ public class General extends AMessageHandler { // NO_UCD
 				getLog().debug("... App ID: " + inMessage._web_application.getId());
 				getLog().debug("... Locale: " + inMessage._locale);
 				getLog().debug("... User ID: " + inMessage._user_id);
-				inMessage.setHtmlContent(Utils.deployContent(content,inMessage));
+								
+				List<String> links = new ArrayList<String>();
+				String htmlContent = Utils.deployContent(content,inMessage, links);
+				inMessage.setHtmlContent(htmlContent);
+				inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));				
+				
 				result.setResult(true);
 			}
-
 		} else {
 			inMessage.setError(result.getResult());
 			result.setResult(false);

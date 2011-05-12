@@ -28,12 +28,12 @@ public final class DBUtils {
 			StringWrapper inValue) {
 		
 		
-		String appIdCfBean = "cf" + inKeyspace + inColumnFamily;
+		String cfBeanId = Utils.getCfBeanId(inKeyspace,inColumnFamily);
 		Result result = new Result();
-		BeansUtils.getWebContextBean(result , appIdCfBean);
+		BeansUtils.getWebContextBean(result , cfBeanId);
 		
 		if(result.isOk() && result.getObject() instanceof SimpleCassandraDao){
-			_log.debug("Bean " + appIdCfBean + " found!");
+			_log.debug("Bean " + cfBeanId + " found!");
 			SimpleCassandraDao s = (SimpleCassandraDao) result.getObject();
 			_log.debug(String.format("Try to find key/column_name: %s/%s", inKey, inСolumnName));
 			try {

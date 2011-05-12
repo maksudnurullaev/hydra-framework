@@ -39,7 +39,7 @@ public final class SessionUtils {
 		if(inResult.isOk()){
 			inMessage._locale = (String) inResult.getObject();
 		}else{
-			inMessage._locale = MessagesManager.getTextManager().getDefaultLocale();
+			inMessage._locale = inMessage._web_application.getDefaultLocale();
 		}
 		// 5. set URL Object
 		getSessionURLWrapper(inResult, inMessage);
@@ -89,12 +89,12 @@ public final class SessionUtils {
 				+ "://" + inWebContext.getHttpServletRequest().getServerName();
 
 		BeansUtils.getWebContextBean(inResult,
-				Constants._beans_hydra_applications);
+				Constants._bean_hydra_web_applications);
 		if (!inResult.isOk() || !(inResult.getObject() instanceof WebApplications))
 			return;
 
 		WebApplications webApplications = (WebApplications) inResult.getObject();
-		inMessage._web_application = webApplications.getValidApplication(urlPrefix);
+		inMessage._web_application = webApplications.getValidApplication4(urlPrefix);
 
 		if (inMessage._web_application == null) {
 			inResult.setResult("Could not initialize WebApplication object!");

@@ -1,5 +1,7 @@
 package org.hydra.utils;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.utils.DBUtils.ERROR_CODES;
@@ -14,12 +16,14 @@ public final class DeployerDb {
 			String inHow,
 			String inApplicationID, 
 			String inLocale,
-			String inUserID, Moder inModer) {
+			String inUserID, 
+			Moder inModer,
+			List<String> links) {
 		_log.debug("Enter to: getDbWhatKeyHow");
 		if(inWhat.compareToIgnoreCase("text") == 0)
-			return getDbTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, inModer);
+			return getDbTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
 		if(inWhat.compareToIgnoreCase("template") == 0)
-			return getDbTemplateKeyHow(inKey, inHow, inApplicationID, inUserID, inModer);
+			return getDbTemplateKeyHow(inKey, inHow, inApplicationID, inUserID, inModer, links);
 		
 		_log.warn(String.format("Could not find WHAT part for {{DB|%s|%s|%s}}", inWhat,inKey, inHow));
 		return String.format("{{DB|%s|%s|%s}}", inWhat,inKey, inHow) ;
@@ -31,10 +35,11 @@ public final class DeployerDb {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			Moder inModer){
+			Moder inModer,
+			List<String> links){
 		_log.debug("Enter to: getDbTextKeyHow");
 		if(inHow.compareToIgnoreCase("locale") == 0)
-			return getDbTextKeyLocale(inKey, inApplicationID, inLocale, inUserID, inModer);
+			return getDbTextKeyLocale(inKey, inApplicationID, inLocale, inUserID, inModer, links);
 		_log.error(String.format("Could not find WHAT part for {{DB|Text|%s|%s}}",inKey, inHow));
 		return String.format("{{DB|Text|%s|%s}}",inKey, inHow);
 	};
@@ -44,29 +49,28 @@ public final class DeployerDb {
 			String inHow,			 // reserved
 			String inApplicationID,  // reserved
 			String inUserID, 		 // reserved
-			Moder inModer            // reserved
-			) {
+			Moder inModer,            // reserved
+			List<String> links) {
 		_log.debug("Enter to: getDbTemplateKeyHow");
 		// get result from DB
 		StringWrapper content = new StringWrapper();
 		ERROR_CODES err = DBUtils.getValue(inApplicationID, "Template", inKey, "html", content);
 		switch (err) {
 		case NO_ERROR:
-			if(Utils.hasRight4Template(inApplicationID, inUserID, inModer))
-				makeJSEditLink4Template(inKey, content, "DBRequest", "editTemplate", "updateTemplate");
+			if(Utils.hasRight2Edit(inApplicationID, inUserID, inModer))
+				wrap2SpanEditObject(inKey, content, "DBRequest", "Template", false, links);
 			break;
 		case ERROR_NO_VALUE:
 		case ERROR_NO_CF_BEAN:
 		case ERROR_NO_DATABASE:
-			if(Utils.hasRight4Template(inApplicationID, inUserID, inModer)){
-				content.setString(String.format("{{DB|Template|%s|%s}}: %s",inKey, inHow, err.toString()));
-				makeJSEditLink4Template(inKey, content, "DBRequest", "editTemplate", "updateTemplate");
-			}else content.setString("");
+			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
+			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
+			if(Utils.hasRight2Edit(inApplicationID, inUserID, inModer))
+				wrap2SpanEditObject(inKey, content, "DBRequest", "Template", true, links);
 			break;
 		default:
-			if(Utils.hasRight4Template(inApplicationID, inUserID, inModer)){
-				content.setString(String.format("{{DB|Template|%s|%s}}: UNKOWN ERROR",inKey, inHow));
-			}else content.setString("");
+			_log.error(String.format("DB error with %s: UNKNOWN ERR_CODE", inKey));
+			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 			break;
 		}
 
@@ -78,74 +82,59 @@ public final class DeployerDb {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			Moder inModer) {
+			Moder inModer,
+			List<String> links) {
 		_log.debug("Enter to: getDbTextKeyLocale");		
 		// get result from DB
 		StringWrapper content = new StringWrapper();
 		ERROR_CODES err = DBUtils.getValue(inApplicationID, "Text", inKey, inLocale, content);
 		switch (err) {
 		case NO_ERROR:
-			if(Utils.hasRight4Text(inApplicationID, inUserID, inModer))
-				makeJSEditLink4Text(inKey, content, "DBRequest", "editText", "updateText", false);	
+			if(Utils.hasRight2Edit(inApplicationID, inUserID, inModer))
+				wrap2SpanEditObject(inKey, content, "DBRequest", "Text", false, links);	
 			break;
 		case ERROR_NO_VALUE:
 		case ERROR_NO_CF_BEAN:
 		case ERROR_NO_DATABASE:
-			if(Utils.hasRight4Text(inApplicationID, inUserID, inModer)){
-				content.setString(String.format("{{DB|Text|%s|locale}}: %s",inKey, err.toString()));
-				makeJSEditLink4Text(inKey, content, "DBRequest", "editText", "updateText", true);		
-			}else content.setString("&nbsp;");			
+			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
+			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
+			if(Utils.hasRight2Edit(inApplicationID, inUserID, inModer))
+				wrap2SpanEditObject(inKey, content, "DBRequest", "Text", true, links);		
 			break;
 		default:
-			if(Utils.hasRight4Text(inApplicationID, inUserID, inModer)){
-				content.setString(String.format("{{DB|Text|%s|locale}}: UNKOWN ERROR", inKey));
-			}else content.setString("&nbsp;");				
+			_log.error(String.format("DB error with %s: UNKNOWN ERR_CODE", inKey));
+			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 			break;
 		}
 
 		return content.getString();
 	}
 
-	private static void makeJSEditLink4Text(
+	private static void wrap2SpanEditObject(
 			String inKey, 
 			StringWrapper content, 
 			String inHandleName,
-			String inEditActionName,
-			String inUpdateActionName, 
-			boolean isError) {
-		StringBuffer resultBuffer = new StringBuffer();
-		
-		resultBuffer.append("<span class='editorlinks' id='").append(inKey).append(".editorlinks'><sup>");
-		if(isError)
-			resultBuffer.append("<a class='red' onclick=\"javascript:void(Globals.editIt('");
-		else
-			resultBuffer.append("<a class='green' onclick=\"javascript:void(Globals.editIt('");
-		resultBuffer.append(inKey).append("','").append(inHandleName).append("','").append(inEditActionName)
-					.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");		
-		resultBuffer.append("</sup></span><br />");
-		
-		resultBuffer.append(" <span id='").append(inKey).append("'>").append(isError?"":content.getString()).append("</span>");
-		
-		content.setString(resultBuffer.toString());
-	}	
-	
-	private static void makeJSEditLink4Template(
-			String inKey, 
-			StringWrapper content, 
-			String inHandleName,
-			String inEditActionName,
-			String inUpdateActionName) {
-		StringBuffer resultBuffer = new StringBuffer();
-		resultBuffer.append("<div class='edit'>");
-		
-		resultBuffer.append("&nbsp;<sup class='editorlinks' id='").append(inKey).append(".editorlinks").append("'>");
-		resultBuffer.append("<a onclick=\"javascript:void(Globals.editIt('")
-					.append(inKey).append("','").append(inHandleName).append("','").append(inEditActionName)
-					.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");		
-		resultBuffer.append(" </sup>");
-		
-		resultBuffer.append(" <div id='").append(inKey).append("'>").append(content.getString()).append("</div>");
-		resultBuffer.append("</div>");
-		content.setString(resultBuffer.toString());
+			String inEditObjectName,
+			boolean isError, List<String> links) {
+
+		String wrapString = String.format("<div class='edit' id='%s'>%s</div>", inKey, content.getString());
+		content.setString(wrapString.toString());
+		// List of Link
+		if(links != null){
+			StringBuffer result = new StringBuffer();
+			
+			// main link
+			if(isError)
+				result.append("<a class='red' onclick=\"javascript:void(Globals.editIt('");
+			else
+				result.append("<a class='green' onclick=\"javascript:void(Globals.editIt('");
+			result.append(inKey).append("','").append(inHandleName).append("','").append("edit" + inEditObjectName)
+						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
+			// sup - description
+			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.blinkIt('");
+			result.append(inKey).append("')); return false;\" href=\"#\">").append(inEditObjectName).append("</a>)</sup>");
+			
+			links.add(result.toString());
+		}
 	}
 }

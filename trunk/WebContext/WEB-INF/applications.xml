@@ -7,37 +7,75 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<!-- Applications -->
-	<bean id="_hydra_applications" class="org.hydra.beans.WebApplications">
+	<bean id="_hydra_web_applications" class="org.hydra.beans.WebApplications">
 		<property name="applications">
 			<set>
-				<ref bean="HydraUzWebAppBean"/>
-				<ref bean="UristUzWebAppBean"/>
+				<ref bean="HydraUz_WebAppBean"/>
+				<ref bean="UristUz_WebAppBean"/>
 			</set>
-		</property>		
+		</property>				
 	</bean>
 	
-	<bean id="HydraUzWebAppBean" class="org.hydra.beans.WebApplication">
+	<bean id="HydraUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="HydraUz" />
 		<property name="urls">
 			<set>
 				<value>^https?://127\.0\.0\.1.*</value>
-				<value>^https?://localhost.*</value>
 				<value>^https?://(www\.)?hydra\.uz.*</value>
 			</set>
 		</property>
+		<!-- Set jscript -->
+		<property name="jscript">
+			<value>jscripts/HydraUz.js</value>
+		</property>
+	    <!-- Set stylesheets -->
 		<property name="stylesheets">
 			<set>
 				<value>css/HydraUz.css</value>
 			</set>
 		</property>
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="eng" value="Eng"/>
+	    		<entry key="rus" value="Рус"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>eng</value>
+		</property>	    
 	</bean>
 
-	<bean id="UristUzWebAppBean" class="org.hydra.beans.WebApplication">
+	<bean id="UristUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="UristUz" />
 		<property name="urls">
 			<set>
+				<value>^https?://localhost.*</value>
 				<value>^https?://(www\.)?urist\.uz.*</value>
 			</set>
 		</property>	
+		<!-- Set jscript -->
+		<property name="jscript">
+			<value>jscripts/UristUz.js</value>
+		</property>
+	    <!-- Set stylesheets -->
+		<property name="stylesheets">
+			<set>
+				<value>css/UristUz.css</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="uzb" value="Uzb"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
 	</bean>
 </beans>

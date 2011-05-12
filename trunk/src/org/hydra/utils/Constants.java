@@ -9,11 +9,12 @@ import java.util.regex.Pattern;
  */
 public final class Constants {
 	// **** Beans
-	public static final String _beans_main_input_pipe = "_main_input_pipe_";
-	public static final String _beans_main_message_collector = "_main_message_collector";
+	public static final String _bean_main_input_pipe = "_main_input_pipe_";
+	public static final String _bean_main_message_collector = "_main_message_collector";
 	public static final String _beans_statistics_collector = "_statisticsCollector";
 	// Applicatons desriber bean
-	public static final String _beans_hydra_applications = "_hydra_applications";
+	public static final String _bean_hydra_web_applications = "_hydra_web_applications";
+	public static final String _bean_web_app_id_postfix = "_WebAppBean";
 	
 	// **** Cassandra
 	public static final String _cassandra_cluster = "_cassandra_cluster";

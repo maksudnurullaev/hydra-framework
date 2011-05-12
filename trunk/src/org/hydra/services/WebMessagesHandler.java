@@ -24,12 +24,12 @@ public class WebMessagesHandler extends ALogger {
 		// set message collector
 		MessagesCollector messagesCollector = null;
 		Result result = new Result();
-		BeansUtils.getWebContextBean(result, Constants._beans_main_message_collector);
+		BeansUtils.getWebContextBean(result, Constants._bean_main_message_collector);
 		if (result.isOk() && result.getObject() instanceof MessagesCollector)
 			messagesCollector = (MessagesCollector) result.getObject();
 		else {
 			inMessage.setError("Could not initialize "
-					+ Constants._beans_main_message_collector + " object");
+					+ Constants._bean_main_message_collector + " object");
 			_return_result.add(inMessage);
 			return _return_result.toArray();
 		}
@@ -42,16 +42,16 @@ public class WebMessagesHandler extends ALogger {
 		}
 		// Send message to default pipe
 		getLog().debug("Send message to main input pipe...");
-		BeansUtils.getWebContextBean(result, Constants._beans_main_input_pipe);
+		BeansUtils.getWebContextBean(result, Constants._bean_main_input_pipe);
 		if (result.isOk() && result.getObject() instanceof Pipe) {
 			((Pipe) result.getObject()).setMessage(inMessage);
 		} else {
 			getLog().fatal(
 					"Could not initialize " 
-						+ Constants._beans_main_input_pipe
+						+ Constants._bean_main_input_pipe
 						+ " object");
 			inMessage.setError("Could not initialize "
-					+ Constants._beans_main_input_pipe + " object");
+					+ Constants._bean_main_input_pipe + " object");
 
 			_return_result.add(inMessage);
 			return _return_result.toArray();

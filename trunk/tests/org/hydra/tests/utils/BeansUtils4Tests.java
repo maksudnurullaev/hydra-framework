@@ -32,7 +32,7 @@ public final class BeansUtils4Tests {
 	}
 
 	public static WebApplications getWebAppsMngr() {
-		return (WebApplications) getBean(Constants._beans_hydra_applications);
+		return (WebApplications) getBean(Constants._bean_hydra_web_applications);
 	}	
 
 }
