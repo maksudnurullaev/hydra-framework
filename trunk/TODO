@@ -1,2 +1,4 @@
-1. Move LanguageBar defenitions (Spring, xml)
-2. Create JavaScript files defenitions for each Application (Spring, xml) 
+Create Admin List Form for users
+--> Create utils to get count of users
+	--> Create Spring's KSP manager to get metainformation from DB
+		--> Link KSP manager with WebApplications	 

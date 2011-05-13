@@ -7,7 +7,7 @@
 
 	<bean id="cassandraHostConfigurator"
 		class="me.prettyprint.cassandra.service.CassandraHostConfigurator">
-		<constructor-arg value="localhost:9160" />
+		<constructor-arg value="192.168.34.140:9160" />
 	</bean>
 
 	<bean id="_cassandra_cluster" class="me.prettyprint.cassandra.service.ThriftCluster">

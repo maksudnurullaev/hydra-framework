@@ -21,6 +21,7 @@
 		<property name="urls">
 			<set>
 				<value>^https?://127\.0\.0\.1.*</value>
+				<value>^https?://192\.168\.34\.140.*</value>
 				<value>^https?://(www\.)?hydra\.uz.*</value>
 			</set>
 		</property>
