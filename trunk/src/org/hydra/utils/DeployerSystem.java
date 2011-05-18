@@ -2,8 +2,6 @@ package org.hydra.utils;
 
 import java.util.Map;
 
-import me.prettyprint.cassandra.dao.SimpleCassandraDao;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.WebApplication;
@@ -40,16 +38,8 @@ public final class DeployerSystem {
 	private static String getSystemUsersAppOptions(
 			String inKey, // AppId
 			String inLocale, 
-			String inApplicationID) {
-		String cfBeanId = Utils.getCfBeanId(inKey, "User");
-		Result result = new Result();
-		BeansUtils.getWebContextBean(result, cfBeanId);
-		if(result.isOk() && result.getObject() instanceof SimpleCassandraDao){
-			SimpleCassandraDao user = (SimpleCassandraDao) result.getObject();
-			//TODO continue...
-		}
-		
-		return("Could not find Users for " + inKey);		
+			String inApplicationID) {		
+		return("NOT_IMPLEMENTED_YET: getSystemUsersAppOptions:" + inKey);		
 	}
 
 	private static String getSystemApplicationsKeyHow(

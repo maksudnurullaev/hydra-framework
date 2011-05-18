@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<bean id="_cassandraHostConfigurator"
+		class="me.prettyprint.cassandra.service.CassandraHostConfigurator">
+		<constructor-arg value="localhost:9160" />
+	</bean>
+
+	<bean id="_cassandra_cluster" class="me.prettyprint.cassandra.service.ThriftCluster">
+		<constructor-arg value="Hydra Cluster" />
+		<constructor-arg ref="_cassandraHostConfigurator" />
+	</bean>
+
+	<bean id="_ksp_manager" 
+		class="org.hydra.beans.KspManager">
+		<property name="cluster"><ref bean="_cassandra_cluster" /></property>
+		<property name="cfNames">
+			<set>
+				<value>User</value>
+				<value>Text</value>
+				<value>Template</value>
+			</set>		
+		</property>
+	</bean>	
+</beans>

@@ -10,7 +10,7 @@ import org.hydra.utils.abstracts.ALogger;
 public class WebApplication extends ALogger {
 	private String _id;
 	private Set<Pattern> _urlPatterns = new HashSet<Pattern>();
-	private Set<String> _stylesheets = null;
+	private Set<String> _stylesheets = new HashSet<String>();
 	
 	private Map<String, String> _locales = new HashMap<String, String>();	
 	private String _defaultLocale = null;

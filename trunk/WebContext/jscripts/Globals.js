@@ -134,7 +134,7 @@ Globals.loadStage2 = function () {
     // Get initial html body
     Globals.sendMessage({
         handler: 'General',
-        action: 'getInitialJscript',
+        action: 'deployInitialFiles',
         url: document.URL,
     });    
 	//Globals.setHtmlBody();
@@ -143,8 +143,7 @@ Globals.setHtmlBody = function(){
     // Get initial html body
     Globals.sendMessage({
         handler: 'General',
-        action: 'getInitialHTMLElements',
-        url: document.URL,
+        action: 'getInitialBody',
         dest: 'body'
     });
 };
