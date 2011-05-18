@@ -77,7 +77,7 @@ public final class DeployerDb {
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
 		if(Utils.hasRight2Edit(inKsp, inUserID, inModer))
-			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, true, links);		
+			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, (err == ERROR_CODES.NO_ERROR), links);		
 		return content.getString();			
 	}
 	
@@ -97,7 +97,8 @@ public final class DeployerDb {
 			StringWrapper content, 
 			String inHandlerName,
 			String inEditObjectName,
-			boolean noValue, List<String> links) {
+			boolean noError, 
+			List<String> links) {
 
 		String wrapString = String.format("<div class='edit' id='%s'>%s</div>", inKey, content.getString());
 		content.setString(wrapString.toString());
@@ -106,7 +107,7 @@ public final class DeployerDb {
 			StringBuffer result = new StringBuffer();
 			
 			// main link
-			if(noValue)
+			if(!noError)
 				result.append("<a class='red' onclick=\"javascript:void(Globals.editIt('");
 			else
 				result.append("<a class='green' onclick=\"javascript:void(Globals.editIt('");

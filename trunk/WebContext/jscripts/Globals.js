@@ -160,8 +160,6 @@ Globals.setHtmlContents = function (contentsMap) {
             ){
 		            $(elemId).setStyle('display','block');
             };
-            $(elemId).highlight('#ddf');
-            
         };
     });
 };

@@ -203,8 +203,7 @@ public final class Utils {
 				inMessage._moder,
 				links);
 	}
-	
-	
+		
 	// **** Moders & Rights
 	public static boolean hasRight2Edit(
 			String inApplicationID,
