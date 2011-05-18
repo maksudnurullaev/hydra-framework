@@ -1,4 +1,8 @@
 Create Admin List Form for users
 --> Create utils to get count of users
 	--> Create Spring's KSP manager to get metainformation from DB
-		--> Link KSP manager with WebApplications	 
+		--> Link KSP manager with WebApplications
+			--> Make snapshot from current DB and clean DB
+			   --> Create KspManager bean that setup all defined DB
+			   	   configuration, i.e. Create initial keyspace & column family
+			   	   if it's necessary!

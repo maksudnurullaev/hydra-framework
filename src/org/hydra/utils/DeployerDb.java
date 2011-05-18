@@ -23,7 +23,7 @@ public final class DeployerDb {
 		if(inWhat.compareToIgnoreCase("text") == 0)
 			return getDbTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
 		if(inWhat.compareToIgnoreCase("template") == 0)
-			return getDbTemplateKeyHow(inKey, inHow, inApplicationID, inUserID, inModer, links);
+			return getDbTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, inModer, links);
 		
 		_log.warn(String.format("Could not find WHAT part for {{DB|%s|%s|%s}}", inWhat,inKey, inHow));
 		return String.format("{{DB|%s|%s|%s}}", inWhat,inKey, inHow) ;
@@ -44,39 +44,43 @@ public final class DeployerDb {
 		return String.format("{{DB|Text|%s|%s}}",inKey, inHow);
 	};
 	
-	private static String getDbTemplateKeyHow(
+	private static String getDbTemplateKeyANY(
 			String inKey,
 			String inHow,			 // reserved
 			String inApplicationID,  // reserved
 			String inUserID, 		 // reserved
-			Moder inModer,            // reserved
-			List<String> links) {
+			Moder inModer,           // reserved
+			List<String> links){
+		_log.debug("Enter to: getDbTemplateKeyHow");
+		return wrap2DivIfNeeds(inApplicationID, "Template", inKey, "html", inUserID, inModer, links);
+	};
+
+	private static String wrap2DivIfNeeds(
+			String inKsp, 
+			String inCFname,
+			String inKey,
+			String inCName,
+			String inUserID, 		 // reserved
+			Moder inModer,           // reserved
+			List<String> links){
 		_log.debug("Enter to: getDbTemplateKeyHow");
 		// get result from DB
 		StringWrapper content = new StringWrapper();
-		ERROR_CODES err = DBUtils.getValue(inApplicationID, "Template", inKey, "html", content);
+		ERROR_CODES err = DBUtils.getValue(inKsp, inCFname, inKey, inCName, content);
 		switch (err) {
 		case NO_ERROR:
-			if(Utils.hasRight2Edit(inApplicationID, inUserID, inModer))
-				wrap2SpanEditObject(inKey, content, "DBRequest", "Template", false, links);
 			break;
 		case ERROR_NO_VALUE:
-		case ERROR_NO_CF_BEAN:
-		case ERROR_NO_DATABASE:
+			content.setString(String.format("<font color='red'>%s</font>",inKey));
+		default:
 			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
-			if(Utils.hasRight2Edit(inApplicationID, inUserID, inModer))
-				wrap2SpanEditObject(inKey, content, "DBRequest", "Template", true, links);
-			break;
-		default:
-			_log.error(String.format("DB error with %s: UNKNOWN ERR_CODE", inKey));
-			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
-			break;
 		}
-
-		return content.getString();
+		if(Utils.hasRight2Edit(inKsp, inUserID, inModer))
+			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, true, links);		
+		return content.getString();			
 	}
-
+	
 	private static String getDbTextKeyLocale(
 			String inKey,
 			String inApplicationID, 
@@ -85,37 +89,15 @@ public final class DeployerDb {
 			Moder inModer,
 			List<String> links) {
 		_log.debug("Enter to: getDbTextKeyLocale");		
-		// get result from DB
-		StringWrapper content = new StringWrapper();
-		ERROR_CODES err = DBUtils.getValue(inApplicationID, "Text", inKey, inLocale, content);
-		switch (err) {
-		case NO_ERROR:
-			if(Utils.hasRight2Edit(inApplicationID, inUserID, inModer))
-				wrap2SpanEditObject(inKey, content, "DBRequest", "Text", false, links);	
-			break;
-		case ERROR_NO_VALUE:
-		case ERROR_NO_CF_BEAN:
-		case ERROR_NO_DATABASE:
-			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
-			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
-			if(Utils.hasRight2Edit(inApplicationID, inUserID, inModer))
-				wrap2SpanEditObject(inKey, content, "DBRequest", "Text", true, links);		
-			break;
-		default:
-			_log.error(String.format("DB error with %s: UNKNOWN ERR_CODE", inKey));
-			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
-			break;
-		}
-
-		return content.getString();
-	}
+		return wrap2DivIfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, inModer, links);
+	};
 
 	private static void wrap2SpanEditObject(
 			String inKey, 
 			StringWrapper content, 
-			String inHandleName,
+			String inHandlerName,
 			String inEditObjectName,
-			boolean isError, List<String> links) {
+			boolean noValue, List<String> links) {
 
 		String wrapString = String.format("<div class='edit' id='%s'>%s</div>", inKey, content.getString());
 		content.setString(wrapString.toString());
@@ -124,11 +106,11 @@ public final class DeployerDb {
 			StringBuffer result = new StringBuffer();
 			
 			// main link
-			if(isError)
+			if(noValue)
 				result.append("<a class='red' onclick=\"javascript:void(Globals.editIt('");
 			else
 				result.append("<a class='green' onclick=\"javascript:void(Globals.editIt('");
-			result.append(inKey).append("','").append(inHandleName).append("','").append("edit" + inEditObjectName)
+			result.append(inKey).append("','").append(inHandlerName).append("','").append("edit" + inEditObjectName)
 						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
 			// sup - description
 			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.blinkIt('");
@@ -136,5 +118,5 @@ public final class DeployerDb {
 			
 			links.add(result.toString());
 		}
-	}
+	};
 }

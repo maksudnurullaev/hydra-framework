@@ -230,9 +230,4 @@ public final class Utils {
 		}
 		return result.toString();	
 	}
-
-	public static String getCfBeanId(String inAppId, String inCFName) {
-		return("cf" + inAppId + inCFName);
-	}
-
 }

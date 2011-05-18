@@ -11,7 +11,7 @@ import org.hydra.utils.Utils;
 public class AdmUsers extends AMessageHandler { // NO_UCD	
 
 	public static IMessage getUsers4(CommonMessage inMessage) {
-		if(!testParameters(inMessage, "key")) return inMessage;
+		if(!testData(inMessage, "key")) return inMessage;
 		
 		String appId = inMessage.getData().get("key");
 		

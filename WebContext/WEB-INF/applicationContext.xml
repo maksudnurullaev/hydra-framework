@@ -15,7 +15,7 @@
 	<import resource="applications.xml"/>
 	
 	<!-- Cassandra's beans -->
-	<import resource="db.xml"/>
+	<import resource="db_v2.xml"/>
 
 	<!-- Text Resources object -->
 	<bean id="_text_manager" class="org.hydra.managers.TextManager">

@@ -8,6 +8,7 @@
 
 	<!-- Applications -->
 	<bean id="_hydra_web_applications" class="org.hydra.beans.WebApplications">
+		<constructor-arg><ref bean="_ksp_manager"/></constructor-arg>
 		<property name="applications">
 			<set>
 				<ref bean="HydraUz_WebAppBean"/>
@@ -72,7 +73,6 @@
 	    	<map>
 	    		<entry key="rus" value="Рус"/>
 	    		<entry key="uzb" value="Uzb"/>
-	    		<entry key="eng" value="Eng"/>
 	    	</map>
 	    </property>
 		<!-- Set default locale -->

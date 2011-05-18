@@ -1,6 +1,5 @@
 package org.hydra.messages.handlers;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import org.hydra.utils.Utils;
 
 public class General extends AMessageHandler { // NO_UCD
 	public IMessage getTextByKey(CommonMessage inMessage) {
-		if (!testParameters(inMessage, "key"))
+		if (!testData(inMessage, "key"))
 			return inMessage;
 		inMessage.setHtmlContent(
 				MessagesManager.getText(
@@ -27,7 +26,7 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 
 	public IMessage changeLocale(CommonMessage inMessage) {
-		if (!testParameters(inMessage, Constants._session_locale, Constants._session_url))
+		if (!testData(inMessage, Constants._session_locale, Constants._session_url))
 			return inMessage;
 		getLog().debug(
 				"Try to change current locale to: "
@@ -51,11 +50,11 @@ public class General extends AMessageHandler { // NO_UCD
 		// Change message locale too...
 		inMessage._locale = new_locale;
 		
-		return getInitalBody(inMessage);
+		return getInitialBody(inMessage);
 	}
 	
 	public IMessage getContent(CommonMessage inMessage){
-		if (!testParameters(inMessage, "key"))
+		if (!testData(inMessage, "key"))
 			return inMessage;
 		
 		String content = inMessage.getData().get("key");
@@ -72,11 +71,11 @@ public class General extends AMessageHandler { // NO_UCD
 		return inMessage;
 	};
 	
-	public IMessage getInitialJscript(CommonMessage inMessage){
-		if (!testParameters(inMessage, Constants._session_url))
+	public IMessage deployInitialFiles(CommonMessage inMessage){
+		if (!testData(inMessage, Constants._session_url))
 			return inMessage;
 
-		if (!testParameters(inMessage, Constants._session_url))
+		if (!testData(inMessage, Constants._session_url))
 			return inMessage;
 		
 		Result result = new Result();
@@ -99,29 +98,7 @@ public class General extends AMessageHandler { // NO_UCD
 		return inMessage;
 	}
 
-	public IMessage getInitialHTMLElements(CommonMessage inMessage) {
-		if (!testParameters(inMessage, Constants._session_url))
-			return inMessage;
-		
-		Result result = new Result();
-		
-		// **** save session's URL
-		SessionUtils.setSessionURLWrapper(result, inMessage);
-		
-		// **** get session's URL
-		SessionUtils.getSessionURLWrapper(result, inMessage);
-
-		// **** stylesheets
-		getLog().debug("get stylesheets");
-		inMessage.setStyleSheets(inMessage._web_application.getStylesheets());
-		
-		// **** html's <body>
-		getInitalBody(inMessage);
-		
-		return inMessage;
-	}
-
-	private IMessage getInitalBody(CommonMessage inMessage) {
+	public IMessage getInitialBody(CommonMessage inMessage) {
 		Result result = new Result();
 		String path2File = String.format("/h/%s.html",inMessage._web_application.getId());
 		path2File = inMessage._web_context.getServletContext().getRealPath(path2File);
