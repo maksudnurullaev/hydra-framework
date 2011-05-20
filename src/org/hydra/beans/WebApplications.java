@@ -9,6 +9,7 @@ import org.hydra.utils.abstracts.ALogger;
 public class WebApplications extends ALogger {
 	private Set<WebApplication> _applications = new HashSet<WebApplication>();
 	private KspManager _kspManager;
+	private static String _main_application_id = "";
 	
 	public WebApplications(KspManager inKspManager){
 		this._kspManager = inKspManager;
@@ -20,6 +21,15 @@ public class WebApplications extends ALogger {
 		
 		getLog().debug("Initiate DB for applications");
 		initDb(_applications);
+	}
+	
+	public void setMainApplication(WebApplication inApp){
+		getLog().debug("Set main application: " + inApp.getId());
+		_main_application_id = inApp.getId();
+	}
+	
+	public static boolean isMainApplication(WebApplication inApp){
+		return(_main_application_id.compareToIgnoreCase(inApp.getId()) == 0);
 	}
 	
 	private void initDb(Set<WebApplication> inApplications) {

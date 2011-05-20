@@ -7,17 +7,25 @@ if (HydraUz == null) {
     };
 };
 
-HydraUz.onMainMenu = function(el)
+HydraUz.setMainMenuHeader = function(txt)
 {
-	var id = el.id;
-	var contentKey = '[[DB|Text|Main.Menu.Content.' + id + '|locale]]';
-	$(HydraUz.mainContentTitle).innerHTML = el.innerHTML;
-	$(HydraUz.mainContent).fade('out');
-	
+	$(HydraUz.mainContentTitle).innerHTML = txt;
+};
+
+HydraUz.mainMenu = function(header, content)
+{
+	HydraUz.setMainMenuHeader(header);
+	content = '[[' + content + ']]';
+		
+	HydraUz.setContent(content, HydraUz.mainContent);
+};
+
+HydraUz.setContent = function(content, dest)
+{
     Globals.sendMessage({
         handler: 'General'
         , action: 'getContent'
-        , key: contentKey
-        , dest: HydraUz.mainContent
+        , key: content
+        , dest: dest
     });	
 };

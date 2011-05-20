@@ -3,6 +3,7 @@ package org.hydra.messages.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hydra.deployers.Deployer;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
@@ -30,11 +31,11 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			return;
 		}
 				
-		StringBuffer resultBuffer = new StringBuffer();
+		StringBuffer resultBuffer = new StringBuffer("<div id=\"editBox\" class=\"editbox\">");
 		
 		resultBuffer.append("<sup class='editorlinks' id='").append(key).append(".editorlinks").append("'>");
 		resultBuffer.append("&nbsp;<a onclick=\"javascript:void(Globals.uploadIt('").append(key).append("','").append(updateHandlerName).append("','").append(updateHandlerMethodName).append("')); return false;\" href=\"#\">Upload</a>");
-		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.showEditorLinks()); return false;\" href=\"#\">Close</a>");
+		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.hideEditBox()); return false;\" href=\"#\">Close</a>");
 		
 		resultBuffer.append(" </sup><br/><sup>");
 		resultBuffer.append("&nbsp;<strong>");
@@ -45,6 +46,8 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		resultBuffer.append("<textarea class='edittextarea' id='").append(key).append(".textarea'>");
 		resultBuffer.append(err == ERROR_CODES.NO_ERROR?stringWrapper.getString():err.toString());
 		resultBuffer.append("</textarea>");
+		
+		resultBuffer.append("</div>");
 		
 		inMessage.setHtmlContent(resultBuffer.toString());
 	}	
@@ -102,7 +105,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		}
 		
 		List<String> links = new ArrayList<String>();
-		String htmlContent = Utils.deployContent(outValue.getString(), inMessage, links);
+		String htmlContent = Deployer.deployContent(outValue.getString(), inMessage, links);
 		inMessage.setHtmlContent(htmlContent);
 		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
 	}

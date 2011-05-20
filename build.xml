@@ -110,8 +110,9 @@ tests.failed=${tests.failed}
 ***********************************************************
 ***********************************************************
         </fail>
-	</target>	
+	</target>
 	
+<!-- Temporaly commented!!!
 	<target name="local.build.javadoc" depends="local.build" description="Build API documentation">
 
 		<mkdir dir="./doc/api" />
@@ -124,6 +125,7 @@ tests.failed=${tests.failed}
 				<include name="**/Test*.class" />
 			</fileset>
 		</batchtest>				
-	</target>	
+	</target>
+-->
 
 </project>

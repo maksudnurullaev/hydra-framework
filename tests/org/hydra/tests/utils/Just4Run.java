@@ -1,28 +1,16 @@
 package org.hydra.tests.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hydra.utils.Moder;
-import org.hydra.utils.Utils;
+import org.hydra.managers.TextManager;
 
 
 public class Just4Run {
-	
-	static String content = "[[DB|Template|html.body.top|html]]\n" +
-	                		"[[DB|Template|html.body.middle|html]]\n" +
-	                		"[[DB|Template|html.body.foot|html]]";
 
 	public static void main(String args[]) {
+		TextManager tm = new TextManager();
 		
-		String inLocale = "eng";
-		String inUserID = "testUserId";
-		Moder inModer = new Moder(null);
-		
-		List<String> links = new ArrayList<String>();
-		String resString = Utils.deployContent(content, "HydraUz", inLocale , inUserID , inModer, links);
-		
-		System.out.println(resString);
+		System.out.println("html.body.vtop: " + tm.getTemplate("html.body.vtop"));
+		System.out.println("MainPage.Title(ENG): " + tm.getTextByKey("MainPage.Title",	null, "eng"));
+		System.out.println("MainPage.Title(RUS): " + tm.getTextByKey("MainPage.Title",	null, "rus"));
 	}
 	
 }

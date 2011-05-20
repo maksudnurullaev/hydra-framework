@@ -52,7 +52,7 @@ public class TextManager extends APropertyLoader {
 		}
 		// If not found template by key
 		if(!_dictionary.get(_fileTemplateName).containsKey(inKey))
-			return "Could not find template by key = " + inKey;		
+			return "Could not find TEMPLATE for: " + inKey;		
 		
 		return _dictionary.get(_fileTemplateName).getProperty(inKey);
 	}
@@ -71,7 +71,7 @@ public class TextManager extends APropertyLoader {
 		}		
 		
 		if(!_dictionary.get(inLocale).containsKey(inKey))
-			return "Could not find text by key = " + inKey;
+			return String.format("Could not find TEXT(%s) for: %s", inLocale, inKey);
 		
 		if(inHtmlWrap == null)
 			return _dictionary.get(inLocale).getProperty(inKey);	

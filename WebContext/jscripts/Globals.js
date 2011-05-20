@@ -3,9 +3,8 @@ if (Globals == null) {
     var Globals = { 
     		'version': '0.0.3a'
     		,'tempTextAreaID': 'tempTextAreaID.'
-    		,'workspaceEditDiv': 'workspace.edit'
-    		,'workspaceEditDivBackup': 'workspace.edit.backup'
-    		,'editLinksDiv': 'editLinks'    		
+    		,'editBox': 'editBox'
+    		,'editLinks': 'editLinks'    		
     	};
 };
 /* Blink element */
@@ -17,9 +16,8 @@ Globals.blinkIt = function(id){
  	$$('div.edit').each(function(el){
  		el.setStyle('border','0px solid white');
 	});
-	if(!oldStyle.contains('3px')){ // It's enough
+	if(!oldStyle.contains('3px')){ // quick check
  		$(id).setStyle('border','3px solid green');
- 		$(id).highlight('#000');
  	}
 };
 /* Hide/Show Editor Links */
@@ -30,17 +28,8 @@ Globals.hideEditorLinksExcept = function(id){
     	}
 	});    	
 };
-Globals.showEditorLinks = function(){
-	$(Globals.getEditDivId()).setStyle('display','none');
- 	$$('sup.editorlinks').each(function(el){
-   		el.fade('show');
-	});
-};
-Globals.getEditDivId = function(){
-	if ($(Globals.workspaceEditDiv)) {
-		return Globals.workspaceEditDiv;
-	} 	
-	return Globals.workspaceEditDivBackup;
+Globals.hideEditBox = function(){
+	$(Globals.editBox).innerHTML = "&nbsp;";
 };
 /* Edit online */
 Globals.editIt = function(divId, handleName, actionName){		
@@ -49,9 +38,9 @@ Globals.editIt = function(divId, handleName, actionName){
 	// Get initial html body
     Globals.sendMessage({
        handler: handleName,
-        action: actionName,
-        key: divId,
-        dest: Globals.getEditDivId()
+       action: actionName,
+       key: divId,
+       dest: Globals.editBox
     });
 };
 /* Upload online */
@@ -153,13 +142,7 @@ Globals.setHtmlContents = function (contentsMap) {
         if ($(elemId) && $(elemId).innerHTML != undefined && htmlContent) {
         
             $(elemId).innerHTML = htmlContent;
-            if(
-            	elemId.contains(Globals.workspaceEditDiv) ||
-            	elemId.contains(Globals.workspaceEditDivBackup) ||
-            	elemId.contains(Globals.editLinksDiv)
-            ){
-		            $(elemId).setStyle('display','block');
-            };
+            $(elemId).fade('show');
         };
     });
 };

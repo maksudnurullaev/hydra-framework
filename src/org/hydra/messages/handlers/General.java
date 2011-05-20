@@ -3,6 +3,7 @@ package org.hydra.messages.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hydra.deployers.Deployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
@@ -62,7 +63,7 @@ public class General extends AMessageHandler { // NO_UCD
 		
 		if(!content.isEmpty()){
 			List<String> links = new ArrayList<String>();
-			String htmlContent = Utils.deployContent(content,inMessage, links);
+			String htmlContent = Deployer.deployContent(content,inMessage, links);
 			inMessage.setHtmlContent(htmlContent);
 			inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
 		} else {
@@ -99,34 +100,19 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 
 	public IMessage getInitialBody(CommonMessage inMessage) {
-		Result result = new Result();
-		String path2File = String.format("/h/%s.html",inMessage._web_application.getId());
-		path2File = inMessage._web_context.getServletContext().getRealPath(path2File);
-		getLog().debug("get html's body from: " + path2File);
 		
-		Utils.getFileAsString(result,path2File);
-		if (result.isOk()) {
-			String content = (String) result.getObject();
-			if(!result.isOk()){
-				inMessage.setError(result.getResult());
-				result.setResult(false);
-			}else{
-				getLog().debug("... HTML body content length: " + content.length());
-				getLog().debug("... App ID: " + inMessage._web_application.getId());
-				getLog().debug("... Locale: " + inMessage._locale);
-				getLog().debug("... User ID: " + inMessage._user_id);
-								
-				List<String> links = new ArrayList<String>();
-				String htmlContent = Utils.deployContent(content,inMessage, links);
-				inMessage.setHtmlContent(htmlContent);
-				inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));				
-				
-				result.setResult(true);
-			}
-		} else {
-			inMessage.setError(result.getResult());
-			result.setResult(false);
-		}
+		getLog().debug("... App ID: " + inMessage._web_application.getId());
+		getLog().debug("... Locale: " + inMessage._locale);
+		getLog().debug("... User ID: " + inMessage._user_id);
+		
+		String content = MessagesManager.getTemplate("template.html.body");
+		getLog().debug("... HTML body content length: " + content.length());
+		
+		List<String> links = new ArrayList<String>();
+		String htmlContent = Deployer.deployContent(content,inMessage, links);
+		inMessage.setHtmlContent(htmlContent);
+		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));	
+		
 		return inMessage;
 	}
 }
