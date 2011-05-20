@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hydra.beans.WebApplications;
 import org.hydra.beans.StatisticsCollector;
+import org.hydra.deployers.Deployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
@@ -44,7 +45,7 @@ public class AdmRequests extends AMessageHandler { // NO_UCD
 	public static IMessage getApplicationsUsers(CommonMessage inMessage){
 		
 		List<String> links = new ArrayList<String>();
-		String htmlContent = Utils.deployContent("[[System|Applications|All|options]]",inMessage, links);
+		String htmlContent = Deployer.deployContent("[[System|Applications|All|options]]",inMessage, links);
 		inMessage.setHtmlContent(htmlContent);
 		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
 		
