@@ -15,6 +15,7 @@ HydraUz.setMainMenuHeader = function(txt)
 HydraUz.mainMenu = function(header, content)
 {
 	HydraUz.setMainMenuHeader(header);
+	$(HydraUz.mainContent).innerHTML = "...";
 	content = '[[' + content + ']]';
 		
 	HydraUz.setContent(content, HydraUz.mainContent);

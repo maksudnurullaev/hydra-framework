@@ -1,5 +1,6 @@
 package org.hydra.messages.handlers;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,23 +10,20 @@ import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Utils;
 
-public class AdmUsers extends AMessageHandler { // NO_UCD	
+public class AdmUsers extends AMessageHandler {
 
-	public static IMessage getUsers4(CommonMessage inMessage) {
+	public IMessage getUsersFor(CommonMessage inMessage){
 		if(!testData(inMessage, "key")) return inMessage;
 		
-		String appId = inMessage.getData().get("key");
+		String content  = String.format("[[System|Application|%s|Users]]", inMessage._web_application.getId());
+		getLog().debug("Try to get content for: " + content);
 		
-		if(!appId.isEmpty()){
-			List<String> links = new ArrayList<String>();
-			String content = String.format("[[System|Users|%s|options]]", appId);
-			String htmlContent = Deployer.deployContent(content,inMessage, links);
-			inMessage.setHtmlContent(htmlContent);
-			inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));									
-		} else {
-			inMessage.setHtmlContent("...");
-		}
+		List<String> links = new ArrayList<String>();
+		String htmlContent = Deployer.deployContent(content,inMessage, links);
+		inMessage.setHtmlContent(htmlContent);
+		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
+		inMessage.setHtmlContent(htmlContent);
+		
 		return inMessage;
-	}
-
+	}	
 }

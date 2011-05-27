@@ -15,8 +15,7 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 import org.hydra.utils.Utils;
 
-public class AdmRequests extends AMessageHandler { // NO_UCD
-	
+public class Adm extends AMessageHandler { // NO_UCD	
 
 	public static IMessage getHydraStatistics(CommonMessage inMessage) {
 		Result result = new Result();
@@ -29,6 +28,7 @@ public class AdmRequests extends AMessageHandler { // NO_UCD
 		inMessage.setError("Could not find statistics bean object!");
 		return inMessage;
 	}
+
 	public static IMessage getApplicationsPathDefinitions(CommonMessage inMessage){
 		Result result = new Result();
 		BeansUtils.getWebContextBean(result, Constants._bean_hydra_web_applications);
@@ -42,19 +42,21 @@ public class AdmRequests extends AMessageHandler { // NO_UCD
 		
 		return inMessage;
 	}	
-	public static IMessage getApplicationsUsers(CommonMessage inMessage){
+
+	public static IMessage getApplications(CommonMessage inMessage){
 		
 		List<String> links = new ArrayList<String>();
-		String htmlContent = Deployer.deployContent("[[System|Applications|All|options]]",inMessage, links);
+		String htmlContent = Deployer.deployContent("[[System|Applications|All|html]]",inMessage, links);
 		inMessage.setHtmlContent(htmlContent);
 		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
 		
 		inMessage.setHtmlContents("admin.action.2", htmlContent);
 		
 		return inMessage;
-	}	
+	}		
+
 	public static IMessage getCassandraConfiguration(CommonMessage inMessage){
-		String result = String.format(MessagesManager.getTemplate("template.table.with.class"),
+		String result = Utils.T("template.table.with.class",
 				"table.name.value",
 				String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
 						"Server", inMessage._web_context.getServletContext().getServerInfo())
@@ -70,4 +72,22 @@ public class AdmRequests extends AMessageHandler { // NO_UCD
 		inMessage.setHtmlContent(result);
 		return inMessage;
 	}
+	// NO_UCD	
+	public static IMessage getApp(CommonMessage inMessage) {
+		if(!testData(inMessage, "key")) return inMessage;
+		
+		String appId = inMessage.getData().get("key");
+		
+		if(!appId.isEmpty()){
+			List<String> links = new ArrayList<String>();
+			String content = String.format("[[System|Application|%s|html]]", appId);
+			String htmlContent = Deployer.deployContent(content,inMessage, links);
+			inMessage.setHtmlContent(htmlContent);
+			inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));									
+		} else {
+			inMessage.setHtmlContent("...");
+		}
+		return inMessage;
+	}
+
 }

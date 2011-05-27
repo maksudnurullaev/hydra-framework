@@ -157,13 +157,16 @@ Globals.sendMessage = function (data) {
     };
     MessageHandler.sendMessage(message, Globals.applyIncomingMessages);
 };
+Globals.confirmAndSendMessage = function (data) {
+	if(!confirm("Confirm action!\nПодтвердите действие!"))return;
+	Globals.sendMessage(data);
+};
 /* Receive message from server */
 Globals.applyIncomingMessages = function (messages) {
     Array.each(messages, function (message, messageIndex) {
         // check for error
         if (Globals.chk(message.error)) {
             alert(message.error);
-            return;
         };
         // check for style sheets
         if (Globals.chk(message.styleSheets)) {
