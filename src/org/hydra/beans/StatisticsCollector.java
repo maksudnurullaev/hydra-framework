@@ -6,6 +6,7 @@ import java.util.Map;
 import org.hydra.beans.interfaces.IStatisticsCollector;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class StatisticsCollector extends ALogger implements IStatisticsCollector {
@@ -88,7 +89,7 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		for (StatisticsTypes type : StatisticsTypes.values()) {
 			tempString += String.format("<td>&nbsp;&nbsp;&nbsp;<u>%s</u></td>", type.toString());
 		}
-		result += String.format(MessagesManager.getTemplate("template.table.tr"), tempString);
+		result += Utils.T("template.table.tr", tempString);
 		// Table rows
 		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
 			tempString = String.format("<td><u>%s</u>:</td>",mapStringTypeInteger.getKey());			
@@ -99,6 +100,6 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 			result += String.format("<tr class='tr'>%s</tr>", tempString);
 		}
 		
-		return String.format(MessagesManager.getTemplate("template.table.with.class"), "statistics", result);
+		return Utils.T("template.table.with.class", "statistics", result);
 	}
 }

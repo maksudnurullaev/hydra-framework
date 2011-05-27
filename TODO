@@ -12,4 +12,5 @@ Create Admin List Form for users
 	--> Define initial app in applications.xml
 	--> Define initial admin account in applications.xml
 		--> Decode admin password in appicatons.xml too
---> Add functionality to load different sites by http://.../?app=UristUz			   	   
+--> Add functionality to load different sites by http://.../?app=UristUz		
+--> Admin page for tags by AppId	   	   

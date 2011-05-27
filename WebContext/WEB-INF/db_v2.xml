@@ -23,6 +23,7 @@
 				<value>User</value>
 				<value>Text</value>
 				<value>Template</value>
+				<value>Tag</value>
 			</set>		
 		</property>
 	</bean>	

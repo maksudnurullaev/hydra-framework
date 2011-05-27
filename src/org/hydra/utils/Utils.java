@@ -55,16 +55,8 @@ public final class Utils {
 		return String.format(format, "no-stacktrace-found!");
 	}
 
-	public static String makeJSLink(String inLabelName, String ...inStrings){
-		if(inStrings == null || inStrings.length == 0) return "Invalid makeJSLink parameters!";
-		String result = "";
-		for(String name:inStrings){
-			if(result.length() != 0) result += ",";
-			result += name;
-		}
-		return String.format(MessagesManager.getTextManager().getTemplate("template.html.a.onClick.sendmessage.Label"),
-												result,
-												inLabelName);	
+	public static String T(String inTemplateName, Object ...inStrings){
+		return(String.format(MessagesManager.getTemplate(inTemplateName),inStrings));
 	}
 
 	public static String GetDateUUID(){ // NO_UCD
@@ -127,5 +119,57 @@ public final class Utils {
 		}
 		result.append("</div>");
 		return result.toString();	
+	}
+
+	public static String createJSLinkHAKD(
+			String inHandler
+			, String inMethod
+			, String inKey
+			, String inDest
+			, String inName
+			){
+		String jsData = Utils.T("template.html.js.HAKD"
+				, inHandler
+				, inMethod
+				, inKey
+				, inDest);
+		return Utils.T("template.html.a.onClick.sendMessage.Label"
+				, jsData
+				, inName);
+	}
+	public static String createJSLink(
+			String inJSData
+			, String inName
+			){
+		return Utils.T("template.html.a.onClick.sendMessage.Label"
+				, inJSData
+				, inName);
+	}
+	
+	public static String Q(String inString) {
+		return("'" + inString + "'");
+	}
+	
+	public static String QQ(String inString) {
+		return("\"" + inString + "\"");
+	}
+
+	public static String getJSDataArray(String ...strings ) {
+		if(strings == null || strings.length == 0 || ((strings.length % 2) != 0)) return "jsDataError";
+		StringBuffer ss = new StringBuffer();
+		boolean isKeyPart = false;
+		for(String string:strings){
+			isKeyPart = !isKeyPart; // switch key part
+			if( ss.length() > 0 && (isKeyPart)) ss.append(",");
+			ss.append(string);
+			if(isKeyPart) ss.append(":");
+		}
+		return ss.toString();
+	}
+
+	public static String createJSLinkWithConfirm(String inJSData, String inName) {
+		return Utils.T("template.html.a.onClick.confirmAndSendMessage.Label"
+				, inJSData
+				, inName);
 	}
 }
