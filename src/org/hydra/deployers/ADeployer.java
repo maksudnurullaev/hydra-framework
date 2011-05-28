@@ -9,8 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.CommonMessage;
 import org.hydra.utils.Moder;
 
-public final class Deployer {
-	private static final Log _log = LogFactory.getLog("org.hydra.deployers.Deployer");
+public final class ADeployer {
+	private static final Log _log = LogFactory.getLog("org.hydra.deployers.ADeployer");
 	
 	public static Pattern pattern4Deployer = Pattern.compile("\\[\\[(\\S+)\\|(\\S+)\\|(\\S+)\\|(\\S+)\\]\\]");
 	
@@ -104,11 +104,16 @@ public final class Deployer {
 			Moder inModer,
 			List<String> links) {
 		if(inWhere.compareToIgnoreCase("db") == 0)
-			return DeployerDb.getDbWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
+			return Db.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
 		else if(inWhere.compareToIgnoreCase("system") == 0)
-			return DeployerSystem.getSystemWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+			return System.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)
-			return DeployerDictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+		else if(inWhere.compareToIgnoreCase("Applications") == 0)
+			return Applications.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+		else if(inWhere.compareToIgnoreCase("Application") == 0)
+			return Application.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+		
 		return "Deployer: No WHERE part: " + inWhere ;
 	}
 

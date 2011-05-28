@@ -1,5 +1,7 @@
 package org.hydra.utils;
 
+import java.util.List;
+
 import me.prettyprint.cassandra.dao.SimpleCassandraDao;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.Keyspace;
@@ -15,6 +17,7 @@ import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.KspManager;
+import org.hydra.deployers.Db;
 
 /**
  * 
@@ -144,7 +147,6 @@ public final class DBUtils {
         }		
         return null; 
 	}
-
 	
 	public static ERROR_CODES deleteKey(
 			String appId, 
@@ -172,28 +174,22 @@ public final class DBUtils {
 			String inColumnFamily, 
 			String inKey, 
 			String inColumnName) {
-		_log.error("    inKeyspace: " + inKeyspace);
-		_log.error("inColumnFamily: " + inColumnFamily);
-		_log.error("         inKey: " + inKey);
-		_log.error("  inColumnName: " + inColumnName);
+		_log.debug("    inKeyspace: " + inKeyspace);
+		_log.debug("inColumnFamily: " + inColumnFamily);
+		_log.debug("         inKey: " + inKey);
+		_log.debug("  inColumnName: " + inColumnName);
 		try {		
 			Result result = new Result();
 			BeansUtils.getWebContextBean(result, Constants._bean_ksp_manager);
-			_log.error("Result of (result.isOk() && result.getObject() instanceof KspManager): " 
-					+ (result.isOk() && result.getObject() instanceof KspManager));
 			if(result.isOk() && result.getObject() instanceof KspManager){
+				_log.debug("KspManager exist: "	+ (result.isOk() && result.getObject() instanceof KspManager));
 				KspManager kspManager = (KspManager) result.getObject();
 				Keyspace keyspace = kspManager.getKeyspace(inKeyspace);
 				if(keyspace != null){
 					ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
 					columnQuery.setColumnFamily(inColumnFamily).setKey(inKey).setName(inColumnName);
-					_log.error("Result of (columnQuery == null): " + (columnQuery == null)); 
 					QueryResult<HColumn<String, String>> result2 = columnQuery.execute();
-					_log.error("Result of (result2 == null): " + (result2 == null));
-					_log.error("Result of (result2.get() == null): " + (result2.get() == null));
 					return(result2.get());
-//					return(result2);
-//					return null;
 				}else{
 					_log.error("keyspace: " + inKey + " == null)");
 					return null;
@@ -206,5 +202,61 @@ public final class DBUtils {
             _log.error(he);
             return null;
         } 
+	}
+
+	public static String wrap2DivIfNeeds(
+			String inKsp, 
+			String inCFname,
+			String inKey,
+			String inCName,
+			String inUserID, 		 // reserved
+			Moder inModer,           // reserved
+			List<String> links){
+		Db._log.debug("Enter to: getDbTemplateKeyHow");
+		// get result from DB
+		StringWrapper content = new StringWrapper();
+		ERROR_CODES err = getValue(inKsp, inCFname, inKey, inCName, content);
+		switch (err) {
+		case NO_ERROR:
+			break;
+		case ERROR_NO_VALUE:
+			content.setString(String.format("<font color='red'>%s</font>",inKey));
+		default:
+			Db._log.error(String.format("DB error with %s: %s", inKey, err.toString()));
+			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
+		}
+		if(Utils.hasRight2Edit(inKsp, inUserID, inModer))
+			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, (err == ERROR_CODES.NO_ERROR), links);		
+		return content.getString();			
+	}
+
+	public static void wrap2SpanEditObject(
+			String inKey, 
+			StringWrapper content, 
+			String inHandlerName,
+			String inEditObjectName,
+			boolean noError, 
+			List<String> links) {
+	
+		String spanId = String.format("%s.%s", inEditObjectName, inKey);
+		String wrapString = String.format("<span class='edit' id='%s'>%s</span>", spanId, content.getString());
+		content.setString(wrapString.toString());
+		// List of Link
+		if(links != null){
+			StringBuffer result = new StringBuffer();
+			
+			// main link
+			if(!noError)
+				result.append("<a class='red' onclick=\"javascript:void(Globals.editIt('");
+			else
+				result.append("<a class='green' onclick=\"javascript:void(Globals.editIt('");
+			result.append(inKey).append("','").append(inHandlerName).append("','").append("edit" + inEditObjectName)
+						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
+			// sup - description
+			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.blinkIt('");
+			result.append(spanId).append("')); return false;\" href=\"#\">").append(inEditObjectName).append("</a>)</sup>");
+			
+			links.add(result.toString());
+		}
 	}	
 }

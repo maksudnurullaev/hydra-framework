@@ -24,8 +24,7 @@ table.pad { margin-left: 35px; }
 .tr { text-align: right; }
 .tl { text-align: left; }
 
-div.editbox { border-top: 2px solid gray; border-bottom: 2px solid gray; padding: 10px; margin: 15px; text-align: center;}
-div.editlinks { border-top: 2px solid gray; border-bottom: 2px solid gray; padding: 10px; margin: 15px; text-align: center;}
+div.edit { border-top: 2px solid gray; border-bottom: 2px solid gray; padding: 10px; margin: 15px; text-align: center;}
 
 textarea.edittextarea { width: 100%; height: 200px; border: 1px solid black; }
 
