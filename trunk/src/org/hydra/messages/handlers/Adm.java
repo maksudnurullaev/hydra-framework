@@ -3,10 +3,9 @@ package org.hydra.messages.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hydra.beans.WebApplications;
 import org.hydra.beans.StatisticsCollector;
-import org.hydra.deployers.Deployer;
-import org.hydra.managers.MessagesManager;
+import org.hydra.beans.WebApplications;
+import org.hydra.deployers.ADeployer;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
@@ -46,7 +45,7 @@ public class Adm extends AMessageHandler { // NO_UCD
 	public static IMessage getApplications(CommonMessage inMessage){
 		
 		List<String> links = new ArrayList<String>();
-		String htmlContent = Deployer.deployContent("[[System|Applications|All|html]]",inMessage, links);
+		String htmlContent = ADeployer.deployContent("[[Applications|All|NULL|html]]",inMessage, links);
 		inMessage.setHtmlContent(htmlContent);
 		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
 		
@@ -74,14 +73,13 @@ public class Adm extends AMessageHandler { // NO_UCD
 	}
 	// NO_UCD	
 	public static IMessage getApp(CommonMessage inMessage) {
-		if(!testData(inMessage, "key")) return inMessage;
-		
-		String appId = inMessage.getData().get("key");
+		if(!testData(inMessage, "appid")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		
 		if(!appId.isEmpty()){
+			String content = String.format("[[Application|Options|%s|html]]", appId);
 			List<String> links = new ArrayList<String>();
-			String content = String.format("[[System|Application|%s|html]]", appId);
-			String htmlContent = Deployer.deployContent(content,inMessage, links);
+			String htmlContent = ADeployer.deployContent(content,inMessage, links);
 			inMessage.setHtmlContent(htmlContent);
 			inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));									
 		} else {

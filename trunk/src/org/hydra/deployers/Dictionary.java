@@ -4,8 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.managers.MessagesManager;
 
-public final class DeployerDictionary {
-	private static final Log _log = LogFactory.getLog("org.hydra.deployers.DeployerDictionary");
+public final class Dictionary {
+	private static final Log _log = LogFactory.getLog("org.hydra.deployers.Dictionary");
 
 	public static String getDictionaryWhatKeyHow(
 			String inWhat, 

@@ -34,7 +34,7 @@ public class Just4Run {
         
         Cluster cluster = HFactory.getOrCreateCluster("Hydra Cluster", "localhost:9160");
 
-        Keyspace keyspaceOperator = HFactory.createKeyspace("HydraUz", cluster);
+        Keyspace keyspaceOperator = HFactory.createKeyspace("UristUz", cluster);
                 
         try {
 //            Mutator<String> mutator = HFactory.createMutator(keyspaceOperator, stringSerializer);
@@ -52,7 +52,7 @@ public class Just4Run {
 //            
             RangeSlicesQuery<String, String, String> rangeSlicesQuery =
                 HFactory.createRangeSlicesQuery(keyspaceOperator, stringSerializer, stringSerializer, stringSerializer);
-            rangeSlicesQuery.setColumnFamily("Tag");
+            rangeSlicesQuery.setColumnFamily("Text");
             rangeSlicesQuery.setKeys("", "");
             rangeSlicesQuery.setRange("", "", false, 3);
             
@@ -60,16 +60,16 @@ public class Just4Run {
             QueryResult<OrderedRows<String, String, String>> result = rangeSlicesQuery.execute();
             OrderedRows<String, String, String> orderedRows = result.get();
             
-            
-            Row<String,String,String> lastRow = orderedRows.peekLast();
+//            
+//            Row<String,String,String> lastRow = orderedRows.peekLast();
 
             System.out.println("Contents of rows: ");
             for (Row<String, String, String> r : orderedRows) {
                 System.out.println(" key:" + r.getKey());
 				ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspaceOperator);
-				columnQuery.setColumnFamily("Tag").setKey(r.getKey()).setName("name");
+				columnQuery.setColumnFamily("Text").setKey(r.getKey()).setName("name");
                 QueryResult<HColumn<String, String>> result1 = columnQuery.execute();  
-                System.out.println(" value:" + result1.get().getValue());
+                System.out.println(" value:" + result1.get());
             }
             
 //            System.out.println("Should have 11 rows: " + orderedRows.getCount());

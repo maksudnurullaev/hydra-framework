@@ -4,7 +4,7 @@ package org.hydra.messages.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hydra.deployers.Deployer;
+import org.hydra.deployers.ADeployer;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
@@ -15,14 +15,14 @@ import org.hydra.utils.Utils;
 public class AdmTags extends AMessageHandler {
 
 	public IMessage getTagsFor(CommonMessage inMessage){
-		if(!testData(inMessage, "key")) return inMessage;
-		String appId = inMessage.getData().get("key");
+		if(!testData(inMessage, "appid")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		
-		String content  = String.format("[[System|Application|%s|Tags]]", appId);
+		String content  = String.format("[[Application|Tags|%s|html]]", appId);
 		getLog().debug("Try to get content for: " + content);
 		
 		List<String> links = new ArrayList<String>();
-		String htmlContent = Deployer.deployContent(content,inMessage, links);
+		String htmlContent = ADeployer.deployContent(content,inMessage, links);
 		inMessage.setHtmlContent(htmlContent);
 		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
 		inMessage.setHtmlContent(htmlContent);
@@ -30,9 +30,9 @@ public class AdmTags extends AMessageHandler {
 		return inMessage;
 	}
 	
-	public IMessage newTagForm(CommonMessage inMessage){
-		if(!testData(inMessage, "key")) return inMessage;
-		String appId = inMessage.getData().get("key");
+	public IMessage newForm(CommonMessage inMessage){
+		if(!testData(inMessage, "appid")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		
 		StringBuffer result = new StringBuffer();
 		
@@ -43,7 +43,7 @@ public class AdmTags extends AMessageHandler {
 				"50"));
 		result.append("<br />");
 		
-		String jsData = String.format("handler:%s,action:%s,key:%s,dest:%s, value:%s"
+		String jsData = String.format("handler:%s,action:%s,appid:%s,dest:%s, value:%s"
 				, Utils.Q("AdmTags")
 				, Utils.Q("addTag")
 				, Utils.Q(appId)
@@ -70,9 +70,8 @@ public class AdmTags extends AMessageHandler {
 	}
 
 	public IMessage addTag(CommonMessage inMessage){
-		if(!testData(inMessage, "key", "value")) return inMessage;
-
-		String appId = inMessage.getData().get("key");
+		if(!testData(inMessage, "appid", "value")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		String value = inMessage.getData().get("value").trim();
 		
 		if(value.isEmpty()){
@@ -90,15 +89,14 @@ public class AdmTags extends AMessageHandler {
 	}
 	
 	public IMessage deleteTag(CommonMessage inMessage){
-		if(!testData(inMessage, "key", "value")) return inMessage;
-		
-		String appId = inMessage.getData().get("key");
-		String tagKey = inMessage.getData().get("value").trim();
+		if(!testData(inMessage, "appid", "value")) return inMessage;
+		String appId = inMessage.getData().get("appid");
+		String value = inMessage.getData().get("value").trim();
 				
 		String inColumnFamily = "Tag";
 		
 		inMessage.getData().put("dest", "admin.app.action");
-		ERROR_CODES errCode = DBUtils.deleteKey(appId, inColumnFamily, tagKey);
+		ERROR_CODES errCode = DBUtils.deleteKey(appId, inColumnFamily, value);
 		if(errCode != ERROR_CODES.NO_ERROR){
 			inMessage.setError(errCode.toString());
 			return inMessage;

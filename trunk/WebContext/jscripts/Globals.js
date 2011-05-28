@@ -13,7 +13,7 @@ Globals.blinkIt = function(id){
 	
 	var oldStyle = $(id).getStyle('border');
 	
- 	$$('div.edit').each(function(el){
+ 	$$('span.edit').each(function(el){
  		el.setStyle('border','0px solid white');
 	});
 	if(!oldStyle.contains('3px')){ // quick check
@@ -43,11 +43,10 @@ Globals.editIt = function(divId, handleName, actionName){
        dest: Globals.editBox
     });
 };
-/* Upload online */
-Globals.uploadIt = function(divId, handleName, actionName){
-	var localTempTextAreaId = divId + ".textarea";
-	//if($(localTempTextAreaId) && $(divId) && !Globals.chk($(divId).innerHTML)) return ;
-	if(!($(localTempTextAreaId)) || !($(divId))) return ;
+/* Upload online 
+Globals.uploadIt = function(elemId, handleName, actionName){
+	var localTempTextAreaId = elemId + ".textarea";
+	if(!($(localTempTextAreaId)) || !($(elemId))) return ;
 	
 	// Get initial html body
     Globals.sendMessage({
@@ -57,6 +56,7 @@ Globals.uploadIt = function(divId, handleName, actionName){
         dest: divId
     });
 };
+*/
 /* Values */
 Globals.DivContentID = "content";
 Globals.DivInvisibleID = "stack";
@@ -140,7 +140,6 @@ Globals.setHtmlBody = function(){
 Globals.setHtmlContents = function (contentsMap) {
     Object.each(contentsMap, function (htmlContent, elemId) {
         if ($(elemId) && $(elemId).innerHTML != undefined && htmlContent) {
-        
             $(elemId).innerHTML = htmlContent;
             $(elemId).fade('show');
         };

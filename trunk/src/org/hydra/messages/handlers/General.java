@@ -3,7 +3,7 @@ package org.hydra.messages.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hydra.deployers.Deployer;
+import org.hydra.deployers.ADeployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
@@ -63,7 +63,7 @@ public class General extends AMessageHandler { // NO_UCD
 		
 		if(!content.isEmpty()){
 			List<String> links = new ArrayList<String>();
-			String htmlContent = Deployer.deployContent(content,inMessage, links);
+			String htmlContent = ADeployer.deployContent(content,inMessage, links);
 			inMessage.setHtmlContent(htmlContent);
 			inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
 		} else {
@@ -109,7 +109,7 @@ public class General extends AMessageHandler { // NO_UCD
 		getLog().debug("... HTML body content length: " + content.length());
 		
 		List<String> links = new ArrayList<String>();
-		String htmlContent = Deployer.deployContent(content,inMessage, links);
+		String htmlContent = ADeployer.deployContent(content,inMessage, links);
 		inMessage.setHtmlContent(htmlContent);
 		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));	
 		
