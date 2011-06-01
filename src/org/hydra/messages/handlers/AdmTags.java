@@ -1,9 +1,6 @@
 package org.hydra.messages.handlers;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hydra.deployers.ADeployer;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
@@ -21,13 +18,7 @@ public class AdmTags extends AMessageHandler {
 		String content  = String.format("[[Application|Tags|%s|html]]", appId);
 		getLog().debug("Try to get content for: " + content);
 		
-		List<String> links = new ArrayList<String>();
-		String htmlContent = ADeployer.deployContent(content,inMessage, links);
-		inMessage.setHtmlContent(htmlContent);
-		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
-		inMessage.setHtmlContent(htmlContent);
-		
-		return inMessage;
+		return(ADeployer.deployContent(content,inMessage));
 	}
 	
 	public IMessage newForm(CommonMessage inMessage){
@@ -65,8 +56,7 @@ public class AdmTags extends AMessageHandler {
 				)
 			);			
 		
-		inMessage.setHtmlContent(result.toString());
-		return inMessage;		
+		return(ADeployer.deployContent(result.toString(),inMessage));
 	}
 
 	public IMessage addTag(CommonMessage inMessage){

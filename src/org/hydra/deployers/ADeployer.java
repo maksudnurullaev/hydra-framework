@@ -1,5 +1,6 @@
 package org.hydra.deployers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,24 +8,31 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Moder;
+import org.hydra.utils.Utils;
 
 public final class ADeployer {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.ADeployer");
 	
 	public static Pattern pattern4Deployer = Pattern.compile("\\[\\[(\\S+)\\|(\\S+)\\|(\\S+)\\|(\\S+)\\]\\]");
 	
-	public static String deployContent(
+	public static IMessage deployContent(
 			String inContent,
-			CommonMessage inMessage,
-			List<String> links) {
-		return deployContent(
+			CommonMessage inMessage) {
+		List<String> links = new ArrayList<String>();
+		String content = deployContent(
 				inContent, 
 				inMessage._web_application.getId(), 
 				inMessage._locale, 
 				inMessage._user_id,
 				inMessage._moder,
 				links);
+				
+		inMessage.setHtmlContent(content);
+		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
+		
+		return(inMessage);
 	}
 
 	public static String deployContent(
@@ -78,7 +86,7 @@ public final class ADeployer {
 	}
 
 	/* **** Content Deployment **** */
-	public static String deployContent(
+	private static String deployContent(
 			String inContent, 
 			String inApplicationID, 
 			String inLocale, 
@@ -88,8 +96,7 @@ public final class ADeployer {
 		_log.debug("ApplicationID: " + inApplicationID);
 		_log.debug("Locale: " + inLocale);
 		_log.debug("UserID: " + inUserID);
-		_log.debug("Moder Type: " + inModer.getMode());
-		_log.debug("Moder Id: " + inModer.getId());		
+		_log.debug("Mode: " + inModer.getMode());
 		return deployContent(inContent, inApplicationID, inLocale, inUserID, inModer, 0, links);
 	}
 
@@ -116,5 +123,7 @@ public final class ADeployer {
 		
 		return "Deployer: No WHERE part: " + inWhere ;
 	}
+
+
 
 }

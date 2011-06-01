@@ -32,7 +32,8 @@ public final class DBUtils {
 		ERROR_NO_VALUE,
 		ERROR_NO_DATABASE, 
 		ERROR_NO_CF, 
-		ERROR_NO_KSP
+		ERROR_NO_KSP, 
+		ERROR_UKNOWN
 	}; 
 
 	public static ERROR_CODES getValue(
@@ -74,21 +75,30 @@ public final class DBUtils {
 			String inKey,
 			String inColumnName, 
 			String value) {
-		Result result = new Result();
-		BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
-		if(result.isOk() && result.getObject() instanceof KspManager){
-			KspManager kspManager = (KspManager) result.getObject();
-			SimpleCassandraDao s = kspManager.getSimpleCassandraDao(inKeyspace, inColumnFamily);
-			if(s != null){
-				_log.debug(String.format("Try to find key/column_name: %s/%s", inKey, inColumnName));
-				s.insert(inKey, inColumnName, value);
-				return ERROR_CODES.NO_ERROR;
-			}else{
-				return ERROR_CODES.ERROR_NO_CF;
+		_log.debug("Try to insert...");
+		_log.debug("inKeyspace: " + inKeyspace);
+		_log.debug("inColumnFamily: " + inColumnFamily);
+		_log.debug("inKey: " + inKey);
+		_log.debug("inColumnName: " + inColumnName);
+		_log.debug("value: " + value);
+		try{
+			Result result = new Result();
+			BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
+			if(result.isOk() && result.getObject() instanceof KspManager){
+				KspManager kspManager = (KspManager) result.getObject();
+				SimpleCassandraDao s = kspManager.getSimpleCassandraDao(inKeyspace, inColumnFamily);
+				if(s != null){
+					s.insert(inKey, inColumnName, value);
+					return ERROR_CODES.NO_ERROR;
+				}else{
+					return ERROR_CODES.ERROR_NO_CF;
+				}
 			}
+			return ERROR_CODES.ERROR_NO_KSP;
+		}catch(Exception e){
+			_log.error(e.toString());
+			return ERROR_CODES.ERROR_UKNOWN;
 		}
-		return ERROR_CODES.ERROR_NO_KSP;
-		
 	}
 	
 	public static int getCountOf(

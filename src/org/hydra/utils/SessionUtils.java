@@ -53,6 +53,7 @@ public final class SessionUtils {
 		if(inResult.isOk())
 			inMessage._moder = new Moder((String) inResult.getObject());
 	};
+	
 	public static void setSessionURLWrapper(Result result, CommonMessage inMessage) {
 		SessionUtils.setSessionData(result , inMessage, Constants._session_url, inMessage.getData().get(Constants._session_url));
 		if(!result.isOk()){
@@ -150,6 +151,5 @@ public final class SessionUtils {
 		inResult.setObject(sessionValue);
 		inResult.setResult(true);
 	}
-
 
 }

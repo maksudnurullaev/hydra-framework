@@ -34,7 +34,7 @@ public class Just4Run {
         
         Cluster cluster = HFactory.getOrCreateCluster("Hydra Cluster", "localhost:9160");
 
-        Keyspace keyspaceOperator = HFactory.createKeyspace("UristUz", cluster);
+        Keyspace keyspaceOperator = HFactory.createKeyspace("HydraUz", cluster);
                 
         try {
 //            Mutator<String> mutator = HFactory.createMutator(keyspaceOperator, stringSerializer);

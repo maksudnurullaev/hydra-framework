@@ -61,14 +61,11 @@ public class General extends AMessageHandler { // NO_UCD
 		String content = inMessage.getData().get("key");
 		getLog().debug("Try to get content for: " + content);
 		
-		if(!content.isEmpty()){
-			List<String> links = new ArrayList<String>();
-			String htmlContent = ADeployer.deployContent(content,inMessage, links);
-			inMessage.setHtmlContent(htmlContent);
-			inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
-		} else {
+		if(!content.isEmpty())
+			ADeployer.deployContent(content,inMessage);
+		else
 			inMessage.setError("_error_empty_request_");
-		}
+
 		return inMessage;
 	};
 	
@@ -76,9 +73,6 @@ public class General extends AMessageHandler { // NO_UCD
 		if (!testData(inMessage, Constants._session_url))
 			return inMessage;
 
-		if (!testData(inMessage, Constants._session_url))
-			return inMessage;
-		
 		Result result = new Result();
 		
 		// **** save session's URL
@@ -92,15 +86,14 @@ public class General extends AMessageHandler { // NO_UCD
 		inMessage.setStyleSheets(inMessage._web_application.getStylesheets());
 		
 		// **** html's personal initial jscript
-		inMessage.setJscript(
+		inMessage.setJscriptFiles(
 				String.format("jscripts/%s.js", inMessage._web_application.getId())
 				, "Globals.setHtmlBody");
 		
 		return inMessage;
 	}
 
-	public IMessage getInitialBody(CommonMessage inMessage) {
-		
+	public IMessage getInitialBody(CommonMessage inMessage) {		
 		getLog().debug("... App ID: " + inMessage._web_application.getId());
 		getLog().debug("... Locale: " + inMessage._locale);
 		getLog().debug("... User ID: " + inMessage._user_id);
@@ -108,11 +101,6 @@ public class General extends AMessageHandler { // NO_UCD
 		String content = MessagesManager.getTemplate("template.html.body");
 		getLog().debug("... HTML body content length: " + content.length());
 		
-		List<String> links = new ArrayList<String>();
-		String htmlContent = ADeployer.deployContent(content,inMessage, links);
-		inMessage.setHtmlContent(htmlContent);
-		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));	
-		
-		return inMessage;
+		return(ADeployer.deployContent(content,inMessage));
 	}
 }

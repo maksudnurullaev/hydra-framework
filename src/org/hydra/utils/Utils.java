@@ -6,10 +6,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
+
+import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.beans.Row;
+import me.prettyprint.hector.api.beans.Rows;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.html.fields.IField;
 import org.hydra.managers.MessagesManager;
+import org.hydra.messages.CommonMessage;
 import org.hydra.utils.Moder.MODE;
 
 /**
@@ -119,15 +126,14 @@ public final class Utils {
 
 	public static String formatEditLinks(List<String> links) {
 		if (links == null || links.size() == 0)
-			return "";
-		// StringBuffer result = new StringBuffer("<div class=\"editlinks\">");
+			return "CLOSE_ME: " + (new Date(System.currentTimeMillis())).toString();
 		StringBuffer result = new StringBuffer();
 		for (String link : links) {
 			if (result.length() != 0)
 				result.append(" ");
 			result.append(link);
 		}
-		// result.append("</div>");
+		result.append("<div id=\"editBox\"></div>");
 		return result.toString();
 	}
 
@@ -189,11 +195,13 @@ public final class Utils {
 	}
 
 	public static String generateForm(
+			String inTitle,
 			String inAppId,
 			String inSaveHandler, String inSaveAction, // Save
 			String inCancelHandler, String inCancelAction, // Cancel
 			String inDest,
-			ArrayList<IField> fields) {
+			ArrayList<IField> fields, 
+			ArrayList<IField> optionaFields) {
 
 		List<String> strSaveArrayData = new ArrayList<String>();
 		strSaveArrayData.add("appid");
@@ -208,6 +216,11 @@ public final class Utils {
 			strSaveArrayData.add(s.getID());
 			strSaveArrayData.add(s.getValue4JS());
 		}
+		for (IField s : optionaFields) {
+			strSaveArrayData.add(s.getID());
+			strSaveArrayData.add(s.getValue4JS());
+		}
+		
 		String jsSaveData = getJSDataArray(strSaveArrayData
 				.toArray(new String[0]));
 
@@ -235,20 +248,86 @@ public final class Utils {
 
 		String jsActions = ssJsActions.toString();
 
-		StringBuffer result = new StringBuffer();
+		StringBuffer result = new StringBuffer(inTitle);
 
 		result.append("<table class=\"statistics\">");
 		result.append("<tbody>");
-		for (IField s : fields)
-			result.append(String.format(
-					"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
-							, String.format("[[DB|Text|%s|locale]]", s.getID())
-							, s.getAsHtml()));
+		if(fields != null){
+			for (IField s : fields)
+				result.append(String.format(
+						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
+								, String.format("[[DB|Text|%s|locale]]", s.getID())
+								, s.getAsHtml()));
+		}
+		if(optionaFields != null){
+			result.append("<tr><td colspan=2 class=\"tr\">[[DB|Text|additional|local]]</td></tr>");			
+			for(IField s :optionaFields)
+				result.append(String.format(
+						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
+								, String.format("[[DB|Text|%s|locale]]", s.getID())
+								, s.getAsHtml()));
+		}
 		result.append(String.format("<tr><td>&nbsp;</td><td>%s</td></tr>",
 				jsActions));
 		result.append("</tbody>");
 		result.append("</table>");
 
 		return (result.toString());
+	}
+
+	public static List<String> getAllTags4(String inAppID, String inKeyRangeStart, String inKeyRangeFinish) {
+		List<String> result = new ArrayList<String>();
+		// set flobal tags
+		for(String tag:Constants._GLOBAL_TAGS)
+			result.add(tag);
+		Rows<String,String,String> rows = DBUtils.getRows(inAppID, "Tag", inKeyRangeStart, inKeyRangeStart);
+	    for (Row<String, String, String> r : rows) {
+	        HColumn<String, String> colResult = 
+	        	DBUtils.getColumn(inAppID, "Tag", r.getKey(), "name");
+	        if(colResult != null 
+	        		&& colResult.getValue() != null
+	        		&& colResult.getValue().compareTo(inKeyRangeStart) >= 0){
+	        	result.add(colResult.getValue());
+	        }
+	    }
+		// finish
+		return(result);
+	}
+
+	public static void testFieldEMail(
+			List<String> errorFields,
+			CommonMessage inMessage, 
+			String key) {
+		String value = inMessage.getData().get(key);
+		if(value == null || (!isValidEmailAddress(value)))
+			errorFields.add(key);
+	}
+
+	public static void test2Passwords(
+			List<String> errorFields,
+			CommonMessage inMessage, 
+			String key, 
+			String key2) {
+		String value = inMessage.getData().get(key).trim();
+		String value2 = inMessage.getData().get(key2).trim();
+		
+		if((value == null) ||
+				(!value.equals(value2)) ||
+				(value.length() < 5)){
+			errorFields.add(key);
+			errorFields.add(key2);
+		}
+			
+	}
+
+	public static String getJsHighlight4(List<String> errorFields) {
+		StringBuffer ss = new StringBuffer();
+		ss.append("Globals.makeRedBorder4([");
+		for (int i = 0; i < errorFields.size(); i++) {
+			if(i != 0) ss.append(",");
+			ss.append("\"" + errorFields.get(i) + "\"");
+		}
+		ss.append("]);");
+		return ss.toString();
 	}
 }
