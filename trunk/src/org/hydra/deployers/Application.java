@@ -16,21 +16,19 @@ public final class Application {
 		StringBuffer content = new StringBuffer(inKey + ": ");
 		
 		content.append(Utils.createJSLinkHAKD(
-				Utils.Q("AdmUsers"), 
-				Utils.Q("getUsersFor"), 
-				Utils.Q(inKey), 
-				Utils.Q("admin.app.action"), 
-				"Users")
-			);		
-		content.append(" | ");
-		content.append(Utils.createJSLinkHAKD(
 				Utils.Q("AdmTags"), 
 				Utils.Q("getTagsFor"), 
 				Utils.Q(inKey), 
 				Utils.Q("admin.app.action"), 
 				"Tags"
-				)
-			);	
+				));
+		content.append(" | ");
+		content.append(Utils.createJSLinkHAKD(
+				Utils.Q("AdmUsers"), 
+				Utils.Q("getUsersFor"), 
+				Utils.Q(inKey), 
+				Utils.Q("admin.app.action"), 
+				"Users"));	
 		
 		content.append(Utils.T("template.html.hr.divId.dots","admin.app.action"));
 		return(content.toString());

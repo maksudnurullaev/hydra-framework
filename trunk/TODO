@@ -1,16 +1,1 @@
-Create Admin List Form for users
---> Create utils to get count of users
-	--> Create Spring's KSP manager to get metainformation from DB
-		--> Link KSP manager with WebApplications
-			--> Make snapshot from current DB and clean DB
-			   --> Create KspManager bean that setup all defined DB
-			   	   configuration, i.e. Create initial keyspace & column family
-			   	   if it's necessary!
-			   	   
---> (DONE!)Remove index.html body's - move it to template.properties file
---> Initial templates to main application get from *.properties files
-	--> Define initial app in applications.xml
-	--> Define initial admin account in applications.xml
-		--> Decode admin password in appicatons.xml too
---> Add functionality to load different sites by http://.../?app=UristUz		
---> Admin page for tags by AppId	   	   
+Add form creagetor for tags pages too

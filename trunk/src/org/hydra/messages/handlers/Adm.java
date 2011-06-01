@@ -1,8 +1,5 @@
 package org.hydra.messages.handlers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hydra.beans.StatisticsCollector;
 import org.hydra.beans.WebApplications;
 import org.hydra.deployers.ADeployer;
@@ -43,15 +40,8 @@ public class Adm extends AMessageHandler { // NO_UCD
 	}	
 
 	public static IMessage getApplications(CommonMessage inMessage){
-		
-		List<String> links = new ArrayList<String>();
-		String htmlContent = ADeployer.deployContent("[[Applications|All|NULL|html]]",inMessage, links);
-		inMessage.setHtmlContent(htmlContent);
-		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
-		
-		inMessage.setHtmlContents("admin.action.2", htmlContent);
-		
-		return inMessage;
+		inMessage.getData().put("dest", "admin.action.content");
+		return(ADeployer.deployContent("[[Applications|All|NULL|html]]",inMessage));
 	}		
 
 	public static IMessage getCassandraConfiguration(CommonMessage inMessage){
@@ -78,10 +68,7 @@ public class Adm extends AMessageHandler { // NO_UCD
 		
 		if(!appId.isEmpty()){
 			String content = String.format("[[Application|Options|%s|html]]", appId);
-			List<String> links = new ArrayList<String>();
-			String htmlContent = ADeployer.deployContent(content,inMessage, links);
-			inMessage.setHtmlContent(htmlContent);
-			inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));									
+			ADeployer.deployContent(content,inMessage);
 		} else {
 			inMessage.setHtmlContent("...");
 		}

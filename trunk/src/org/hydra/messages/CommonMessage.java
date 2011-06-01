@@ -1,7 +1,9 @@
 package org.hydra.messages;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,13 +23,16 @@ public class CommonMessage implements IMessage {
 	public String _locale = null;
 	public String _user_id = null;
 	public String _session_id = null;
+	public Moder _moder = new Moder(null);
 	
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
 	private Map<String, String> _htmlContents = new HashMap<String, String>();
 	private Set<String> _styleSheets = new HashSet<String>();
-	private Map<String, String> jscript = null;
+	private Map<String, String> _jscriptFiles = null;
+	private List<String> _highlightFields = new ArrayList<String>();
+	private List<String> _noHighlightFields = new ArrayList<String>();
+	
 	private String _error = null;
-	public Moder _moder = new Moder(null);
 
 	@Override
 	public Set<String> getStyleSheets() {
@@ -80,6 +85,7 @@ public class CommonMessage implements IMessage {
 
 	@Override
 	public void setError(String inErrorString) {
+		clearContent();
 		_error = inErrorString;
 	}
 
@@ -92,12 +98,34 @@ public class CommonMessage implements IMessage {
 		return _htmlContents;
 	}
 
-	public void setJscript(String jscript, String callback) {
-		if(this.jscript == null) this.jscript = new HashMap<String, String>();
-		this.jscript.put(jscript, callback);
+	public void setJscriptFiles(String jscript, String callback) {
+		if(this._jscriptFiles == null) this._jscriptFiles = new HashMap<String, String>();
+		this._jscriptFiles.put(jscript, callback);
 	}
 
-	public Map<String, String> getJscript() {
-		return jscript;
+	public Map<String, String> getJscriptFiles() {
+		return _jscriptFiles;
+	}
+
+	public void clearContent() {
+		_htmlContents.clear();
+	}
+
+	public void setHighlightFields(List<String> _highlightFields) {
+		this._highlightFields = _highlightFields;
+	}
+
+	public List<String> getHighlightFields() {
+		return _highlightFields;
+	}
+
+	public void setNoHighlightFields(String[] mandatoryFields) {
+		this._noHighlightFields = new ArrayList<String>();
+		for(String field:mandatoryFields)
+			_noHighlightFields.add(field);
+	}
+
+	public List<String> getNoHighlightFields() {
+		return _noHighlightFields;
 	}
 }

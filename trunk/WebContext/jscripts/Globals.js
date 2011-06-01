@@ -7,6 +7,22 @@ if (Globals == null) {
     		,'editLinks': 'editLinks'    		
     	};
 };
+/* Highlight them */
+Globals.highlightFields = function(elementIDs){
+	Object.each(elementIDs, function (id){
+		if($(id)){
+			$(id).setStyle('border','1px solid red');
+		}
+	});
+};
+/* NO Highlight them */
+Globals.noHighlightFields = function(elementIDs){
+	Object.each(elementIDs, function (id){
+		if($(id)){
+			$(id).setStyle('border','1px solid #7F9DB9');
+		}
+	});
+};
 /* Blink element */
 Globals.blinkIt = function(id){
 	if(!$(id)) return ;
@@ -140,8 +156,12 @@ Globals.setHtmlBody = function(){
 Globals.setHtmlContents = function (contentsMap) {
     Object.each(contentsMap, function (htmlContent, elemId) {
         if ($(elemId) && $(elemId).innerHTML != undefined && htmlContent) {
-            $(elemId).innerHTML = htmlContent;
-            $(elemId).fade('show');
+        	if(htmlContent.search(/^close_me/i) >= 0){
+        		$(elemId).fade('hide');
+        	}else{
+	            $(elemId).innerHTML = htmlContent;
+	            $(elemId).fade('show');
+            }
         };
     });
 };
@@ -178,10 +198,19 @@ Globals.applyIncomingMessages = function (messages) {
             Globals.setHtmlContents(message.htmlContents);
         };
         // check for jscripts
-        if (Globals.chk(message.jscript)) {
-            Object.each(message.jscript, function (callback, file){
+        if (Globals.chk(message.jscriptFiles)) {
+            Object.each(message.jscriptFiles, function (callback, file){
             	Globals.loadJS(file, eval(callback));
             });
-        };        
+        };
+        // no hightlight elements        
+        if (Globals.chk(message.noHighlightFields)) {
+            Globals.noHighlightFields(message.noHighlightFields);
+        };
+        // highlight elements
+        if (Globals.chk(message.highlightFields)) {
+            Globals.highlightFields(message.highlightFields);
+        };
     });
 };
+

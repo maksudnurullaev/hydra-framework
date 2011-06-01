@@ -56,24 +56,6 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		
 		resultBuffer.append("<div>");
 		
-//		//String jsData = Utils.getJSDataArray(strings)
-//		resultBuffer.append("<a onclick=\"javascript:void(Globals.uploadIt('");
-//		resultBuffer.append(key).append("','").append(inAction).append("','");
-//		resultBuffer.append(inActionMethod).append("')); return false;\" href=\"#\">Upload</a>");
-//		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.hideEditBox()); return false;\" href=\"#\">Close</a>");
-//		
-//		resultBuffer.append(" </sup><br/><sup>");
-//		resultBuffer.append("&nbsp;<strong>");
-//		resultBuffer.append(key);
-//		resultBuffer.append("  </strong>");		
-//		resultBuffer.append("</div><br/>");
-//		
-//		resultBuffer.append("<textarea class='edittextarea' id='").append(key).append(".textarea'>");
-//		resultBuffer.append(err == ERROR_CODES.NO_ERROR?stringWrapper.getString():err.toString());
-//		resultBuffer.append("</textarea>");
-//		
-//		resultBuffer.append("</div>");
-		
 		inMessage.setHtmlContent(resultBuffer.toString());
 	}	
 	
@@ -94,12 +76,11 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 				"DBRequest", "updateTemplate");
 		return inMessage;
 	}	
-
 	
 	public IMessage updateText(CommonMessage inMessage){
-		if(!testData(	inMessage, "value", "dest")) return inMessage;
+		if(!testData(	inMessage, "key", "value", "dest")) return inMessage;
 		
-		String key = inMessage.getData().get("dest");
+		String key = inMessage.getData().get("key");
 		String value = inMessage.getData().get("value");		
 				
 		update(inMessage, "Text", key, inMessage._locale, value);
@@ -131,16 +112,13 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			return;
 		}
 		
-		List<String> links = new ArrayList<String>();
-		String htmlContent = ADeployer.deployContent(outValue.getString(), inMessage, links);
-		inMessage.setHtmlContent(htmlContent);
-		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
+		ADeployer.deployContent(outValue.getString(), inMessage);
 	}
 	
 	public IMessage updateTemplate(CommonMessage inMessage){
-		if(!testData(	inMessage, "value", "dest")) return inMessage;
+		if(!testData(	inMessage, "key", "value", "dest")) return inMessage;
 		
-		String key = inMessage.getData().get("dest");
+		String key = inMessage.getData().get("key");
 		String value = inMessage.getData().get("value");		
 		
 		update(inMessage, "Template", key, "html", value);

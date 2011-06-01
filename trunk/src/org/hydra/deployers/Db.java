@@ -21,13 +21,14 @@ public final class Db {
 			Moder inModer,
 			List<String> links) {
 		_log.debug("Enter to: getDbWhatKeyHow");
+		
 		if(inWhat.compareToIgnoreCase("text") == 0)
 			return getTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
 		if(inWhat.compareToIgnoreCase("template") == 0)
 			return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, inModer, links);
 		
-		_log.warn(String.format("Could not find WHAT part for {{DB|%s|%s|%s}}", inWhat,inKey, inHow));
-		return String.format("{{DB|%s|%s|%s}}", inWhat,inKey, inHow) ;
+		_log.warn(String.format("Could not find WHAT part for {{DB|!!!%s!!!|%s|%s}}", inWhat,inKey, inHow));
+		return String.format("Could not find WHAT part for {{DB|!!!%s!!!|%s|%s}}", inWhat,inKey, inHow) ;
 	}
 
 	private static String getTextKeyHow(
@@ -41,8 +42,8 @@ public final class Db {
 		_log.debug("Enter to: getDbTextKeyHow");
 		if(inHow.compareToIgnoreCase("locale") == 0)
 			return getTextKeyLocale(inKey, inApplicationID, inLocale, inUserID, inModer, links);
-		_log.error(String.format("Could not find WHAT part for {{DB|Text|%s|%s}}",inKey, inHow));
-		return String.format("{{DB|Text|%s|%s}}",inKey, inHow);
+		_log.error(String.format("Could not find Key part for {{DB|Text|%s|%s}}",inKey, inHow));
+		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, inModer, links);
 	};
 	
 	private static String getTemplateKeyANY(
