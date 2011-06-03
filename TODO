@@ -1,1 +1,7 @@
-Add form creagetor for tags pages too
+1.
+	may be it's good idea to use SessionID in every message to control session expiration
+2. 
+	use form generatort for tags pages
+	create delete edit link & forms for User
+3.
+	check for hydra.uz and urist.uz DNS information

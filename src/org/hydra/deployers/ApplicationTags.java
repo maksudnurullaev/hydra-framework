@@ -22,9 +22,9 @@ public final class ApplicationTags {
 		content.append("<hr />");
 		content.append("<div id='admin.app.action.tag'>");
 		content.append("<strong>Dinamic tags</strong> | ");
-		content.append(Utils.createJSLinkHAKD(
+		content.append(Utils.createJSLinkHAAD(
 				Utils.Q("AdmTags"), 
-				Utils.Q("newForm"), 
+				Utils.Q("addForm"), 
 				Utils.Q(inAppID),
 				Utils.Q("admin.app.action.tag"), 
 				"New"
@@ -41,20 +41,11 @@ public final class ApplicationTags {
 	        	String value = colResult.getValue();
 	        	Application._log.debug(" value: " + value);
 				StringBuffer content2 = new StringBuffer();
-				// edit link
-				String jsData = Utils.getJSDataArray(
-							 "handler", Utils.Q("AdmTags")
-							,"action",  Utils.Q("editTag")
-							,"appid", Utils.Q(inAppID)
-							,"value", Utils.Q(key)
-							,"dest", Utils.Q("admin.app.action.tag")
-						);
-				content2.append(Utils.createJSLink(jsData, "Edit"));
 				// delete link
 				content2.append("&nbsp;");
-				jsData = Utils.getJSDataArray(
+				String jsData = Utils.getJSDataArray(
 						 "handler", Utils.Q("AdmTags")
-						,"action",  Utils.Q("deleteTag")
+						,"action",  Utils.Q("delete")
 						,"appid", Utils.Q(inAppID)
 						,"value", Utils.Q(key)
 						,"dest", Utils.Q("admin.app.action.tag")

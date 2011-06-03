@@ -32,10 +32,8 @@
 			<value>jscripts/HydraUz.js</value>
 		</property>
 	    <!-- Set stylesheets -->
-		<property name="stylesheets">
-			<set>
-				<value>css/HydraUz.css</value>
-			</set>
+		<property name="styleSheet">
+			<value>css/HydraUz.css</value>
 		</property>
 	    <!-- Set locales -->
 	    <property name="locales">
@@ -63,10 +61,8 @@
 			<value>jscripts/UristUz.js</value>
 		</property>
 	    <!-- Set stylesheets -->
-		<property name="stylesheets">
-			<set>
+		<property name="styleSheet">
 				<value>css/UristUz.css</value>
-			</set>
 		</property>		
 	    <!-- Set locales -->
 	    <property name="locales">

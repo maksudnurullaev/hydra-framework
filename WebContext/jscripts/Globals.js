@@ -4,7 +4,9 @@ if (Globals == null) {
     		'version': '0.0.3a'
     		,'tempTextAreaID': 'tempTextAreaID.'
     		,'editBox': 'editBox'
-    		,'editLinks': 'editLinks'    		
+    		,'editLinks': 'editLinks'    	
+    		,'sessionID': 'unknown'	
+    		,'tryToLoadCount': 0
     	};
 };
 /* Highlight them */
@@ -73,9 +75,6 @@ Globals.uploadIt = function(elemId, handleName, actionName){
     });
 };
 */
-/* Values */
-Globals.DivContentID = "content";
-Globals.DivInvisibleID = "stack";
 /* JS Loader */
 Globals.loadJS = function (pathToJS, onLoadFn) {
     new Asset.javascript(pathToJS, {
@@ -136,15 +135,27 @@ Globals.loadStage2 = function () {
         Globals.debug("ERROR: Could not load stage #1");
         return;
     };
+	// load CSS files
+	Globals.loadCSSFile(); 
+};
+// load CSS files - #1 initial page loading stage
+Globals.loadCSSFile = function(){
     // Get initial html body
     Globals.sendMessage({
         handler: 'General',
-        action: 'deployInitialFiles',
-        url: document.URL,
-    });    
-	//Globals.setHtmlBody();
+        action: 'loadCSSFile'
+    });   
 };
-Globals.setHtmlBody = function(){
+// load JS files - #2 initial page loading stage
+Globals.loadJSFile = function(){
+    // Get initial html body
+    Globals.sendMessage({
+        handler: 'General',
+        action: 'loadJSFile'
+    });   
+};
+// load initial page
+Globals.loadInitialPage = function(){
     // Get initial html body
     Globals.sendMessage({
         handler: 'General',
@@ -172,7 +183,8 @@ Globals.chk = function (obj) {
 /* Send message to server*/
 Globals.sendMessage = function (data) {
     var message = {
-        data: data
+        data: data,
+        sessionID: Globals.sessionID
     };
     MessageHandler.sendMessage(message, Globals.applyIncomingMessages);
 };
@@ -186,22 +198,43 @@ Globals.applyIncomingMessages = function (messages) {
         // check for error
         if (Globals.chk(message.error)) {
             alert(message.error);
+        };  
+    	// check for existence of sessionID
+    	if(!Globals.chk(message.sessionID)){
+    		alert('Could not initialize Sesson ID!');
+    		return;
+    	}
+    	// is it new session id!?
+    	if(Globals.sessionID != message.sessionID){
+    		if(Globals.tryToLoadCount > 3){
+    			alert('Could not load pages, try to load count: ' + Globals.tryToLoadCount);
+    			return;
+    		};
+    		// just for debug
+    		if(Globals.tryToLoadCount > 1){
+    			alert("DEBUG!!! Session (" + Globals.sessionID + ") expired, new session: " + message.sessionID);
+    		};
+    		Globals.sessionID = message.sessionID;
+    		Globals.tryToLoadCount += 1;
+			if(!Globals.chk(message.styleSheet)){
+				// Step #1 - initial page's CSS loading stage
+				Globals.loadCSSFile();
+				return;
+			};			
+    	}
+        // load CSS
+        if (Globals.chk(message.styleSheet)) {
+        	Asset.css(message.styleSheet);
+        	Globals.loadJSFile();
         };
-        // check for style sheets
-        if (Globals.chk(message.styleSheets)) {
-            message.styleSheets.each(function (cssPath) {
-                Asset.css(cssPath, null);
-            });
+        // check JS files
+        if (Globals.chk(message.JSFile)) {
+           	Globals.loadJS(message.JSFile, Globals.loadInitialPage);
         };
-        // check for htmls
+     
+        // check for html elements
         if (Globals.chk(message.htmlContents)) {
             Globals.setHtmlContents(message.htmlContents);
-        };
-        // check for jscripts
-        if (Globals.chk(message.jscriptFiles)) {
-            Object.each(message.jscriptFiles, function (callback, file){
-            	Globals.loadJS(file, eval(callback));
-            });
         };
         // no hightlight elements        
         if (Globals.chk(message.noHighlightFields)) {

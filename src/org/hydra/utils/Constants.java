@@ -40,8 +40,6 @@ public final class Constants {
 	
 	// **** Session keys
 	public static final String _session_locale = "locale";
-	public static final String _session_url = "url";
-	public static final String _session_id = "sessionId";
 	
 	// **** Constant templates
 	public static final String _language_bar_a_template = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({handler:'General',action:'changeLocale', locale:'%s', dest:'body', url: document.URL })); return false;\">%s</a>";
@@ -53,5 +51,5 @@ public final class Constants {
 	public static final String _mode_edit_templates = "edit_templates";
 	public static final String _utf8 = "UTF8";
 	
-	public static final String[] _GLOBAL_TAGS = {"User", "User.Editor", "User.Administrator"};
+	public static final String[] _GLOBAL_TAGS = {"User", "User.Editor", "User.Publisher", "User.Administrator"};
 }

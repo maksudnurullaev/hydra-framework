@@ -10,11 +10,11 @@ import org.hydra.utils.abstracts.ALogger;
 public class WebApplication extends ALogger {
 	private String _id;
 	private Set<Pattern> _urlPatterns = new HashSet<Pattern>();
-	private Set<String> _stylesheets = new HashSet<String>();
 	
 	private Map<String, String> _locales = new HashMap<String, String>();	
 	private String _defaultLocale = null;
 	private String _jscript = null;
+	private String _styleSheet = null;
 
 	public String getId() {
 		return _id;
@@ -24,12 +24,12 @@ public class WebApplication extends ALogger {
 		this._id = inId;
 	}
 
-	public void setStylesheets(Set<String> stylessheets) {
-		this._stylesheets = stylessheets;
+	public void setStyleSheet(String stylessheet) {
+		this._styleSheet = stylessheet;
 	}
 
-	public Set<String> getStylesheets() {
-		return _stylesheets;
+	public String getStyleSheet() {
+		return _styleSheet;
 	}
 
 	public void setUrls(Set<String> inUrlsSet) {

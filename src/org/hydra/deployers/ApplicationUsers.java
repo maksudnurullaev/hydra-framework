@@ -29,9 +29,9 @@ public final class ApplicationUsers {
 		content.append("Count of users: " + (count < 0? "error" : count));		
 		
 		content.append(" | ");
-		content.append(Utils.createJSLinkHAKD(
+		content.append(Utils.createJSLinkHAAD(
 				Utils.Q("AdmUsers"), 
-				Utils.Q("newForm"), 
+				Utils.Q("addForm"), 
 				Utils.Q(inKey),
 				Utils.Q("admin.app.action"), 
 				"New"

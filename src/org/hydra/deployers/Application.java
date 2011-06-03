@@ -15,17 +15,17 @@ public final class Application {
 		
 		StringBuffer content = new StringBuffer(inKey + ": ");
 		
-		content.append(Utils.createJSLinkHAKD(
+		content.append(Utils.createJSLinkHAAD(
 				Utils.Q("AdmTags"), 
-				Utils.Q("getTagsFor"), 
+				Utils.Q("list"), 
 				Utils.Q(inKey), 
 				Utils.Q("admin.app.action"), 
 				"Tags"
 				));
 		content.append(" | ");
-		content.append(Utils.createJSLinkHAKD(
+		content.append(Utils.createJSLinkHAAD(
 				Utils.Q("AdmUsers"), 
-				Utils.Q("getUsersFor"), 
+				Utils.Q("list"), 
 				Utils.Q(inKey), 
 				Utils.Q("admin.app.action"), 
 				"Users"));	

@@ -112,7 +112,8 @@ public final class Utils {
 			String inApplicationID,
 			String inUserID,
 			Moder inModer) {
-		return (inModer != null && (inModer.getMode() != MODE.MODE_UKNOWN));
+		//return (inModer != null && (inModer.getMode() != MODE.MODE_UKNOWN));
+		return true;
 	}
 
 	public static String shrinkString(String inString) {
@@ -137,14 +138,14 @@ public final class Utils {
 		return result.toString();
 	}
 
-	public static String createJSLinkHAKD(
+	public static String createJSLinkHAAD(
 			String inHandler
 			, String inMethod
 			, String inKey
 			, String inDest
 			, String inName
 			) {
-		String jsData = Utils.T("template.html.js.HAKD"
+		String jsData = Utils.T("template.html.js.HAAD"
 				, inHandler
 				, inMethod
 				, inKey
@@ -163,6 +164,9 @@ public final class Utils {
 				, inName);
 	}
 
+	public static String V(String id) {
+		return "$('" + id + "').value" ; 
+	}
 	public static String Q(String inString) {
 		return ("'" + inString + "'");
 	}
@@ -212,13 +216,19 @@ public final class Utils {
 		strSaveArrayData.add(Utils.Q(inSaveAction));
 		strSaveArrayData.add("dest");
 		strSaveArrayData.add(Utils.Q(inDest));
-		for (IField s : fields) {
-			strSaveArrayData.add(s.getID());
-			strSaveArrayData.add(s.getValue4JS());
+		
+		if(fields != null && fields.size() > 0){			
+			for (IField s : fields) {
+				strSaveArrayData.add(s.getID());
+				strSaveArrayData.add(s.getValue4JS());
+			}
 		}
-		for (IField s : optionaFields) {
-			strSaveArrayData.add(s.getID());
-			strSaveArrayData.add(s.getValue4JS());
+		
+		if(optionaFields != null && optionaFields.size() > 0){
+			for (IField s : optionaFields) {
+				strSaveArrayData.add(s.getID());
+				strSaveArrayData.add(s.getValue4JS());
+			}
 		}
 		
 		String jsSaveData = getJSDataArray(strSaveArrayData
@@ -260,7 +270,7 @@ public final class Utils {
 								, s.getAsHtml()));
 		}
 		if(optionaFields != null){
-			result.append("<tr><td colspan=2 class=\"tr\">[[DB|Text|additional|local]]</td></tr>");			
+			result.append("<tr><td colspan=\"2\"><u><i>[[DB|Text|additional|local]]</i></u></td></tr>");			
 			for(IField s :optionaFields)
 				result.append(String.format(
 						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
@@ -330,4 +340,145 @@ public final class Utils {
 		ss.append("]);");
 		return ss.toString();
 	}
+
+	public static String getTagsAsEditHtml(
+			String appId, 
+			String elemID,
+			String value,
+			String addValue,
+			String delValue,
+			List<String> tagPrefixes) {
+		
+		if(tagPrefixes == null || tagPrefixes.size() == 0) return "No tag prefixes";
+		// add value
+		if(addValue != null){
+			if(value == null || value.isEmpty())
+				value = addValue;
+			else
+				value += ("," + addValue); 
+		}
+		// delete value
+		if(delValue != null){
+			if(value != null && (!value.isEmpty()))
+				value = del4Tags(value, delValue);
+		}
+
+		String selectID = "tag.select." + elemID;
+		String prefixesID = "tag.prefixes." + elemID; 
+		String divId = "tag.div." + elemID;
+		
+		StringBuffer ssPart = new StringBuffer();
+		// input - value
+		String inputHtmlTag = String.format("<input id=\"%s\" type=\"hidden\" value=\"%s\">", 
+				elemID,
+				value);
+		// input - prefixes
+		String prefixesValue = list2String(tagPrefixes);
+		String prefixesHtmlTag = String.format("<input id=\"%s\" type=\"hidden\" value=\"%s\">", 
+				prefixesID,
+				prefixesValue);
+		
+		// select
+		ssPart.append(String.format("<select id=\"%s\" style=\"border: 1px solid rgb(127, 157, 185);\">", selectID));
+		boolean selectHasElements = false;
+		if(tagPrefixes != null && tagPrefixes.size() > 0){
+			String[] arrOfTags = value.split(",");
+			for(String prefix:tagPrefixes){
+				for(String tag:Utils.getAllTags4(appId, prefix, prefix)){
+					if(containsTag(arrOfTags, tag)){// already exit 
+						continue;
+					}else{
+						ssPart.append(String.format("<option value=\"%s\">[[DB|Text|%s|locale]]</option>", tag, tag));
+						selectHasElements = true;
+					}
+				}
+			}
+		}
+		ssPart.append("</select> | ");
+		
+		String jsData = Utils.getJSDataArray(
+				 "handler", Utils.Q("Tagger")
+				,"action",  Utils.Q("add")
+				,"appid", Utils.Q(appId)
+				,"elemid", Utils.Q(elemID)
+				,"value", Utils.V(elemID)
+				,"addvalue", Utils.V(selectID)
+				,"prefixes", Utils.V(prefixesID)
+				,"dest", Utils.Q(divId)
+			);			
+		ssPart.append(Utils.createJSLink(jsData, "Add"));		
+		
+		// div for tags
+		String textPart = "";
+		if(value.isEmpty()){
+			textPart = "...";
+		}else{
+			textPart = "";
+			String[] arr = value.split(",");
+			for(String t:arr){
+				if(!textPart.isEmpty()) textPart += ", ";
+				textPart += String.format("[[DB|Text|%s|locale]]", t);
+				jsData = Utils.getJSDataArray(
+						 "handler", Utils.Q("Tagger")
+						,"action",  Utils.Q("delete")
+						,"appid", Utils.Q(appId)
+						,"elemid", Utils.Q(elemID)
+						,"value", Utils.V(elemID)
+						,"delvalue", Utils.Q(t)
+						,"prefixes", Utils.V(prefixesID)
+						,"dest", Utils.Q(divId)
+					);			
+				textPart += ("[" + Utils.createJSLink(jsData, "X") + "]");	
+			}
+			
+		}
+		
+		// finish
+		String result = "";
+		result += String.format("<div id='%s'>", divId);
+		result += textPart;
+		if(selectHasElements)
+			result += ("<hr />" + ssPart.toString());
+		result += (inputHtmlTag + prefixesHtmlTag);
+		result += "</div>";
+		
+		return(result);  		
+	}
+
+	private static boolean containsTag(String[] arrOfTags, String tag) {
+		for(String t: arrOfTags){
+			if(tag.length() == t.length() && tag.compareTo(t) == 0)
+				return true;
+		}
+		return false;
+	}
+
+	private static String del4Tags(String value, String delValue) {
+		String[] arr = value.split(",");
+		String result = "";
+		for(String t: arr){
+			if(t.compareTo(delValue) == 0) continue;
+			if(!result.isEmpty()) result += ",";
+			result += t;
+		}
+		return result;
+	}
+
+	private static String list2String(List<String> values) {
+		String result = "";
+		for(String value:values){
+			if(!result.isEmpty()) result += ",";
+			result += value;
+		}
+		return result;
+	}
+
+	public static List<String> string2List(String values, String delimiter) {
+		List<String> result = new ArrayList<String>();
+		for(String value: values.split(","))
+			result.add(value);
+		
+		return result;
+	}
+
 }

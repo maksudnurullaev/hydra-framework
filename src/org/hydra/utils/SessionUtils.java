@@ -33,7 +33,7 @@ public final class SessionUtils {
 		if (!inResult.isOk())
 			return inResult;
 		// 3. set session id
-		inMessage._session_id = inMessage._web_context.getSession().getId();
+		inMessage.setSessionID(inMessage._web_context.getSession().getId());
 		// 4. set locale
 		getSessionData(inResult, inMessage, Constants._session_locale);
 		if(inResult.isOk()){
@@ -41,25 +41,9 @@ public final class SessionUtils {
 		}else{
 			inMessage._locale = inMessage._web_application.getDefaultLocale();
 		}
-		// 5. set URL Object
-		getSessionURLWrapper(inResult, inMessage);
 		
 		inResult.setResult(true);
 		return inResult;
-	};
-	
-	public static void getSessionURLWrapper(Result inResult, CommonMessage inMessage) {
-		getSessionData(inResult, inMessage, Constants._session_url);
-		if(inResult.isOk())
-			inMessage._moder = new Moder((String) inResult.getObject());
-	};
-	
-	public static void setSessionURLWrapper(Result result, CommonMessage inMessage) {
-		SessionUtils.setSessionData(result , inMessage, Constants._session_url, inMessage.getData().get(Constants._session_url));
-		if(!result.isOk()){
-			inMessage.setError(result.getResult());
-			result.setResult(false);		
-		}
 	};
 	
 	private static void generateSessionDataKey(
@@ -143,7 +127,7 @@ public final class SessionUtils {
 		String sessionValue = (String) inCommonMessage._web_context.getSession()
 				.getAttribute(sessionKey);
 		if (sessionValue == null){
-			_log.warn("Could not get session session data for key: " + sessionKey);
+			_log.info("Could not get session session data for key: " + sessionKey);
 			inResult.setResult(false);
 			return;
 		}

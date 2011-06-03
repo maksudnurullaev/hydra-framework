@@ -60,12 +60,12 @@ public class WebMessagesHandler extends ALogger {
 		long startTime = System.currentTimeMillis();
 		// Waiting for response
 		getLog().debug("START: Waiting...");
-		while (!messagesCollector.hasNewMessages(inMessage.getData().get(inMessage._session_id))) {
+		while (!messagesCollector.hasNewMessages(inMessage.getSessionID())) {
 			// if timeout
 			if (System.currentTimeMillis() - startTime > Constants._max_response_wating_time) {
 
 				inMessage.setError("Waiting time limit is over...");
-				getLog().error("Waiting time limit is over...");
+				getLog().debug("Waiting time limit is over...");
 
 				_return_result.add(inMessage);
 				return _return_result.toArray();
@@ -76,8 +76,7 @@ public class WebMessagesHandler extends ALogger {
 		getLog().debug("END: Waiting...");
 		// If response messages exist
 		IMessage messageBean = null;
-		while ((messageBean = 
-			messagesCollector.getMessage(inMessage.getData().get(inMessage._session_id))) != null) 
+		while ((messageBean = messagesCollector.getMessage(inMessage.getSessionID())) != null)
 		{
 			if(messageBean.getData() != null) messageBean.getData().clear();
 			_return_result.add((MessageBean) messageBean);
