@@ -31,60 +31,64 @@ public class Just4Run {
     private static StringSerializer stringSerializer = StringSerializer.get();
     
     public static void main(String[] args) throws Exception {
+    		String test = "asdf,assdf,sdf,sdaf,sdaf,sdf,s";
+    		String[] arr = test.split(",");
+    		for(String t:arr)
+    			System.out.println(t);
         
-        Cluster cluster = HFactory.getOrCreateCluster("Hydra Cluster", "localhost:9160");
-
-        Keyspace keyspaceOperator = HFactory.createKeyspace("HydraUz", cluster);
-                
-        try {
-//            Mutator<String> mutator = HFactory.createMutator(keyspaceOperator, stringSerializer);
-//            mutator.addDeletion("ROOTtest1", "Tag");
-//            //Mutator 
-//            MutationResult result = mutator.execute();
-//            System.out.println(result.toString());
-
-//            for (int i = 0; i < 20; i++) {
-//                mutator.addInsertion("fake_key_" + i, "User", HFactory.createStringColumn("fake_column_0", "fake_value_0_" + i))
-//                .addInsertion("fake_key_" + i, "User", HFactory.createStringColumn("fake_column_1", "fake_value_1_" + i))
-//                .addInsertion("fake_key_" + i, "User", HFactory.createStringColumn("fake_column_2", "fake_value_2_" + i));
+//        Cluster cluster = HFactory.getOrCreateCluster("Hydra Cluster", "localhost:9160");
+//
+//        Keyspace keyspaceOperator = HFactory.createKeyspace("HydraUz", cluster);
+//                
+//        try {
+////            Mutator<String> mutator = HFactory.createMutator(keyspaceOperator, stringSerializer);
+////            mutator.addDeletion("ROOTtest1", "Tag");
+////            //Mutator 
+////            MutationResult result = mutator.execute();
+////            System.out.println(result.toString());
+//
+////            for (int i = 0; i < 20; i++) {
+////                mutator.addInsertion("fake_key_" + i, "User", HFactory.createStringColumn("fake_column_0", "fake_value_0_" + i))
+////                .addInsertion("fake_key_" + i, "User", HFactory.createStringColumn("fake_column_1", "fake_value_1_" + i))
+////                .addInsertion("fake_key_" + i, "User", HFactory.createStringColumn("fake_column_2", "fake_value_2_" + i));
+////            }
+////            mutator.execute();
+////            
+//            RangeSlicesQuery<String, String, String> rangeSlicesQuery =
+//                HFactory.createRangeSlicesQuery(keyspaceOperator, stringSerializer, stringSerializer, stringSerializer);
+//            rangeSlicesQuery.setColumnFamily("Text");
+//            rangeSlicesQuery.setKeys("", "");
+//            rangeSlicesQuery.setRange("", "", false, 3);
+//            
+//            rangeSlicesQuery.setRowCount(11);
+//            QueryResult<OrderedRows<String, String, String>> result = rangeSlicesQuery.execute();
+//            OrderedRows<String, String, String> orderedRows = result.get();
+//            
+////            
+////            Row<String,String,String> lastRow = orderedRows.peekLast();
+//
+//            System.out.println("Contents of rows: ");
+//            for (Row<String, String, String> r : orderedRows) {
+//                System.out.println(" key:" + r.getKey());
+//				ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspaceOperator);
+//				columnQuery.setColumnFamily("Text").setKey(r.getKey()).setName("name");
+//                QueryResult<HColumn<String, String>> result1 = columnQuery.execute();  
+//                System.out.println(" value:" + result1.get());
 //            }
-//            mutator.execute();
 //            
-            RangeSlicesQuery<String, String, String> rangeSlicesQuery =
-                HFactory.createRangeSlicesQuery(keyspaceOperator, stringSerializer, stringSerializer, stringSerializer);
-            rangeSlicesQuery.setColumnFamily("Text");
-            rangeSlicesQuery.setKeys("", "");
-            rangeSlicesQuery.setRange("", "", false, 3);
-            
-            rangeSlicesQuery.setRowCount(11);
-            QueryResult<OrderedRows<String, String, String>> result = rangeSlicesQuery.execute();
-            OrderedRows<String, String, String> orderedRows = result.get();
-            
+////            System.out.println("Should have 11 rows: " + orderedRows.getCount());
+////            
+////            rangeSlicesQuery.setKeys(lastRow.getKey(), "");
+////            orderedRows = rangeSlicesQuery.execute().get();
+////            
+////            System.out.println("2nd page Contents of rows: \n");
+////            for (Row<String, String, String> row : orderedRows) {
+////                System.out.println(" " + row);
+////            }
 //            
-//            Row<String,String,String> lastRow = orderedRows.peekLast();
-
-            System.out.println("Contents of rows: ");
-            for (Row<String, String, String> r : orderedRows) {
-                System.out.println(" key:" + r.getKey());
-				ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspaceOperator);
-				columnQuery.setColumnFamily("Text").setKey(r.getKey()).setName("name");
-                QueryResult<HColumn<String, String>> result1 = columnQuery.execute();  
-                System.out.println(" value:" + result1.get());
-            }
-            
-//            System.out.println("Should have 11 rows: " + orderedRows.getCount());
-//            
-//            rangeSlicesQuery.setKeys(lastRow.getKey(), "");
-//            orderedRows = rangeSlicesQuery.execute().get();
-//            
-//            System.out.println("2nd page Contents of rows: \n");
-//            for (Row<String, String, String> row : orderedRows) {
-//                System.out.println(" " + row);
-//            }
-            
-        } catch (HectorException he) {
-            he.printStackTrace();
-        }
-        cluster.getConnectionManager().shutdown();
+//        } catch (HectorException he) {
+//            he.printStackTrace();
+//        }
+//        cluster.getConnectionManager().shutdown();
     }
 }

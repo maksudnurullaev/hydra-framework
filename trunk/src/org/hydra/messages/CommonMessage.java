@@ -22,26 +22,27 @@ public class CommonMessage implements IMessage {
 	public WebContext _web_context = null;
 	public String _locale = null;
 	public String _user_id = null;
-	public String _session_id = null;
+	//public String _session_id = null;
 	public Moder _moder = new Moder(null);
 	
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
+	private String sessionID = null;
 	private Map<String, String> _htmlContents = new HashMap<String, String>();
-	private Set<String> _styleSheets = new HashSet<String>();
-	private Map<String, String> _jscriptFiles = null;
+	private String _styleSheet = null;
+	private String _jsFile = null;
 	private List<String> _highlightFields = new ArrayList<String>();
 	private List<String> _noHighlightFields = new ArrayList<String>();
 	
 	private String _error = null;
 
 	@Override
-	public Set<String> getStyleSheets() {
-		return _styleSheets;
+	public String getStyleSheet() {
+		return _styleSheet;
 	}
 
 	@Override
-	public void setStyleSheets(Set<String> styleSheets) {
-		this._styleSheets = styleSheets;
+	public void setStyleSheet(String styleSheet) {
+		this._styleSheet = styleSheet;
 	}
 
 	@Override
@@ -98,13 +99,12 @@ public class CommonMessage implements IMessage {
 		return _htmlContents;
 	}
 
-	public void setJscriptFiles(String jscript, String callback) {
-		if(this._jscriptFiles == null) this._jscriptFiles = new HashMap<String, String>();
-		this._jscriptFiles.put(jscript, callback);
+	public void setJSFile(String inJSFilePath) {
+		this._jsFile = inJSFilePath;
 	}
 
-	public Map<String, String> getJscriptFiles() {
-		return _jscriptFiles;
+	public String getJSFile() {
+		return _jsFile;
 	}
 
 	public void clearContent() {
@@ -127,5 +127,14 @@ public class CommonMessage implements IMessage {
 
 	public List<String> getNoHighlightFields() {
 		return _noHighlightFields;
+	}
+	
+	@Override
+	public void setSessionID(String sessionID) {
+		this.sessionID = sessionID;
+	}
+	@Override
+	public String getSessionID() {
+		return sessionID;
 	}
 }

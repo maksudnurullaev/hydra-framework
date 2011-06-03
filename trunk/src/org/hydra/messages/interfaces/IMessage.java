@@ -7,11 +7,13 @@ import org.hydra.utils.Result;
 public interface IMessage {	
 	Map<String, String> getData();
 	String getError();
-	Set<String> getStyleSheets();
+	String getStyleSheet();
 	Result set2HttpSession(String inKey, Object inObj);
 	void setData(Map<String, String> data);
 	void setError(String inErrorMessage);
 	void setHtmlContent(String inHtmlContent);
 	void setHtmlContents(String keyElementID, String htmlContent);
-	void setStyleSheets(Set<String> stylesheets);
+	void setSessionID(String sessionID);
+	String getSessionID();
+	void setStyleSheet(String styleSheet);
 }

@@ -178,7 +178,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 			// Log message
 			getLog().debug(String.format(
 					"Processor(%s) handle message for group(%s)", getName(),
-					message.getData().get(Constants._session_id)));
+					message.getSessionID()));
 
 			if (message instanceof CommonMessage) {
 				applyMessage((CommonMessage)message);
@@ -196,8 +196,8 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 
 	private void applyMessage(CommonMessage inMessage) {
 		getLog().debug(
-				String.format("Handle new message for group(%s)...", inMessage
-						.getData().get(Constants._session_id)));
+				String.format("Handle new message for group(%s)...", 
+						inMessage.getSessionID()));
 
 		String handlerName = inMessage.getData().get(Constants._handler_id);
 		String methodName = inMessage.getData().get(Constants._action_id);
@@ -241,25 +241,5 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 				getMessageCollector().putMessage(inMessage);
 			}
 		}
-		/*
-		 * // *** Get message handler Result _result =
-		 * getMessageHandler(inMessage); if(_result.isOk()){
-		 * if(_result.getObject() instanceof IMessageHandler){ IMessageHandler
-		 * messageHandler = (IMessageHandler) _result.getObject();
-		 * 
-		 * messageHandler.handleMessage(inMessage);
-		 * 
-		 * setStatistics(getName(), StatisticsTypes.ACCEPTED);
-		 * 
-		 * getLog().debug(String.format("Apply new message for groupID(%s)...DONE"
-		 * , inMessage.getData().get(IMessage._data_sessionId))); }else{
-		 * setStatistics(getName(), StatisticsTypes.WITH_ERRORS);
-		 * 
-		 * inMessage.setError( String.format(
-		 * "MessageHandler(%s) should be inherited from IMessageHandler",
-		 * _result.getObject().getClass().getSimpleName())); } }else{
-		 * setStatistics(getName(), StatisticsTypes.WITH_ERRORS);
-		 * inMessage.setError(_result.getResult()); }
-		 */
 	}
 }

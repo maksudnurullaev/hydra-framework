@@ -1,8 +1,5 @@
 package org.hydra.messages.handlers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hydra.deployers.ADeployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
@@ -11,23 +8,22 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
-import org.hydra.utils.Utils;
 
 public class General extends AMessageHandler { // NO_UCD
 	public IMessage getTextByKey(CommonMessage inMessage) {
 		if (!testData(inMessage, "key"))
 			return inMessage;
-		inMessage.setHtmlContent(
-				MessagesManager.getText(
-						inMessage.getData().get("key"),
-						"div",
-						inMessage._locale));
+		
+		String content = MessagesManager.getText(
+				inMessage.getData().get("key"),
+				"div",
+				inMessage._locale);
 
-		return inMessage;
+		return (ADeployer.deployContent(content,inMessage));
 	}
 
 	public IMessage changeLocale(CommonMessage inMessage) {
-		if (!testData(inMessage, Constants._session_locale, Constants._session_url))
+		if (!testData(inMessage, Constants._session_locale))
 			return inMessage;
 		getLog().debug(
 				"Try to change current locale to: "
@@ -69,29 +65,18 @@ public class General extends AMessageHandler { // NO_UCD
 		return inMessage;
 	};
 	
-	public IMessage deployInitialFiles(CommonMessage inMessage){
-		if (!testData(inMessage, Constants._session_url))
-			return inMessage;
-
-		Result result = new Result();
-		
-		// **** save session's URL
-		SessionUtils.setSessionURLWrapper(result, inMessage);
-		
-		// **** get session's URL
-		SessionUtils.getSessionURLWrapper(result, inMessage);
-
-		// **** stylesheets
-		getLog().debug("get stylesheets");
-		inMessage.setStyleSheets(inMessage._web_application.getStylesheets());
-		
-		// **** html's personal initial jscript
-		inMessage.setJscriptFiles(
-				String.format("jscripts/%s.js", inMessage._web_application.getId())
-				, "Globals.setHtmlBody");
-		
+	public IMessage loadCSSFile(CommonMessage inMessage){
+		getLog().debug("get stylesheets for: " + inMessage._web_application.getId());
+		inMessage.setStyleSheet(inMessage._web_application.getStyleSheet());
+		inMessage.clearContent();
 		return inMessage;
-	}
+	};
+	
+	public IMessage loadJSFile(CommonMessage inMessage){
+		inMessage.setJSFile(String.format("jscripts/%s.js", inMessage._web_application.getId()));
+		inMessage.clearContent();
+		return inMessage;
+	};	
 
 	public IMessage getInitialBody(CommonMessage inMessage) {		
 		getLog().debug("... App ID: " + inMessage._web_application.getId());
@@ -102,5 +87,5 @@ public class General extends AMessageHandler { // NO_UCD
 		getLog().debug("... HTML body content length: " + content.length());
 		
 		return(ADeployer.deployContent(content,inMessage));
-	}
+	};
 }

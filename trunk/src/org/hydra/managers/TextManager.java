@@ -71,7 +71,7 @@ public class TextManager extends APropertyLoader {
 		}		
 		
 		if(!_dictionary.get(inLocale).containsKey(inKey))
-			return String.format("Could not find TEXT(%s) for: %s", inLocale, inKey);
+			return String.format("Could not find staic TEXT(%s) for: %s", inLocale, inKey);
 		
 		if(inHtmlWrap == null)
 			return _dictionary.get(inLocale).getProperty(inKey);	
