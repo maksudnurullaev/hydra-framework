@@ -14,6 +14,7 @@ Globals.highlightFields = function(elementIDs){
 	Object.each(elementIDs, function (id){
 		if($(id)){
 			$(id).setStyle('border','1px solid red');
+			$(id).highlight('#ddf');
 		}
 	});
 };

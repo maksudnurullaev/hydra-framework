@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.KspManager;
 import org.hydra.deployers.Db;
+import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 /**
  * 
@@ -27,16 +28,21 @@ import org.hydra.deployers.Db;
 public final class DBUtils {
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.DBUtils");
 	
-	public static enum ERROR_CODES{
-		NO_ERROR,
-		ERROR_NO_VALUE,
-		ERROR_NO_DATABASE, 
-		ERROR_NO_CF, 
-		ERROR_NO_KSP, 
-		ERROR_UKNOWN
-	}; 
-
-	public static ERROR_CODES getValue(
+	public static SimpleCassandraDao getSimpleCassandraDaoOrNull(
+			String inKeyspace,
+			String inColumnFamily){
+		
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
+		if(result.isOk() && result.getObject() instanceof KspManager){
+			KspManager kspManager = (KspManager) result.getObject();
+			return(kspManager.getSimpleCassandraDao(inKeyspace, inColumnFamily));
+		}
+		_log.error(ErrorUtils.ERROR_CODES.ERROR_DB_NO_KSP.toString());
+		return null;
+	}
+	
+	public static ErrorUtils.ERROR_CODES getValue(
 			String inKeyspace,
 			String inColumnFamily, 
 			String inKey,
@@ -52,24 +58,24 @@ public final class DBUtils {
 				_log.debug(String.format("Try to find key/column_name: %s/%s", inKey, inColumnName));
 				try {
 					inValue.setString(s.get(inKey, inColumnName));
-					if(inValue.getString() == null){
-						_log.warn(inKey + " == null");
-						return ERROR_CODES.ERROR_NO_VALUE;
-					}
-					return ERROR_CODES.NO_ERROR;
+					if(inValue.getString() == null )
+						return ErrorUtils.ERROR_CODES.ERROR_DB_NULL_VALUE;
+					if(inValue.getString().isEmpty())
+						return ErrorUtils.ERROR_CODES.ERROR_DB_EMPTY_VALUE;
+					return ErrorUtils.ERROR_CODES.NO_ERROR;
 				} catch (Exception e) {
 					_log.error("... exception: " + e.getMessage());
-					return ERROR_CODES.ERROR_NO_DATABASE;
+					return ErrorUtils.ERROR_CODES.ERROR_DB_NO_DATABASE;
 				}
 				
 			}else{
-				return ERROR_CODES.ERROR_NO_CF;
+				return ErrorUtils.ERROR_CODES.ERROR_DB_NO_CF;
 			}
 		}
-		return ERROR_CODES.ERROR_NO_KSP;
+		return ErrorUtils.ERROR_CODES.ERROR_DB_NO_KSP;
 	}
 
-	public static ERROR_CODES setValue(
+	public static ErrorUtils.ERROR_CODES setValue(
 			String inKeyspace,
 			String inColumnFamily, 
 			String inKey,
@@ -89,21 +95,38 @@ public final class DBUtils {
 				SimpleCassandraDao s = kspManager.getSimpleCassandraDao(inKeyspace, inColumnFamily);
 				if(s != null){
 					s.insert(inKey, inColumnName, value);
-					return ERROR_CODES.NO_ERROR;
+					return ErrorUtils.ERROR_CODES.NO_ERROR;
 				}else{
-					return ERROR_CODES.ERROR_NO_CF;
+					return ErrorUtils.ERROR_CODES.ERROR_DB_NO_CF;
 				}
 			}
-			return ERROR_CODES.ERROR_NO_KSP;
+			return ErrorUtils.ERROR_CODES.ERROR_DB_NO_KSP;
 		}catch(Exception e){
 			_log.error(e.toString());
-			return ERROR_CODES.ERROR_UKNOWN;
+			return ErrorUtils.ERROR_CODES.ERROR_UKNOWN;
 		}
 	}
 	
 	public static int getCountOf(
 			String inKeyspace,
 			String inColumnFamily) {
+		return getCountOf(inKeyspace, inColumnFamily, "", "", "", "");
+	}
+	
+	public static int getCountOf(
+			String inKeyspace,
+			String inColumnFamily,
+			String inKey) {
+		return getCountOf(inKeyspace, inColumnFamily, inKey, inKey, "", "");
+	}
+	
+	public static int getCountOf(
+			String inKeyspace,
+			String inColumnFamily,
+			String startKey,
+			String endKey,
+			String startRange,
+			String endRange){
 		try {		
 			Result result = new Result();
 			StringSerializer stringSerializer = StringSerializer.get();
@@ -115,8 +138,8 @@ public final class DBUtils {
 					HFactory.createRangeSlicesQuery(keyspace, stringSerializer, stringSerializer, stringSerializer);
 				
 	            rangeSlicesQuery.setColumnFamily(inColumnFamily);
-	            rangeSlicesQuery.setKeys("", "");
-	            rangeSlicesQuery.setRange("", "", false, 3);
+	            rangeSlicesQuery.setKeys(startKey, endKey);
+	            rangeSlicesQuery.setRange(startRange, endRange, false, 3);
 	            
 	            QueryResult<OrderedRows<String, String, String>> resultOfExec = rangeSlicesQuery.execute();
 	            OrderedRows<String, String, String> orderedRows = resultOfExec.get();
@@ -127,11 +150,13 @@ public final class DBUtils {
         }		
 		_log.error(String.format("Could not get count of: %s(%s)", inColumnFamily, inKeyspace));
 		return -1;
-	}
-
+	}	
+	
 	public static OrderedRows<String,String,String> getRows(
 			String inKeyspace,
 			String inColumnFamily, 
+			String inKeyStart,
+			String inKeyEnd,
 			String inKeyRangeStart,
 			String inKeyRangeFinish) {
 		try {		
@@ -145,7 +170,7 @@ public final class DBUtils {
 					HFactory.createRangeSlicesQuery(keyspace, stringSerializer, stringSerializer, stringSerializer);
 				
 	            rangeSlicesQuery.setColumnFamily(inColumnFamily);
-	            rangeSlicesQuery.setKeys("", "");
+	            rangeSlicesQuery.setKeys(inKeyStart, inKeyEnd);
 	            rangeSlicesQuery.setRange(inKeyRangeStart, inKeyRangeFinish, false, 3);
 	            
 	            QueryResult<OrderedRows<String, String, String>> resultOfExec = rangeSlicesQuery.execute();
@@ -156,9 +181,9 @@ public final class DBUtils {
             return null;
         }		
         return null; 
-	}
+	}	
 	
-	public static ERROR_CODES deleteKey(
+	public static ErrorUtils.ERROR_CODES deleteKey(
 			String appId, 
 			String inColumnFamily,
 			String inKey) {
@@ -173,10 +198,10 @@ public final class DBUtils {
 		Mutator<String> mutator = HFactory.createMutator(kspManager.getKeyspace(appId), stringSerializer);
 		mutator.delete(inKey, inColumnFamily, null, stringSerializer);
 		mutator.execute();
-		return ERROR_CODES.NO_ERROR;
+		return ErrorUtils.ERROR_CODES.NO_ERROR;
 	}
 	
-	return ERROR_CODES.ERROR_NO_KSP;		
+	return ErrorUtils.ERROR_CODES.ERROR_DB_NO_KSP;		
 	}
 
 	public static HColumn<String, String> getColumn(
@@ -225,18 +250,18 @@ public final class DBUtils {
 		Db._log.debug("Enter to: getDbTemplateKeyHow");
 		// get result from DB
 		StringWrapper content = new StringWrapper();
-		ERROR_CODES err = getValue(inKsp, inCFname, inKey, inCName, content);
+		ErrorUtils.ERROR_CODES err = getValue(inKsp, inCFname, inKey, inCName, content);
 		switch (err) {
 		case NO_ERROR:
 			break;
-		case ERROR_NO_VALUE:
+		case ERROR_DB_EMPTY_VALUE:
 			content.setString(String.format("<font color='red'>%s</font>",inKey));
 		default:
-			Db._log.error(String.format("DB error with %s: %s", inKey, err.toString()));
+			Db._log.warn(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
 		if(Utils.hasRight2Edit(inKsp, inUserID, inModer))
-			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, (err == ERROR_CODES.NO_ERROR), links);		
+			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, (err == ErrorUtils.ERROR_CODES.NO_ERROR), links);		
 		return content.getString();			
 	}
 
@@ -268,5 +293,30 @@ public final class DBUtils {
 			
 			links.add(result.toString());
 		}
+	}
+
+	public static void testForNonExistenceKeyOrValue(
+			List<String> errorFields,
+			List<ERROR_CODES> errorCodes, 
+			String inKeyspace, 
+			String inColumnFamily,
+			String inKey, 
+			String inColumnName,
+			String fieldID) {
+		
+		SimpleCassandraDao s = DBUtils.getSimpleCassandraDaoOrNull(inKeyspace, inColumnFamily);
+		if(s == null){
+			_log.error(ERROR_CODES.ERROR_DB_NO_CF);
+			errorCodes.add(ERROR_CODES.ERROR_DB_NO_CF);
+			errorFields.add(fieldID);
+			return;
+		}
+		
+		String value = s.get(inKey, inColumnName);
+		if(value != null){
+			_log.debug("testForNonExistenceKeyOrValue not passed!");
+			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_ALREADY_EXIST);
+			errorFields.add(fieldID);			
+		}		
 	}	
 }

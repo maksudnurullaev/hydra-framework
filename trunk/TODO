@@ -1,7 +1,12 @@
 1.
-	may be it's good idea to use SessionID in every message to control session expiration
+	(DONE!)may be it's good idea to use SessionID in every message to control session expiration
 2. 
-	use form generatort for tags pages
-	create delete edit link & forms for User
+	(DONE!)use form generatort for tags pages
+	save user in DB with tags
+	create list of users
+	create delete link & edit form for User
+	attach url path to every message
+	make js error message at any error
+	test when add user to already existence one
 3.
 	check for hydra.uz and urist.uz DNS information

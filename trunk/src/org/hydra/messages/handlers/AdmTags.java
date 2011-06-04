@@ -10,7 +10,8 @@ import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
-import org.hydra.utils.DBUtils.ERROR_CODES;
+import org.hydra.utils.ErrorUtils;
+import org.hydra.utils.ErrorUtils.ERROR_CODES;
 import org.hydra.utils.Utils;
 
 public class AdmTags extends AMessageHandler {
@@ -40,38 +41,6 @@ public class AdmTags extends AMessageHandler {
 				"admin.app.action", fields, null);
 		
 		return(ADeployer.deployContent(form,inMessage));			
-		
-//		StringBuffer result = new StringBuffer();
-//		result.append(Utils.T("template.html.custom.input.ID.Value.MaxWdth.Wdth", 
-//				"tag.new", 
-//				"",
-//				"50",
-//				"50"));
-//		result.append("<br />");
-//		
-//		String jsData = String.format("handler:%s,action:%s,appid:%s,dest:%s, value:%s"
-//				, Utils.Q("AdmTags")
-//				, Utils.Q("addTag")
-//				, Utils.Q(appId)
-//				, Utils.Q("admin.app.action.tag")
-//				, "$('tag.new').value");
-//		
-//		result.append(Utils.T("template.html.a.onClick.sendMessage.Label"
-//				, jsData
-//				, "Save"));
-//		
-//
-//		result.append(" | ");
-//		result.append(Utils.createJSLinkHAKD(
-//				  Utils.Q("AdmTags") 
-//				, Utils.Q("getTagsFor") 
-//				, Utils.Q(appId) 
-//				, Utils.Q("admin.app.action") 
-//				, "Cancel"
-//				)
-//			);			
-//		
-//		return(ADeployer.deployContent(result.toString(),inMessage));
 	}
 
 	public IMessage add(CommonMessage inMessage){
@@ -101,8 +70,8 @@ public class AdmTags extends AMessageHandler {
 		String inColumnFamily = "Tag";
 		
 		inMessage.getData().put("dest", "admin.app.action");
-		ERROR_CODES errCode = DBUtils.deleteKey(appId, inColumnFamily, value);
-		if(errCode != ERROR_CODES.NO_ERROR){
+		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, inColumnFamily, value);
+		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
 			inMessage.setError(errCode.toString());
 			return inMessage;
 		}

@@ -8,7 +8,8 @@ import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
-import org.hydra.utils.DBUtils.ERROR_CODES;
+import org.hydra.utils.ErrorUtils;
+import org.hydra.utils.ErrorUtils.ERROR_CODES;
 import org.hydra.utils.StringWrapper;
 import org.hydra.utils.Utils;
 
@@ -36,8 +37,8 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 				);
 		
 		StringWrapper stringWrapper = new StringWrapper();		
-		ERROR_CODES err = DBUtils.getValue(inMessage._web_application.getId(), inCFName, inKey, inCName, stringWrapper);
-		if(err != ERROR_CODES.NO_ERROR && err != ERROR_CODES.ERROR_NO_VALUE){
+		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage._web_application.getId(), inCFName, inKey, inCName, stringWrapper);
+		if(err != ErrorUtils.ERROR_CODES.NO_ERROR && stringWrapper.getString() != null){
 			getLog().error(err.toString());
 			inMessage.setError(err.toString());
 			return;
@@ -51,7 +52,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.hideEditBox()); return false;\" href=\"#\">Close</a>");
 		resultBuffer.append("<br /><strong>").append(inKey).append("</strong><br />");
 		resultBuffer.append("<textarea class='edittextarea' id='").append(textAreaId).append("'>");
-		resultBuffer.append(err == ERROR_CODES.NO_ERROR?stringWrapper.getString():err.toString());
+		resultBuffer.append(err == ErrorUtils.ERROR_CODES.NO_ERROR?stringWrapper.getString():err.toString());
 		resultBuffer.append("</textarea>");		
 		
 		resultBuffer.append("<div>");
@@ -95,9 +96,9 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			String inColumnName, 
 			String inValue){
 		
-		ERROR_CODES err = DBUtils.setValue(inMessage._web_application.getId(), inCFName, inKey, inColumnName, inValue);
+		ErrorUtils.ERROR_CODES err = DBUtils.setValue(inMessage._web_application.getId(), inCFName, inKey, inColumnName, inValue);
 		
-		if(err != ERROR_CODES.NO_ERROR){
+		if(err != ErrorUtils.ERROR_CODES.NO_ERROR){
 			getLog().error(err.toString());
 			inMessage.setError(err.toString());
 			return ;
@@ -106,7 +107,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		StringWrapper outValue = new StringWrapper();
 		err = DBUtils.getValue(inMessage._web_application.getId(), inCFName, inKey, inColumnName, outValue);
 		
-		if(err != ERROR_CODES.NO_ERROR){
+		if(err != ErrorUtils.ERROR_CODES.NO_ERROR){
 			getLog().error(err.toString());
 			inMessage.setError(err.toString());
 			return;
