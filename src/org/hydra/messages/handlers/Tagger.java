@@ -22,7 +22,7 @@ public class Tagger extends AMessageHandler {
 		
 		List<String> tagPrefixes = Utils.string2List(prefixes, ",");
 				
-		String content = Utils.getTagsAsEditHtml(appId, elemid, value, addvalue, null, tagPrefixes );
+		String content = Utils.tagsAsEditableHtml(appId, elemid, value, addvalue, null, tagPrefixes );
 
 		return (ADeployer.deployContent(content,inMessage));		
 	}
@@ -39,7 +39,7 @@ public class Tagger extends AMessageHandler {
 		
 		List<String> tagPrefixes = Utils.string2List(prefixes, ",");
 		
-		String content = Utils.getTagsAsEditHtml(appId, elemid, value, null, delvalue, tagPrefixes );
+		String content = Utils.tagsAsEditableHtml(appId, elemid, value, null, delvalue, tagPrefixes );
 
 		return (ADeployer.deployContent(content,inMessage));
 	}	

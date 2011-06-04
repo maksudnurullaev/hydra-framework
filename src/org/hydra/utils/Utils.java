@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hydra.html.fields.IField;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
-import org.hydra.utils.Moder.MODE;
+import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 /**
  * @author M.Nurullayev
@@ -290,7 +290,7 @@ public final class Utils {
 		// set flobal tags
 		for(String tag:Constants._GLOBAL_TAGS)
 			result.add(tag);
-		Rows<String,String,String> rows = DBUtils.getRows(inAppID, "Tag", inKeyRangeStart, inKeyRangeStart);
+		Rows<String,String,String> rows = DBUtils.getRows(inAppID, "Tag", "", "", inKeyRangeStart, inKeyRangeStart);
 	    for (Row<String, String, String> r : rows) {
 	        HColumn<String, String> colResult = 
 	        	DBUtils.getColumn(inAppID, "Tag", r.getKey(), "name");
@@ -306,15 +306,18 @@ public final class Utils {
 
 	public static void testFieldEMail(
 			List<String> errorFields,
-			CommonMessage inMessage, 
-			String key) {
-		String value = inMessage.getData().get(key);
-		if(value == null || (!isValidEmailAddress(value)))
-			errorFields.add(key);
+			List<ERROR_CODES> errorCodes, 
+			String mailString, 
+			String fieldId) {
+		if(mailString == null || (!isValidEmailAddress(mailString))){
+			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_MAIL);
+			errorFields.add(fieldId);
+		}
 	}
 
 	public static void test2Passwords(
 			List<String> errorFields,
+			List<ERROR_CODES> errorCodes, 
 			CommonMessage inMessage, 
 			String key, 
 			String key2) {
@@ -326,6 +329,7 @@ public final class Utils {
 				(value.length() < 5)){
 			errorFields.add(key);
 			errorFields.add(key2);
+			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_PASSWORDS);
 		}
 			
 	}
@@ -341,7 +345,17 @@ public final class Utils {
 		return ss.toString();
 	}
 
-	public static String getTagsAsEditHtml(
+	public static String tagsAsHtml(String value){
+		String[] arr = value.split(",");
+		String result = "";
+		for(String t:arr){
+			if(!result.isEmpty()) result += ", ";
+			result += String.format("[[DB|Text|%s|locale]]", t);
+		}
+		return(result);
+	}	
+	
+	public static String tagsAsEditableHtml(
 			String appId, 
 			String elemID,
 			String value,
@@ -464,11 +478,18 @@ public final class Utils {
 		return result;
 	}
 
-	private static String list2String(List<String> values) {
+	public static String list2String(List<String> values) {
+		return list2String("", values, ",");
+	}
+	
+	public static String list2String(
+			String prefix,
+			List<String> values, 
+			String postfix) {
 		String result = "";
 		for(String value:values){
-			if(!result.isEmpty()) result += ",";
-			result += value;
+			if(!result.isEmpty()) result += postfix;
+				result += (prefix + value);
 		}
 		return result;
 	}
@@ -481,4 +502,23 @@ public final class Utils {
 		return result;
 	}
 
+	public static String getErrorDescription(
+			List<String> errorFields,
+			List<ERROR_CODES> errorCodes) {
+		String result = "Error_codes:\n" + listOfError2String("\t", errorCodes, "\n");
+		result += "\nError_fields:\n" + list2String("\t", errorFields, "\n");
+		return result;
+	}
+
+	private static String listOfError2String(
+			String prefix,
+			List<ERROR_CODES> errorCodes, 
+			String postfix) {
+		String result = "";
+		for(ERROR_CODES errorCode:errorCodes){
+			if(!result.isEmpty()) result += postfix;
+				result += (prefix + errorCode.toString());
+		}
+		return result;
+	}
 }

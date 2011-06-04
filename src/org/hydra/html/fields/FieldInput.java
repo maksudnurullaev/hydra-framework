@@ -5,8 +5,7 @@ import org.hydra.utils.Utils;
 public class FieldInput implements IField {
 	private String ID = "";
 	private String value = "";
-	private int minWidth = 25;
-	private int maxWidth = 25;
+	private int width = 25;
 	private String  type = "text";
 	
 	public FieldInput(String inID, String inValue) {
@@ -17,8 +16,8 @@ public class FieldInput implements IField {
 		setID(inID); setValue(inValue);  setType(inType);
 	}	
 	
-	public FieldInput(String inID, String inValue, int inMinWidth, int inMaxWidth) {
-		setID(inID); setValue(inValue); setMinWidth(inMinWidth); setMaxWidth(inMaxWidth); 
+	public FieldInput(String inID, String inValue, int inWidth) {
+		setID(inID); setValue(inValue); setWidth(inWidth); 
 	}
 	
 	public void setID(String iD) {
@@ -34,27 +33,21 @@ public class FieldInput implements IField {
 	public String getValue() {
 		return value;
 	}
-	public void setMinWidth(int minWidth) {
-		this.minWidth = minWidth;
+
+	public void setWidth(int inWidth) {
+		this.width = inWidth;
 	}
-	public int getMinWidth() {
-		return minWidth;
-	}
-	public void setMaxWidth(int maxWidth) {
-		this.maxWidth = maxWidth;
-	}
-	public int getMaxWidth() {
-		return maxWidth;
+	public int getWidth() {
+		return width;
 	}
 	
 	@Override
 	public String getAsHtml(){
 		return Utils.T(
-				"template.html.custom.input.ID.Value.MaxWdth.Wdth.Type", 
+				"template.html.custom.input.ID.Value.Wdth.Type", 
 				getID(), 
 				getValue(), 
-				getMaxWidth(), 
-				getMinWidth(),
+				getWidth(), 
 				getType());
 	}
 	@Override	

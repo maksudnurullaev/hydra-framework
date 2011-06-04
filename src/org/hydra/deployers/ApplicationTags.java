@@ -30,8 +30,8 @@ public final class ApplicationTags {
 				"New"
 				)
 			);
-		Rows<String,String,String> rows = DBUtils.getRows(inAppID, "Tag", "Tag", "Tag");
-		int validTags = 0;
+		Rows<String,String,String> rows = DBUtils.getRows(inAppID, "Tag", "", "", "Tag", "Tag");
+		int validRows = 0;
 	    for (Row<String, String, String> r : rows) {
 	    	String key = r.getKey();
 	        Application._log.debug(" key:" + key);
@@ -55,10 +55,10 @@ public final class ApplicationTags {
 				content2.append("&nbsp;");
 				content2.append(value);
 				content.append(Utils.T("template.html.divId.Content",key,content2.toString()));     
-				validTags++;
+				validRows++;
 	        }
 	    }
-	    if(validTags == 0)
+	    if(validRows == 0)
 	    	content.append("<div>...</div>");
 		content.append("</div>");
 		return content.toString();

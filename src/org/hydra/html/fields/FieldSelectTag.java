@@ -19,7 +19,7 @@ public class FieldSelectTag implements IField {
 
 	@Override
 	public String getAsHtml() {
-		return Utils.getTagsAsEditHtml(appId, ID, value, null, null, tagPrefixes);
+		return Utils.tagsAsEditableHtml(appId, ID, value, null, null, tagPrefixes);
 	}
 
 	@Override

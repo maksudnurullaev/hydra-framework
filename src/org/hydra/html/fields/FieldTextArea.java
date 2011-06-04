@@ -8,8 +8,8 @@ public class FieldTextArea extends FieldInput {
 		super(inID, inValue);
 		setTags(inTags);
 	}
-	public FieldTextArea(String inID, String inValue, int inMinWidth, int inMaxWidth) {
-		super(inID,inValue,inMinWidth,inMaxWidth); 
+	public FieldTextArea(String inID, String inValue, int inWidth) {
+		super(inID,inValue,inWidth); 
 	}
 	
 	/* (non-Javadoc)
