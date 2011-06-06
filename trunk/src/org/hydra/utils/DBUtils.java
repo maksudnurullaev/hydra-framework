@@ -295,7 +295,7 @@ public final class DBUtils {
 		}
 	}
 
-	public static void testForNonExistenceKeyOrValue(
+	public static void testForNonExistenceOfKeyOrValue(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
 			String inKeyspace, 
@@ -318,5 +318,31 @@ public final class DBUtils {
 			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_ALREADY_EXIST);
 			errorFields.add(fieldID);			
 		}		
+	}	
+
+	public static String testForExistenceOfKeyAndValue(
+			List<String> errorFields,
+			List<ERROR_CODES> errorCodes, 
+			String inKeyspace, 
+			String inColumnFamily,
+			String inKey, 
+			String inColumnName,
+			String fieldID) {
+		
+		SimpleCassandraDao s = DBUtils.getSimpleCassandraDaoOrNull(inKeyspace, inColumnFamily);
+		if(s == null){
+			_log.error(ERROR_CODES.ERROR_DB_NO_CF);
+			errorCodes.add(ERROR_CODES.ERROR_DB_NO_CF);
+			errorFields.add(fieldID);
+			return null;
+		}
+		
+		String value = s.get(inKey, inColumnName);
+		if(value == null || value.isEmpty()){
+			_log.debug("testForExistenceOfKeyAndValue not passed!");
+			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_OR_VALUE_NOT_EXIST);
+			errorFields.add(fieldID);			
+		}	
+		return(value);
 	}	
 }

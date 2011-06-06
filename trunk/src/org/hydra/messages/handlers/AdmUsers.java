@@ -73,11 +73,11 @@ public class AdmUsers extends AMessageHandler {
 		
 		if(errorCodes.size() == 0){
 			getLog().debug("Test for user existence");
-			DBUtils.testForNonExistenceKeyOrValue(errorFields, errorCodes, appID, "User", user_mail, "password", "user_mail");
+			DBUtils.testForNonExistenceOfKeyOrValue(errorFields, errorCodes, appID, "User", user_mail, "password", "user_mail");
 		}
 
 		getLog().debug("Test for valid password");
-		Utils.test2Passwords(errorFields, errorCodes, inMessage, "user_password", "user_password2");
+		Utils.test2ValidPasswords(errorFields, errorCodes, inMessage, "user_password", "user_password2");
 		
 		if(errorFields.size() != 0){
 			getLog().error("Errors found");

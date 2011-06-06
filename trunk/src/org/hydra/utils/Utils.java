@@ -175,7 +175,7 @@ public final class Utils {
 		return ("\"" + inString + "\"");
 	}
 
-	public static String getJSDataArray(String... strings) {
+	public static String jsData(String... strings) {
 		if (strings == null || strings.length == 0
 				|| ((strings.length % 2) != 0))
 			return "jsDataError";
@@ -231,7 +231,7 @@ public final class Utils {
 			}
 		}
 		
-		String jsSaveData = getJSDataArray(strSaveArrayData
+		String jsSaveData = jsData(strSaveArrayData
 				.toArray(new String[0]));
 
 		List<String> strCancelArrayData = new ArrayList<String>();
@@ -244,7 +244,7 @@ public final class Utils {
 		strCancelArrayData.add("dest");
 		strCancelArrayData.add(Utils.Q(inDest));
 
-		String jsCancelData = getJSDataArray(strCancelArrayData
+		String jsCancelData = jsData(strCancelArrayData
 				.toArray(new String[0]));
 
 		StringBuffer ssJsActions = new StringBuffer();
@@ -315,7 +315,7 @@ public final class Utils {
 		}
 	}
 
-	public static void test2Passwords(
+	public static void test2ValidPasswords(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
 			CommonMessage inMessage, 
@@ -410,7 +410,7 @@ public final class Utils {
 		}
 		ssPart.append("</select> | ");
 		
-		String jsData = Utils.getJSDataArray(
+		String jsData = Utils.jsData(
 				 "handler", Utils.Q("Tagger")
 				,"action",  Utils.Q("add")
 				,"appid", Utils.Q(appId)
@@ -432,7 +432,7 @@ public final class Utils {
 			for(String t:arr){
 				if(!textPart.isEmpty()) textPart += ", ";
 				textPart += String.format("[[DB|Text|%s|locale]]", t);
-				jsData = Utils.getJSDataArray(
+				jsData = Utils.jsData(
 						 "handler", Utils.Q("Tagger")
 						,"action",  Utils.Q("delete")
 						,"appid", Utils.Q(appId)
@@ -520,5 +520,19 @@ public final class Utils {
 				result += (prefix + errorCode.toString());
 		}
 		return result;
+	}
+
+
+	public static void test2ValidPassword(
+			List<String> errorFields,
+			List<ERROR_CODES> errorCodes, 
+			String value, 
+			String elemId) {
+		
+		if((value == null) || (value.length() < 5)){
+			errorFields.add(elemId);
+			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_PASSWORD);
+		}
+			
 	}
 }

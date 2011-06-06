@@ -1,5 +1,6 @@
 package org.hydra.processors.abstracts;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.hydra.beans.StatisticsCollector.StatisticsTypes;
@@ -232,10 +233,17 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 					inMessage.setError("Result is not instance of IMessage!");
 					getMessageCollector().putMessage(inMessage);
 				}
+			}catch(RuntimeException runtimeException) {
+				  Throwable cause = runtimeException.getCause();
+				  if(cause instanceof InvocationTargetException) {
+				    Throwable targetException = ((InvocationTargetException)cause).getTargetException();
+				    targetException.printStackTrace();
+				  }
 			} catch (Exception e) {
 				_log.error(String.format("Could not handle by class(%s) and it's method(%s)", 
 						path2MessageHandler, methodName));
 				_log.error(e.toString());
+				e.printStackTrace();
 				setStatistics(getName(), StatisticsTypes.WITH_ERRORS);
 				inMessage.setError(e.toString());
 				getMessageCollector().putMessage(inMessage);

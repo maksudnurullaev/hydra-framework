@@ -17,10 +17,13 @@ public final class System {
 			String inKey,
 			String inHow, 
 			String inLocale, 
-			String inApplicationID) {
+			String inApplicationID, 
+			String inUserID) {
 		
 		if(inWhat.compareToIgnoreCase("LanguageBar") == 0)
 			return getSystemLanguagebarKeyHow(inKey, inHow, inLocale, inApplicationID);
+		if(inWhat.compareToIgnoreCase("Login") == 0)
+			return SystemLogin.getKeyHow(inKey, inHow, inLocale, inApplicationID, inUserID);
 		
 		_log.error("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;

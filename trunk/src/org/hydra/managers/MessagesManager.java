@@ -27,7 +27,7 @@ public final class MessagesManager{
 			_log.debug("Found spring's default TextManager bean dictionary!");
 		}else{
 			_textManager = new TextManager();
-			_log.debug("Create local TextManager instance, not Spring's one!");
+			_log.warn("Create local TextManager instance, not Spring's one!");
 		}
 	}
 	
@@ -50,7 +50,9 @@ public final class MessagesManager{
 	}
 		
 	public static String getTemplate(String inKey){
-		return getTextManager().getTemplate(inKey);
+		if(getTextManager() != null)
+			return getTextManager().getTemplate(inKey);
+		return "ERROR: Could not intiliaze MessageManager!";
 	}
 
 }

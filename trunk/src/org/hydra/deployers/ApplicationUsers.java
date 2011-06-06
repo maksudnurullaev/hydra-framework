@@ -83,7 +83,7 @@ public final class ApplicationUsers {
 	private static String getDeleteLink(
 			String inAppID, 
 			String key) {
-		String jsData = Utils.getJSDataArray(
+		String jsData = Utils.jsData(
 				 "handler", Utils.Q("AdmUsers")
 				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
