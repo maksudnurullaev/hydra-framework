@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.hydra.beans.WebApplications;
-import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 
 public final class SessionUtils {
@@ -40,6 +39,11 @@ public final class SessionUtils {
 			inMessage._locale = (String) inResult.getObject();
 		}else{
 			inMessage._locale = inMessage._web_application.getDefaultLocale();
+		}
+		// 5. set session user d
+		SessionUtils.getSessionData(inResult, inMessage, Constants._session_user_id);
+		if(inResult.isOk()){
+			inMessage._user_id = (String) inResult.getObject();
 		}
 		
 		inResult.setResult(true);
@@ -100,7 +104,7 @@ public final class SessionUtils {
 					|| inCommonMessage._web_context == null
 					|| inCommonMessage._web_application == null
 					|| inKey == null
-					|| inValue == null) {
+			) {
 			inResult.setResult(false);
 			inResult.setResult("Invalid session!");
 		} else {
@@ -113,9 +117,9 @@ public final class SessionUtils {
 	
 	public static void getSessionData(
 			Result inResult,
-			CommonMessage inCommonMessage,
+			CommonMessage inMessage,
 			String inKey) {
-		generateSessionDataKey(inResult, inCommonMessage, inKey);
+		generateSessionDataKey(inResult, inMessage, inKey);
 		if (!inResult.isOk()){
 			inResult.setResult("Could not generate unique session ID");
 			inResult.setResult(false);
@@ -124,7 +128,7 @@ public final class SessionUtils {
 		
 		String sessionKey = (String) inResult.getObject();
 		_log.debug("Try to get session data by key: " + sessionKey);		
-		String sessionValue = (String) inCommonMessage._web_context.getSession()
+		String sessionValue = (String) inMessage._web_context.getSession()
 				.getAttribute(sessionKey);
 		if (sessionValue == null){
 			_log.info("Could not get session session data for key: " + sessionKey);

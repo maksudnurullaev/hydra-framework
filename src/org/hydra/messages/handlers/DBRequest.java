@@ -27,7 +27,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		String spanId = String.format("%s.%s", inCFName, inKey); 
 		String textAreaId =  String.format("%s.%s.%s.textarea", appId, inCFName, inKey);
 		
-		String jsData = Utils.getJSDataArray(
+		String jsData = Utils.jsData(
 					"appid", Utils.Q(appId)
 					, "handler", Utils.Q(inAction)
 					, "action", Utils.Q(inActionMethod)

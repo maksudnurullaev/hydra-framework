@@ -68,10 +68,10 @@ public final class ADeployer {
 							inUserID,
 							inModer,
 							links);
-			 
+			//tempContent.replace("$", "\\$");
 			matcher.appendReplacement(
 					buf,
-					tempContent				
+					tempContent.replace("$", "\\$")				
 					);
 		}
 		matcher.appendTail(buf);
@@ -113,7 +113,7 @@ public final class ADeployer {
 		if(inWhere.compareToIgnoreCase("db") == 0)
 			return Db.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
 		else if(inWhere.compareToIgnoreCase("system") == 0)
-			return System.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+			return System.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID, inUserID);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)
 			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
 		else if(inWhere.compareToIgnoreCase("Applications") == 0)

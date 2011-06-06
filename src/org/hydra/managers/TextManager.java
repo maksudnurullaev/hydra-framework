@@ -42,7 +42,7 @@ public class TextManager extends APropertyLoader {
 	public String getTemplate(String inKey){
 		// Load templates file, if not loaded yet
 		if(!_dictionary.containsKey(_fileTemplateName)){
-			getLog().debug("Load templates first time...");
+			getLog().debug("Load templates first time for key: " + inKey);
 			_dictionary.put(_fileTemplateName, loadProperties(_fileTemplateName));
 		}
 		// If still not properly initialized!
@@ -71,7 +71,7 @@ public class TextManager extends APropertyLoader {
 		}		
 		
 		if(!_dictionary.get(inLocale).containsKey(inKey))
-			return String.format("Could not find staic TEXT(%s) for: %s", inLocale, inKey);
+			return String.format("Could not find static TEXT(%s) for: %s", inLocale, inKey);
 		
 		if(inHtmlWrap == null)
 			return _dictionary.get(inLocale).getProperty(inKey);	

@@ -40,6 +40,7 @@ public final class Constants {
 	
 	// **** Session keys
 	public static final String _session_locale = "locale";
+	public static final String _session_user_id = "user_id";	
 	
 	// **** Constant templates
 	public static final String _language_bar_a_template = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({handler:'General',action:'changeLocale', locale:'%s', dest:'body', url: document.URL })); return false;\">%s</a>";

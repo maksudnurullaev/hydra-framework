@@ -43,7 +43,7 @@ public final class ApplicationTags {
 				StringBuffer content2 = new StringBuffer();
 				// delete link
 				content2.append("&nbsp;");
-				String jsData = Utils.getJSDataArray(
+				String jsData = Utils.jsData(
 						 "handler", Utils.Q("AdmTags")
 						,"action",  Utils.Q("delete")
 						,"appid", Utils.Q(inAppID)

@@ -2,11 +2,12 @@
 	(DONE!)may be it's good idea to use SessionID in every message to control session expiration
 2. 
 	(DONE!)use form generatort for tags pages
-	save user in DB with tags
+	(DONE!)save user in DB with tags
 	create list of users
-	create delete link & edit form for User
-	attach url path to every message
+	create delete link for users list
+	attach url path to every message (?mode=...)
 	make js error message at any error
-	test when add user to already existence one
+	DBUtils.getAllColumn4(Ksp, CFName, key)
+	(DONE!)test when add user to already existence one
 3.
-	check for hydra.uz and urist.uz DNS information
+	make Administration link visible just for Administrators
