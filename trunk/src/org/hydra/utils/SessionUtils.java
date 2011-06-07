@@ -88,16 +88,13 @@ public final class SessionUtils {
 
 		// 1. test for mode
 		String urlString = inMessage.getUrl();
-		_log.error("urlString: " + urlString);
 		if(urlString != null){
 			URL url = null;
 			try {
 				url = new URL(urlString);
-				_log.error("url.getQuery(): " + url.getQuery());
 				if(url != null
 						&& url.getQuery() != null 
 						&& url.getQuery().contains("mode=")){
-					_log.error("url.getQuery(): " + url.getQuery());
 					inMessage._web_application = webApplications.getValidApplication4(url.getQuery());
 					if(inMessage._web_application != null){
 						inResult.setResult(true);

@@ -13,6 +13,7 @@
 			<set>
 				<ref bean="HydraUz_WebAppBean"/>
 				<ref bean="UristUz_WebAppBean"/>
+				<ref bean="TechnogymUz_WebAppBean"/>
 			</set>
 		</property>				
 	</bean>
@@ -28,7 +29,7 @@
 		</property>
 		<!-- Set jscript -->
 		<property name="jscript">
-			<value>jscripts/HydraUz.js</value>
+			<value>jscripts/webapp/HydraUz.js</value>
 		</property>
 	    <!-- Set stylesheets -->
 		<property name="styleSheet">
@@ -37,13 +38,13 @@
 	    <!-- Set locales -->
 	    <property name="locales">
 	    	<map>
-	    		<entry key="eng" value="Eng"/>
 	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
 	    	</map>
 	    </property>
 		<!-- Set default locale -->
 		<property name="defaultLocale">
-			<value>eng</value>
+			<value>rus</value>
 		</property>	    
 	</bean>
 
@@ -51,13 +52,12 @@
 		<property name="id" value="UristUz" />
 		<property name="urls">
 			<set>
-				<value>.*localhost.*</value>
 				<value>.*(www\.)?urist\.uz.*</value>
 			</set>
 		</property>	
 		<!-- Set jscript -->
 		<property name="jscript">
-			<value>jscripts/UristUz.js</value>
+			<value>jscripts/webapp/UristUz.js</value>
 		</property>
 	    <!-- Set stylesheets -->
 		<property name="styleSheet">
@@ -75,4 +75,32 @@
 			<value>rus</value>
 		</property>	    
 	</bean>
+	
+	<bean id="TechnogymUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="TechnogymUz" />
+		<property name="urls">
+			<set>
+				<value>.*(www\.)?technogym\.uz.*</value>
+			</set>
+		</property>	
+		<!-- Set jscript -->
+		<property name="jscript">
+			<value>jscripts/webapp/TechnogymUz.js</value>
+		</property>
+	    <!-- Set stylesheets -->
+		<property name="styleSheet">
+				<value>css/TechnogymUz.css</value>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="uzb" value="Uzb"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>	
 </beans>
