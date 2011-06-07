@@ -45,10 +45,10 @@ body {
 	margin:0px auto;
 	width:960px;
 }
-#mainmenu {
+#branding {
 	height:150px;
 }
-#mainmenu h1{
+#branding h1{
 	font-size:62px;
 	font-weight:normal;
 }
@@ -205,30 +205,30 @@ ul.topNav  {
 	font-family:tahoma, arial;
 	padding-top:5px;
 }
-.content_left {
+.content_1_left {
     width:710px;
 	float:left;
 }
-.content_left img{
+.content_1_left img{
 	float: left;
 	margin-right:10px;
 }
-.content_left p{
+.content_1_left p{
 	font-size:14px;
 	color:#3a3a3a;
 	font-weight:normal;
 	line-height:20px;
 }
-.content_left p a {
+.content_1_left p a {
 	color:#650000;
 	text-decoration:underline;
 }
-.content_left p a:hover {
+.content_1_left p a:hover {
 	color:#5a5a5a;
 	text-decoration:none;
 }
 
-.content_left h3{
+.content_1_left h3{
 	font-size:24px;
 	background:#757575;
 	color:#FFFFFF;
@@ -241,7 +241,7 @@ ul.topNav  {
 	border-bottom:1px solid #C8C8C8;
 }
 
-.content_left h3 .right{
+.content_1_left h3 .right{
 	text-align: right;
 }
 
@@ -306,24 +306,24 @@ p.quoteBar {
 	color:#000000;
 	font-weight:bold;
 }
-.contentMenu{
+.sideBar{
     width:240px;
 	float:left;
 	margin-left:10px;
 }
-.contentMenuItem {
+.sideBarItem {
 	margin:0px;
 	padding:0px;
 	margin-bottom:25px;
 }
-.contentMenuItem h3{
+.sideBarItem h3{
 	margin:0px;
 	padding:0px;
     font-family:Georgia, "Times New Roman", Times, serif;
 	font-size:22px;
 	color:#3A3A3A;
 }
-.contentMenuItem ul li{
+.sideBarItem ul li{
     background:url(../img/uristuz/sideBarArrow.png) no-repeat 5px 12px;
 	display:block;
 	#height:30px;
@@ -334,48 +334,49 @@ p.quoteBar {
 	font-size:12px;
 	font-weight:bold;
 }
-.contentMenuItem ul li a{
+.sideBarItem ul li a{
 	color:#650000;
 	text-decoration:none;
 }
-.contentMenuItem ul li a:hover{
+.sideBarItem ul li a:hover{
 	color:#3A3A3A;
 	text-decoration:underline;
 }
-.contentMenuItem p{
+.sideBarItem p{
 	font-size:14px;
 	font-weight:bold;
 	padding-right:10px;
 	line-height:20px;
 }
-.contentMenuItem ul li span{
+.sideBarItem ul li span{
 	display:block;
 	font-size:10px;
 	color:#808080;
+#	border-top:2px dotted #3a3a3a;
 	font-family:tahoma, arial;
     font-weight: normal;
     line-height:10px;
     padding-bottom: 5px;
 }
 
-.contentMenuListBox {
+.sideBarListBox {
 	margin-bottom:20px;
 }
-.contentMenuListBox ul{
+.sideBarListBox ul{
 	background:#EBE8D9;
 	padding:0 10px;
 }
-.contentMenuListBox ul li{
+.sideBarListBox ul li{
 	border-bottom:1px dotted #5A5A5A;
 	color:#5A5A5A;
 	padding-top:10px;
 	padding-bottom:10px;
 }
-.contentMenuListBox ul li a{
+.sideBarListBox ul li a{
 	color:#5A5A5A;
 	line-height:16px;
 }
-.contentMenuListBox ul li a label{
+.sideBarListBox ul li a label{
 	line-height:16px;
 }
 .midBox1 {
@@ -587,8 +588,9 @@ img.floatRight {
     margin: 10px; 
 }
 
-div.editbox { border-top: 2px solid gray; border-bottom: 2px solid gray; padding: 10px; margin: 15px; display: none; text-align: center;}
-textarea.edittextarea { width: 100%; height: 200px; border: 1px solid black; }
+
+div.edit { border-top: 2px solid gray; border-bottom: 2px solid gray; padding: 10px; margin: 15px; text-align: center;}
+textarea.edittextarea { width: 100%; height: 200px; border: 1px solid #7F9DB9; }
 
 #languagebar{
     float: right; 

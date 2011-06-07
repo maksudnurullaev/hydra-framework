@@ -1,8 +1,9 @@
 package org.hydra.deployers;
 
+import java.util.List;
+
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
-import me.prettyprint.hector.api.beans.Rows;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +31,7 @@ public final class ApplicationUsers {
 			String inApplicationID) {
 		StringBuffer content = new StringBuffer();
 		
-		Rows<String,String,String> rows = DBUtils.getRows(inAppID, "User", "", "", "", "");
+		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "User", "", "", "", "");
 		int validRows = 0;
 		
 	    for (Row<String, String, String> r : rows) {

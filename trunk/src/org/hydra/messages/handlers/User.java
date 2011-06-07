@@ -45,6 +45,15 @@ public class User extends AMessageHandler { // NO_UCD
 		String user_password = inMessage.getData().get("user_password").trim();
 		String user_password_cryped = null;
 		
+		// 0. Test for global admin
+		if(!user_mail.isEmpty() && !user_password.isEmpty()){
+			getLog().debug("Test administrator for user: " + user_mail);
+			if(DBUtils.test4GlobalAdmin(user_mail, user_password)){
+				getLog().debug("Found administrator account for: " + user_mail);
+				return(setupUserSession(inMessage, "+++"));
+			}
+		}
+		
 		// 1. test for valid mail
 		Utils.testFieldEMail(errorFields, errorCodes, user_mail, "user_mail");
 		// 2. test for user mail existence
@@ -58,28 +67,27 @@ public class User extends AMessageHandler { // NO_UCD
 					mandatoryFields,
 					errorFields, errorCodes);
 		}
-		
-		// 3. test for valid password
-		Utils.test2ValidPassword(errorFields, errorCodes, user_password, "user_password");
-		if(errorCodes.size() != 0){ 
-			return highLightErrorFields(inMessage, 
-					mandatoryFields,
-					errorFields, errorCodes);
-		}
 
-		// 4. test for user/password
+		// 3. test for user/password
 		if(CryptoManager.checkPassword(user_password, user_password_cryped)){ // check password
-			Result result = new Result();
-			SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, user_mail);
-			if(result.isOk()){
-				inMessage._user_id = user_mail;
-				inMessage.getData().put("dest", "body");
-				General general = new General();
-				return(general.getInitialBody(inMessage));
-			}
+			return(setupUserSession(inMessage, user_mail));
 		}
 			
 		inMessage.setError(MessagesManager.getText("NoData", null, inMessage._locale));
+		return(inMessage);
+	}
+
+	private IMessage setupUserSession(CommonMessage inMessage, String userId) {
+		Result result = new Result();
+		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, userId);
+		if(result.isOk()){
+			inMessage._user_id = userId;
+			inMessage.getData().put("dest", "body");
+			General general = new General();
+			return(general.getInitialBody(inMessage));
+		}
+		inMessage.clearContent();
+		inMessage.setError(result.toString());
 		return(inMessage);
 	}
 

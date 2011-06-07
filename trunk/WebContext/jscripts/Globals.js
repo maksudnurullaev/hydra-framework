@@ -185,7 +185,8 @@ Globals.chk = function (obj) {
 Globals.sendMessage = function (data) {
     var message = {
         data: data,
-        sessionID: Globals.sessionID
+        sessionID: Globals.sessionID,
+        url: document.URL
     };
     MessageHandler.sendMessage(message, Globals.applyIncomingMessages);
 };

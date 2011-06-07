@@ -1,5 +1,7 @@
 package org.hydra.deployers;
 
+import java.util.List;
+
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.beans.Rows;
@@ -30,7 +32,7 @@ public final class ApplicationTags {
 				"New"
 				)
 			);
-		Rows<String,String,String> rows = DBUtils.getRows(inAppID, "Tag", "", "", "Tag", "Tag");
+		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", "Tag", "Tag");
 		int validRows = 0;
 	    for (Row<String, String, String> r : rows) {
 	    	String key = r.getKey();

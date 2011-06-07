@@ -1,7 +1,9 @@
 package org.hydra.beans;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import me.prettyprint.cassandra.dao.SimpleCassandraDao;
@@ -20,6 +22,7 @@ public class KspManager {
 	
 	private ThriftCluster cluster;
 	private Set<String> cfNames = new HashSet<String>();
+	private Map<String, String>  administrators = new HashMap<String, String>();
 	
 	public void initApp(String inAppId) {
 		// 1.
@@ -89,5 +92,13 @@ public class KspManager {
 		}
 		_log.error(String.format("Could not get SimpleCassandraDao for KSP(%s) and CF(%s)", inKeyspace, inColumnFamily));
 		return null;
+	}
+
+	public void setAdministrators(Map<String, String> administrators) {
+		this.administrators = administrators;
+	}
+
+	public Map<String, String> getAdministrators() {
+		return administrators;
 	}
 }

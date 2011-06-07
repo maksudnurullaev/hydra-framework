@@ -110,10 +110,8 @@ public final class Utils {
 	// **** Moders & Rights
 	public static boolean hasRight2Edit(
 			String inApplicationID,
-			String inUserID,
-			Moder inModer) {
-		//return (inModer != null && (inModer.getMode() != MODE.MODE_UKNOWN));
-		return true;
+			String inUserID) {
+		return (test4Roles(inApplicationID, inUserID, "User.Editor", "User.Publisher", "User.User.Administrator"));
 	}
 
 	public static String shrinkString(String inString) {
@@ -290,7 +288,7 @@ public final class Utils {
 		// set flobal tags
 		for(String tag:Constants._GLOBAL_TAGS)
 			result.add(tag);
-		Rows<String,String,String> rows = DBUtils.getRows(inAppID, "Tag", "", "", inKeyRangeStart, inKeyRangeStart);
+		List<Row<String, String, String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", inKeyRangeStart, inKeyRangeStart);
 	    for (Row<String, String, String> r : rows) {
 	        HColumn<String, String> colResult = 
 	        	DBUtils.getColumn(inAppID, "Tag", r.getKey(), "name");
@@ -534,5 +532,27 @@ public final class Utils {
 			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_PASSWORD);
 		}
 			
+	}
+
+	public static boolean isSpecialKey(String inKey) {
+		if(inKey == null || inKey.length() == 0) return false;
+		return(inKey.startsWith("_"));
+	}
+
+	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {
+		if(inApplicationID == null || inApplicationID.length() == 0) return false;
+		if(inUserID == null || inUserID.length() == 0) return false;
+		if(roles == null || roles.length == 0) return false;
+
+		if(inUserID.startsWith("+++")) return true; // super user
+		
+		StringWrapper sWrapper = new StringWrapper();
+		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
+		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
+			for(String role:roles){
+				if(sWrapper.getString().contains(role)) return true;
+			}
+		}
+		return false;
 	}
 }

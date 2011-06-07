@@ -1,5 +1,6 @@
 package org.hydra.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.prettyprint.cassandra.dao.SimpleCassandraDao;
@@ -7,6 +8,7 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.exceptions.HectorException;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
@@ -18,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.KspManager;
 import org.hydra.deployers.Db;
+import org.hydra.managers.CryptoManager;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 /**
@@ -123,42 +126,26 @@ public final class DBUtils {
 	public static int getCountOf(
 			String inKeyspace,
 			String inColumnFamily,
-			String startKey,
-			String endKey,
-			String startRange,
-			String endRange){
-		try {		
-			Result result = new Result();
-			StringSerializer stringSerializer = StringSerializer.get();
-			BeansUtils.getWebContextBean(result, Constants._bean_ksp_manager);
-			if(result.isOk() && result.getObject() instanceof KspManager){
-				KspManager kspManager = (KspManager) result.getObject();
-				Keyspace keyspace = kspManager.getKeyspace(inKeyspace);
-				RangeSlicesQuery<String, String, String> rangeSlicesQuery = 
-					HFactory.createRangeSlicesQuery(keyspace, stringSerializer, stringSerializer, stringSerializer);
-				
-	            rangeSlicesQuery.setColumnFamily(inColumnFamily);
-	            rangeSlicesQuery.setKeys(startKey, endKey);
-	            rangeSlicesQuery.setRange(startRange, endRange, false, 3);
-	            
-	            QueryResult<OrderedRows<String, String, String>> resultOfExec = rangeSlicesQuery.execute();
-	            OrderedRows<String, String, String> orderedRows = resultOfExec.get();
-	            return orderedRows.getCount();
-			}
-        } catch (HectorException he) {
-            he.printStackTrace();
-        }		
-		_log.error(String.format("Could not get count of: %s(%s)", inColumnFamily, inKeyspace));
-		return -1;
+			String inKeyStart,
+			String inKeyEnd,
+			String inKeyRangeStart,
+			String inKeyRangeFinish){
+
+		List<Row<String, String, String>> rows = 
+			getValidRows(inKeyspace, inColumnFamily, inKeyStart, inKeyEnd, inKeyRangeStart, inKeyRangeFinish);
+		if(rows != null)
+			return(rows.size());
+		return(0);
 	}	
 	
-	public static OrderedRows<String,String,String> getRows(
+	public static List<Row<String, String, String>> getValidRows(
 			String inKeyspace,
 			String inColumnFamily, 
 			String inKeyStart,
 			String inKeyEnd,
 			String inKeyRangeStart,
 			String inKeyRangeFinish) {
+		List<Row<String, String, String>> resultRows = new ArrayList<Row<String,String,String>>();
 		try {		
 			Result result = new Result();
 			StringSerializer stringSerializer = StringSerializer.get();
@@ -174,14 +161,25 @@ public final class DBUtils {
 	            rangeSlicesQuery.setRange(inKeyRangeStart, inKeyRangeFinish, false, 3);
 	            
 	            QueryResult<OrderedRows<String, String, String>> resultOfExec = rangeSlicesQuery.execute();
-	            return(resultOfExec.get());
+	            if(resultOfExec.get() != null
+	            		&& resultOfExec.get().getList() != null
+	            		&& resultOfExec.get().getList().size() > 0){
+		            for(Row<String, String, String> row: resultOfExec.get().getList()){
+		            	if(row.getColumnSlice() != null 
+		            			&& row.getColumnSlice().getColumns() != null
+		            			&& row.getColumnSlice().getColumns().size() > 0)
+		            	resultRows.add(row);
+		            }
+		            return(resultRows);
+	            } 
+	            return(null);
 			}
         } catch (HectorException he) {
             _log.error(he);
             return null;
         }		
         return null; 
-	}	
+	}		
 	
 	public static ErrorUtils.ERROR_CODES deleteKey(
 			String appId, 
@@ -245,7 +243,6 @@ public final class DBUtils {
 			String inKey,
 			String inCName,
 			String inUserID, 		 // reserved
-			Moder inModer,           // reserved
 			List<String> links){
 		Db._log.debug("Enter to: getDbTemplateKeyHow");
 		// get result from DB
@@ -260,7 +257,7 @@ public final class DBUtils {
 			Db._log.warn(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
-		if(Utils.hasRight2Edit(inKsp, inUserID, inModer))
+		if(Utils.hasRight2Edit(inKsp, inUserID))
 			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, (err == ErrorUtils.ERROR_CODES.NO_ERROR), links);		
 		return content.getString();			
 	}
@@ -344,5 +341,25 @@ public final class DBUtils {
 			errorFields.add(fieldID);			
 		}	
 		return(value);
+	}
+
+	public static boolean test4GlobalAdmin(String key, String password) {
+		Result result = new Result();
+		try {		
+			BeansUtils.getWebContextBean(result, Constants._bean_ksp_manager);
+			if(result.isOk() && result.getObject() instanceof KspManager){
+				KspManager kspManager = (KspManager) result.getObject();
+				if(kspManager.getAdministrators().size() > 0){
+					if(kspManager.getAdministrators().containsKey(key) &&
+							CryptoManager.checkPassword(password, kspManager.getAdministrators().get(key))){
+						return true;
+					}
+				}
+			}
+        } catch (Exception e) {
+            _log.error(e.toString());
+            return false;
+        }		
+        return false; 
 	}	
 }

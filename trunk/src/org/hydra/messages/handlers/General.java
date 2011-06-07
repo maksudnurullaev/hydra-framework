@@ -1,5 +1,14 @@
 package org.hydra.messages.handlers;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
+import org.apache.commons.io.FileUtils;
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
 import org.hydra.deployers.ADeployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
@@ -83,9 +92,29 @@ public class General extends AMessageHandler { // NO_UCD
 		getLog().debug("... Locale: " + inMessage._locale);
 		getLog().debug("... User ID: " + inMessage._user_id);
 		
-		String content = MessagesManager.getTemplate("template.html.body");
+		String content = "NOT_DEFINED";
+		if(inMessage._web_application.isManager())
+			content = MessagesManager.getTemplate("template.html.body");
+		else{
+			content = getBodyFromFile(inMessage._web_context.getServletContext(), inMessage._web_application.getId());
+		}
+		
 		getLog().debug("... HTML body content length: " + content.length());
 		
+		
 		return(ADeployer.deployContent(content,inMessage));
+	}
+
+	private String getBodyFromFile(ServletContext servletContext, String inAppId) {
+				
+		String content = "CONTENT_NOT_FOUND";
+		String filePath = String.format("/body/%s.body", inAppId);
+		File file = new File(servletContext.getRealPath(filePath));
+		try {
+			content = FileUtils.readFileToString(file,"UTF8");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return(content); 
 	};
 }
