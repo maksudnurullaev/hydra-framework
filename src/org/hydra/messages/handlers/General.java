@@ -82,7 +82,7 @@ public class General extends AMessageHandler { // NO_UCD
 	};
 	
 	public IMessage loadJSFile(CommonMessage inMessage){
-		inMessage.setJSFile(String.format("jscripts/%s.js", inMessage._web_application.getId()));
+		inMessage.setJSFile(String.format("jscripts/webapp/%s.js", inMessage._web_application.getId()));
 		inMessage.clearContent();
 		return inMessage;
 	};	
