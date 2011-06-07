@@ -26,5 +26,11 @@
 				<value>Tag</value>
 			</set>		
 		</property>
+	    <!-- Set locales -->
+	    <property name="administrators">
+	    	<map>
+	    		<entry key="admin" value="jR3Vn00ZHaJv9jFgBNxDOT43vG/Hav1yGxKj0H602v5XHYZrgiYPg37tnmBhEsGB"/>
+	    	</map>
+	    </property>		
 	</bean>	
 </beans>

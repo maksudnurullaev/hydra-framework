@@ -14,13 +14,12 @@ public final class DeployerDb {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			Moder inModer,
 			List<String> links) {
 		_log.debug("Enter to: getDbWhatKeyHow");
 		if(inWhat.compareToIgnoreCase("text") == 0)
-			return getDbTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
+			return getDbTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, links);
 		if(inWhat.compareToIgnoreCase("template") == 0)
-			return getDbTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, inModer, links);
+			return getDbTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, links);
 		
 		_log.warn(String.format("Could not find WHAT part for {{DB|%s|%s|%s}}", inWhat,inKey, inHow));
 		return String.format("{{DB|%s|%s|%s}}", inWhat,inKey, inHow) ;
@@ -32,11 +31,10 @@ public final class DeployerDb {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			Moder inModer,
 			List<String> links){
 		_log.debug("Enter to: getDbTextKeyHow");
 		if(inHow.compareToIgnoreCase("locale") == 0)
-			return getDbTextKeyLocale(inKey, inApplicationID, inLocale, inUserID, inModer, links);
+			return getDbTextKeyLocale(inKey, inApplicationID, inLocale, inUserID, links);
 		_log.error(String.format("Could not find WHAT part for {{DB|Text|%s|%s}}",inKey, inHow));
 		return String.format("{{DB|Text|%s|%s}}",inKey, inHow);
 	};
@@ -46,10 +44,9 @@ public final class DeployerDb {
 			String inHow,			 // reserved
 			String inApplicationID,  // reserved
 			String inUserID, 		 // reserved
-			Moder inModer,           // reserved
 			List<String> links){
 		_log.debug("Enter to: getDbTemplateKeyHow");
-		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Template", inKey, "html", inUserID, inModer, links);
+		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Template", inKey, "html", inUserID, links);
 	};
 	
 	private static String getDbTextKeyLocale(
@@ -57,10 +54,9 @@ public final class DeployerDb {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			Moder inModer,
 			List<String> links) {
 		_log.debug("Enter to: getDbTextKeyLocale");		
-		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, inModer, links);
+		return(DBUtils.wrap2DivIfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links));
 	};
 
 }

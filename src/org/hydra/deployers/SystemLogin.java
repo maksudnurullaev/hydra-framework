@@ -1,12 +1,15 @@
 package org.hydra.deployers;
 
+import java.util.List;
+
+import me.prettyprint.hector.api.beans.ColumnSlice;
+import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.beans.Row;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.managers.MessagesManager;
 import org.hydra.utils.DBUtils;
-import org.hydra.utils.StringWrapper;
 import org.hydra.utils.Utils;
-import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 public final class SystemLogin {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.SystemLogin");
@@ -44,28 +47,27 @@ public final class SystemLogin {
 			String inApplicationID, 
 			String inUserID) {
 		
-		StringWrapper inValue = new StringWrapper();
 		String tag = null;
 		String info = null;
 		
-		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", inValue);
-		if(err == ERROR_CODES.NO_ERROR || err == ERROR_CODES.ERROR_DB_NULL_VALUE){
-			if(inValue.getString() == null || inValue.getString().isEmpty()){
-					//return Utils.T("html.user.info", inUserID, "...", inApplicationID);
-				tag = "...";
+		if(inUserID.length() == 3 && inUserID.contains("+++")){
+			tag = "+++";
+			info = "+++";
+		}else{
+			List<Row<String,String,String>> rows = DBUtils.getValidRows(inApplicationID, "User", inUserID, inUserID, "", "");
+			if(rows == null || rows.size() != 1){
+				return "NO_UNIQUE";
 			}
-			tag =  Utils.tagsAsHtml(inValue.getString());
+			Row<String,String,String> row = rows.get(0);
+			ColumnSlice<String, String> cs = row.getColumnSlice();
+			HColumn<String, String> col = cs.getColumnByName("tag");
+			if(col != null)
+				tag = Utils.tagsAsHtml(col.getValue());
+			col = cs.getColumnByName("info");
+			if(col != null)
+				info = col.getValue();
 		}
-		
-		err = DBUtils.getValue(inApplicationID, "User", inUserID, "info", inValue);
-		if(err == ERROR_CODES.NO_ERROR || err == ERROR_CODES.ERROR_DB_NULL_VALUE){
-			if(inValue.getString() == null || inValue.getString().isEmpty()){
-					info = "...";
-			}
-			info = inValue.getString();
-		}		
-		
-		return Utils.T("html.user.info", inUserID, tag, info , inApplicationID);
+		return Utils.T("html.user.panel", inUserID, tag, info , inApplicationID);
 	}
 
 	private static String getFormLogin(

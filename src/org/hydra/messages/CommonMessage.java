@@ -7,7 +7,6 @@ import java.util.Map;
 import org.directwebremoting.WebContext;
 import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Moder;
 import org.hydra.utils.Result;
 
 /**
@@ -19,11 +18,10 @@ public class CommonMessage implements IMessage {
 	public WebContext _web_context = null;
 	public String _locale = null;
 	public String _user_id = null;
-	//public String _session_id = null;
-	public Moder _moder = new Moder(null);
 	
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
 	private String sessionID = null;
+	private String url = null;
 	private Map<String, String> _htmlContents = new HashMap<String, String>();
 	private String _styleSheet = null;
 	private String _jsFile = null;
@@ -133,5 +131,13 @@ public class CommonMessage implements IMessage {
 	@Override
 	public String getSessionID() {
 		return sessionID;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
 	}
 }

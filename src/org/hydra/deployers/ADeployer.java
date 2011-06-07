@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Moder;
 import org.hydra.utils.Utils;
 
 public final class ADeployer {
@@ -26,7 +25,6 @@ public final class ADeployer {
 				inMessage._web_application.getId(), 
 				inMessage._locale, 
 				inMessage._user_id,
-				inMessage._moder,
 				links);
 				
 		inMessage.setHtmlContent(content);
@@ -40,7 +38,6 @@ public final class ADeployer {
 			String inApplicationID, 
 			String inLocale, 
 			String inUserID, 
-			Moder inModer,
 			int recursionCount,
 			List<String> links) {
 		
@@ -66,7 +63,6 @@ public final class ADeployer {
 							inApplicationID, 
 							inLocale,
 							inUserID,
-							inModer,
 							links);
 			//tempContent.replace("$", "\\$");
 			matcher.appendReplacement(
@@ -79,7 +75,7 @@ public final class ADeployer {
 		matcher = pattern4Deployer.matcher(buf.toString());
 		if(matcher.find()){
 			_log.debug("Found recursive entring, recursionCount: " + recursionCount);
-			return(deployContent(buf.toString(), inApplicationID, inLocale, inUserID, inModer,recursionCount,links));
+			return(deployContent(buf.toString(), inApplicationID, inLocale, inUserID, recursionCount,links));
 		}
 		return(buf.toString());
 		//return(buf.toString());
@@ -91,13 +87,11 @@ public final class ADeployer {
 			String inApplicationID, 
 			String inLocale, 
 			String inUserID, 
-			Moder inModer,
 			List<String> links) {
 		_log.debug("ApplicationID: " + inApplicationID);
 		_log.debug("Locale: " + inLocale);
 		_log.debug("UserID: " + inUserID);
-		_log.debug("Mode: " + inModer.getMode());
-		return deployContent(inContent, inApplicationID, inLocale, inUserID, inModer, 0, links);
+		return deployContent(inContent, inApplicationID, inLocale, inUserID, 0, links);
 	}
 
 	private static String getWhereWhatKeyHow(
@@ -108,14 +102,13 @@ public final class ADeployer {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			Moder inModer,
 			List<String> links) {
 		if(inWhere.compareToIgnoreCase("db") == 0)
-			return Db.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, inModer, links);
+			return Db.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, links);
 		else if(inWhere.compareToIgnoreCase("system") == 0)
 			return System.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID, inUserID);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)
-			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID, inUserID);
 		else if(inWhere.compareToIgnoreCase("Applications") == 0)
 			return Applications.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
 		else if(inWhere.compareToIgnoreCase("Application") == 0)

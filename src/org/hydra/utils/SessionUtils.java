@@ -1,5 +1,9 @@
 package org.hydra.utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.regex.Pattern;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
@@ -64,6 +68,8 @@ public final class SessionUtils {
 		inResult.setResult(true);
 	};
 
+    public static Pattern pattern4Id = Pattern.compile("mode=([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])?");
+
 	public static void setWebApplication(
 			Result inResult,
 			CommonMessage inMessage, 
@@ -73,23 +79,43 @@ public final class SessionUtils {
 			inResult.setResult(false);
 			return;
 		}
-
-		String urlPrefix = inWebContext.getHttpServletRequest().getScheme()
-				+ "://" + inWebContext.getHttpServletRequest().getServerName();
-
+		
 		BeansUtils.getWebContextBean(inResult,
 				Constants._bean_hydra_web_applications);
 		if (!inResult.isOk() || !(inResult.getObject() instanceof WebApplications))
-			return;
-
+			return;		
 		WebApplications webApplications = (WebApplications) inResult.getObject();
-		inMessage._web_application = webApplications.getValidApplication4(urlPrefix);
 
-		if (inMessage._web_application == null) {
-			inResult.setResult("Could not initialize WebApplication object!");
-			inResult.setResult(false);
-		} else
-			inResult.setResult(true);
+		// 1. test for mode
+		String urlString = inMessage.getUrl();
+		_log.error("urlString: " + urlString);
+		if(urlString != null){
+			URL url = null;
+			try {
+				url = new URL(urlString);
+				_log.error("url.getQuery(): " + url.getQuery());
+				if(url != null
+						&& url.getQuery() != null 
+						&& url.getQuery().contains("mode=")){
+					_log.error("url.getQuery(): " + url.getQuery());
+					inMessage._web_application = webApplications.getValidApplication4(url.getQuery());
+					if(inMessage._web_application != null){
+						inResult.setResult(true);
+						return;
+					}
+				}
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			// 2. test for real url
+			inMessage._web_application = webApplications.getValidApplication4(urlString);
+			if (inMessage._web_application == null) {
+				inResult.setResult("Could not initialize WebApplication object!");
+				inResult.setResult(false);
+			} else
+				inResult.setResult(true);
+
+		}
 	};
 
 	public static void setSessionData(

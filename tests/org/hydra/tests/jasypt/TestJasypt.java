@@ -8,8 +8,9 @@ public class TestJasypt {
 	
 	@Test
 	public void test_basic() {
-		String password = "Strong password";
-		String encryptedPassword = CryptoManager.encryptPassword(password);		
+		String password = "Strong Password";
+		String encryptedPassword = CryptoManager.encryptPassword(password);	
+		System.out.println(encryptedPassword);
 		Assert.assertTrue(CryptoManager.checkPassword(password, encryptedPassword));
 	}
 }

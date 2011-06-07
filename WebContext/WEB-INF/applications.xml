@@ -19,12 +19,11 @@
 	
 	<bean id="HydraUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="HydraUz" />
+		<property name="main" value="yes" />
 		<property name="urls">
 			<set>
-				<value>^https?://127\.0\.0\.1.*</value>
-				<value>^https?://192\.168\.34\.140.*</value>
-				<value>^https?://91\.212\.89\.158.*</value>
-				<value>^https?://(www\.)?hydra\.uz.*</value>
+				<value>.*127\.0\.0\.1.*</value>
+				<value>.*(www\.)?hydra\.uz.*</value>
 			</set>
 		</property>
 		<!-- Set jscript -->
@@ -52,8 +51,8 @@
 		<property name="id" value="UristUz" />
 		<property name="urls">
 			<set>
-				<value>^https?://localhost.*</value>
-				<value>^https?://(www\.)?urist\.uz.*</value>
+				<value>.*localhost.*</value>
+				<value>.*(www\.)?urist\.uz.*</value>
 			</set>
 		</property>	
 		<!-- Set jscript -->

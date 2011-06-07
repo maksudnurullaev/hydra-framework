@@ -15,6 +15,7 @@ public class WebApplication extends ALogger {
 	private String _defaultLocale = null;
 	private String _jscript = null;
 	private String _styleSheet = null;
+	private String main = null;
 
 	public String getId() {
 		return _id;
@@ -77,6 +78,18 @@ public class WebApplication extends ALogger {
 
 	public String getJscript() {
 		return _jscript;
+	}
+
+	public boolean isManager() {
+		return(main != null);
+	}
+
+	public void setMain(String main) {
+		this.main = main;
+	}
+
+	public String getMain() {
+		return main;
 	}
 
 }
