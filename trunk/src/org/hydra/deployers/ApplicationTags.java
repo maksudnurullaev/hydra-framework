@@ -4,7 +4,6 @@ import java.util.List;
 
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
-import me.prettyprint.hector.api.beans.Rows;
 
 import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
@@ -23,7 +22,7 @@ public final class ApplicationTags {
 		}
 		content.append("<hr />");
 		content.append("<div id='admin.app.action.tag'>");
-		content.append("<strong>Dinamic tags</strong> | ");
+		content.append("<strong>Other tags</strong> | ");
 		content.append(Utils.createJSLinkHAAD(
 				Utils.Q("AdmTags"), 
 				Utils.Q("addForm"), 
@@ -32,7 +31,7 @@ public final class ApplicationTags {
 				"New"
 				)
 			);
-		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", "Tag", "Tag");
+		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", "", "");
 		int validRows = 0;
 	    for (Row<String, String, String> r : rows) {
 	    	String key = r.getKey();

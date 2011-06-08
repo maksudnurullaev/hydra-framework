@@ -52,5 +52,5 @@ public final class Constants {
 	public static final String _mode_edit_templates = "edit_templates";
 	public static final String _utf8 = "UTF8";
 	
-	public static final String[] _GLOBAL_TAGS = {"User", "User.Editor", "User.Publisher", "User.Administrator"};
+	public static final String[] _GLOBAL_TAGS = {"User", "User.Editor", "User.Publisher", "User.Administrator", "Template"};
 }

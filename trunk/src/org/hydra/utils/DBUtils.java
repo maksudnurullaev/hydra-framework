@@ -172,13 +172,15 @@ public final class DBUtils {
 		            }
 		            return(resultRows);
 	            } 
-	            return(null);
+	            return(resultRows);
 			}
         } catch (HectorException he) {
             _log.error(he);
-            return null;
+            resultRows.clear();
+            return resultRows;
         }		
-        return null; 
+        resultRows.clear();
+        return resultRows; 
 	}		
 	
 	public static ErrorUtils.ERROR_CODES deleteKey(
@@ -258,7 +260,8 @@ public final class DBUtils {
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
 		if(Utils.hasRight2Edit(inKsp, inUserID))
-			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, (err == ErrorUtils.ERROR_CODES.NO_ERROR), links);		
+			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), links);
+		
 		return content.getString();			
 	}
 
@@ -292,29 +295,23 @@ public final class DBUtils {
 		}
 	}
 
-	public static void testForNonExistenceOfKeyOrValue(
+	public static void testForNonExistenceOfKey(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
 			String inKeyspace, 
 			String inColumnFamily,
 			String inKey, 
-			String inColumnName,
 			String fieldID) {
 		
-		SimpleCassandraDao s = DBUtils.getSimpleCassandraDaoOrNull(inKeyspace, inColumnFamily);
-		if(s == null){
-			_log.error(ERROR_CODES.ERROR_DB_NO_CF);
-			errorCodes.add(ERROR_CODES.ERROR_DB_NO_CF);
-			errorFields.add(fieldID);
-			return;
+		_log.warn("KSP.CF.KEY: " + inKeyspace + '.' + inColumnFamily + '.' + inKey + " already exist!");
+		_log.warn("SIZE:" + getValidRows(inKeyspace, inColumnFamily, inKey, inKey, "", "").size());
+		int foundRows = getValidRows(inKeyspace, inColumnFamily, inKey, inKey, "", "").size();
+		if(foundRows == 1){
+			_log.warn("KSP.CF.KEY: " + inKeyspace + '.' + inColumnFamily + '.' + inKey + " already exist!");
+			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_ALREADY_EXIST);
+			errorFields.add(fieldID);	
 		}
 		
-		String value = s.get(inKey, inColumnName);
-		if(value != null){
-			_log.debug("testForNonExistenceKeyOrValue not passed!");
-			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_ALREADY_EXIST);
-			errorFields.add(fieldID);			
-		}		
 	}	
 
 	public static String testForExistenceOfKeyAndValue(

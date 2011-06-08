@@ -44,7 +44,7 @@ public final class SessionUtils {
 		}else{
 			inMessage._locale = inMessage._web_application.getDefaultLocale();
 		}
-		// 5. set session user d
+		// 5. set session user id
 		SessionUtils.getSessionData(inResult, inMessage, Constants._session_user_id);
 		if(inResult.isOk()){
 			inMessage._user_id = (String) inResult.getObject();

@@ -1,6 +1,5 @@
 package org.hydra.messages.handlers;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,14 +43,14 @@ public class AdmUsers extends AMessageHandler {
 		tagPrefixes.add("User");
 		fields.add(new FieldSelectTag(appId, "user_tag", "", tagPrefixes));
 		
-		ArrayList<IField> optionaFields = new ArrayList<IField>();
-		optionaFields.add(new FieldTextArea("user_info", "", "style=\"width: 25em; height: 5em; border: 1px solid #7F9DB9;\""));
+		ArrayList<IField> optionalFields = new ArrayList<IField>();
+		optionalFields.add(new FieldTextArea("user_info", "", "style=\"width: 25em; height: 5em; border: 1px solid #7F9DB9;\""));
 		
 		String form = Utils.generateForm(
 				String.format("<h4>[[DB|Text|New_User|locale]]</h4>"), appId, 
 				"AdmUsers", "add", 
 				"AdmUsers", "list", 
-				"admin.app.action", fields, optionaFields);
+				"admin.app.action", fields, optionalFields);
 		
 		return(ADeployer.deployContent(form,inMessage));		
 	}	
@@ -73,7 +72,7 @@ public class AdmUsers extends AMessageHandler {
 		
 		if(errorCodes.size() == 0){
 			getLog().debug("Test for user existence");
-			DBUtils.testForNonExistenceOfKeyOrValue(errorFields, errorCodes, appID, "User", user_mail, "password", "user_mail");
+			DBUtils.testForNonExistenceOfKey(errorFields, errorCodes, appID, "User", user_mail, "user_mail");
 		}
 
 		getLog().debug("Test for valid password");
@@ -104,19 +103,17 @@ public class AdmUsers extends AMessageHandler {
 				inMessage.setError("Error: " + errorCode);
 				return inMessage;
 			}
-			System.out.println(String.format("%s: %s", entry.getKey(), entry.getValue()));
 		}
 		// finish
 		return list(inMessage);
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "value")) return inMessage;
+		if(!testData(inMessage, "appid", "key")) return inMessage;
 		String appId = inMessage.getData().get("appid");
-		String value = inMessage.getData().get("value").trim();
+		String key = inMessage.getData().get("key").trim();
 				
-		String inColumnFamily = "User";
-		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, inColumnFamily, value);
+		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "User", key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
 			inMessage.setError(errCode.toString());
 			return inMessage;

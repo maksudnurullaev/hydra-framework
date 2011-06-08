@@ -26,7 +26,15 @@ HydraUz.setContent = function(content, dest)
     Globals.sendMessage({
         handler: 'General'
         , action: 'getContent'
-        , key: content
+        , content: content
         , dest: dest
     });	
+};
+
+HydraUz.MorphVT = function(elemID){
+	if($(elemID).getStyle('display') == 'none'){
+		$(elemID).setStyle('display', 'block');
+	}else{
+		$(elemID).setStyle('display', 'none');
+	}
 };

@@ -1,13 +1,6 @@
 1.
-	(DONE!)may be it's good idea to use SessionID in every message to control session expiration
-2. 
-	(DONE!)use form generatort for tags pages
-	(DONE!)save user in DB with tags
-	create list of users
-	create delete link for users list
-	attach url path to every message (?mode=...)
-	make js error message at any error
-	DBUtils.getAllColumn4(Ksp, CFName, key)
-	(DONE!)test when add user to already existence one
+2.
+	Divide sites to the meanful part
+	Workout all main menus
+	Add site admins login functionality  
 3.
-	make Administration link visible just for Administrators

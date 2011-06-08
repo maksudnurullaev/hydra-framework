@@ -53,8 +53,8 @@ public class Just4Run {
 //            
             RangeSlicesQuery<String, String, String> rangeSlicesQuery =
                 HFactory.createRangeSlicesQuery(keyspaceOperator, stringSerializer, stringSerializer, stringSerializer);
-            rangeSlicesQuery.setColumnFamily("User");
-            rangeSlicesQuery.setKeys("", "");
+            rangeSlicesQuery.setColumnFamily("Template");
+            rangeSlicesQuery.setKeys("Test1", "Test1");
             rangeSlicesQuery.setRange("", "", false, 3);
             
             rangeSlicesQuery.setRowCount(11);
