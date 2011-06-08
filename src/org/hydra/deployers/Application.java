@@ -29,6 +29,13 @@ public final class Application {
 				Utils.Q(inKey), 
 				Utils.Q("admin.app.action"), 
 				"Users"));	
+		content.append(" | ");
+		content.append(Utils.createJSLinkHAAD(
+				Utils.Q("AdmTemplates"), 
+				Utils.Q("list"), 
+				Utils.Q(inKey), 
+				Utils.Q("admin.app.action"), 
+				"Templates"));			
 		
 		content.append(Utils.T("template.html.hr.divId.dots","admin.app.action"));
 		return(content.toString());
@@ -46,6 +53,8 @@ public final class Application {
 			return ApplicationTags.getKeyHow(inKey,inHow, inLocale, inApplicationID);
 		else if(inWhat.compareToIgnoreCase("users") == 0)
 			return ApplicationUsers.getKeyHow(inKey,inHow, inLocale, inApplicationID);				
+		else if(inWhat.compareToIgnoreCase("templates") == 0)
+			return ApplicationTemplates.getKeyHow(inKey,inHow, inLocale, inApplicationID);				
 		
 		_log.error("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;

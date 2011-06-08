@@ -11,7 +11,6 @@ import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
-import org.hydra.utils.ErrorUtils.ERROR_CODES;
 import org.hydra.utils.Utils;
 
 public class AdmTags extends AMessageHandler {
@@ -32,7 +31,7 @@ public class AdmTags extends AMessageHandler {
 		
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
-		fields.add(new FieldInput("tag_new", "New.Tag.Name"));		
+		fields.add(new FieldInput("tag_new", "NewName"));		
 		
 		String form = Utils.generateForm(
 				String.format("<h4>[[DB|Text|New_Tag|locale]]</h4>"), appId, 
@@ -44,9 +43,9 @@ public class AdmTags extends AMessageHandler {
 	}
 
 	public IMessage add(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "value")) return inMessage;
+		if(!testData(inMessage, "appid", "tag_new")) return inMessage;
 		String appId = inMessage.getData().get("appid");
-		String value = inMessage.getData().get("value").trim();
+		String value = inMessage.getData().get("tag_new").trim();
 		
 		if(value.isEmpty()){
 			inMessage.setError("NO data");
@@ -54,10 +53,9 @@ public class AdmTags extends AMessageHandler {
 		}
 		
 		String inColumnFamily = "Tag";
-		String inKey = "Tag." + value;
 		
 		inMessage.getData().put("dest", "admin.app.action");
-		DBUtils.setValue(appId, inColumnFamily, inKey, "name", value);
+		DBUtils.setValue(appId, inColumnFamily, value, "name", value);
 				
 		return(list(inMessage));
 	}

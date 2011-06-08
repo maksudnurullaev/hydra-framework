@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 import org.apache.commons.io.FileUtils;
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
 import org.hydra.deployers.ADeployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
@@ -60,10 +57,10 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 	
 	public IMessage getContent(CommonMessage inMessage){
-		if (!testData(inMessage, "key"))
+		if (!testData(inMessage, "content"))
 			return inMessage;
 		
-		String content = inMessage.getData().get("key");
+		String content = inMessage.getData().get("content");
 		getLog().debug("Try to get content for: " + content);
 		
 		if(!content.isEmpty())

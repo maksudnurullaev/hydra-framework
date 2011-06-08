@@ -33,7 +33,7 @@ public final class ApplicationUsers {
 		
 		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "User", "", "", "", "");
 		int validRows = 0;
-		
+
 	    for (Row<String, String, String> r : rows) {
 	    	HColumn<String, String> colPassword = r.getColumnSlice().getColumnByName("password");
 	    	if(colPassword != null){
@@ -88,7 +88,7 @@ public final class ApplicationUsers {
 				 "handler", Utils.Q("AdmUsers")
 				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
-				,"value", Utils.Q(key)
+				,"key", Utils.Q(key)
 				,"dest", Utils.Q("admin.app.action")
 			);
 		return("[" + Utils.createJSLinkWithConfirm(jsData, "X") + "]");		

@@ -9,8 +9,6 @@ import java.util.regex.Matcher;
 
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
-import me.prettyprint.hector.api.beans.Rows;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -161,7 +159,17 @@ public final class Utils {
 				, inJSData
 				, inName);
 	}
-
+	public static String createJSLink(
+			  String inTitle
+			, String inJSData
+			, String inName
+			) {
+		return Utils.T("template.html.a.Title.onClick.sendMessage.Label"
+				, inTitle
+				, inJSData
+				, inName);
+	}	
+	
 	public static String V(String id) {
 		return "$('" + id + "').value" ; 
 	}
@@ -195,6 +203,13 @@ public final class Utils {
 				, inJSData
 				, inName);
 	}
+	
+	public static String createJSLinkWithConfirm(String inTitle, String inJSData, String inName) {
+		return Utils.T("template.html.a.Title.onClick.confirmAndSendMessage.Label"
+				, inTitle
+				, inJSData
+				, inName);
+	}	
 
 	public static String generateForm(
 			String inTitle,
@@ -283,22 +298,22 @@ public final class Utils {
 		return (result.toString());
 	}
 
-	public static List<String> getAllTags4(String inAppID, String inKeyRangeStart, String inKeyRangeFinish) {
+	public static List<String> getAllTags4(String inAppID) {
 		List<String> result = new ArrayList<String>();
 		// set flobal tags
 		for(String tag:Constants._GLOBAL_TAGS)
-			result.add(tag);
-		List<Row<String, String, String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", inKeyRangeStart, inKeyRangeStart);
+				result.add(tag);
+		// finish
+	    _log.error("result.size(): " + result.size());
+		List<Row<String, String, String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", "", "" );
+	    _log.error("rows.size(): " + rows.size());
 	    for (Row<String, String, String> r : rows) {
-	        HColumn<String, String> colResult = 
-	        	DBUtils.getColumn(inAppID, "Tag", r.getKey(), "name");
-	        if(colResult != null 
-	        		&& colResult.getValue() != null
-	        		&& colResult.getValue().compareTo(inKeyRangeStart) >= 0){
-	        	result.add(colResult.getValue());
-	        }
+	    	HColumn<String, String> hc = r.getColumnSlice().getColumnByName("name");
+	    	if(hc != null && hc.getValue() != null)
+	    		result.add(hc.getValue());
 	    }
 		// finish
+	    _log.error("result.size(): " + result.size());
 		return(result);
 	}
 
@@ -308,11 +323,29 @@ public final class Utils {
 			String mailString, 
 			String fieldId) {
 		if(mailString == null || (!isValidEmailAddress(mailString))){
-			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_MAIL);
+			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_EMAIL);
 			errorFields.add(fieldId);
 		}
 	}
 
+	public static void testFieldKey(
+			List<String> errorFields,
+			List<ERROR_CODES> errorCodes,
+			String inValue, 
+			String fieldId, 
+			int inSizeMax) {
+		if(inValue == null || inValue.isEmpty()){
+			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_KEY);
+			errorFields.add(fieldId);
+			return;
+		}
+		if(inValue.length() > inSizeMax){
+			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_SIZE);
+			errorFields.add(fieldId);
+			return;			
+		}
+	}	
+	
 	public static void test2ValidPasswords(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
@@ -379,7 +412,6 @@ public final class Utils {
 		String prefixesID = "tag.prefixes." + elemID; 
 		String divId = "tag.div." + elemID;
 		
-		StringBuffer ssPart = new StringBuffer();
 		// input - value
 		String inputHtmlTag = String.format("<input id=\"%s\" type=\"hidden\" value=\"%s\">", 
 				elemID,
@@ -391,22 +423,36 @@ public final class Utils {
 				prefixesValue);
 		
 		// select
-		ssPart.append(String.format("<select id=\"%s\" style=\"border: 1px solid rgb(127, 157, 185);\">", selectID));
+		StringBuffer selectPart = new StringBuffer();
+		selectPart.append(String.format("<select id=\"%s\" style=\"border: 1px solid rgb(127, 157, 185);\">", selectID));
+
 		boolean selectHasElements = false;
+		List<String> allTags = Utils.getAllTags4(appId);
+		List<String> filteredTags = new ArrayList<String>();
+		
 		if(tagPrefixes != null && tagPrefixes.size() > 0){
-			String[] arrOfTags = value.split(",");
-			for(String prefix:tagPrefixes){
-				for(String tag:Utils.getAllTags4(appId, prefix, prefix)){
-					if(containsTag(arrOfTags, tag)){// already exit 
-						continue;
-					}else{
-						ssPart.append(String.format("<option value=\"%s\">[[DB|Text|%s|locale]]</option>", tag, tag));
-						selectHasElements = true;
-					}
+			for(String tag: allTags){
+				for(String ptag:tagPrefixes){
+					if(tag.contains(ptag))
+						filteredTags.add(tag);
 				}
+			}			
+		}else{
+			filteredTags = allTags;
+		}
+		_log.error("tagPrefixes.size(): " + tagPrefixes.size());
+		String[] arrOfTags = value.split(",");
+		for(String tag:filteredTags){
+			_log.error("tag:" + tag);
+			if(containsTag(arrOfTags, tag)){// already exit 
+				continue;
+			}else{
+				selectPart.append(String.format("<option value=\"%s\">[[DB|Text|%s|locale]]</option>", tag, tag));
+				selectHasElements = true;
 			}
 		}
-		ssPart.append("</select> | ");
+			
+		selectPart.append("</select> | ");
 		
 		String jsData = Utils.jsData(
 				 "handler", Utils.Q("Tagger")
@@ -418,7 +464,7 @@ public final class Utils {
 				,"prefixes", Utils.V(prefixesID)
 				,"dest", Utils.Q(divId)
 			);			
-		ssPart.append(Utils.createJSLink(jsData, "Add"));		
+		selectPart.append(Utils.createJSLink(jsData, "Add"));		
 		
 		// div for tags
 		String textPart = "";
@@ -450,7 +496,7 @@ public final class Utils {
 		result += String.format("<div id='%s'>", divId);
 		result += textPart;
 		if(selectHasElements)
-			result += ("<hr />" + ssPart.toString());
+			result += ("<hr />" + selectPart.toString());
 		result += (inputHtmlTag + prefixesHtmlTag);
 		result += "</div>";
 		
@@ -520,7 +566,6 @@ public final class Utils {
 		return result;
 	}
 
-
 	public static void test2ValidPassword(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
@@ -540,19 +585,34 @@ public final class Utils {
 	}
 
 	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {
-		if(inApplicationID == null || inApplicationID.length() == 0) return false;
-		if(inUserID == null || inUserID.length() == 0) return false;
-		if(roles == null || roles.length == 0) return false;
-
-		if(inUserID.startsWith("+++")) return true; // super user
-		
-		StringWrapper sWrapper = new StringWrapper();
-		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
-		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-			for(String role:roles){
-				if(sWrapper.getString().contains(role)) return true;
-			}
-		}
-		return false;
+//		if(inApplicationID == null || inApplicationID.length() == 0) return false;
+//		if(inUserID == null || inUserID.length() == 0) return false;
+//		if(roles == null || roles.length == 0) return false;
+//
+//		if(inUserID.startsWith("+++")) return true; // super user
+//		
+//		StringWrapper sWrapper = new StringWrapper();
+//		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
+//		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
+//			for(String role:roles){
+//				if(sWrapper.getString().contains(role)) return true;
+//			}
+//		}
+//		return false;
+		return true;
 	}
+
+	public static boolean errDBCodeValueExest(ERROR_CODES err) {
+		boolean result = false;
+		switch (err) {
+		case NO_ERROR:
+			result = true;			
+			break;
+		default:
+			break;
+		}
+		return result;
+	}
+
+
 }

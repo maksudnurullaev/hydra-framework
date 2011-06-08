@@ -4,37 +4,31 @@
         <h1 class="logo">
           <a href="#" title="&lt; Urist.Uz /&gt;">&lt; Urist.Uz /&gt;</a>
         </h1>
-        <ul class="topNav">
+        <ul id="topNav" class="topNav">
           <li>
-            <a href="#" id="news" class="topNavAct" name="news">Главная / Новости</a>
-
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="home" class="topNavAct">Главная / Новости</a>
           </li>
           <li>
-            <a href="#" id="law" name="law">Законодательство</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="law">Законодательство</a>
           </li>
           <li>
-            <a href="#" id="consultation" name="consultation">Консультация</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="consultation">Консультация</a>
           </li>
           <li>
-
-            <a href="#" id="question" name="question">Вопросы и ответы</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="question">Вопросы и ответы</a>
           </li>
           <li>
-            <a href="#" id="guide" name="guide">Справочник</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="guide">Справочник</a>
           </li>
           <li>
-            <a href="#" id="break" name="break">Истории</a>
-
-          </li>
-          <li>
-            <a href="#" id="cabinet" class="topNavLast" name="cabinet">Форум</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="cabinet" class="topNavLast" name="cabinet">Кабинет</a>
           </li>
         </ul>
       </div>
       <div id="content">
-        <div id="news.content" class="content_1">
+        <div id="content_1" class="content_1">
 
-          <div class="content_1_left">
+          <div id="content_1_left" class="content_1_left">
             <h2>
               Urist.Uz <span>юридическая консультация и помощь онлайн...</span>
             </h2><img src="img/UristUz/themis.jpg" class="floatLeft" />
@@ -137,4 +131,8 @@
         <label>Powered by <a href="http://hydra.uz">Hydra.Uz</a></label> <span>Copyright 2011 NMK. All Rights Reserved</span>
       </p>
     </div>
+    
+	<!-- Invisible DIV we use backup edit area -->
+	<div id="editLinks" class="edit" style="visibility: hidden;">
+	</div>    
 <!-- BODY-END -->
