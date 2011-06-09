@@ -48,8 +48,11 @@ public final class Db {
 			String inApplicationID,  // reserved
 			String inUserID, 		 // reserved
 			List<String> links){
-		_log.debug("Enter to: getDbTemplateKeyHow");
-		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Template", inKey, "html", inUserID, links);
+		_log.debug("Try to insert...");
+		_log.debug("inKeyspace: " + inApplicationID);
+		_log.debug("inColumnFamily: " + "Template");
+		_log.debug("inKey: " + inKey);
+		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Template", inKey, "content", inUserID, links);
 	};
 
 	private static String getTextKeyLocale(
