@@ -25,7 +25,7 @@ public class AdmTemplates extends AMessageHandler {
 		String appId = inMessage.getData().get("appid");
 		
 		String content  = String.format("[[Application|Templates|%s|html]]", appId);
-		getLog().error("Try to get content for: " + content);
+		getLog().debug("Try to get content for: " + content);
 				
 		return(ADeployer.deployContent(content,inMessage));
 	}	

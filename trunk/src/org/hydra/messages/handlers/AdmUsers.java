@@ -25,7 +25,7 @@ public class AdmUsers extends AMessageHandler {
 		String appId = inMessage.getData().get("appid");
 		
 		String content  = String.format("[[Application|Users|%s|html]]", appId);
-		getLog().error("Try to get content for: " + content);
+		getLog().debug("Try to get content for: " + content);
 				
 		return(ADeployer.deployContent(content,inMessage));
 	}	
@@ -79,7 +79,6 @@ public class AdmUsers extends AMessageHandler {
 		Utils.test2ValidPasswords(errorFields, errorCodes, inMessage, "user_password", "user_password2");
 		
 		if(errorFields.size() != 0){
-			getLog().error("Errors found");
 			inMessage.clearContent();
 			inMessage.setHighlightFields(errorFields);
 			inMessage.setNoHighlightFields(mandatoryFields);

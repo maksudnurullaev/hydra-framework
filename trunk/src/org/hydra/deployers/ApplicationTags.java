@@ -51,7 +51,7 @@ public final class ApplicationTags {
 						,"value", Utils.Q(key)
 						,"dest", Utils.Q("admin.app.action.tag")
 					);			
-				content2.append(Utils.createJSLinkWithConfirm(jsData, "Delete"));			
+				content2.append(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete", jsData, "X")));			
 				// value
 				content2.append("&nbsp;");
 				content2.append(value);

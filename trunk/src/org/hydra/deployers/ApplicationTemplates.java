@@ -95,7 +95,7 @@ public class ApplicationTemplates extends AMessageHandler {
 				,"key", Utils.Q(key)
 				,"dest", Utils.Q("admin.app.action")
 			);
-		return("[" + Utils.createJSLinkWithConfirm("Delete",jsData, "X") + "]");		
+		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
 	}
 	
 	private static String getUpdateLink(
@@ -108,7 +108,7 @@ public class ApplicationTemplates extends AMessageHandler {
 				,"key", Utils.Q(key)
 				,"dest", Utils.Q("admin.app.action")
 			);
-		return("[" + Utils.createJSLink("Update",jsData, "U") + "]");		
+		return(Utils.F("[%s]", Utils.createJSLink("Update",jsData, "U")));		
 	}
 	
 	private static String getSlideLink(
