@@ -616,5 +616,9 @@ public final class Utils {
 		return result;
 	}
 
+	public static String F(String format, Object...args) {
+		return String.format(getNewLine(), args);
+	}
+
 
 }
