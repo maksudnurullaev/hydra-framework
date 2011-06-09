@@ -31,7 +31,8 @@ public final class Constants {
 	public static final String _file_name_delimiter = "_";
 	public static final String _beans_text_manager = "_text_manager";
 	
-	// **** Deafult response waiting time (in milliseconds)
+	// **** Deafult limits
+	public static final int _max_textarea_field_limit = 4096;
 	public static final long _max_response_wating_time = 5000;
 	
 	// **** Message action keys
