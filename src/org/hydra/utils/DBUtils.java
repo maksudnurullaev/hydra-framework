@@ -164,18 +164,15 @@ public final class DBUtils {
 	            rangeSlicesQuery.setRange(inKeyRangeStart, inKeyRangeFinish, false, 3);
 	            
 	            QueryResult<OrderedRows<String, String, String>> resultOfExec = rangeSlicesQuery.execute();
-	            if(resultOfExec.get() != null
-	            		&& resultOfExec.get().getList() != null
-	            		&& resultOfExec.get().getList().size() > 0){
-		            for(Row<String, String, String> row: resultOfExec.get().getList()){
-		            	if(row.getColumnSlice() != null 
-		            			&& row.getColumnSlice().getColumns() != null
-		            			&& row.getColumnSlice().getColumns().size() > 0)
-		            	resultRows.add(row);
-		            }
-		            return(resultRows);
-	            } 
-	            return(resultRows);
+	            OrderedRows<String, String, String> ol = resultOfExec.get();
+	            for(Row<String, String, String> row: ol){
+	            	if(row.getColumnSlice() != null 
+	            			&& row.getColumnSlice().getColumns() != null
+	            			&& row.getColumnSlice().getColumns().size() > 0)
+	            	_log.error("row.getKey()" + row.getKey());
+	            	_log.equals("row.getColumnSlice().getColumns().size()" + row.getColumnSlice().getColumns().size());
+	            	resultRows.add(row);
+	            }
 			}
         } catch (HectorException he) {
             _log.error(he);

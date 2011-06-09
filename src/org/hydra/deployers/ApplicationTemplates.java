@@ -32,6 +32,7 @@ public class ApplicationTemplates extends AMessageHandler {
 		StringBuffer content = new StringBuffer();
 		
 		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Template", "", "", "", "");
+		_log.error("ROWS: " + rows.size());
 		int validRows = 0;
 
 	    for (Row<String, String, String> r : rows) {
