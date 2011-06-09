@@ -149,9 +149,9 @@ public final class DBUtils {
 			String inKeyRangeStart,
 			String inKeyRangeFinish) {
 		List<Row<String, String, String>> resultRows = new ArrayList<Row<String,String,String>>();
+		Result result = new Result();
+		StringSerializer stringSerializer = StringSerializer.get();
 		try {		
-			Result result = new Result();
-			StringSerializer stringSerializer = StringSerializer.get();
 			BeansUtils.getWebContextBean(result, Constants._bean_ksp_manager);
 			if(result.isOk() && result.getObject() instanceof KspManager){
 				KspManager kspManager = (KspManager) result.getObject();
