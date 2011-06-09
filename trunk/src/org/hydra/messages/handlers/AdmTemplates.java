@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.prettyprint.hector.api.beans.ColumnSlice;
-
 import org.hydra.deployers.ADeployer;
 import org.hydra.html.fields.FieldInput;
 import org.hydra.html.fields.FieldSelectTag;
