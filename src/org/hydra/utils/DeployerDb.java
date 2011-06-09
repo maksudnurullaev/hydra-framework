@@ -46,7 +46,7 @@ public final class DeployerDb {
 			String inUserID, 		 // reserved
 			List<String> links){
 		_log.debug("Enter to: getDbTemplateKeyHow");
-		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Template", inKey, "html", inUserID, links);
+		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Template", inKey, "content", inUserID, links);
 	};
 	
 	private static String getDbTextKeyLocale(

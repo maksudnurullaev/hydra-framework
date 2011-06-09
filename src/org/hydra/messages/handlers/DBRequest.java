@@ -1,15 +1,11 @@
 package org.hydra.messages.handlers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hydra.deployers.ADeployer;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
-import org.hydra.utils.ErrorUtils.ERROR_CODES;
 import org.hydra.utils.StringWrapper;
 import org.hydra.utils.Utils;
 
@@ -73,7 +69,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		if(!testData(	inMessage, "key", "dest")) return inMessage;
 		String key = inMessage.getData().get("key");
 		
-		getTextarea2Edit(inMessage, "Template", key, "html",
+		getTextarea2Edit(inMessage, "Template", key, "content",
 				"DBRequest", "updateTemplate");
 		return inMessage;
 	}	
@@ -122,7 +118,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		String key = inMessage.getData().get("key");
 		String value = inMessage.getData().get("value");		
 		
-		update(inMessage, "Template", key, "html", value);
+		update(inMessage, "Template", key, "content", value);
 		
 		return inMessage;
 	}	

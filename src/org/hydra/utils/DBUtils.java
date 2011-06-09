@@ -1,11 +1,14 @@
 package org.hydra.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.prettyprint.cassandra.dao.SimpleCassandraDao;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.beans.ColumnSlice;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.beans.Row;
@@ -340,6 +343,29 @@ public final class DBUtils {
 		return(value);
 	}
 
+	public static Map<String, String> testForExistenceKey(
+			List<String> errorFields,
+			List<ERROR_CODES> errorCodes, 
+			String inKeyspace, 
+			String inColumnFamily,
+			String inKey,
+			String fieldID) {
+		Map<String, String> result = new HashMap<String, String>();
+		List<Row<String, String, String>> rows = getValidRows(inKeyspace, inColumnFamily, inKey, inKey, "", "");
+		if(rows.size() == 1 
+				&& rows.get(0).getColumnSlice() != null
+				){
+			for(HColumn<String, String> hc: rows.get(0).getColumnSlice().getColumns()){
+				result.put(hc.getName(), hc.getValue());
+			}
+		}else{
+			_log.debug("testForExistenceKey not passed!");
+			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_OR_VALUE_NOT_EXIST);
+			errorFields.add(fieldID);
+		}
+		return(result);
+	}	
+	
 	public static boolean test4GlobalAdmin(String key, String password) {
 		Result result = new Result();
 		try {		
