@@ -168,10 +168,11 @@ public final class DBUtils {
 	            for(Row<String, String, String> row: ol){
 	            	if(row.getColumnSlice() != null 
 	            			&& row.getColumnSlice().getColumns() != null
-	            			&& row.getColumnSlice().getColumns().size() > 0)
-
-	            	resultRows.add(row);
+	            			&& row.getColumnSlice().getColumns().size() > 0){
+	            		resultRows.add(row);
+	            	}
 	            }
+	            return(resultRows);
 			}
         } catch (HectorException he) {
             _log.error(he);
@@ -253,7 +254,9 @@ public final class DBUtils {
 		case NO_ERROR:
 			break;
 		case ERROR_DB_EMPTY_VALUE:
+		case ERROR_DB_NULL_VALUE:
 			content.setString(String.format("<font color='red'>%s</font>",inKey));
+			break;
 		default:
 			Db._log.warn(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
@@ -302,11 +305,10 @@ public final class DBUtils {
 			String inKey, 
 			String fieldID) {
 		
-		_log.warn("KSP.CF.KEY: " + inKeyspace + '.' + inColumnFamily + '.' + inKey + " already exist!");
-		_log.warn("SIZE:" + getValidRows(inKeyspace, inColumnFamily, inKey, inKey, "", "").size());
 		int foundRows = getValidRows(inKeyspace, inColumnFamily, inKey, inKey, "", "").size();
-		if(foundRows == 1){
-			_log.warn("KSP.CF.KEY: " + inKeyspace + '.' + inColumnFamily + '.' + inKey + " already exist!");
+		if(foundRows != 0){
+			_log.warn(Utils.F("%s.%s['%s'] already exist!", 
+					inKeyspace, inColumnFamily,inKey));
 			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_ALREADY_EXIST);
 			errorFields.add(fieldID);	
 		}

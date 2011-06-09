@@ -2,6 +2,7 @@ package org.hydra.messages.handlers;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.hydra.deployers.ADeployer;
 import org.hydra.html.fields.FieldInput;
@@ -44,18 +45,29 @@ public class AdmTags extends AMessageHandler {
 
 	public IMessage add(CommonMessage inMessage){
 		if(!testData(inMessage, "appid", "tag_new")) return inMessage;
-		String appId = inMessage.getData().get("appid");
-		String value = inMessage.getData().get("tag_new").trim();
+		String appID = inMessage.getData().get("appid");
+		String key = inMessage.getData().get("tag_new").trim();
+		String cfName = "Tag";
 		
-		if(value.isEmpty()){
+		if(key.isEmpty()){
 			inMessage.setError("NO data");
 			return inMessage;
 		}
 		
-		String inColumnFamily = "Tag";
+		List<String> errorFields = new ArrayList<String>();
+		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();		
+		
+		DBUtils.testForNonExistenceOfKey(errorFields, errorCodes, appID, cfName, key, "tag_new");		
+		
+		if(errorFields.size() != 0){
+			inMessage.clearContent();
+			inMessage.setHighlightFields(errorFields);
+			inMessage.setError(Utils.getErrorDescription(errorFields, errorCodes));
+			return inMessage;
+		}		
 		
 		inMessage.getData().put("dest", "admin.app.action");
-		DBUtils.setValue(appId, inColumnFamily, value, "name", value);
+		DBUtils.setValue(appID, cfName, key, "name", key);
 				
 		return(list(inMessage));
 	}

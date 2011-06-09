@@ -306,16 +306,13 @@ public final class Utils {
 		for(String tag:Constants._GLOBAL_TAGS)
 				result.add(tag);
 		// finish
-	    _log.error("result.size(): " + result.size());
 		List<Row<String, String, String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", "", "" );
-	    _log.error("rows.size(): " + rows.size());
 	    for (Row<String, String, String> r : rows) {
 	    	HColumn<String, String> hc = r.getColumnSlice().getColumnByName("name");
 	    	if(hc != null && hc.getValue() != null)
 	    		result.add(hc.getValue());
 	    }
 		// finish
-	    _log.error("result.size(): " + result.size());
 		return(result);
 	}
 
@@ -442,10 +439,9 @@ public final class Utils {
 		}else{
 			filteredTags = allTags;
 		}
-		_log.error("tagPrefixes.size(): " + tagPrefixes.size());
+
 		String[] arrOfTags = value.split(",");
 		for(String tag:filteredTags){
-			_log.error("tag:" + tag);
 			if(containsTag(arrOfTags, tag)){// already exit 
 				continue;
 			}else{
@@ -488,7 +484,7 @@ public final class Utils {
 						,"prefixes", Utils.V(prefixesID)
 						,"dest", Utils.Q(divId)
 					);			
-				textPart += ("[" + Utils.createJSLink(jsData, "X") + "]");	
+				textPart += F("[%s]", Utils.createJSLink(jsData, "X"));	
 			}
 			
 		}
@@ -617,7 +613,7 @@ public final class Utils {
 	}
 
 	public static String F(String format, Object...args) {
-		return String.format(getNewLine(), args);
+		return String.format(format, args);
 	}
 
 

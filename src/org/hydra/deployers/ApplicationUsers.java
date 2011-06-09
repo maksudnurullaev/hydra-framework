@@ -91,7 +91,7 @@ public final class ApplicationUsers {
 				,"key", Utils.Q(key)
 				,"dest", Utils.Q("admin.app.action")
 			);
-		return("[" + Utils.createJSLinkWithConfirm(jsData, "X") + "]");		
+		return(Utils.F("[%s]",Utils.createJSLinkWithConfirm(jsData, "X")));		
 	}
 
 }
