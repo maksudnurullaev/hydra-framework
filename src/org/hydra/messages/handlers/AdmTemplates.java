@@ -15,6 +15,7 @@ import org.hydra.html.fields.IField;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
 import org.hydra.utils.Utils;
@@ -105,7 +106,7 @@ public class AdmTemplates extends AMessageHandler {
 		String template_key = inMessage.getData().get("template_key").trim();
 		String template_content = inMessage.getData().get("template_content").trim();
 		Utils.testFieldKey(errorFields, errorCodes, template_key, "template_key", 64);
-		Utils.testFieldKey(errorFields, errorCodes, template_content, "template_content", 1024);
+		Utils.testFieldKey(errorFields, errorCodes, template_content, "template_content", Constants._max_textarea_field_limit);
 		
 		if(errorCodes.size() == 0){
 			getLog().debug("Test for user existence");
@@ -152,7 +153,7 @@ public class AdmTemplates extends AMessageHandler {
 		String template_key = inMessage.getData().get("template_key").trim();
 		String template_content = inMessage.getData().get("template_content").trim();
 		Utils.testFieldKey(errorFields, errorCodes, template_key, "template_key", 64);
-		Utils.testFieldKey(errorFields, errorCodes, template_content, "template_content", 1024);
+		Utils.testFieldKey(errorFields, errorCodes, template_content, "template_content", Constants._max_textarea_field_limit);
 		
 		if(errorCodes.size() == 0){
 			getLog().debug("Test for user existence");
