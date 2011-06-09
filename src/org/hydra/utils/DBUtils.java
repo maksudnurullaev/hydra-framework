@@ -169,8 +169,7 @@ public final class DBUtils {
 	            	if(row.getColumnSlice() != null 
 	            			&& row.getColumnSlice().getColumns() != null
 	            			&& row.getColumnSlice().getColumns().size() > 0)
-	            	_log.error("row.getKey()" + row.getKey());
-	            	_log.error("row.getColumnSlice().getColumns().size()" + row.getColumnSlice().getColumns().size());
+
 	            	resultRows.add(row);
 	            }
 			}

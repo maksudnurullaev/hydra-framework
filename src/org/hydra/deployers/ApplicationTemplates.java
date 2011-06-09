@@ -32,11 +32,15 @@ public class ApplicationTemplates extends AMessageHandler {
 		StringBuffer content = new StringBuffer();
 		
 		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Template", "", "", "", "");
-		_log.error("ROWS: " + rows.size());
+		_log.debug("rows.size(): " + rows.size());
 		int validRows = 0;
 
 	    for (Row<String, String, String> r : rows) {
 	    	HColumn<String, String> colContent = r.getColumnSlice().getColumnByName("content");
+	    	if(colContent == null){
+	    		_log.warn(Utils.F("Could not find value for Template[%s][content]!", r.getKey()));
+	    		continue;
+	    	}
 	    	validRows++;
 	    	String divHiddenID = "template." + r.getKey();  
     		content.append("<div style=\"margin: 5px; padding: 5px; border: 1px solid rgb(127, 157, 185);\">");
@@ -57,9 +61,7 @@ public class ApplicationTemplates extends AMessageHandler {
 	        	}
         	}
         	// ... content size
-        	if(colContent.getValue() != null){
-        		content.append(String.format(" (<i>SIZE:%s</i>)", colContent.getValue().length()));
-        	}
+       		content.append(String.format(" (<i>SIZE:%s</i>)", colContent.getValue().length()));
         	
     		content.append(String.format("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s</div>", divHiddenID, StringEscapeUtils.escapeHtml(colContent.getValue())));        	
         	content.append("</div>");
