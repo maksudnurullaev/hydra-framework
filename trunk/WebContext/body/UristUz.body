@@ -6,125 +6,36 @@
         </h1>
         <ul id="topNav" class="topNav">
           <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="home" class="topNavAct">Главная / Новости</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Home" class="topNavAct">Главная / Новости</a>
           </li>
           <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="law">Законодательство</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Zakonodatelstvo">Законодательство</a>
           </li>
           <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="consultation">Консультация</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Konsultasiya">Консультация</a>
           </li>
           <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="question">Вопросы и ответы</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="FAQ">Вопросы и ответы</a>
           </li>
           <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="guide">Справочник</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Sparavochnik">Справочник</a>
           </li>
           <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="cabinet" class="topNavLast" name="cabinet">Кабинет</a>
+            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Kabinet" class="topNavLast" name="cabinet">Кабинет</a>
           </li>
         </ul>
       </div>
       <div id="content">
-        <div id="content_1" class="content_1">
-
-          <div id="content_1_left" class="content_1_left">
-            <h2>
-              Urist.Uz <span>юридическая консультация и помощь онлайн...</span>
-            </h2><img src="img/UristUz/themis.jpg" class="floatLeft" />
-            <p style="text-indent:2em;">
-              В жизни каждого человека бывают моменты, когда необходима квалифицированная юридическая помощь. Наш сайт оказывает юридические консультации и помощь, как физическим, так и юридическим лицам. Юридическая консультация наших специалистов поможет решить вопросы в следующих направлениях: уголовные дела, семейные дела (развод, алименты, лишение родительских прав, установление отцовства, усыновление детей, составление брачного договора, наследственные дела), споры о недвижимости, также сделки с недвижимостью, трудовые споры, административные споры. Для организаций юридическая консультация поможет в решении такого круга вопросов: арбитраж, трудовые споры, налоговые споры, административные споры. Обратившись к нам, вы можете рассчитывать на реальную помощь квалифицированных специалистов.
-            </p><br class="clear bottomClear" />
-            <h2>
-
-              Наши консультанты...<span>Всего у нас 10 консультантов... ( <a href="http://hydra.uz">показать все</a> )</span>
-            </h2>
-            <table>
-              <tbody>
-                <tr>
-                  <td>
-
-                    <img src="img/UristUz/lawer3.jpg" class="floatLeft" /> <strong>И.И. Иванов</strong>
-                    <p>
-                      Aдвокат, специалист по гражданскому законодательству.
-                    </p>
-                  </td>
-                  <td>
-                    <img src="img/UristUz/lawer1.jpg" class="floatLeft" /> <strong>А.М. Курбанов</strong>
-
-                    <p>
-                      Aдвокат, специалист по гражданскому законодательству.
-                    </p>
-                  </td>
-                  <td>
-                    <img src="img/UristUz/lawer2.jpg" class="floatLeft" /> <strong>С.И. Ахмедов</strong>
-                    <p>
-                      Aдвокат, специалист по гражданскому законодательству.
-                    </p>
-
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="sideBar">
-            <div class="sideBarItem">
-              <ul>
-                <li>
-
-                  <a href="#">О нас</a>
-                </li>
-                <li>
-                  <a href="#">Топ-новости</a>
-                </li>
-                <li>
-                  <a href="#">Парламентские вести</a>
-
-                </li>
-                <li>
-                  <a href="#">События дня</a>
-                </li>
-                <li>
-                  <a href="#">Криминальная сводка</a>
-                </li>
-                <li>
-
-                  <a href="#">Пресс-релизы компаний</a>
-                </li>
-              </ul>
-            </div>
-            <hr />
-            <br class="clear" />
-            <div class="sideBarItem">
-              <h3>
-
-                Партнёры...
-              </h3>
-              <ul>
-                <li>
-                  <a href="#">PC.UZ</a><span>Определены победители конкурсов GFI и Xerox</span>
-                </li>
-                <li class="cat002">
-                  <a href="#">RESTORAN.UZ</a><span>R-Keeper: что это такое?</span>
-
-                </li>
-                <li class="cat002">
-                  <a href="#">STROYKA.UZ</a><span>"Узметкомбинат" подвел итоги работы в I квартале</span>
-                </li>
-                <li class="cat002">
-                  <a href="#">BANK.UZ</a><span>В Узбекистане будет создан Фонд поддержки небанковских кредитных организаций.</span>
-                </li>
-
-                <li class="cat002">
-                  <a href="#">VET.APTEKA.UZ</a><span>Причины развития, патогенез и ингибиторы АПФ при хронической сердечной недостаточности у собак.</span>
-                </li>
-              </ul>
-            </div>
-          </div><br class="clear" />
-          <br class="clear" />
-        </div>
-
-      </div>
+	    <div class="content_1" id="content_1">
+	      <div class="content_1_left" id="content_1_left">
+	        [[DB|Template|Main.Home.Page|null]]
+	      </div>
+	    </div>
+	    <div id="sideBar" class="sideBar">
+	      <div class="sideBarItem">
+	        [[DB|Template|Main.Home.Page.Menu|null]]
+	      </div>
+	    </div><br class="clear">
     </div>
     <div id="footerContainer">
       <p>

@@ -26,6 +26,8 @@ public class AdmTemplates extends AMessageHandler {
 		
 		String content  = String.format("[[Application|Templates|%s|html]]", appId);
 		getLog().debug("Try to get content for: " + content);
+		
+		inMessage._web_application.setId(appId);
 				
 		return(ADeployer.deployContent(content,inMessage));
 	}	
@@ -79,15 +81,18 @@ public class AdmTemplates extends AMessageHandler {
 		tagPrefixes.add(cfName);
 		fields.add(new FieldSelectTag(appID, "template_tag", tag, tagPrefixes));
 		
-		fields.add(new FieldTextArea("template_content", content, "style=\"width: 40em; height: 25em; border: 1px solid #7F9DB9;\""));
+		fields.add(new FieldTextArea("template_content", "__1__", "style=\"width: 40em; height: 25em; border: 1px solid #7F9DB9;\""));
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|New_Template|locale]]</h4>"), appID, 
+				String.format("<h4>[[DB|Text|Update_Template|locale]]</h4>"), appID, 
 				"AdmTemplates", "update", 
 				"AdmTemplates", "list", 
 				"admin.app.action", fields, null);
 		
-		return(ADeployer.deployContent(form,inMessage));		
+		String temp = ADeployer.deployContent2(form,inMessage);
+		temp = temp.replaceAll("__1__", content);
+		inMessage.setHtmlContent(temp);
+		return(inMessage);
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
