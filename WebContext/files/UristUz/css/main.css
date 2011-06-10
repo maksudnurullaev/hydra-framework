@@ -32,7 +32,7 @@ body {
 	font-family:Arial, Helvetica, sans-serif;
 	font-size:12px;
 	color:#000000;
-	background:url(../img/UristUz/bgR.png) repeat-x left top #ffffff;
+	background:url(../image/bgR.png) repeat-x left top #ffffff;
 }
 .clear {
 	margin:0px;
@@ -53,7 +53,7 @@ body {
 	font-weight:normal;
 }
 #topbar {
-    background-image:url(../img/UristUz/topbg.gif);
+    background-image:url(../image/topbg.gif);
 	background-repeat:repeat-x;
 	width:960px;
 	height:40px;
@@ -90,7 +90,7 @@ ul.topNav  {
 	 border-right:1px dotted #000000;
 }
 .topNav li a.topNavAct{
-	background:#FFFFFF url(../img/UristUz/topNavSep.png) no-repeat right bottom;
+	background:#FFFFFF url(../image/topNavSep.png) no-repeat right bottom;
 	color:#000000;
 	text-decoration:none;
 	height:40px;
@@ -115,7 +115,7 @@ ul.topNav  {
     font-size:18px;
 	color:#CACACA;
 	line-height:18px;
-	background:url(../img/UristUz/topInpurtArea.png) repeat-x left top;
+	background:url(../image/topInpurtArea.png) repeat-x left top;
 	border:none;
 	width:205px;
 	padding-top:5px;
@@ -126,7 +126,7 @@ ul.topNav  {
 	display:inline-block;
 }
 .searchBtn{
-    background-image:url(../img/UristUz/seach_button.png);
+    background-image:url(../image/seach_button.png);
 	background-repeat:no-repeat;
 	width:35px;
 	height:39px;
@@ -137,14 +137,14 @@ ul.topNav  {
 	text-indent:999999px;
 }
 #banner {
-    background-image:url(../img/UristUz/banner.png);
+    background-image:url(../image/banner.png);
 	background-repeat:no-repeat;
 	width:960px;
 	height:454px;
 	float:left;
 }
 .logo {
-    background-image:url(../img/UristUz/logo.png);
+    background-image:url(../image/logo.png);
 	background-repeat:no-repeat;
 	width:354px;
 	height:68px;
@@ -170,7 +170,7 @@ ul.topNav  {
 	float:left;
 }
 .start a{
-    background-image:url(../img/UristUz/start_now_n.png);
+    background-image:url(../image/start_now_n.png);
 	background-repeat:no-repeat;
 	width:150px;
 	height:93px;
@@ -179,7 +179,7 @@ ul.topNav  {
 	margin-top:346px;
 }
 .start a:hover{
-    background-image:url(../img/UristUz/start_now_r.png);
+    background-image:url(../image/start_now_r.png);
 	background-repeat:no-repeat;
 	width:150px;
 	height:93px;
@@ -272,7 +272,7 @@ p.quoteBar {
 	font-size:36px;
 	color:#000000;
 	font-weight:normal;
-    background:url(../img/UristUz/bpi1.png) no-repeat left top;
+    background:url(../image/bpi1.png) no-repeat left top;
 	padding-left:83px;
 	padding-bottom:20px;
 }
@@ -286,7 +286,7 @@ p.quoteBar {
 	font-weight:normal;
 }
 .post_iteams h3 span{
-    background:url(../img/UristUz/bpi2.png) no-repeat left top;
+    background:url(../image/bpi2.png) no-repeat left top;
 	display:block;
 	height:35px;
 	padding-left:40px;
@@ -324,7 +324,7 @@ p.quoteBar {
 	color:#3A3A3A;
 }
 .sideBarItem ul li{
-    background:url(../img/UristUz/sideBarArrow.png) no-repeat 5px 12px;
+    background:url(../image/sideBarArrow.png) no-repeat 5px 12px;
 	display:block;
 	#height:30px;
 	line-height:30px;
@@ -380,7 +380,7 @@ p.quoteBar {
 	line-height:16px;
 }
 .midBox1 {
-	background:url(../img/UristUz/midBox1.png) repeat-x left top;
+	background:url(../image/midBox1.png) repeat-x left top;
 	padding:14px 10px;
 	border-bottom:2px dotted #737373;
 	margin-bottom:20px;
@@ -425,7 +425,7 @@ p.quoteBar {
 	text-align:right;
 }
 .midBox1Bottom ul li{
-    background:url(../img/UristUz/midBox2Arrow.png) no-repeat right 10px;
+    background:url(../image/midBox2Arrow.png) no-repeat right 10px;
 	display:block;
 	line-height:24px;
 	padding-right:10px;
@@ -548,7 +548,7 @@ textarea.footertextarea {
 	font-weight:normal;
 }
 input.footerSubmit {
-	background:url(../img/UristUz/submit.png);
+	background:url(../image/submit.png);
 	border:none;
 	width:108px;
 	height:37px;
@@ -558,7 +558,7 @@ input.footerSubmit {
 	cursor:pointer;
 }
 #footerContainer {
-	background:url(../img/UristUz/footerContainerBgR.png) repeat-x left top;
+	background:url(../image/footerContainerBgR.png) repeat-x left top;
 	height:50px;
 	line-height:50px;
 	font-size:12px;

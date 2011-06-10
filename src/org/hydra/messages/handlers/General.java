@@ -14,6 +14,7 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
+import org.hydra.utils.Utils;
 
 public class General extends AMessageHandler { // NO_UCD
 	public IMessage getTextByKey(CommonMessage inMessage) {
@@ -72,14 +73,15 @@ public class General extends AMessageHandler { // NO_UCD
 	};
 	
 	public IMessage loadCSSFile(CommonMessage inMessage){
-		getLog().debug("get stylesheets for: " + inMessage._web_application.getId());
-		inMessage.setStyleSheet(inMessage._web_application.getStyleSheet());
+		inMessage.setStyleSheet(Utils.F("files/%s/css/main.css", 
+				inMessage._web_application.getId()));
 		inMessage.clearContent();
 		return inMessage;
 	};
 	
 	public IMessage loadJSFile(CommonMessage inMessage){
-		inMessage.setJSFile(String.format("jscripts/webapp/%s.js", inMessage._web_application.getId()));
+		inMessage.setJSFile(Utils.F("files/%s/js/main.js", 
+				inMessage._web_application.getId()));
 		inMessage.clearContent();
 		return inMessage;
 	};	
@@ -89,15 +91,9 @@ public class General extends AMessageHandler { // NO_UCD
 		getLog().debug("... Locale: " + inMessage._locale);
 		getLog().debug("... User ID: " + inMessage._user_id);
 		
-		String content = "NOT_DEFINED";
-		if(inMessage._web_application.isManager())
-			content = MessagesManager.getTemplate("template.html.body");
-		else{
-			content = getBodyFromFile(inMessage._web_context.getServletContext(), inMessage._web_application.getId());
-		}
-		
-		getLog().debug("... HTML body content length: " + content.length());
-		
+		String content = 
+				getBodyFromFile(inMessage._web_context.getServletContext(), inMessage._web_application.getId());
+		getLog().debug("... HTML body content length: " + content.length());		
 		
 		return(ADeployer.deployContent(content,inMessage));
 	}
@@ -105,7 +101,7 @@ public class General extends AMessageHandler { // NO_UCD
 	private String getBodyFromFile(ServletContext servletContext, String inAppId) {
 				
 		String content = "CONTENT_NOT_FOUND";
-		String filePath = String.format("/body/%s.body", inAppId);
+		String filePath = String.format("/files/%s/html/body.html", inAppId);
 		File file = new File(servletContext.getRealPath(filePath));
 		try {
 			content = FileUtils.readFileToString(file,"UTF8");

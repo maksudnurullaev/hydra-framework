@@ -19,7 +19,7 @@ margin: 20px auto;
 
 #header {
 height: 150px;
-background: url(../img/TechnogymUz/header.jpg) no-repeat;
+background: url(../image/header.jpg) no-repeat;
 }
 #header h1 {
 margin: 0;
@@ -35,7 +35,7 @@ color: #fff;
 #header h2 { color: #eee; font-size: 15px; font-weight: 100; padding: 0 0 0 60px; }
 
 #menu {
-background: url(../img/TechnogymUz/menu.jpg) no-repeat;
+background: url(../image/menu.jpg) no-repeat;
 height: 30px;
 line-height: 30px;
 text-transform: uppercase;
@@ -60,13 +60,13 @@ font-weight: 100;
 }
 #menu ul li a:hover {
 color: #fff;
-background: url(../img/TechnogymUz/menuover.png) repeat-x;
+background: url(../image/menuover.png) repeat-x;
 }
 
-#menubottom { background: url(../img/TechnogymUz/menubottom.jpg) no-repeat; padding: 5px 0; }
+#menubottom { background: url(../image/menubottom.jpg) no-repeat; padding: 5px 0; }
 
 #contentwrap {
-background: url(../img/TechnogymUz/content.jpg) repeat-y;
+background: url(../image/content.jpg) repeat-y;
 padding: 0 40px;
 }
 
@@ -94,7 +94,7 @@ width: 200px;
 
 #sidebar h3 {
 margin: 0;
-background: url(../img/TechnogymUz/sidebarh3.jpg) no-repeat;
+background: url(../image/sidebarh3.jpg) no-repeat;
 height: 40px;
 line-height: 30px;
 color: #fff;
@@ -113,7 +113,7 @@ list-style-type: none;
 }
 
 #sidebar ul li {
-background: url(../img/TechnogymUz/bullet.png) no-repeat center left;
+background: url(../image/bullet.png) no-repeat center left;
 padding: 2px 0 2px 22px;
 margin: 0;
 }
@@ -122,7 +122,7 @@ margin: 0;
 text-align: center;
 color: #fff;
 font-size: 12px;
-background: url(../img/TechnogymUz/footer.jpg) no-repeat;
+background: url(../image/footer.jpg) no-repeat;
 height: 110px;
 line-height: 110px;
 }
