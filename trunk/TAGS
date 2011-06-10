@@ -5,3 +5,4 @@
 [[DB|Text|New_User|locale]]
 [[DB|Text|%s|locale]]
 [[DB|Text|%s|locale]]
+[[System|Login|form|NULL]]

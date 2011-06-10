@@ -262,12 +262,12 @@ public final class DBUtils {
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
 		if(Utils.hasRight2Edit(inKsp, inUserID))
-			wrap2SpanEditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), links);
+			wrap2DivEditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), links);
 		
 		return content.getString();			
 	}
 
-	public static void wrap2SpanEditObject(
+	public static void wrap2DivEditObject(
 			String inKey, 
 			StringWrapper content, 
 			String inHandlerName,
@@ -276,7 +276,7 @@ public final class DBUtils {
 			List<String> links) {
 	
 		String spanId = String.format("%s.%s", inEditObjectName, inKey);
-		String wrapString = String.format("<span class='edit' id='%s'>%s</span>", spanId, content.getString());
+		String wrapString = String.format("<div id='%s'>%s</div>", spanId, content.getString());
 		content.setString(wrapString.toString());
 		// List of Link
 		if(links != null){
@@ -290,7 +290,7 @@ public final class DBUtils {
 			result.append(inKey).append("','").append(inHandlerName).append("','").append("edit" + inEditObjectName)
 						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
 			// sup - description
-			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.blinkIt('");
+			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.toggle('");
 			result.append(spanId).append("')); return false;\" href=\"#\">").append(inEditObjectName).append("</a>)</sup>");
 			
 			links.add(result.toString());

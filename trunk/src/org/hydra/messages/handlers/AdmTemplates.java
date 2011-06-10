@@ -26,23 +26,16 @@ public class AdmTemplates extends AMessageHandler {
 		
 		String content  = String.format("[[Application|Templates|%s|html]]", appId);
 		getLog().debug("Try to get content for: " + content);
-		
-		inMessage._web_application.setId(appId);
-				
+						
 		return(ADeployer.deployContent(content,inMessage));
 	}	
 	
 	public IMessage addForm(CommonMessage inMessage){
 		if(!testData(inMessage, "appid")) return inMessage;
 		String appID = inMessage.getData().get("appid");
-		String cfName = "Template";
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
 		fields.add(new FieldInput("template_key", "", 35));
-		
-		List<String> tagPrefixes = new ArrayList<String>();
-		tagPrefixes.add(cfName);
-		fields.add(new FieldSelectTag(appID, "template_tag", cfName, tagPrefixes));
 		
 		fields.add(new FieldTextArea("template_content", "", "style=\"width: 40em; height: 25em; border: 1px solid #7F9DB9;\""));
 		
@@ -71,16 +64,10 @@ public class AdmTemplates extends AMessageHandler {
 			return(inMessage);
 		}
 		
-		String tag = (cols.containsKey("tag")? cols.get("tag"):"");
 		String content = (cols.containsKey("content")? cols.get("content"):"");
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
 		fields.add(new FieldInput("template_key", key, 35, true));
-		
-		List<String> tagPrefixes = new ArrayList<String>();
-		tagPrefixes.add(cfName);
-		fields.add(new FieldSelectTag(appID, "template_tag", tag, tagPrefixes));
-		
 		fields.add(new FieldTextArea("template_content", "__1__", "style=\"width: 40em; height: 25em; border: 1px solid #7F9DB9;\""));
 		
 		String form = Utils.generateForm(
@@ -96,7 +83,7 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
-		String[] mandatoryFields = {"appid","template_key","template_tag","template_content"};
+		String[] mandatoryFields = {"appid","template_key", "template_content"};
 		if(!testData(inMessage, mandatoryFields)) return inMessage;
 		
 		List<String> errorFields = new ArrayList<String>();
@@ -108,7 +95,7 @@ public class AdmTemplates extends AMessageHandler {
 		getLog().debug("Test for valid key");
 		String template_key = inMessage.getData().get("template_key").trim();
 		String template_content = inMessage.getData().get("template_content").trim();
-		Utils.testFieldKey(errorFields, errorCodes, template_key, "template_key", 64);
+		Utils.testFieldKey(errorFields, errorCodes, template_key, "template_key", Constants._max_input_field_limit);
 		Utils.testFieldKey(errorFields, errorCodes, template_content, "template_content", Constants._max_textarea_field_limit);
 		
 		if(errorCodes.size() == 0){
@@ -128,7 +115,6 @@ public class AdmTemplates extends AMessageHandler {
 		getLog().debug("Create key/value data map");
 		Map<String, String> fields = new HashMap<String, String>();
 		fields.put("content", inMessage.getData().get("template_content"));
-		fields.put("tag", inMessage.getData().get("template_tag"));
 		
 		getLog().debug("All ok, try to add new data...");
 		for(Map.Entry<String, String> entry: fields.entrySet()){
@@ -143,7 +129,7 @@ public class AdmTemplates extends AMessageHandler {
 	}
 
 	public IMessage update(CommonMessage inMessage){
-		String[] mandatoryFields = {"appid","template_key","template_tag","template_content"};
+		String[] mandatoryFields = {"appid","template_key", "template_content"};
 		if(!testData(inMessage, mandatoryFields)) return inMessage;
 		
 		List<String> errorFields = new ArrayList<String>();
@@ -155,7 +141,7 @@ public class AdmTemplates extends AMessageHandler {
 		getLog().debug("Test for valid key");
 		String template_key = inMessage.getData().get("template_key").trim();
 		String template_content = inMessage.getData().get("template_content").trim();
-		Utils.testFieldKey(errorFields, errorCodes, template_key, "template_key", 64);
+		Utils.testFieldKey(errorFields, errorCodes, template_key, "template_key", Constants._max_input_field_limit);
 		Utils.testFieldKey(errorFields, errorCodes, template_content, "template_content", Constants._max_textarea_field_limit);
 		
 		if(errorCodes.size() == 0){
@@ -175,7 +161,6 @@ public class AdmTemplates extends AMessageHandler {
 		getLog().debug("Create key/value data map");
 		Map<String, String> fields = new HashMap<String, String>();
 		fields.put("content", inMessage.getData().get("template_content"));
-		fields.put("tag", inMessage.getData().get("template_tag"));
 		
 		getLog().debug("All ok, try to add new data...");
 		for(Map.Entry<String, String> entry: fields.entrySet()){

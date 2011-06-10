@@ -15,20 +15,16 @@ public final class ApplicationUsers {
 
 	static String getKeyHow(
 			String inKey, 
-			String inHow,
-			String inLocale, 
-			String inApplicationID) {
+			String inHow) {
 		if(inHow.compareToIgnoreCase("html") == 0)
-			return getKeyHtml(inKey, inLocale, inApplicationID);
+			return getKeyHtml(inKey);
 		
 		_log.error("Could not find HOW part: " + inHow);
 		return "Could not find HOW part: " + inHow;		
 	}
 
 	static String getKeyHtml(
-			String inAppID, 
-			String inLocale,
-			String inApplicationID) {
+			String inAppID) {
 		StringBuffer content = new StringBuffer();
 		
 		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "User", "", "", "", "");

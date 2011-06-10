@@ -6,29 +6,28 @@
         <ul id="topNav" class="topNav">
           <li>
             <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
-            href="#" id="Home" class="topNavAct" name="Home">Главная /
+            href="#" id="Home" class="topNavAct" >Главная /
             Новости</a>
           </li>
           <li>
             <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
-            href="#" id="Zakonodatelstvo" name=
-            "Zakonodatelstvo">Законодательство</a>
+            href="#" id="Zakonodatelstvo" >Законодательство</a>
           </li>
           <li>
             <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
-            href="#" id="Konsultasiya" name="Konsultasiya">Консультация</a>
+            href="#" id="Konsultasiya">Консультация</a>
           </li>
           <li>
             <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
-            href="#" id="FAQ" name="FAQ">Вопросы и ответы</a>
+            href="#" id="FAQ">Вопросы и ответы</a>
           </li>
           <li>
             <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
-            href="#" id="Sparavochnik" name="Sparavochnik">Справочник</a>
+            href="#" id="Sparavochnik">Справочник</a>
           </li>
           <li>
             <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
-            href="#" id="Kabinet" class="topNavLast" name="cabinet">Кабинет</a>
+            href="#" id="Kabinet" class="topNavLast">Кабинет</a>
           </li>
         </ul>
       </div>

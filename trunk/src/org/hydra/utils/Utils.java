@@ -109,7 +109,7 @@ public final class Utils {
 	public static boolean hasRight2Edit(
 			String inApplicationID,
 			String inUserID) {
-		return (test4Roles(inApplicationID, inUserID, "User.Editor", "User.Publisher", "User.User.Administrator"));
+		return (test4Roles(inApplicationID, inUserID, Constants._GLOBAL_TAGS));
 	}
 
 	public static String shrinkString(String inString) {
@@ -583,6 +583,12 @@ public final class Utils {
 	}
 
 	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {
+		
+		_log.error(Utils.F("%s - %s - %s", inApplicationID, inUserID, roles.length));
+		for(String role:roles){
+			_log.error("Role: " + role);
+		}
+		
 		if(inApplicationID == null || inApplicationID.length() == 0) return false;
 		if(inUserID == null || inUserID.length() == 0) return false;
 		if(roles == null || roles.length == 0) return false;
@@ -591,11 +597,17 @@ public final class Utils {
 		
 		StringWrapper sWrapper = new StringWrapper();
 		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
+		_log.error("err.toString(): " + err.toString());
 		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
+			_log.error("sWrapper.getString(): " + sWrapper.getString());
 			for(String role:roles){
-				if(sWrapper.getString().contains(role)) return true;
+				if(sWrapper.getString().contains(role)){
+					_log.error("YES!!!");
+					return true;
+				}
 			}
 		}
+		_log.error("NO!!!");
 		return false;
 	}
 

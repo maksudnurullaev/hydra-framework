@@ -5,6 +5,7 @@ import java.util.List;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
@@ -16,20 +17,16 @@ public class ApplicationTemplates extends AMessageHandler {
 
 	static String getKeyHow(
 			String inKey, 
-			String inHow,
-			String inLocale, 
-			String inApplicationID) {
+			String inHow) {
 		if(inHow.compareToIgnoreCase("html") == 0)
-			return getKeyHtml(inKey, inLocale, inApplicationID);
+			return getKeyHtml(inKey);
 		
 		_log.error("Could not find HOW part: " + inHow);
 		return "Could not find HOW part: " + inHow;		
 	}
 
 	static String getKeyHtml(
-			String inAppID, 
-			String inLocale,
-			String inApplicationID) {
+			String inAppID) {
 		StringBuffer content = new StringBuffer();
 		
 		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Template", "", "", "", "");
@@ -51,7 +48,7 @@ public class ApplicationTemplates extends AMessageHandler {
         	// ... edit
         	content.append(getUpdateLink(inAppID, r.getKey()) + " ");        	
         	// ... key 
-        	content.append(getSlideLink(divHiddenID, r.getKey()));
+        	content.append(getToogleLink(divHiddenID, r.getKey()));
 
         	// ... tag if exist
         	if(r.getColumnSlice().getColumnByName("tag") != null){
@@ -64,7 +61,7 @@ public class ApplicationTemplates extends AMessageHandler {
         	// ... content size
        		content.append(String.format(" (<i>SIZE:%s</i>)", colContent.getValue().length()));
         	
-    		content.append(String.format("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s</div>", divHiddenID, colContent.getValue()));        	
+    		content.append(Utils.F("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s</div>", divHiddenID, StringEscapeUtils.escapeHtml(colContent.getValue())));        	
         	content.append("</div>");
 	    }
 	    if(validRows == 0)
@@ -112,9 +109,9 @@ public class ApplicationTemplates extends AMessageHandler {
 		return(Utils.F("[%s]", Utils.createJSLink("Update",jsData, "U")));		
 	}
 	
-	private static String getSlideLink(
+	private static String getToogleLink(
 			String divID, String key) {
-		String format = "<a href=\"#\" title=\"Preview\" onclick=\"javascript:void(HydraUz.MorphVT('%s')); return false;\">%s</a>";
+		String format = "<a href=\"#\" title=\"Preview\" onclick=\"javascript:void(Globals.toogleBlock('%s')); return false;\">%s</a>";
 		return(String.format(format, divID, key));
 	}	
 }

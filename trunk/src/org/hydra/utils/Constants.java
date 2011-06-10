@@ -33,6 +33,7 @@ public final class Constants {
 	
 	// **** Deafult limits
 	public static final int _max_textarea_field_limit = 4096;
+	public static final int _max_input_field_limit = 128;
 	public static final long _max_response_wating_time = 5000;
 	
 	// **** Message action keys
@@ -53,5 +54,5 @@ public final class Constants {
 	public static final String _mode_edit_templates = "edit_templates";
 	public static final String _utf8 = "UTF8";
 	
-	public static final String[] _GLOBAL_TAGS = {"User", "User.Editor", "User.Publisher", "User.Administrator", "Template"};
+	public static final String[] _GLOBAL_TAGS = {"User", "User.Editor", "User.Publisher", "User.Administrator"};
 }

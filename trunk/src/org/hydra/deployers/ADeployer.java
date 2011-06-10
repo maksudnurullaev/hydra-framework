@@ -119,7 +119,7 @@ public final class ADeployer {
 		else if(inWhere.compareToIgnoreCase("Applications") == 0)
 			return Applications.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
 		else if(inWhere.compareToIgnoreCase("Application") == 0)
-			return Application.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+			return Application.getWhatKeyHow(inWhat, inKey, inHow);
 		
 		return "Deployer: No WHERE part: " + inWhere ;
 	}

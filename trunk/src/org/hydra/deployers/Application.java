@@ -9,52 +9,23 @@ public final class Application {
 	static final Log _log = LogFactory.getLog("org.hydra.deployers.Application");
 
 	private static String getOptionsKeyHtml(
-			String inKey, // AppId
-			String inLocale, 
-			String inApplicationID) {
-		
-		StringBuffer content = new StringBuffer(inKey + ": ");
-		
-		content.append(Utils.createJSLinkHAAD(
-				Utils.Q("AdmTags"), 
-				Utils.Q("list"), 
-				Utils.Q(inKey), 
-				Utils.Q("admin.app.action"), 
-				"Tags"
-				));
-		content.append(" | ");
-		content.append(Utils.createJSLinkHAAD(
-				Utils.Q("AdmUsers"), 
-				Utils.Q("list"), 
-				Utils.Q(inKey), 
-				Utils.Q("admin.app.action"), 
-				"Users"));	
-		content.append(" | ");
-		content.append(Utils.createJSLinkHAAD(
-				Utils.Q("AdmTemplates"), 
-				Utils.Q("list"), 
-				Utils.Q(inKey), 
-				Utils.Q("admin.app.action"), 
-				"Templates"));			
-		
-		content.append(Utils.T("template.html.hr.divId.dots","admin.app.action"));
-		return(content.toString());
+			String inKey // AppId
+			) {
+		return(Utils.T("Main.Adm.App.Action", inKey, inKey));				
 	}
 
 	static String getWhatKeyHow(
 			String inWhat,
 			String inKey, 
-			String inHow,
-			String inLocale, 
-			String inApplicationID) {
+			String inHow) {
 		if(inWhat.compareToIgnoreCase("options") == 0)
-			return getOptionsKeyHow(inKey,inHow, inLocale, inApplicationID);
+			return getOptionsKeyHow(inKey,inHow);
 		else if(inWhat.compareToIgnoreCase("tags") == 0)
-			return ApplicationTags.getKeyHow(inKey,inHow, inLocale, inApplicationID);
+			return ApplicationTags.getKeyHow(inKey,inHow);
 		else if(inWhat.compareToIgnoreCase("users") == 0)
-			return ApplicationUsers.getKeyHow(inKey,inHow, inLocale, inApplicationID);				
+			return ApplicationUsers.getKeyHow(inKey,inHow);				
 		else if(inWhat.compareToIgnoreCase("templates") == 0)
-			return ApplicationTemplates.getKeyHow(inKey,inHow, inLocale, inApplicationID);				
+			return ApplicationTemplates.getKeyHow(inKey,inHow);				
 		
 		_log.error("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;
@@ -63,11 +34,9 @@ public final class Application {
 
 	private static String getOptionsKeyHow(
 			String inKey, 
-			String inHow,
-			String inLocale, 
-			String inApplicationID) {
+			String inHow) {
 		if(inHow.compareToIgnoreCase("html") == 0)
-			return getOptionsKeyHtml(inKey, inLocale, inApplicationID);
+			return getOptionsKeyHtml(inKey);
 		
 		_log.error("Could not find HOW part: " + inHow);
 		return "Could not find HOW part: " + inHow;

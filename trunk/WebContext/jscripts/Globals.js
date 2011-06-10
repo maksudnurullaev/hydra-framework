@@ -26,11 +26,22 @@ Globals.noHighlightFields = function(elementIDs){
 		}
 	});
 };
-/* Blink element */
-Globals.blinkIt = function(id){
-	if(!$(id)) return ;
-	$(id).fade('toggle');
+/* Mootools fade toogle */
+Globals.toggle = function(elemID){
+	if($(elemID)){
+		$(elemID).fade('toggle');
+	}
 };
+Globals.toogleBlock = function(elemID){
+	if($(elemID) && $(elemID).getStyle) {
+		if($(elemID).getStyle('display') == 'none'){
+			$(elemID).setStyle('display', 'block');
+		}else{
+			$(elemID).setStyle('display', 'none');
+		}
+	}
+};
+
 /* Hide/Show Editor Links */
 Globals.hideEditorLinksExcept = function(id){
  	$$('sup.editorlinks').each(function(el){

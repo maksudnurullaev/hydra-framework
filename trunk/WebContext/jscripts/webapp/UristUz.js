@@ -43,6 +43,22 @@ UristUz.mainContent = function(id){
 	return content;
 };
 
+UristUz.mainMenu2 = function(aElem){
+	if(aElem && aElem.id){
+		// update content_1
+	    Globals.sendMessage({
+	        handler: 'General',
+	        action:  'getContent',
+	        content: UristUz.mainContent_1(aElem.id),
+	        dest:    'content_1_left'
+	    });	
+	}
+};
+
+UristUz.mainContent_1 = function(id){
+	return ('[[DB|Text|Page.' + id + '|locale]]') ;
+};
+
 // SET GLOBAL HOOKS 
 UristUz.preHook = function(){
 	if($('branding')){
@@ -51,8 +67,10 @@ UristUz.preHook = function(){
 	if($('content')){
 		$('content').fade('hide');
 	}
+	if($('editLinks')){
+		$('editLinks').fade('hide');
+	}
 };
-
 UristUz.postHook = function(){
 	if($('branding')){
 		$('branding').fade('show');
@@ -61,7 +79,6 @@ UristUz.postHook = function(){
 		$('content').fade('show');
 	}	
 };
-
 if(dwr.engine){
 	dwr.engine.setPreHook(UristUz.preHook);
 	dwr.engine.setPostHook(UristUz.postHook);

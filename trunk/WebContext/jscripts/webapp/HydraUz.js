@@ -7,11 +7,6 @@ if (HydraUz == null) {
     };
 };
 
-HydraUz.setMainMenuHeader = function(txt)
-{
-	$(HydraUz.mainContentTitle).innerHTML = txt;
-};
-
 HydraUz.mainMenu = function(header, content)
 {
 	HydraUz.setMainMenuHeader(header);
@@ -19,6 +14,11 @@ HydraUz.mainMenu = function(header, content)
 	content = '[[' + content + ']]';
 		
 	HydraUz.setContent(content, HydraUz.mainContent);
+};
+
+HydraUz.setMainMenuHeader = function(txt)
+{
+	$(HydraUz.mainContentTitle).innerHTML = txt;
 };
 
 HydraUz.setContent = function(content, dest)
@@ -31,10 +31,19 @@ HydraUz.setContent = function(content, dest)
     });	
 };
 
-HydraUz.MorphVT = function(elemID){
-	if($(elemID).getStyle('display') == 'none'){
-		$(elemID).setStyle('display', 'block');
-	}else{
-		$(elemID).setStyle('display', 'none');
+
+// SET GLOBAL HOOKS 
+HydraUz.preHook = function(){
+	if($('html.body.vmiddle')){
+		$('html.body.vmiddle').fade('hide');
 	}
+};
+HydraUz.postHook = function(){
+	if($('html.body.vmiddle')){
+		$('html.body.vmiddle').fade('show');
+	}
+};
+if(dwr.engine){
+	dwr.engine.setPreHook(HydraUz.preHook);
+	dwr.engine.setPostHook(HydraUz.postHook);
 };
