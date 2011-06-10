@@ -19,6 +19,13 @@ public final class ADeployer {
 	public static IMessage deployContent(
 			String inContent,
 			CommonMessage inMessage) {
+		deployContent2(inContent, inMessage);
+		return(inMessage);
+	}
+
+	public static String deployContent2(
+			String inContent,
+			CommonMessage inMessage) {
 		List<String> links = new ArrayList<String>();
 		String content = deployContent(
 				inContent, 
@@ -30,9 +37,9 @@ public final class ADeployer {
 		inMessage.setHtmlContent(content);
 		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
 		
-		return(inMessage);
-	}
-
+		return(content);
+	}	
+	
 	public static String deployContent(
 			String inContent, 
 			String inApplicationID, 

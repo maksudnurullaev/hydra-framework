@@ -1,9 +1,10 @@
 package org.hydra.deployers;
 
 import java.util.List;
+
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
-import org.apache.commons.lang.StringEscapeUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
@@ -63,7 +64,7 @@ public class ApplicationTemplates extends AMessageHandler {
         	// ... content size
        		content.append(String.format(" (<i>SIZE:%s</i>)", colContent.getValue().length()));
         	
-    		content.append(String.format("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s</div>", divHiddenID, StringEscapeUtils.escapeHtml(colContent.getValue())));        	
+    		content.append(String.format("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s</div>", divHiddenID, colContent.getValue()));        	
         	content.append("</div>");
 	    }
 	    if(validRows == 0)

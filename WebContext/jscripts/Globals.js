@@ -29,15 +29,7 @@ Globals.noHighlightFields = function(elementIDs){
 /* Blink element */
 Globals.blinkIt = function(id){
 	if(!$(id)) return ;
-	
-	var oldStyle = $(id).getStyle('border');
-	
- 	$$('span.edit').each(function(el){
- 		el.setStyle('border','0px solid white');
-	});
-	if(!oldStyle.contains('3px')){ // quick check
- 		$(id).setStyle('border','3px solid green');
- 	}
+	$(id).fade('toggle');
 };
 /* Hide/Show Editor Links */
 Globals.hideEditorLinksExcept = function(id){
