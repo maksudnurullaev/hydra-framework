@@ -20,20 +20,11 @@
 	
 	<bean id="HydraUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="HydraUz" />
-		<property name="main" value="yes" />
 		<property name="urls">
 			<set>
 				<value>.*127\.0\.0\.1.*</value>
 				<value>.*(www\.)?hydra\.uz.*</value>
 			</set>
-		</property>
-		<!-- Set jscript -->
-		<property name="jscript">
-			<value>jscripts/webapp/HydraUz.js</value>
-		</property>
-	    <!-- Set stylesheets -->
-		<property name="styleSheet">
-			<value>css/HydraUz.css</value>
 		</property>
 	    <!-- Set locales -->
 	    <property name="locales">
@@ -54,14 +45,6 @@
 			<set>
 				<value>.*(www\.)?urist\.uz.*</value>
 			</set>
-		</property>	
-		<!-- Set jscript -->
-		<property name="jscript">
-			<value>jscripts/webapp/UristUz.js</value>
-		</property>
-	    <!-- Set stylesheets -->
-		<property name="styleSheet">
-				<value>css/UristUz.css</value>
 		</property>		
 	    <!-- Set locales -->
 	    <property name="locales">
@@ -82,14 +65,6 @@
 			<set>
 				<value>.*(www\.)?technogym\.uz.*</value>
 			</set>
-		</property>	
-		<!-- Set jscript -->
-		<property name="jscript">
-			<value>jscripts/webapp/TechnogymUz.js</value>
-		</property>
-	    <!-- Set stylesheets -->
-		<property name="styleSheet">
-				<value>css/TechnogymUz.css</value>
 		</property>		
 	    <!-- Set locales -->
 	    <property name="locales">
