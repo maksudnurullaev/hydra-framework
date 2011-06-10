@@ -67,9 +67,6 @@ UristUz.preHook = function(){
 	if($('content')){
 		$('content').fade('hide');
 	}
-	if($('editLinks')){
-		$('editLinks').fade('hide');
-	}
 };
 UristUz.postHook = function(){
 	if($('branding')){
