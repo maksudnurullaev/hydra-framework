@@ -49,9 +49,8 @@ public final class Applications {
 			WebApplications apps = (WebApplications) result.getObject();
 			if(apps.getApplications() != null){
 				StringBuffer content = new StringBuffer();
-				content.append("Application: ");
-				content.append("<select id=\"admin.select.applications\" onchange=\"javascript:void(Globals.sendMessage({handler: 'Adm',action: 'getApp', appid:this.value, dest: 'admin.app'})); return false;\">");
-				content.append(" <option value=''>Select...</option>");
+				content.append("<select onchange=\"javascript:void(Globals.sendMessage({handler: 'Adm',action: 'getApp', appid:this.value, dest: 'admin.app'})); return false;\">");
+				content.append(" <option value=''>...</option>");
 				for(WebApplication app: apps.getApplications()){
 					content.append(String.format("<option value='%s'>%s</option>", app.getId(), app.getId()));
 				}

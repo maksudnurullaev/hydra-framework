@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.WebApplication;
 import org.hydra.beans.WebApplications;
-import org.hydra.managers.MessagesManager;
 
 public final class DeployerSystem {
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.DeployerSystem");
@@ -74,7 +73,7 @@ public final class DeployerSystem {
 				StringBuffer content = new StringBuffer();
 				content.append("Application: ");
 				content.append("<select id=\"admin.select.applications\" onchange=\"javascript:void(Globals.sendMessage({handler: 'AdmUsers',action: 'getUsers4', appid:this.value, dest: 'admin.users'})); return false;\">");
-				content.append(" <option value=''>Select...</option>");
+				content.append(" <option value=''>...</option>");
 				for(WebApplication app: apps.getApplications()){
 					content.append(String.format("<option value='%s'>%s</option>", app.getId(), app.getId()));
 				}

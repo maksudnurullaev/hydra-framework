@@ -12,9 +12,7 @@ import org.hydra.utils.Utils;
 public final class ApplicationTags {
 
 	private static String getKeyHtml(
-			String inAppID,
-			String inLocale, 
-			String inApplicationID) {
+			String inAppID) {
 		StringBuffer content = new StringBuffer();
 		content.append("<strong>Global tags</strong><hr />");
 		for(String tag:Constants._GLOBAL_TAGS){
@@ -67,12 +65,10 @@ public final class ApplicationTags {
 	}
 
 	static String getKeyHow(
-			String inKey, 
-			String inHow,
-			String inLocale, 
-			String inApplicationID) {
+			String inKey, // AppID
+			String inHow) {
 		if(inHow.compareToIgnoreCase("html") == 0)
-			return getKeyHtml(inKey, inLocale, inApplicationID);
+			return getKeyHtml(inKey);
 	
 		
 		Application._log.error("Could not find HOW part: " + inHow);
