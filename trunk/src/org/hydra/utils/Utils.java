@@ -582,13 +582,7 @@ public final class Utils {
 		return(inKey.startsWith("_"));
 	}
 
-	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {
-		
-		_log.error(Utils.F("%s - %s - %s", inApplicationID, inUserID, roles.length));
-		for(String role:roles){
-			_log.error("Role: " + role);
-		}
-		
+	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {		
 		if(inApplicationID == null || inApplicationID.length() == 0) return false;
 		if(inUserID == null || inUserID.length() == 0) return false;
 		if(roles == null || roles.length == 0) return false;
@@ -597,17 +591,13 @@ public final class Utils {
 		
 		StringWrapper sWrapper = new StringWrapper();
 		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
-		_log.error("err.toString(): " + err.toString());
 		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-			_log.error("sWrapper.getString(): " + sWrapper.getString());
 			for(String role:roles){
 				if(sWrapper.getString().contains(role)){
-					_log.error("YES!!!");
 					return true;
 				}
 			}
 		}
-		_log.error("NO!!!");
 		return false;
 	}
 
