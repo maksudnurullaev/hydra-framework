@@ -1,49 +1,54 @@
-<!-- BODY-START -->    
-    <div id="wrapper">
-      <div id="branding">
-        <h1 class="logo">
-          <a href="#" title="&lt; Urist.Uz /&gt;">&lt; Urist.Uz /&gt;</a>
-        </h1>
-        <ul id="topNav" class="topNav">
-          <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Home" class="topNavAct">Главная / Новости</a>
-          </li>
-          <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Zakonodatelstvo">Законодательство</a>
-          </li>
-          <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Konsultasiya">Консультация</a>
-          </li>
-          <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="FAQ">Вопросы и ответы</a>
-          </li>
-          <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Sparavochnik">Справочник</a>
-          </li>
-          <li>
-            <a onclick="javascript:void(UristUz.mainMenu(this)); return false;" href="#" id="Kabinet" class="topNavLast" name="cabinet">Кабинет</a>
-          </li>
-        </ul>
+<div id="wrapper">
+  <div id="branding">
+    <h1 class="logo">
+      <a href="#" title="&lt; Urist.Uz /&gt;">&lt; Urist.Uz /&gt;</a>
+    </h1>
+    <ul id="topNav" class="topNav">
+      <li>
+        <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
+        href="#" id="Home" class="topNavAct" name="Home">Главная /
+        Новости</a>
+      </li>
+      <li>
+        <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
+        href="#" id="Zakonodatelstvo" name=
+        "Zakonodatelstvo">Законодательство</a>
+      </li>
+      <li>
+        <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
+        href="#" id="Konsultasiya" name="Konsultasiya">Консультация</a>
+      </li>
+      <li>
+        <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
+        href="#" id="FAQ" name="FAQ">Вопросы и ответы</a>
+      </li>
+      <li>
+        <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
+        href="#" id="Sparavochnik" name="Sparavochnik">Справочник</a>
+      </li>
+      <li>
+        <a onclick="javascript:void(UristUz.mainMenu(this)); return false;"
+        href="#" id="Kabinet" class="topNavLast" name="cabinet">Кабинет</a>
+      </li>
+    </ul>
+  </div>
+  <div id="content">
+    <div class="content_1" id="content_1">
+      <div class="content_1_left" id="content_1_left">
+        [[DB|Template|Main.Home.Page|null]]
       </div>
-      <div id="content">
-	    <div class="content_1" id="content_1">
-	      <div class="content_1_left" id="content_1_left">
-	        [[DB|Template|Main.Home.Page|null]]
-	      </div>
-	    </div>
-	    <div id="sideBar" class="sideBar">
-	      <div class="sideBarItem">
-	        [[DB|Template|Main.Home.Page.Menu|null]]
-	      </div>
-	    </div><br class="clear">
-    </div>
-    <div id="footerContainer">
-      <p>
-        <label>Powered by <a href="http://hydra.uz">Hydra.Uz</a></label> <span>Copyright 2011 NMK. All Rights Reserved</span>
-      </p>
-    </div>
-    
-	<!-- Invisible DIV we use backup edit area -->
-	<div id="editLinks" class="edit" style="visibility: hidden;">
-	</div>    
-<!-- BODY-END -->
+      <div id="sideBar" class="sideBar">
+        <div class="sideBarItem">
+          [[DB|Template|Main.Home.Page.Menu|null]]
+        </div>
+      </div>
+    </div><br class="clear">
+  </div>
+  <div id="footerContainer">
+    <p>
+      <label>Powered by <a href="http://hydra.uz">Hydra.Uz</a></label>
+      <span>Copyright 2011 NMK. All Rights Reserved</span>
+    </p>
+  </div><!-- Invisible DIV we use backup edit area -->
+  <div id="editLinks" class="edit" style="visibility: hidden;"></div>
+</div>
