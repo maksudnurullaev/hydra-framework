@@ -34,7 +34,11 @@ public final class DeployerDb {
 			List<String> links){
 		_log.debug("Enter to: getDbTextKeyHow");
 		if(inHow.compareToIgnoreCase("locale") == 0)
-			return getDbTextKeyLocale(inKey, inApplicationID, inLocale, inUserID, links);
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div"));
+		if(inHow.compareToIgnoreCase("div") == 0)
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div"));
+		if(inHow.compareToIgnoreCase("span") == 0)
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "span"));
 		_log.error(String.format("Could not find WHAT part for {{DB|Text|%s|%s}}",inKey, inHow));
 		return String.format("{{DB|Text|%s|%s}}",inKey, inHow);
 	};
@@ -46,17 +50,7 @@ public final class DeployerDb {
 			String inUserID, 		 // reserved
 			List<String> links){
 		_log.debug("Enter to: getDbTemplateKeyHow");
-		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Template", inKey, "content", inUserID, links);
+		return DBUtils.wrap2IfNeeds(inApplicationID, "Template", inKey, "content", inUserID, links, "div");
 	};
 	
-	private static String getDbTextKeyLocale(
-			String inKey,
-			String inApplicationID, 
-			String inLocale,
-			String inUserID, 
-			List<String> links) {
-		_log.debug("Enter to: getDbTextKeyLocale");		
-		return(DBUtils.wrap2DivIfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links));
-	};
-
 }

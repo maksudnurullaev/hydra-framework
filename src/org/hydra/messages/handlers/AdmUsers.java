@@ -47,7 +47,7 @@ public class AdmUsers extends AMessageHandler {
 		optionalFields.add(new FieldTextArea("user_info", "", "style=\"width: 25em; height: 5em; border: 1px solid #7F9DB9;\""));
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|New_User|locale]]</h4>"), appId, 
+				String.format("<h4>[[DB|Text|New_User|span]]</h4>"), appId, 
 				"AdmUsers", "add", 
 				"AdmUsers", "list", 
 				"admin.app.action", fields, optionalFields);
