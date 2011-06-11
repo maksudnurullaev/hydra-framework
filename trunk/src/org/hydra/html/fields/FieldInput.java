@@ -8,7 +8,10 @@ public class FieldInput implements IField {
 	private int width = 25;
 	private String  type = "text";
 	private boolean readonly = false;
-	
+
+	public FieldInput(String inID) {
+		setID(inID);  
+	}	
 	public FieldInput(String inID, String inValue) {
 		setID(inID); setValue(inValue);  
 	}

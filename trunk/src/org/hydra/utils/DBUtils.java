@@ -239,13 +239,14 @@ public final class DBUtils {
         } 
 	}
 
-	public static String wrap2DivIfNeeds(
+	public static String wrap2IfNeeds(
 			String inKsp, 
 			String inCFname,
 			String inKey,
 			String inCName,
 			String inUserID, 		 // reserved
-			List<String> links){
+			List<String> links,
+			String inWrapper){
 		Db._log.debug("Enter to: getDbTemplateKeyHow");
 		// get result from DB
 		StringWrapper content = new StringWrapper();
@@ -262,21 +263,22 @@ public final class DBUtils {
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
 		if(Utils.hasRight2Edit(inKsp, inUserID))
-			wrap2DivEditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), links);
+			wrap2EditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), links, inWrapper);
 		
 		return content.getString();			
 	}
 
-	public static void wrap2DivEditObject(
+	public static void wrap2EditObject(
 			String inKey, 
 			StringWrapper content, 
 			String inHandlerName,
 			String inEditObjectName,
 			boolean noError, 
-			List<String> links) {
+			List<String> links,
+			String inWrapper) {
 	
 		String spanId = String.format("%s.%s", inEditObjectName, inKey);
-		String wrapString = String.format("<div id='%s'>%s</div>", spanId, content.getString());
+		String wrapString = String.format("<%s id='%s'>%s</%s>", inWrapper, spanId, content.getString(), inWrapper);
 		content.setString(wrapString.toString());
 		// List of Link
 		if(links != null){

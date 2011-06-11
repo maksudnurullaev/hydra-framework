@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import javax.servlet.ServletContext;
+
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
 import org.apache.commons.io.FileUtils;
@@ -16,6 +18,8 @@ import org.hydra.html.fields.IField;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * @author M.Nurullayev
@@ -281,15 +285,15 @@ public final class Utils {
 			for (IField s : fields)
 				result.append(String.format(
 						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
-								, String.format("[[DB|Text|%s|locale]]", s.getID())
+								, String.format("[[DB|Text|%s|span]]", s.getID())
 								, s.getAsHtml()));
 		}
 		if(optionaFields != null){
-			result.append("<tr><td colspan=\"2\"><u><i>[[DB|Text|additional|local]]</i></u></td></tr>");			
+			result.append("<tr><td colspan=\"2\"><u><i>[[DB|Text|additional|span]]</i></u></td></tr>");			
 			for(IField s :optionaFields)
 				result.append(String.format(
 						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
-								, String.format("[[DB|Text|%s|locale]]", s.getID())
+								, String.format("[[DB|Text|%s|span]]", s.getID())
 								, s.getAsHtml()));
 		}
 		result.append(String.format("<tr><td>&nbsp;</td><td>%s</td></tr>",
@@ -380,7 +384,7 @@ public final class Utils {
 		String result = "";
 		for(String t:arr){
 			if(!result.isEmpty()) result += ", ";
-			result += String.format("[[DB|Text|%s|locale]]", t);
+			result += String.format("[[DB|Text|%s|span]]", t);
 		}
 		return(result);
 	}	
@@ -445,7 +449,7 @@ public final class Utils {
 			if(containsTag(arrOfTags, tag)){// already exit 
 				continue;
 			}else{
-				selectPart.append(String.format("<option value=\"%s\">[[DB|Text|%s|locale]]</option>", tag, tag));
+				selectPart.append(String.format("<option value=\"%s\">[[DB|Text|%s|span]]</option>", tag, tag));
 				selectHasElements = true;
 			}
 		}
@@ -473,7 +477,7 @@ public final class Utils {
 			String[] arr = value.split(",");
 			for(String t:arr){
 				if(!textPart.isEmpty()) textPart += ", ";
-				textPart += String.format("[[DB|Text|%s|locale]]", t);
+				textPart += String.format("[[DB|Text|%s|span]]", t);
 				jsData = Utils.jsData(
 						 "handler", Utils.Q("Tagger")
 						,"action",  Utils.Q("delete")
@@ -583,22 +587,23 @@ public final class Utils {
 	}
 
 	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {		
-		if(inApplicationID == null || inApplicationID.length() == 0) return false;
-		if(inUserID == null || inUserID.length() == 0) return false;
-		if(roles == null || roles.length == 0) return false;
-
-		if(inUserID.startsWith("+++")) return true; // super user
-		
-		StringWrapper sWrapper = new StringWrapper();
-		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
-		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-			for(String role:roles){
-				if(sWrapper.getString().contains(role)){
-					return true;
-				}
-			}
-		}
-		return false;
+//		if(inApplicationID == null || inApplicationID.length() == 0) return false;
+//		if(inUserID == null || inUserID.length() == 0) return false;
+//		if(roles == null || roles.length == 0) return false;
+//
+//		if(inUserID.startsWith("+++")) return true; // super user
+//		
+//		StringWrapper sWrapper = new StringWrapper();
+//		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
+//		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
+//			for(String role:roles){
+//				if(sWrapper.getString().contains(role)){
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+		return (true);
 	}
 
 	public static boolean errDBCodeValueExest(ERROR_CODES err) {
@@ -615,6 +620,10 @@ public final class Utils {
 
 	public static String F(String format, Object...args) {
 		return String.format(format, args);
+	}
+
+	public static ServletContext getServletContent() {
+		return ContextLoader.getCurrentWebApplicationContext().getServletContext();
 	}
 
 

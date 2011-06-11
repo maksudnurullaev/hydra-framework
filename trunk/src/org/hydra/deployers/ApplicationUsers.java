@@ -61,7 +61,7 @@ public final class ApplicationUsers {
 	    if(validRows == 0)
 	    	content.append("...");
     	StringBuffer header = new StringBuffer();
-    	header.append("Count of users: " + validRows);					
+    	header.append("[[DB|Text|Count_of_users|span]]: " + validRows);					
 	    header.append(" | ");
 	    header.append(Utils.createJSLinkHAAD(
 					Utils.Q("AdmUsers"), 

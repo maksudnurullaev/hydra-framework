@@ -26,6 +26,8 @@ public final class Application {
 			return ApplicationUsers.getKeyHow(inKey,inHow);				
 		else if(inWhat.compareToIgnoreCase("templates") == 0)
 			return ApplicationTemplates.getKeyHow(inKey,inHow);				
+		else if(inWhat.compareToIgnoreCase("files") == 0)
+			return ApplicationFiles.getKeyHow(inKey,inHow);	
 		
 		_log.error("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;

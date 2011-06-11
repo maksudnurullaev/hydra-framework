@@ -1,0 +1,68 @@
+package org.hydra.messages.handlers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hydra.deployers.ADeployer;
+import org.hydra.html.fields.FieldInput;
+import org.hydra.html.fields.FieldTextArea;
+import org.hydra.html.fields.IField;
+import org.hydra.messages.CommonMessage;
+import org.hydra.messages.handlers.abstracts.AMessageHandler;
+import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
+import org.hydra.utils.DBUtils;
+import org.hydra.utils.ErrorUtils;
+import org.hydra.utils.Utils;
+
+public class AdmFiles extends AMessageHandler {
+
+	public IMessage list(CommonMessage inMessage){
+		if(!testData(inMessage, "appid")) return inMessage;
+		String appId = inMessage.getData().get("appid");
+		
+		String content  = String.format("[[Application|Files|%s|html]]", appId);
+		getLog().debug("Try to get content for: " + content);
+						
+		return(ADeployer.deployContent(content,inMessage));
+	}	
+	
+	public IMessage addForm(CommonMessage inMessage){
+		if(!testData(inMessage, "appid")) return inMessage;
+		String appID = inMessage.getData().get("appid");
+		
+		ArrayList<IField> fields = new ArrayList<IField>();
+		FieldInput fileField = new FieldInput("input_file");
+		fileField.setType("file");
+		fields.add(fileField);
+		
+		String form = Utils.generateForm(
+				String.format("<h4>[[DB|Text|New_File|span]]</h4>"), appID, 
+				"AdmFiles", "add", 
+				"AdmFiles", "list", 
+				"admin.app.action", fields, null);
+		
+		return(ADeployer.deployContent(form,inMessage));		
+	}	
+	
+	public IMessage add(CommonMessage inMessage){
+		// finish
+		return list(inMessage);
+	}
+
+	public IMessage delete(CommonMessage inMessage){
+		if(!testData(inMessage, "appid", "key")) return inMessage;
+		String appId = inMessage.getData().get("appid");
+		String key = inMessage.getData().get("key");
+				
+		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "Template", key);
+		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
+			inMessage.setError(errCode.toString());
+			return inMessage;
+		}
+				
+		return(list(inMessage));		
+	}
+}

@@ -56,7 +56,7 @@ UristUz.mainMenu2 = function(aElem){
 };
 
 UristUz.mainContent_1 = function(id){
-	return ('[[DB|Text|Page.' + id + '|locale]]') ;
+	return ('[[DB|Text|Page.' + id + '|span]]') ;
 };
 
 // SET GLOBAL HOOKS 

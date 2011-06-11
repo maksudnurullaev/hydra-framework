@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.utils.DBUtils;
+import org.hydra.utils.Utils;
 
 public final class Db {
 	public static final Log _log = LogFactory.getLog("org.hydra.deployers.Db");
@@ -36,10 +37,12 @@ public final class Db {
 			String inUserID, 
 			List<String> links){
 		_log.debug("Enter to: getDbTextKeyHow");
-		if(inHow.compareToIgnoreCase("locale") == 0)
-			return getTextKeyLocale(inKey, inApplicationID, inLocale, inUserID, links);
-		_log.error(String.format("Could not find Key part for {{DB|Text|%s|%s}}",inKey, inHow));
-		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links);
+		if(inHow.compareToIgnoreCase("div") == 0) // div wrapper 
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div"));
+		if(inHow.compareToIgnoreCase("span") == 0) //span wrapper
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "span"));
+		_log.error(Utils.F("Could not find Key part for {{DB|Text|%s|%s}}",inKey, inHow));
+		return Utils.F("Could not find Key part for {{DB|Text|%s|%s}}",inKey, inHow);
 	};
 	
 	private static String getTemplateKeyANY(
@@ -52,16 +55,6 @@ public final class Db {
 		_log.debug("inKeyspace: " + inApplicationID);
 		_log.debug("inColumnFamily: " + "Template");
 		_log.debug("inKey: " + inKey);
-		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Template", inKey, "content", inUserID, links);
-	};
-
-	private static String getTextKeyLocale(
-			String inKey,
-			String inApplicationID, 
-			String inLocale,
-			String inUserID, 
-			List<String> links) {
-		_log.debug("Enter to: getDbTextKeyLocale");		
-		return DBUtils.wrap2DivIfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links);
+		return DBUtils.wrap2IfNeeds(inApplicationID, "Template", inKey, "content", inUserID, links, "div");
 	};
 }

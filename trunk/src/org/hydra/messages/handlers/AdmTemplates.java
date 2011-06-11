@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.hydra.deployers.ADeployer;
 import org.hydra.html.fields.FieldInput;
-import org.hydra.html.fields.FieldSelectTag;
 import org.hydra.html.fields.FieldTextArea;
 import org.hydra.html.fields.IField;
 import org.hydra.messages.CommonMessage;
@@ -40,7 +39,7 @@ public class AdmTemplates extends AMessageHandler {
 		fields.add(new FieldTextArea("template_content", "", "style=\"width: 40em; height: 25em; border: 1px solid #7F9DB9;\""));
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|New_Template|locale]]</h4>"), appID, 
+				String.format("<h4>[[DB|Text|New_Template|span]]</h4>"), appID, 
 				"AdmTemplates", "add", 
 				"AdmTemplates", "list", 
 				"admin.app.action", fields, null);
@@ -71,7 +70,7 @@ public class AdmTemplates extends AMessageHandler {
 		fields.add(new FieldTextArea("template_content", "__1__", "style=\"width: 40em; height: 25em; border: 1px solid #7F9DB9;\""));
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|Update_Template|locale]]</h4>"), appID, 
+				String.format("<h4>[[DB|Text|Update_Template|span]]</h4>"), appID, 
 				"AdmTemplates", "update", 
 				"AdmTemplates", "list", 
 				"admin.app.action", fields, null);
