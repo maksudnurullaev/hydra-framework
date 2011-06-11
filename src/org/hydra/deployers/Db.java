@@ -41,8 +41,8 @@ public final class Db {
 			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div"));
 		if(inHow.compareToIgnoreCase("span") == 0) //span wrapper
 			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "span"));
-		_log.error(Utils.F("Could not find Key part for {{DB|Text|%s|%s}}",inKey, inHow));
-		return Utils.F("Could not find Key part for {{DB|Text|%s|%s}}",inKey, inHow);
+		_log.error(Utils.F("Could not find HOW part for {{DB|Text|%s|%s}}",inKey, inHow));
+		return DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div");
 	};
 	
 	private static String getTemplateKeyANY(
