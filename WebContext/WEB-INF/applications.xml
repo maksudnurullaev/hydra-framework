@@ -6,13 +6,13 @@
        	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<!-- Applications -->
 	<bean id="_hydra_web_applications" class="org.hydra.beans.WebApplications">
 		<constructor-arg><ref bean="_ksp_manager"/></constructor-arg>
 		<property name="applications">
 			<set>
 				<ref bean="HydraUz_WebAppBean"/>
 				<ref bean="UristUz_WebAppBean"/>
+				<ref bean="UristUz2_WebAppBean"/>
 			</set>
 		</property>				
 	</bean>
@@ -58,5 +58,25 @@
 			<value>rus</value>
 		</property>	    
 	</bean>
+	
+	<bean id="UristUz2_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="UristUz2" />
+		<property name="urls">
+			<set>
+				<value>.*(www\.)?urist2\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="uzb" value="Uzb"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>	
 
 </beans>
