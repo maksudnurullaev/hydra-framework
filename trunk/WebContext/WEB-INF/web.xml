@@ -26,7 +26,9 @@
 		<init-param>
 			<param-name>debug</param-name>
 			<param-value>true</param-value>
-		</init-param>
+			<param-name>fileUploadMaxBytes</param-name>
+			<param-value>5242880</param-value>
+		</init-param>		
 	</servlet>
 
 	<servlet-mapping>

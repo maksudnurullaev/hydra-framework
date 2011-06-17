@@ -1,10 +1,13 @@
 package org.hydra.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import javax.servlet.ServletContext;
@@ -14,6 +17,7 @@ import me.prettyprint.hector.api.beans.Row;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.html.fields.FieldInput;
 import org.hydra.html.fields.IField;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
@@ -236,18 +240,25 @@ public final class Utils {
 		strSaveArrayData.add("dest");
 		strSaveArrayData.add(Utils.Q(inDest));
 		
+		String fileField = null;
+		
 		if(fields != null && fields.size() > 0){			
-			for (IField s : fields) {
-				strSaveArrayData.add(s.getID());
-				strSaveArrayData.add(s.getValue4JS());
+			for (IField field : fields) {
+				if(isFieldFileUploadType(field)){
+					fileField = field.getValue4JS();
+				}else{
+					strSaveArrayData.add(field.getID());
+					strSaveArrayData.add(field.getValue4JS());
+					
+				}
 			}
 		}
 		
 		if(optionaFields != null && optionaFields.size() > 0){
-			for (IField s : optionaFields) {
-				strSaveArrayData.add(s.getID());
-				strSaveArrayData.add(s.getValue4JS());
-			}
+			for (IField field : optionaFields) {
+				strSaveArrayData.add(field.getID());
+				strSaveArrayData.add(field.getValue4JS());
+			}			
 		}
 		
 		String jsSaveData = jsData(strSaveArrayData
@@ -267,9 +278,15 @@ public final class Utils {
 				.toArray(new String[0]));
 
 		StringBuffer ssJsActions = new StringBuffer();
-		ssJsActions.append(Utils.T("template.html.a.onClick.sendMessage.Label"
-				, jsSaveData
-				, "Save"));
+		if(fileField == null){
+			ssJsActions.append(Utils.T("template.html.a.onClick.sendMessage.Label"
+					, jsSaveData
+					, "Save"));
+		}else{
+			ssJsActions.append(Utils.T("template.html.a.onClick.sendMessage2.Label"
+					, jsSaveData, fileField
+					, "Save"));			
+		}
 		ssJsActions.append(" | ");
 		ssJsActions.append(Utils.T("template.html.a.onClick.sendMessage.Label"
 				, jsCancelData
@@ -302,6 +319,13 @@ public final class Utils {
 		result.append("</table>");
 
 		return (result.toString());
+	}
+
+	public static boolean isFieldFileUploadType(IField s) {
+		if(s == null) return false;
+		if(s instanceof FieldInput)
+			return( ((FieldInput) s).getType().compareToIgnoreCase("file") == 0 );
+		return false;
 	}
 
 	public static List<String> getAllTags4(String inAppID) {
@@ -624,6 +648,12 @@ public final class Utils {
 
 	public static ServletContext getServletContent() {
 		return ContextLoader.getCurrentWebApplicationContext().getServletContext();
+	}
+
+	public static String toogleLink(
+			String divID, String title) {
+		String format = "<a href=\"#\" title=\"Preview\" onclick=\"javascript:void(Globals.toogleBlock('%s')); return false;\">%s</a>";
+		return(String.format(format, divID, title));
 	}
 
 

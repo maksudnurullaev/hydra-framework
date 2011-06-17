@@ -2,7 +2,10 @@ package org.hydra.utils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +13,13 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.io.FileTransfer;
 
 public final class FileUtils {
+	private static final Log _log = LogFactory.getLog("org.hydra.utils.FileUtils");	
 	public static final String generalImageFormat = "png";
 	public static String saveImage4(ServletContext servletContext, String inAppId, BufferedImage inImage){
 		// 0. Generate pathname for new image
@@ -33,10 +41,7 @@ public final class FileUtils {
 		String url = Utils.F("files/%s/image/", inAppID);
 		
 		getListOfFiles4Dir(url, result);
-		for(String filepath: result){
-			System.out.println("filepath: " + filepath);			
-		}
-		
+
 		return result;
 		
 	}
@@ -59,5 +64,78 @@ public final class FileUtils {
 				}
 			}
 		}
+	}
+
+	public static String saveFile4(
+			ServletContext servletContext, 
+			String inAppId,
+			FileTransfer file) {
+		// 0. Generate pathname for new image
+		String uri4File = Utils.F("files/%s/image/%s", inAppId, file.getFilename());
+		String realPath = servletContext.getRealPath(uri4File);
+		String resultStr = "";
+		// 1. 
+		InputStream is = null;
+		FileOutputStream os = null;
+		byte[] bufer = new byte[4096];
+		int bytesRead = 0;
+		try {
+			is = file.getInputStream();
+			os = new FileOutputStream(realPath);
+			while((bytesRead = is.read(bufer)) != -1){
+				_log.debug("bytesRead: " + bytesRead);
+				os.write(bufer, 0, bytesRead);
+			}
+			os.close();
+			resultStr = getFileBox(inAppId, uri4File);
+		} catch (Exception e) {
+			_log.error(e.toString());
+			resultStr = e.toString();
+		}	
+		// finish
+		return (resultStr);		
+		
+	}
+
+	public static String getFileBox(String inAppID, String filePath) {
+		StringBuffer content = new StringBuffer();
+		String mimeType = URLConnection.guessContentTypeFromName(filePath);
+		if(mimeType == null) mimeType = "unknown";
+		
+    	String divHiddenID = "template." + filePath;  
+		content.append("<div style=\"margin: 5px; padding: 5px; border: 1px solid rgb(127, 157, 185);\">");
+		
+    	content.append(getDeleteLink(inAppID, filePath) + " ");
+    	content.append("[<strong>" + mimeType + "</strong>] ");
+    	
+    	String htmlTag = "NOT_DEFINED";
+		if(mimeType.compareToIgnoreCase("image") >= 0){
+			htmlTag = Utils.F("<img src=\"%s\" border=\"0\">", filePath);
+		}else{
+			htmlTag = Utils.F("<a href=\"%s\" target=\"_blank\">TEXT</a>", filePath);
+		}
+		content.append(Utils.toogleLink(divHiddenID, filePath));
+		content.append(Utils.F("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s<hr />%s</div>", 
+				divHiddenID,
+				StringEscapeUtils.escapeHtml(htmlTag),
+				htmlTag));        	
+    	// ... key 
+    	
+    	content.append("</div>");
+    	
+		return content.toString();
+	}
+
+	public static String getDeleteLink(
+			String inAppID, 
+			String key) {
+		String jsData = Utils.jsData(
+				 "handler", Utils.Q("AdmTemplates")
+				,"action",  Utils.Q("delete")
+				,"appid", Utils.Q(inAppID)
+				,"key", Utils.Q(key)
+				,"dest", Utils.Q("admin.app.action")
+			);
+		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
 	}
 }
