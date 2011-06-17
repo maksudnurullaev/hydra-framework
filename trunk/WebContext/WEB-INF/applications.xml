@@ -23,7 +23,7 @@
 		<property name="urls">
 			<set>
 				<value>.*127\.0\.0\.1.*</value>
-				<value>.*192\.168\.34\.100.*</value>
+				<value>.*91\.212\.89\.163.*</value>
 				<value>.*(www\.)?hydra\.uz.*</value>
 			</set>
 		</property>
