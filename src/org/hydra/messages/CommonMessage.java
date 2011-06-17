@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.directwebremoting.WebContext;
+import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Result;
@@ -27,8 +29,9 @@ public class CommonMessage implements IMessage {
 	private String _jsFile = null;
 	private List<String> _highlightFields = new ArrayList<String>();
 	private List<String> _noHighlightFields = new ArrayList<String>();
-	
+		
 	private String _error = null;
+	private FileTransfer file = null;
 
 	@Override
 	public String getStyleSheet() {
@@ -132,12 +135,22 @@ public class CommonMessage implements IMessage {
 	public String getSessionID() {
 		return sessionID;
 	}
-
+	@Override
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
+	@Override
 	public String getUrl() {
 		return url;
 	}
+	@Override
+	public void setFile(FileTransfer file) {
+		this.file = file;
+	}
+	@Override
+	public FileTransfer getFile() {
+		return file;
+	}
+
+
 }

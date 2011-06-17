@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.MessagesCollector;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.interfaces.IMessage;
@@ -17,6 +18,18 @@ import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
 
+	public Object[] sendMessage2(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException{
+		if(inFile != null){
+			getLog().debug("inFile.getFilename(): " + inFile.getFilename());
+			getLog().debug("inFile.getMimeType(): " + inFile.getMimeType());
+			getLog().debug("inFile.getSize(): " + inFile.getSize());
+		}else{
+			getLog().warn("inFile == null!");			
+		}
+		inMessage.setFile(inFile);
+		return sendMessage(inMessage);
+	}
+	
 	public Object[] sendMessage(MessageBean inMessage)
 			throws RichedMaxCapacityException {
 		// return result messages array

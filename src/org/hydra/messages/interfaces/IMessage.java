@@ -1,7 +1,8 @@
 package org.hydra.messages.interfaces;
 
 import java.util.Map;
-import java.util.Set;
+
+import org.directwebremoting.io.FileTransfer;
 import org.hydra.utils.Result;
 
 public interface IMessage {	
@@ -16,4 +17,8 @@ public interface IMessage {
 	void setSessionID(String sessionID);
 	String getSessionID();
 	void setStyleSheet(String styleSheet);
+	void setUrl(String url);
+	String getUrl();
+	void setFile(FileTransfer file);
+	FileTransfer getFile();
 }

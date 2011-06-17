@@ -193,6 +193,15 @@ Globals.sendMessage = function (data) {
     };
     MessageHandler.sendMessage(message, Globals.applyIncomingMessages);
 };
+/* Send message to server*/
+Globals.sendMessage2 = function (data, file) {
+    var message = {
+        data: data,
+        sessionID: Globals.sessionID,
+        url: document.URL
+    };
+    MessageHandler.sendMessage2(message, file, Globals.applyIncomingMessages);
+};
 Globals.confirmAndSendMessage = function (data) {
 	if(!confirm("Confirm action!\nПодтвердите действие!"))return;
 	Globals.sendMessage(data);

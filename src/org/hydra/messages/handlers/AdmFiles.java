@@ -1,20 +1,16 @@
 package org.hydra.messages.handlers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.hydra.deployers.ADeployer;
 import org.hydra.html.fields.FieldInput;
-import org.hydra.html.fields.FieldTextArea;
 import org.hydra.html.fields.IField;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
+import org.hydra.utils.FileUtils;
 import org.hydra.utils.Utils;
 
 public class AdmFiles extends AMessageHandler {
@@ -43,13 +39,24 @@ public class AdmFiles extends AMessageHandler {
 				"AdmFiles", "add", 
 				"AdmFiles", "list", 
 				"admin.app.action", fields, null);
+		form += "<div id=\"action_result\"></div>";
 		
 		return(ADeployer.deployContent(form,inMessage));		
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
+		if(inMessage.getFile() == null){
+			inMessage.setError("NO_FILE");
+			inMessage.clearContent();
+			return(inMessage);
+		}
+		String result  = FileUtils.saveFile4(
+				inMessage._web_context.getServletContext(), 
+				inMessage._web_application.getId(), 
+				inMessage.getFile());
+		inMessage.setHtmlContents("action_result", result);
 		// finish
-		return list(inMessage);
+		return (inMessage);
 	}
 
 	public IMessage delete(CommonMessage inMessage){
