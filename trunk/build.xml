@@ -6,7 +6,7 @@
 	<property name="src" value="${basedir}/src" />
 	<property name="src.tests" value="${basedir}/tests" />
 	<property name="classes" value="${basedir}/WebContext/WEB-INF/classes" />
-	<property name="name" value="${application.name}-${application.version}" />
+	<property name="name" value="${application.name}" />
 
 	<fileset id="local.libs" dir="${basedir}/WebContext/WEB-INF/lib">
 		<include name="*.jar" />
