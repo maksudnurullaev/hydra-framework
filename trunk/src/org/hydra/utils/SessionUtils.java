@@ -2,8 +2,6 @@ package org.hydra.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
@@ -67,8 +65,6 @@ public final class SessionUtils {
 		inResult.setObject(inCommonMessage._web_application.getId() + inKey);
 		inResult.setResult(true);
 	};
-
-    public static Pattern pattern4Id = Pattern.compile("mode=([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])?");
 
 	public static void setWebApplication(
 			Result inResult,
