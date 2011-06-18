@@ -95,7 +95,6 @@ div.hr hr {
     width: 90%;
 }
 #mainWrapper {
-    background-image: url("../image/body-bg.jpg");
     background-position: 0 0;
     background-repeat: no-repeat;
     height: 1685px;
@@ -111,7 +110,7 @@ div.hr hr {
 #headerOne {
     float: left;
     margin: 0;
-    padding: 180px 0 15px;
+    padding: 10px 0 15px;
     width: 620px;
 }
 #headerTwo {
