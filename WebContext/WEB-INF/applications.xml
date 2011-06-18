@@ -11,8 +11,8 @@
 		<property name="applications">
 			<set>
 				<ref bean="HydraUz_WebAppBean"/>
+				<ref bean="TestUz_WebAppBean"/>
 				<ref bean="UristUz_WebAppBean"/>
-				<ref bean="UristUz2_WebAppBean"/>
 			</set>
 		</property>				
 	</bean>
@@ -39,11 +39,11 @@
 		</property>	    
 	</bean>
 
-	<bean id="UristUz_WebAppBean" class="org.hydra.beans.WebApplication">
-		<property name="id" value="UristUz" />
+	<bean id="TestUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="TestUz" />
 		<property name="urls">
 			<set>
-				<value>.*(www\.)?urist\.uz.*</value>
+				<value>.*(www\.)?test\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
@@ -59,11 +59,11 @@
 		</property>	    
 	</bean>
 	
-	<bean id="UristUz2_WebAppBean" class="org.hydra.beans.WebApplication">
-		<property name="id" value="UristUz2" />
+	<bean id="UristUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="UristUz" />
 		<property name="urls">
 			<set>
-				<value>.*(www\.)?urist2\.uz.*</value>
+				<value>.*(www\.)?urist\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
