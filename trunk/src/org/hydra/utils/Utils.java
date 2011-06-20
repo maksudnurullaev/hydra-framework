@@ -1,19 +1,17 @@
 package org.hydra.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 import javax.servlet.ServletContext;
 
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,7 +21,6 @@ import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * @author M.Nurullayev
@@ -611,23 +608,23 @@ public final class Utils {
 	}
 
 	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {		
-//		if(inApplicationID == null || inApplicationID.length() == 0) return false;
-//		if(inUserID == null || inUserID.length() == 0) return false;
-//		if(roles == null || roles.length == 0) return false;
-//
-//		if(inUserID.startsWith("+++")) return true; // super user
-//		
-//		StringWrapper sWrapper = new StringWrapper();
-//		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
-//		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-//			for(String role:roles){
-//				if(sWrapper.getString().contains(role)){
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-		return (true);
+		if(inApplicationID == null || inApplicationID.length() == 0) return false;
+		if(inUserID == null || inUserID.length() == 0) return false;
+		if(roles == null || roles.length == 0) return false;
+
+		if(inUserID.startsWith("+++")) return true; // super user
+		
+		StringWrapper sWrapper = new StringWrapper();
+		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
+		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
+			for(String role:roles){
+				if(sWrapper.getString().contains(role)){
+					return true;
+				}
+			}
+		}
+		return false;
+//		return (true);
 	}
 
 	public static boolean errDBCodeValueExest(ERROR_CODES err) {

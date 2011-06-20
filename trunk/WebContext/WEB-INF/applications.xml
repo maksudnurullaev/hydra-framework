@@ -11,8 +11,9 @@
 		<property name="applications">
 			<set>
 				<ref bean="HydraUz_WebAppBean"/>
-				<ref bean="TestUz_WebAppBean"/>
 				<ref bean="UristUz_WebAppBean"/>
+				<ref bean="TestUz_WebAppBean"/>
+				<ref bean="Test2Uz_WebAppBean"/>
 			</set>
 		</property>				
 	</bean>
