@@ -1,6 +1,6 @@
 /* Initial global setups */
-if (TestUz== null) {
-    var TestUz= { 
+if (Test2Uz == null) {
+    var Test2Uz = { 
     	'version': '0.0.1a',
     	'topNav': 'topNav'
     	};
