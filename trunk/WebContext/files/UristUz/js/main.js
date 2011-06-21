@@ -35,7 +35,7 @@ UristUz.showContactsPage = function(){
     Globals.sendMessage({
         handler: 'General',
         action:  'getContent',
-        content: '[[DB|Text|Contacts.Page|span]]',
+        content: '[[DB|Template|Contacts.Page|span]]',
         dest:    UristUz.MainContent
     });	
 };
@@ -44,7 +44,7 @@ UristUz.showPublicOfferPage = function(){
     Globals.sendMessage({
         handler: 'General',
         action:  'getContent',
-        content: '[[DB|Text|PublicOffer.Page|span]]',
+        content: '[[DB|Template|PublicOffer.Page|span]]',
         dest:    UristUz.MainContent
     });	
 };
