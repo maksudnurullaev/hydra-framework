@@ -8,7 +8,6 @@ import java.util.Map;
 import me.prettyprint.cassandra.dao.SimpleCassandraDao;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.beans.ColumnSlice;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.beans.Row;
@@ -256,10 +255,11 @@ public final class DBUtils {
 			break;
 		case ERROR_DB_EMPTY_VALUE:
 		case ERROR_DB_NULL_VALUE:
+			_log.warn(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey));
 			break;
 		default:
-			Db._log.warn(String.format("DB error with %s: %s", inKey, err.toString()));
+			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
 		if(Utils.hasRight2Edit(inKsp, inUserID))
