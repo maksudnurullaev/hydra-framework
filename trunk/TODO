@@ -1,4 +1,5 @@
 1.
+	Why [[DB|Text|Info|span]] returns  ERROR_DB_NULL_VALUE
 2.
 	(DONE!) Create cetain catalogs for static files of each web application
 	Create load files functionality for web appication  
