@@ -608,23 +608,23 @@ public final class Utils {
 	}
 
 	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {		
-//		if(inApplicationID == null || inApplicationID.length() == 0) return false;
-//		if(inUserID == null || inUserID.length() == 0) return false;
-//		if(roles == null || roles.length == 0) return false;
-//
-//		if(inUserID.startsWith("+++")) return true; // super user
-//		
-//		StringWrapper sWrapper = new StringWrapper();
-//		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
-//		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-//			for(String role:roles){
-//				if(sWrapper.getString().contains(role)){
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-		return (true);
+		if(inApplicationID == null || inApplicationID.length() == 0) return false;
+		if(inUserID == null || inUserID.length() == 0) return false;
+		if(roles == null || roles.length == 0) return false;
+
+		if(inUserID.startsWith("+++")) return true; // super user
+		
+		StringWrapper sWrapper = new StringWrapper();
+		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
+		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
+			for(String role:roles){
+				if(sWrapper.getString().contains(role)){
+					return true;
+				}
+			}
+		}
+		return false;
+//		return (true);
 	}
 
 	public static boolean errDBCodeValueExest(ERROR_CODES err) {

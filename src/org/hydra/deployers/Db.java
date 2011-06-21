@@ -20,11 +20,24 @@ public final class Db {
 			List<String> links) {
 		_log.debug("Enter to: getDbWhatKeyHow");
 		
-		if(inWhat.compareToIgnoreCase("text") == 0)
+		if(inWhat.compareToIgnoreCase("text") == 0){
 			return getTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, links);
-		if(inWhat.compareToIgnoreCase("template") == 0)
+		}
+		if(inWhat.compareToIgnoreCase("NonUserText") == 0){
+			if(inUserID == null)
+				return getTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, links);
+			else
+				return "&nbsp;";
+		}
+		if(inWhat.compareToIgnoreCase("template") == 0){
 			return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, links);
-		
+		}
+		if(inWhat.compareToIgnoreCase("NonUserTemplate") == 0){
+			if(inUserID == null)
+				return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, links);
+			else
+				return "&nbsp;";
+		}
 		_log.warn(String.format("Could not find WHAT part for {{DB|!!!%s!!!|%s|%s}}", inWhat,inKey, inHow));
 		return String.format("Could not find WHAT part for {{DB|!!!%s!!!|%s|%s}}", inWhat,inKey, inHow) ;
 	}
@@ -42,7 +55,7 @@ public final class Db {
 		if(inHow.compareToIgnoreCase("span") == 0) //span wrapper
 			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "span"));
 		_log.error(Utils.F("Could not find HOW part for {{DB|Text|%s|%s}}",inKey, inHow));
-		return DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div");
+		return DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "span");
 	};
 	
 	private static String getTemplateKeyANY(

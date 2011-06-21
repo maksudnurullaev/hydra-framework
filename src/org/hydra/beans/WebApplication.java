@@ -15,7 +15,8 @@ public class WebApplication extends ALogger {
 	private String _defaultLocale = null;
 	private String _jscript = null;
 	private String _styleSheet = null;
-
+	private String _title = "...";
+	
 	public String getId() {
 		return _id;
 	}
@@ -77,6 +78,14 @@ public class WebApplication extends ALogger {
 
 	public String getJscript() {
 		return _jscript;
+	}
+
+	public void setTitle(String title) {
+		this._title = title;
+	}
+
+	public String getTitle() {
+		return _title;
 	}
 
 }

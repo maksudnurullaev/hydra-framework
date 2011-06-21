@@ -21,4 +21,5 @@ public interface IMessage {
 	String getUrl();
 	void setFile(FileTransfer file);
 	FileTransfer getFile();
+	void setTitle(String title);
 }
