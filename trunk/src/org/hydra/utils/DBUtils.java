@@ -250,13 +250,11 @@ public final class DBUtils {
 		// get result from DB
 		StringWrapper content = new StringWrapper();
 		ErrorUtils.ERROR_CODES err = getValue(inKsp, inCFname, inKey, inCName, content);
-		_log.warn(String.format("DB error with %s: %s, %s", inKey, err.toString(), content.getString()));
 		switch (err) {
 		case NO_ERROR:
 			break;
 		case ERROR_DB_EMPTY_VALUE:
 		case ERROR_DB_NULL_VALUE:
-			_log.warn(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey));
 			break;
 		default:
