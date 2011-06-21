@@ -29,6 +29,7 @@ public class CommonMessage implements IMessage {
 	private String _jsFile = null;
 	private List<String> _highlightFields = new ArrayList<String>();
 	private List<String> _noHighlightFields = new ArrayList<String>();
+	private String _title;
 		
 	private String _error = null;
 	private FileTransfer file = null;
@@ -150,6 +151,13 @@ public class CommonMessage implements IMessage {
 	@Override
 	public FileTransfer getFile() {
 		return file;
+	}
+	@Override
+	public void setTitle(String title) {
+		this._title = title;
+	}
+	public String getTitle() {
+		return _title;
 	}
 
 

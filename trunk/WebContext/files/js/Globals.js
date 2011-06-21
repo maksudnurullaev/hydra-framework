@@ -246,6 +246,13 @@ Globals.applyIncomingMessages = function (messages) {
            	Globals.loadJS(message.JSFile, Globals.loadInitialPage);
         };
      
+        // check for page title
+        if (Globals.chk(message.title)) {
+        	if(document && document.title){
+        		document.title = message.title;
+        	}
+        };
+          
         // check for html elements
         if (Globals.chk(message.htmlContents)) {
             Globals.setHtmlContents(message.htmlContents);

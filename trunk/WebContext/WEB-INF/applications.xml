@@ -20,6 +20,7 @@
 	
 	<bean id="HydraUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="HydraUz" />
+		<property name="title" value="Hydra Framework - Non progredi est regredi!" />
 		<property name="urls">
 			<set>
 				<value>.*127\.0\.0\.1.*</value>
@@ -42,6 +43,7 @@
 	
 	<bean id="UristUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="UristUz" />
+		<property name="title" value="Urist.Uz - Sic Luceat Lux!" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?urist\.uz.*</value>
@@ -62,6 +64,7 @@
 
 	<bean id="TestUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="TestUz" />
+		<property name="title" value="Test.Uz - Simle site #1" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?test\.uz.*</value>
@@ -82,6 +85,7 @@
 
 	<bean id="Test2Uz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="Test2Uz" />
+		<property name="title" value="Test2.Uz - Simle site #2" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?test2\.uz.*</value>

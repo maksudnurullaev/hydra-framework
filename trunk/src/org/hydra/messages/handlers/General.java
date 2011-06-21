@@ -95,6 +95,8 @@ public class General extends AMessageHandler { // NO_UCD
 				getBodyFromFile(inMessage._web_context.getServletContext(), inMessage._web_application.getId());
 		getLog().debug("... HTML body content length: " + content.length());		
 		
+		inMessage.setTitle(inMessage._web_application.getTitle());
+		
 		return(ADeployer.deployContent(content,inMessage));
 	}
 

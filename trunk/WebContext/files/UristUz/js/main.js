@@ -2,81 +2,49 @@
 if (UristUz == null) {
     var UristUz = { 
     	'version': '0.0.1a',
-    	'topNav': 'topNav'
+    	'MainContent': 'MainContent'
     	};
 };
 
-UristUz.mainMenu = function(aElem){
-	// switch menu
-	$$('#topNav a').each(function (elem){
-		if(aElem.id == elem.id){
-			elem.addClass('topNavAct');
-		}else{
-			if(elem.hasClass('topNavAct')){
-				elem.removeClass('topNavAct');
-			}
-		}
-	});	
-	// update content
+UristUz.showUserCabinet = function(){
+	var content = '<div class="portfolioColumnTwo">';
+	content += '<h2>Персональный Кабинет</h2>';
+    content += ' <p class="nothingSpecial">';
+    content += '  [[System|Login|form|NULL]]';
+    content += ' </p>';
+    content += ' <p class="nothingSpecial">[[DB|NonUserTemplate|Lawers.Invitation|span]]</p>';
+
     Globals.sendMessage({
         handler: 'General',
         action:  'getContent',
-        content: UristUz.mainContent(aElem.id),
-        dest:    'content'
-    });
-    
+        content: content,
+        dest:    UristUz.MainContent
+    });	
 };
 
-UristUz.mainContent = function(id){
-	var content = 
-			   '<div class="content_1" id="content_1">';
-	content += ' <div class="content_1_left" id="content_1_left">';
-	content += '[[DB|Template|Main.' + id + '.Page|null]]';
-	content += ' </div>';
-	content += '</div>';
-	content += '<div id="sideBar" class="sideBar">';
-	content += ' <div class="sideBarItem">';
-	content += '[[DB|Template|Main.' + id + '.Page.Menu|null]]';
-	content += ' </div>';
-	content += '</div><br class="clear" />';
-	
-	return content;
+UristUz.showMainPage = function(){
+    Globals.sendMessage({
+        handler: 'General',
+        action:  'getContent',
+        content: '[[DB|Template|Content.Home|span]]',
+        dest:    UristUz.MainContent
+    });	
 };
 
-UristUz.mainMenu2 = function(aElem){
-	if(aElem && aElem.id){
-		// update content_1
-	    Globals.sendMessage({
-	        handler: 'General',
-	        action:  'getContent',
-	        content: UristUz.mainContent_1(aElem.id),
-	        dest:    'content_1_left'
-	    });	
-	}
+UristUz.showContactsPage = function(){
+    Globals.sendMessage({
+        handler: 'General',
+        action:  'getContent',
+        content: '[[DB|Text|Contacts.Page|span]]',
+        dest:    UristUz.MainContent
+    });	
 };
 
-UristUz.mainContent_1 = function(id){
-	return ('[[DB|Text|Page.' + id + '|span]]') ;
-};
-
-// SET GLOBAL HOOKS 
-UristUz.preHook = function(){
-	if($('branding')){
-		$('branding').fade('hide');
-	}
-	if($('content')){
-		$('content').fade('hide');
-	}
-};
-UristUz.postHook = function(){
-	if($('branding')){
-		$('branding').fade('show');
-	}
-	if($('content')){
-		$('content').fade('show');
-	}	
-};
-if(dwr.engine){
-	dwr.engine.setPreHook(UristUz.preHook);
-	dwr.engine.setPostHook(UristUz.postHook);
+UristUz.showPublicOfferPage = function(){
+    Globals.sendMessage({
+        handler: 'General',
+        action:  'getContent',
+        content: '[[DB|Text|PublicOffer.Page|span]]',
+        dest:    UristUz.MainContent
+    });	
 };
