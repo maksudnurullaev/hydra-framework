@@ -250,7 +250,7 @@ public final class DBUtils {
 		// get result from DB
 		StringWrapper content = new StringWrapper();
 		ErrorUtils.ERROR_CODES err = getValue(inKsp, inCFname, inKey, inCName, content);
-		_log.warn(String.format("DB error with %s: %s", inKey, err.toString()));
+		_log.warn(String.format("DB error with %s: %s, %s", inKey, err.toString(), content.getString()));
 		switch (err) {
 		case NO_ERROR:
 			break;
