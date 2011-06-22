@@ -1,6 +1,5 @@
 1.
-	Why [[DB|Text|Info|span]] returns  ERROR_DB_NULL_VALUE
+	Refactor DBUtils.getValue
+	Implement Google's Mail for urist.uz domain 
 2.
-	(DONE!) Create cetain catalogs for static files of each web application
-	Create load files functionality for web appication  
 3.
