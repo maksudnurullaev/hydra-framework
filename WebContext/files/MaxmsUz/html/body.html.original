@@ -1,0 +1,44 @@
+    <div id="wrap">
+      <div id="header">
+        <h1>
+          <a href="#">Web Window Template</a>
+        </h1>
+        <h2>
+          Your web site slogan goes here
+        </h2>
+      </div>
+      <div id="menu">
+        <ul>
+          <li>
+            <a href="#">Home</a>
+          </li>
+          <li>
+            <a href="#">Articles</a>
+          </li>
+          <li>
+            <a href="#">About Us</a>
+          </li>
+          <li>
+            <a href="#">Resources</a>
+          </li>
+          <li>
+            <a href="#">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+      <div id="contentwrap">
+        <div id="content">
+			
+        </div>
+        <div id="sidebar">
+
+        </div>
+        <div style="clear: both;"></div>
+      </div>
+      <div id="bottom"></div>
+      <div id="footer">
+        <p>
+          Copyright © <a href="http://maxms.uz">MaxMS.Uz</a> | Powered by <a href="http://hydra.uz">Hydra Framework</a>
+        </p>
+      </div>
+    </div>
