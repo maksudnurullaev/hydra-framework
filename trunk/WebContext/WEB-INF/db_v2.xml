@@ -24,6 +24,7 @@
 				<value>Text</value>
 				<value>Template</value>
 				<value>Tag</value>
+				<value>ClientMessage</value>
 			</set>		
 		</property>
 	    <!-- Set locales -->

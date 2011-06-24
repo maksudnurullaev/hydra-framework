@@ -34,9 +34,10 @@ public final class Dictionary {
 			String inApplicationID, 
 			String inUserID) {
 		_log.debug("KEY: " + inKey);
-		_log.debug("HOW: " + inHow);		
-		if(Utils.isSpecialKey(inKey)){
-			if(Utils.test4Roles(inApplicationID, inUserID, "User.Administrator"))
+		_log.debug("HOW: " + inHow);	
+		int roleLevel = Utils.isSpecialKey(inKey);
+		if(roleLevel >= 0){
+			if(Utils.roleNotLessThen(roleLevel, inApplicationID, inUserID))
 				MessagesManager.getText(inKey, null, inLocale);
 			else
 				return "";

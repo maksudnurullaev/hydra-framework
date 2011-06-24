@@ -15,13 +15,13 @@ public class ApplicationFiles extends AMessageHandler {
 			String inKey, 
 			String inHow) {
 		if(inHow.compareToIgnoreCase("html") == 0)
-			return getKeyHtml(inKey);
+			return getANYHtml(inKey);
 		
 		_log.error("Could not find HOW part: " + inHow);
 		return "Could not find HOW part: " + inHow;		
 	}
 
-	static String getKeyHtml(
+	static String getANYHtml(
 			String inAppID) {
 		StringBuffer content = new StringBuffer();
 		
@@ -48,4 +48,6 @@ public class ApplicationFiles extends AMessageHandler {
 
 		return(header.toString() + content.toString());
 	}	
+	
+	
 }

@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.KspManager;
 import org.hydra.deployers.Db;
 import org.hydra.managers.CryptoManager;
+import org.hydra.managers.MessagesManager;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 /**
@@ -247,6 +248,12 @@ public final class DBUtils {
 			List<String> links,
 			String inWrapper){
 		Db._log.debug("Enter to: getDbTemplateKeyHow");
+		// test user access by key
+		int keyLevel = Utils.isSpecialKey(inKey); 
+		if(keyLevel >= 0){
+			if(!Utils.roleNotLessThen(keyLevel, inKsp, inUserID))
+				return "";
+		}
 		// get result from DB
 		StringWrapper content = new StringWrapper();
 		ErrorUtils.ERROR_CODES err = getValue(inKsp, inCFname, inKey, inCName, content);
@@ -261,7 +268,7 @@ public final class DBUtils {
 			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
-		if(Utils.hasRight2Edit(inKsp, inUserID))
+		if(Utils.roleNotLessThen(Roles.USER_EDITOR, inKsp, inUserID))
 			wrap2EditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), links, inWrapper);
 		
 		return content.getString();			

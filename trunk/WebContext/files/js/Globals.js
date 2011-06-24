@@ -226,7 +226,7 @@ Globals.applyIncomingMessages = function (messages) {
     		};
     		// just for debug
     		if(Globals.tryToLoadCount > 1){
-    			alert("DEBUG!!! Session (" + Globals.sessionID + ") expired, new session: " + message.sessionID);
+    			alert("ERROR: Session expired!");
     		};
     		Globals.sessionID = message.sessionID;
     		Globals.tryToLoadCount += 1;

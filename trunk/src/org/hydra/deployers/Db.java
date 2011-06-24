@@ -38,9 +38,10 @@ public final class Db {
 			else
 				return "&nbsp;";
 		}
-		_log.warn(String.format("Could not find WHAT part for {{DB|!!!%s!!!|%s|%s}}", inWhat,inKey, inHow));
-		return String.format("Could not find WHAT part for {{DB|!!!%s!!!|%s|%s}}", inWhat,inKey, inHow) ;
+		_log.warn(String.format("Could not find WHAT part for [[DB|->%s<-|%s|%s]]", inWhat,inKey, inHow));
+		return String.format("Could not find WHAT part for {{DB|<strong>%s</strong>|%s|%s}}", inWhat,inKey, inHow) ;
 	}
+
 
 	private static String getTextKeyHow(
 			String inKey,

@@ -119,7 +119,6 @@ public final class FileUtils {
 				divHiddenID,
 				StringEscapeUtils.escapeHtml(htmlTag),
 				htmlTag));        	
-    	// ... key 
     	
     	content.append("</div>");
     	

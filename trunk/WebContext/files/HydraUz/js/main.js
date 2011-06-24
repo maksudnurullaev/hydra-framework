@@ -21,8 +21,7 @@ HydraUz.setMainMenuHeader = function(txt)
 	$(HydraUz.mainContentTitle).innerHTML = txt;
 };
 
-HydraUz.setContent = function(content, dest)
-{
+HydraUz.setContent = function(content, dest){
     Globals.sendMessage({
         handler: 'General'
         , action: 'getContent'
