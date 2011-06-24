@@ -3,6 +3,7 @@
 [[Application|Options|%s|html]]
 [[Application|Users|%s|html]]
 [[DB|Text|New_User|locale]]
+[[Dictionary|Template|html.body.vtop|html]]
 [[DB|Text|%s|locale]]
 [[DB|Text|%s|locale]]
 [[System|Login|form|NULL]]

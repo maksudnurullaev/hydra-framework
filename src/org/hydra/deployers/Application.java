@@ -28,6 +28,8 @@ public final class Application {
 			return ApplicationTemplates.getKeyHow(inKey,inHow);				
 		else if(inWhat.compareToIgnoreCase("files") == 0)
 			return ApplicationFiles.getKeyHow(inKey,inHow);	
+		else if(inWhat.compareToIgnoreCase("ClientMessages") == 0)
+			return ApplicationClientMessages.getKeyHow(inKey,inHow);	
 		
 		_log.error("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;

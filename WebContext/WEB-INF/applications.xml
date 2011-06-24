@@ -67,7 +67,7 @@
 
 	<bean id="MaxmsUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="MaxmsUz" />
-		<property name="title" value="Maxms.Uz - Мы работаем, Вы отдыхаете!" />
+		<property name="title" value="Max Micro Systems - Мы работаем, Вы отдыхаете!" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?maxms\.uz.*</value>

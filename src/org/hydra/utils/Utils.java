@@ -27,7 +27,7 @@ import org.springframework.web.context.ContextLoader;
  */
 public final class Utils {
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.Utils");
-
+	
 	public static String wrap2HTMLTag(String inHTMLTagName, String inContent) {
 		return String.format("<%s>%s</%s>", inHTMLTagName, inContent,
 				inHTMLTagName);
@@ -108,13 +108,6 @@ public final class Utils {
 			inResult.setResult("Internal server error: INITIAL_FILE_NOT_FOUND");
 			inResult.setResult(false);
 		}
-	}
-
-	// **** Moders & Rights
-	public static boolean hasRight2Edit(
-			String inApplicationID,
-			String inUserID) {
-		return (test4Roles(inApplicationID, inUserID, Constants._GLOBAL_TAGS));
 	}
 
 	public static String shrinkString(String inString) {
@@ -602,28 +595,38 @@ public final class Utils {
 			
 	}
 
-	public static boolean isSpecialKey(String inKey) {
-		if(inKey == null || inKey.length() == 0) return false;
-		return(inKey.startsWith("_"));
+	public static int isSpecialKey(String inKey) {
+		if(inKey == null || inKey.length() == 0) return(-1);
+		char cRole = inKey.charAt(0);
+		if(!Character.isDigit(cRole)) return(-1);
+		return (cRole - '0');
 	}
 
-	public static boolean test4Roles(String inApplicationID, String inUserID, String...roles) {		
+	public static boolean roleNotLessThen(int inRoleLevel, String inApplicationID, String inUserID) {		
 		if(inApplicationID == null || inApplicationID.length() == 0) return false;
 		if(inUserID == null || inUserID.length() == 0) return false;
-		if(roles == null || roles.length == 0) return false;
-
-		if(inUserID.startsWith("+++")) return true; // super user
 		
+		if(inUserID.startsWith("+++")) return true; // super user
+
+		int roleLevel = -1;
 		StringWrapper sWrapper = new StringWrapper();
 		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
 		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-			for(String role:roles){
-				if(sWrapper.getString().contains(role)){
-					return true;
+			roleLevel = 0; // just registered user level
+			String rolesStr = sWrapper.getString();
+			if(rolesStr != null && rolesStr.length() > 0){
+				if(rolesStr.contains("User.Administrator")){
+					roleLevel = Roles.USER_ADMINISTRATOR;
+				}else if(rolesStr.contains("User.Publisher")){
+					roleLevel = Roles.USER_PUBLISHER;
+				}else if(rolesStr.contains("User.Editor")){
+					roleLevel = Roles.USER_EDITOR;
+				}else if(rolesStr.contains("User")){
+					roleLevel = Roles.USER_REGISTERED;
 				}
 			}
 		}
-		return false;
+		return(roleLevel >= inRoleLevel);
 //		return (true);
 	}
 
