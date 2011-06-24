@@ -61,7 +61,7 @@ public class ApplicationTemplates extends AMessageHandler {
         	// ... content size
        		content.append(String.format(" (<i>SIZE:%s</i>)", colContent.getValue().length()));
         	
-    		content.append(Utils.F("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s</div>", divHiddenID, StringEscapeUtils.escapeHtml(colContent.getValue())));        	
+    		content.append(Utils.F("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s</div>", divHiddenID, Utils.escapeHtmlAndMyTags(colContent.getValue())));        	
         	content.append("</div>");
 	    }
 	    if(validRows == 0)

@@ -13,6 +13,7 @@ import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.html.fields.FieldInput;
@@ -654,6 +655,14 @@ public final class Utils {
 			String divID, String title) {
 		String format = "<a href=\"#\" title=\"Preview\" onclick=\"javascript:void(Globals.toogleBlock('%s')); return false;\">%s</a>";
 		return(String.format(format, divID, title));
+	}
+
+	public static String escapeHtmlAndMyTags(String value) {
+		if(value == null) return("");
+		String result = StringEscapeUtils.escapeHtml(value);
+		result = result.replaceAll("\\[\\[", "[");
+		result = result.replaceAll("\\]\\]", "]");
+		return (result);
 	}
 
 
