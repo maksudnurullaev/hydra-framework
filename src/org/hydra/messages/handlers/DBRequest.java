@@ -34,11 +34,6 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		
 		StringWrapper stringWrapper = new StringWrapper();		
 		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage._web_application.getId(), inCFName, inKey, inCName, stringWrapper);
-		if(err != ErrorUtils.ERROR_CODES.NO_ERROR && stringWrapper.getString() != null){
-			getLog().error(err.toString());
-			inMessage.setError(err.toString());
-			return;
-		}
 		
 		StringBuffer resultBuffer = new StringBuffer("<div class=\"edit\">");
 		

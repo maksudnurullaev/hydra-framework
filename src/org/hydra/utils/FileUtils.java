@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
@@ -66,7 +68,7 @@ public final class FileUtils {
 		}
 	}
 
-	public static String saveFile4(
+	public static String saveFile4Admin(
 			ServletContext servletContext, 
 			String inAppId,
 			FileTransfer file) {
@@ -94,9 +96,80 @@ public final class FileUtils {
 		}	
 		// finish
 		return (resultStr);		
-		
 	}
 
+	public static boolean saveTempFile(
+			ServletContext servletContext, 
+			String inAppId,
+			FileTransfer file,
+			StringWrapper outFilePath) {
+		// 0. Generate pathname for new image
+		String uri4File = Utils.F("files/%s/image/temp/%s", inAppId, file.getFilename());
+		String realPath = servletContext.getRealPath(uri4File);
+		String servletPath = servletContext.getContextPath();
+		boolean result = false;
+		// 1. 
+		InputStream is = null;
+		FileOutputStream os = null;
+		byte[] bufer = new byte[4096];
+		int bytesRead = 0;
+		try {
+			is = file.getInputStream();
+			os = new FileOutputStream(realPath);
+			while((bytesRead = is.read(bufer)) != -1){
+				_log.debug("bytesRead: " + bytesRead);
+				os.write(bufer, 0, bytesRead);
+			}
+			os.close();
+			outFilePath.setString(String.format("%s/%s", servletPath, uri4File));
+			result = true;
+		} catch (Exception e) {
+			_log.error(e.toString());
+			outFilePath.setString(e.toString());
+			result = false;
+		}	
+		// finish
+		return result;
+	}	
+	
+	public static boolean saveTempFileAndZip(
+			ServletContext servletContext, 
+			String inAppId,
+			FileTransfer file,
+			StringWrapper outFilePath) {
+		// 0. Generate pathname for new image
+		String uri4FileZip = Utils.F("files/%s/image/temp/%s.zip", inAppId, file.getFilename());
+		String realPath = servletContext.getRealPath(uri4FileZip);
+		boolean result = false;
+		// 1. 
+		InputStream is = null;
+		FileOutputStream os = null;
+		ZipOutputStream zos = null;
+		byte[] bufer = new byte[4096];
+		int bytesRead = 0;
+		try {
+			is = file.getInputStream();
+			os = new FileOutputStream(realPath);			
+			zos = new ZipOutputStream(os);
+			zos.setLevel(9);
+			ZipEntry ze = new ZipEntry(file.getFilename());
+			zos.putNextEntry(ze);
+			while((bytesRead = is.read(bufer)) != -1){
+				_log.debug("bytesRead: " + bytesRead);
+				zos.write(bufer, 0, bytesRead);
+			}
+			zos.close();
+			outFilePath.setString(String.format("%s/%s", servletContext.getContextPath(), uri4FileZip));
+			result = true;
+		} catch (Exception e) {
+			_log.error(e.toString());
+			outFilePath.setString(e.toString());
+			result = false;
+		}	
+		// finish
+		return result;
+	}	
+	
 	public static String getFileBox(String inAppID, String filePath) {
 		StringBuffer content = new StringBuffer();
 		String mimeType = URLConnection.guessContentTypeFromName(filePath);
@@ -129,7 +202,7 @@ public final class FileUtils {
 			String inAppID, 
 			String key) {
 		String jsData = Utils.jsData(
-				 "handler", Utils.Q("AdmTemplates")
+				 "handler", Utils.Q("AdmFiles")
 				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
 				,"key", Utils.Q(key)

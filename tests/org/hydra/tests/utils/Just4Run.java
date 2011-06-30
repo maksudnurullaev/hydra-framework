@@ -1,15 +1,7 @@
 package org.hydra.tests.utils;
 
-import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.hector.api.Cluster;
-import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.beans.OrderedRows;
-import me.prettyprint.hector.api.beans.Row;
-import me.prettyprint.hector.api.exceptions.HectorException;
-import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.QueryResult;
-import me.prettyprint.hector.api.query.RangeSlicesQuery;
+import java.util.regex.Pattern;
+
 
 /**
 * A simple example showing what it takes to page over results using
@@ -22,48 +14,23 @@ import me.prettyprint.hector.api.query.RangeSlicesQuery;
 *
 */
 public class Just4Run {
-    
-    private static StringSerializer stringSerializer = StringSerializer.get();
-    
+	public static Pattern pattern4Deployer = Pattern.compile("\\[{2}(\\S+?)\\|(\\S+?)\\|(\\S+?)\\|(\\S+?)\\]{2}");
+    		
     public static void main(String[] args) throws Exception {
-        
-        Cluster cluster = HFactory.getOrCreateCluster("Test Cluster", "localhost:9160");
-
-        Keyspace keyspaceOperator = HFactory.createKeyspace("MaxmsUz", cluster);
-                
-        try {
-//            Mutator<String> mutator = HFactory.createMutator(keyspaceOperator, stringSerializer);
-//
-//            for (int i = 0; i < 5; i++) {
-//                mutator.addInsertion("fake_key_" + i, "Standard1", HFactory.createStringColumn("fake_column_0", "fake_value_0_" + i))
-//                .addInsertion("fake_key_" + i, "Standard1", HFactory.createStringColumn("fake_column_1", "fake_value_1_" + i))
-//                .addInsertion("fake_key_" + i, "Standard1", HFactory.createStringColumn("fake_column_2", "fake_value_2_" + i));
-//            }
-//            mutator.execute();
-            
-            RangeSlicesQuery<String, String, String> rangeSlicesQuery =
-                HFactory.createRangeSlicesQuery(keyspaceOperator, stringSerializer, stringSerializer, stringSerializer);
-            rangeSlicesQuery.setColumnFamily("Template");
-            rangeSlicesQuery.setKeys("", "");
-            rangeSlicesQuery.setRange("", "", false, 1000);
-            //rangeSlicesQuery.setReturnKeysOnly();
-            
-            //rangeSlicesQuery.setRowCount(5);
-            QueryResult<OrderedRows<String, String, String>> result = rangeSlicesQuery.execute();
-            OrderedRows<String, String, String> orderedRows = result.get();
-            
-            //Row<String,String,String> lastRow = orderedRows.peekLast();
-
-            System.out.println("Contents of rows: \n");
-            for (Row<String, String, String> r : orderedRows) {
-                System.out.println(" " + r);
-            }
-            
-            
-        } catch (HectorException he) {
-            he.printStackTrace();
-        }
-        cluster.getConnectionManager().shutdown();
+		tests("http://127.0.0.1:8181/?mode=zfile.uz");
+		tests("https://127.0.0.1:8181/?mode=zfile.uz");		
+		tests("http://127.0.0.1");		
+		tests("http://zfile.uz");		
+		tests("http://zfile.uz/");		
     }
+
+	private static void tests(String returnFormat) {
+		int result = returnFormat.indexOf('/', 8);
+		if(result != -1){
+			System.out.println(returnFormat.substring(0, result));
+		}else{
+			System.out.println(returnFormat);
+		}
+	}
 
 }

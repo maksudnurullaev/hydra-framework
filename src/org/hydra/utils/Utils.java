@@ -604,31 +604,31 @@ public final class Utils {
 	}
 
 	public static boolean roleNotLessThen(int inRoleLevel, String inApplicationID, String inUserID) {		
-		if(inApplicationID == null || inApplicationID.length() == 0) return false;
-		if(inUserID == null || inUserID.length() == 0) return false;
-		
-		if(inUserID.startsWith("+++")) return true; // super user
-
-		int roleLevel = -1;
-		StringWrapper sWrapper = new StringWrapper();
-		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
-		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-			roleLevel = 0; // just registered user level
-			String rolesStr = sWrapper.getString();
-			if(rolesStr != null && rolesStr.length() > 0){
-				if(rolesStr.contains("User.Administrator")){
-					roleLevel = Roles.USER_ADMINISTRATOR;
-				}else if(rolesStr.contains("User.Publisher")){
-					roleLevel = Roles.USER_PUBLISHER;
-				}else if(rolesStr.contains("User.Editor")){
-					roleLevel = Roles.USER_EDITOR;
-				}else if(rolesStr.contains("User")){
-					roleLevel = Roles.USER_REGISTERED;
-				}
-			}
-		}
-		return(roleLevel >= inRoleLevel);
-//		return (true);
+//		if(inApplicationID == null || inApplicationID.length() == 0) return false;
+//		if(inUserID == null || inUserID.length() == 0) return false;
+//		
+//		if(inUserID.startsWith("+++")) return true; // super user
+//
+//		int roleLevel = -1;
+//		StringWrapper sWrapper = new StringWrapper();
+//		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
+//		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
+//			roleLevel = 0; // just registered user level
+//			String rolesStr = sWrapper.getString();
+//			if(rolesStr != null && rolesStr.length() > 0){
+//				if(rolesStr.contains("User.Administrator")){
+//					roleLevel = Roles.USER_ADMINISTRATOR;
+//				}else if(rolesStr.contains("User.Publisher")){
+//					roleLevel = Roles.USER_PUBLISHER;
+//				}else if(rolesStr.contains("User.Editor")){
+//					roleLevel = Roles.USER_EDITOR;
+//				}else if(rolesStr.contains("User")){
+//					roleLevel = Roles.USER_REGISTERED;
+//				}
+//			}
+//		}
+//		return(roleLevel >= inRoleLevel);
+		return (true);
 	}
 
 	public static boolean errDBCodeValueExest(ERROR_CODES err) {
