@@ -14,7 +14,8 @@ import org.hydra.utils.Utils;
 public final class ADeployer {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.ADeployer");
 	
-	public static Pattern pattern4Deployer = Pattern.compile("\\[\\[(\\S+)\\|(\\S+)\\|(\\S+)\\|(\\S+)\\]\\]");
+	//public static Pattern pattern4Deployer = Pattern.compile("\\[\\[(\\S+)\\|(\\S+)\\|(\\S+)\\|(\\S+)\\]\\]");
+	public static Pattern pattern4Deployer = Pattern.compile("\\[{2}(\\S+?)\\|(\\S+?)\\|(\\S+?)\\|(\\S+?)\\]{2}");
 	
 	public static IMessage deployContent(
 			String inContent,

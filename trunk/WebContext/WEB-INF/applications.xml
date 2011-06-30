@@ -16,7 +16,7 @@
 				<ref bean="TestUz_WebAppBean"/>
 				<ref bean="Test2Uz_WebAppBean"/>
 				<ref bean="Test3Uz_WebAppBean"/>
-				<ref bean="Test4Uz_WebAppBean"/>
+				<ref bean="ZFileUz_WebAppBean"/>
 			</set>
 		</property>				
 	</bean>
@@ -149,12 +149,12 @@
 		</property>	    
 	</bean>	
 	
-	<bean id="Test4Uz_WebAppBean" class="org.hydra.beans.WebApplication">
-		<property name="id" value="Test4Uz" />
-		<property name="title" value="Test4.Uz - Simple site #4" />
+	<bean id="ZFileUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="ZFileUz" />
+		<property name="title" value="zFile.Uz - Файлообменник и только..." />
 		<property name="urls">
 			<set>
-				<value>.*(www\.)?test4\.uz.*</value>
+				<value>.*(www\.)?zfile\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->

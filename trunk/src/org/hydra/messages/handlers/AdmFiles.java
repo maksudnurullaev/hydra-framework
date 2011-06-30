@@ -8,8 +8,6 @@ import org.hydra.html.fields.IField;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.DBUtils;
-import org.hydra.utils.ErrorUtils;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Utils;
 
@@ -45,14 +43,17 @@ public class AdmFiles extends AMessageHandler {
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
+		String appId = inMessage.getData().containsKey("appid")
+			?  inMessage.getData().get("appid") : inMessage._web_application.getId();
+			
 		if(inMessage.getFile() == null){
 			inMessage.setError("NO_FILE");
 			inMessage.clearContent();
 			return(inMessage);
 		}
-		String result  = FileUtils.saveFile4(
+		String result  = FileUtils.saveFile4Admin(
 				inMessage._web_context.getServletContext(), 
-				inMessage._web_application.getId(), 
+				appId, 
 				inMessage.getFile());
 		inMessage.setHtmlContents("action_result", result);
 		// finish
@@ -60,15 +61,13 @@ public class AdmFiles extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "key")) return inMessage;
-		String appId = inMessage.getData().get("appid");
-		String key = inMessage.getData().get("key");
-				
-		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "Template", key);
-		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
-			inMessage.setError(errCode.toString());
-			return inMessage;
-		}
+		if(!testData(inMessage, "key")) return inMessage;
+		
+		String filePath = inMessage.getData().get("key");
+		
+		String realPath = inMessage._web_context.getServletContext().getRealPath(filePath);		
+		
+		org.apache.cassandra.io.util.FileUtils.delete(realPath);
 				
 		return(list(inMessage));		
 	}

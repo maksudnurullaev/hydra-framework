@@ -24,7 +24,10 @@ public final class System {
 			return getSystemLanguagebarKeyHow(inKey, inHow, inLocale, inApplicationID);
 		if(inWhat.compareToIgnoreCase("Login") == 0)
 			return SystemLogin.getKeyHow(inKey, inHow, inLocale, inApplicationID, inUserID);
-		
+		if(inWhat.compareToIgnoreCase("Captcha") == 0)
+			return SystemCaptcha.getKeyHow(inKey, inHow, inLocale, inApplicationID, inUserID);
+		if(inWhat.compareToIgnoreCase("Tagger") == 0)
+			return SystemTagger.getKeyHow(inKey, inHow, inLocale, inApplicationID, inUserID);
 		_log.error("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;
 	}

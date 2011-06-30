@@ -54,15 +54,15 @@ public final class SessionUtils {
 	
 	private static void generateSessionDataKey(
 			Result inResult,
-			CommonMessage inCommonMessage, 
+			String inAppId, 
 			String inKey) {
-		if (inCommonMessage._web_application == null || inKey == null) {
+		if (inAppId == null || inKey == null) {
 			inResult.setObject("Could not generate Session Data Key!");
 			_log.warn("Could not generate Session Data Key!");
 			inResult.setResult(false);
 			return;
 		}
-		inResult.setObject(inCommonMessage._web_application.getId() + inKey);
+		inResult.setObject(inAppId + inKey);
 		inResult.setResult(true);
 	};
 
@@ -116,7 +116,7 @@ public final class SessionUtils {
 			CommonMessage inCommonMessage,
 			String inKey,
 			Object inValue) {
-		generateSessionDataKey(inResult, inCommonMessage, inKey);
+		generateSessionDataKey(inResult, inCommonMessage._web_application.getId(), inKey);
 		if(!inResult.isOk()) return;
 		String sessionKey = (String) inResult.getObject();
 		if (inCommonMessage == null
@@ -138,7 +138,7 @@ public final class SessionUtils {
 			Result inResult,
 			CommonMessage inMessage,
 			String inKey) {
-		generateSessionDataKey(inResult, inMessage, inKey);
+		generateSessionDataKey(inResult, inMessage._web_application.getId(), inKey);
 		if (!inResult.isOk()){
 			inResult.setResult("Could not generate unique session ID");
 			inResult.setResult(false);
