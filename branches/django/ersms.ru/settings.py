@@ -1,4 +1,4 @@
-# Django settings for ewrap project.
+# Django settings for project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

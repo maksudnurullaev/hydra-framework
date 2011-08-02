@@ -8,4 +8,5 @@ admin.autodiscover()
 urlpatterns = patterns('',
     (r'^polls/', include('polls.urls')),
     (r'^admin/', include(admin.site.urls)),
+    (r'^', include(admin.site.urls)),
 )
