@@ -5,10 +5,7 @@
 
 {% get_language_info for LANGUAGE_CODE as lang %}
 
-Content of home page!
+Mobile browser: {{ request.mobile|yesno:"yes,no" }}<br />
 Language code: {{ lang.code }}<br />
-Name of language: {{ lang.name_local }}<br />
-Name in English: {{ lang.name }}<br />
-Bi-directional: {{ lang.bidi }}
 
 {% endblock %}
