@@ -16,9 +16,7 @@
     <!-- Header -->
     <div id="header">
         <div id="branding">
-            {% block branding %}
             !!!Logo!!!
-            {% endblock %}
         </div>
         {% block nav-global %}{% endblock %}
     </div>
@@ -42,8 +40,14 @@
         {{ content }}
         {% endblock content %}
     </div>
+    <!-- Footer -->
+    <div id="header">
+        <div id="branding">
+            !!!Footer!!!
+        </div>
+    </div>
+    <!-- END Header -->
     <!-- END Content -->
-    {% block footer %}<div id="footer">!!!Footer!!!</div>{% endblock %}
 </div>
 <!-- END Container -->
 </body>
