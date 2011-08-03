@@ -6,7 +6,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'^', include('index.urls')),
     (r'^polls/', include('polls.urls')),
     (r'^admin/', include(admin.site.urls)),
-    (r'^', include(admin.site.urls)),
+    (r'^i18n/', include('django.conf.urls.i18n')),
 )
