@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-03 08:59+0400\n"
+"POT-Creation-Date: 2011-08-05 14:58+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,23 +18,23 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: settings.py:37
-msgid "Russian"
-msgstr "Русский"
-
 #: settings.py:38
+msgid "Russian"
+msgstr ""
+
+#: settings.py:39
 msgid "English"
-msgstr "Английский"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/base_site.html:4
 #: FILES/TEMPLATES/admin/base_site.html:7
 msgid "administration"
-msgstr "администрация"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:18
-#, fuzzy, python-format
+#, python-format
 msgid "Models available in the %(name)s application."
-msgstr "Модели доступные в приложении %(name)"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:19
 #, python-format
@@ -43,36 +43,66 @@ msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:29
 msgid "Add"
-msgstr "Добавить"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:35
 msgid "Change"
-msgstr "Изменить"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:45
 msgid "You don't have permission to edit anything."
-msgstr "Вы не можете редактировать"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:53
 msgid "Recent Actions"
-msgstr "Последние Действия"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:54
 msgid "My Actions"
-msgstr "Мои Дейстия"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:58
 msgid "None available"
-msgstr "Не доступсно"
+msgstr ""
 
 #: FILES/TEMPLATES/admin/index.html:72
 msgid "Unknown content"
-msgstr "Неизвестное содержание(контент)"
+msgstr ""
 
-#: FILES/TEMPLATES/index/base.html:25 FILES/TEMPLATES/index/index.html:3
+#: FILES/TEMPLATES/chat/index.html:3 FILES/TEMPLATES/chat/index.html.py:9
+#: FILES/TEMPLATES/index/base.html:35
+msgid "Chat"
+msgstr "Чат"
+
+#: FILES/TEMPLATES/chat/index.html:6
+msgid "To show Your message in chat"
+msgstr "Что бы показать Ваше сообщение в чате"
+
+#: FILES/TEMPLATES/chat/index.html:8
+#, python-format
+msgid "send SMS message \"<strong>%(activation_code)s</strong>\" to number:"
+msgstr "отправьте СМС сообщение \"<strong>%(activation_code)s</strong>\" на номер:"
+
+#: FILES/TEMPLATES/chat/index.html:9
+msgid "Edit"
+msgstr "Редактировать"
+
+#: FILES/TEMPLATES/chat/index.html:9
+msgid "Refresh"
+msgstr "Обновить"
+
+#: FILES/TEMPLATES/chat/index.html:13
+msgid "Send message"
+msgstr "Отправить сообщение"
+
+#: FILES/TEMPLATES/chat/index.html:21
+msgid "No messages."
+msgstr "Нет сообщений"
+
+#: FILES/TEMPLATES/index/base.html:35 FILES/TEMPLATES/index/index.html:3
 msgid "Home"
 msgstr "Главная"
 
-#: FILES/TEMPLATES/index/base.html:25
-msgid "Chat"
-msgstr "Чат"
+#: FILES/TEMPLATES/index/base.html:35
+msgid "Games"
+msgstr "Игры"

@@ -770,3 +770,8 @@ table#change-history tbody th {
     color: #666;
 }
 
+div.c_m {
+    border: 1px solid grey; 
+    padding: 1px;
+    margin: 1px;
+}

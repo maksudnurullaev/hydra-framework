@@ -1,0 +1,25 @@
+{% extends "index/base.html" %}
+{% load i18n %}
+{% block title %}ERSms.Ru | {% trans 'Chat' %} {% endblock %}
+{% block content %}
+ {% if message %}
+    <p>{% trans 'To show Your message in chat' %}:
+        <br /><font color="grey">{{ message }}</font>
+        <br />{% blocktrans %}send SMS message "<strong>{{ activation_code }}</strong>" to number:{% endblocktrans %} <u>+### ## ### ## ##</u>
+        <br /><a href="/chat/">{% trans 'Edit' %}</a> | <a href="/chat/">{% trans 'Refresh' %} {% trans 'Chat' %}</a></p>
+ {% else %}
+    <form action="/chat/" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="{% trans 'Send message' %}" />
+    </form>
+ {% endif %}
+ {% if latest_chat_list %}
+    {% for chat in latest_chat_list %}
+        <div class="c_m">{{ chat.message }} <span style="background: {% if chat.activated %}green">YES</font>{% else %}red">NO</font>{% endif %}</span> <sup>{{ chat.pub_date}}</sup></div>
+    {% endfor %}
+ {% else %}
+    <p>{% trans 'No messages.' %}</p>
+
+ {% endif %}
+{% endblock %}
+
