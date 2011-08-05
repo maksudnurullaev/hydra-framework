@@ -1,6 +1,14 @@
-{% load url from future %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load url from future %}
+{% if request.mobile %}
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC '-//WAPFORUM//DTD XHTML Mobile 1.0//EN' 'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'> 
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+{% else %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE|default:"en-us" }}" xml:lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
+{% endif %}
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <title>{% block title %}Test title from base.html{% endblock %}</title>
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/base.css" />
@@ -16,7 +24,7 @@
     <!-- Header -->
     <div id="header">
         <div id="branding">
-            !!!Logo!!!
+            ERSms.Ru
         </div>
         {% block nav-global %}{% endblock %}
     </div>
@@ -24,7 +32,7 @@
     <!-- Language Bar -->
     {% include "index/lang.html" %}
     <!-- END Language Bar -->
-    <div class="mainlinks"> <a href="/">{% trans 'Home' %}</a> | <a href="/chat/">{% trans 'Chat' %}</a></div>
+    <div class="mainlinks"> <a href="/">{% trans 'Home' %}</a> | <a href="/chat/">{% trans 'Chat' %}</a> | <a href="/chat/">{% trans 'Games' %}</a></div>
 
     {% endif %}
     {% if messages %}
@@ -39,11 +47,12 @@
         {% block content %}
         {{ content }}
         {% endblock content %}
+       
     </div>
     <!-- Footer -->
     <div id="header">
         <div id="branding">
-            !!!Footer!!!
+            <small>&copy; <a href="http://ersms.ru">ERSms.Ru</a>, 2011</small>
         </div>
     </div>
     <!-- END Header -->
