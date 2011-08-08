@@ -24,3 +24,12 @@ def index(request):
                     'form': form }
                 , context_instance=RequestContext(request))
 
+def sms(request):
+    if request.method == 'GET':
+        print 'GET:'
+        for k, v in request.GET.iteritems():
+            print "%s: %s" % (k, v)
+        return render_to_response('chat/sms.html'
+                    , context_instance=RequestContext(request)) 
+    else:
+        return HttpResponseNotFound('<h1>Page not found</h1>')
