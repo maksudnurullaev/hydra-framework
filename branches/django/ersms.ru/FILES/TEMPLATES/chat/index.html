@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block title %}ERSms.Ru | {% trans 'Chat' %} {% endblock %}
 {% block content %}
+<div class="box" style="text-align:left">
  {% if message %}
     <p>{% trans 'To show Your message in chat' %}:
         <br /><font color="grey">{{ message }}</font>
@@ -13,13 +14,13 @@
         <input type="submit" value="{% trans 'Send message' %}" />
     </form>
  {% endif %}
+</div> 
  {% if latest_chat_list %}
     {% for chat in latest_chat_list %}
-        <div class="c_m">{{ chat.message }} <span style="background: {% if chat.activated %}green">YES</font>{% else %}red">NO</font>{% endif %}</span> <sup>{{ chat.pub_date}}</sup></div>
+        <div class="box">{{ chat.message }} <span style="background: {% if chat.activated %}green">YES</font>{% else %}red">NO</font>{% endif %}</span> <sup>{{ chat.pub_date}}</sup></div>
     {% endfor %}
  {% else %}
-    <p>{% trans 'No messages.' %}</p>
-
+    <div class="title">{% trans 'No messages.' %}</div>
  {% endif %}
 {% endblock %}
 
