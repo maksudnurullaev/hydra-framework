@@ -11,7 +11,8 @@
 {% endif %}
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <title>{% block title %}Test title from base.html{% endblock %}</title>
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/base.css" />
+<!-- link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/base.css" / -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style1.css" />
 {% block extrastyle %}{% endblock %}
 {% block extrahead %}{% endblock %}
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
@@ -19,45 +20,39 @@
 {% load i18n %}
 <body class="{% block bodyclass %}{% endblock %}">
 <!-- Container -->
-<div id="container">
-    {% if not is_popup %}
-    <!-- Header -->
-    <div id="header">
-        <div id="branding">
-            ERSms.Ru
+    <div class="main">
+        {% if not is_popup %}
+        <div class="title">ERSms.Ru</div>
+        <div class="tit" style="text-align:left">
+            <!-- Language Bar -->
+            {% trans 'Language' %}: {% include "index/lang.html" %}
+            <!-- END Language Bar -->
         </div>
-        {% block nav-global %}{% endblock %}
-    </div>
-    <!-- END Header -->
-    <!-- Language Bar -->
-    {% include "index/lang.html" %}
-    <!-- END Language Bar -->
-    <div class="mainlinks"> <a href="/">{% trans 'Home' %}</a> | <a href="/chat/">{% trans 'Chat' %}</a> | <a href="/chat/">{% trans 'Games' %}</a></div>
-
-    {% endif %}
-    {% if messages %}
-        <ul class="messagelist">
-        {% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	    {% endfor %}
-        </ul>
-    {% endif %}
-    <!-- Content -->
-    <div id="content" >
+        <div class="box" style="text-align:left">
+            <a href="/">{% trans 'Home' %}</a> 
+            | <a href="/chat/">{% trans 'Chat' %}</a> 
+            | <a href="/chat/">{% trans 'Games' %}</a>
+        </div>
+        {% endif %}
+        {% if messages %}
+        <div class="box" style="text-align:left">
+            <ul class="messagelist">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	        {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <!-- Content -->
         {% block content %}
-        {{ content }}
+        { content }}
         {% endblock content %}
-       
-    </div>
-    <!-- Footer -->
-    <div id="header">
-        <div id="branding">
+        <!-- Footer -->
+        <div class="title">
             <small>&copy; <a href="http://ersms.ru">ERSms.Ru</a>, 2011</small>
         </div>
     </div>
     <!-- END Header -->
     <!-- END Content -->
-</div>
-<!-- END Container -->
 </body>
 </html>
