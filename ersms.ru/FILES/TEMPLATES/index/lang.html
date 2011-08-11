@@ -3,17 +3,26 @@
 {% get_language_info_list for LANGUAGES as languages %}
 {% if languages|length > 1 %}
     {% get_language_info for LANGUAGE_CODE as current_language %}
-<form action="/i18n/setlang/" method="post">
-    {% csrf_token %}
-    <input name="next" type="hidden" value="/" />
-     <select name="language">
+
+{#<form action="/i18n/setlang/" method="post">#}
+{#    {% csrf_token %}#}
+{#    <input name="next" type="hidden" value="/" />#}
+{#     <select name="language">#}
+{#     {% for language in languages %}#}
+{#        {% if current_language.code != language.code %}#}
+{#        <option value="{{ language.code }}">{{ language.name_local }} ({{ language.code }})</option>#}
+{#        {% endif %}#}
+{#     {% endfor %}#}
+{#     </select>#}
+{#     <input type="submit" value="OK" />#}
+{#</form>#}
+
      {% for language in languages %}
         {% if current_language.code != language.code %}
-        <option value="{{ language.code }}">{{ language.name_local }} ({{ language.code }})</option>
+        <a href="/?lang={{ language.code }}">{{ language.name_local }}</a>
+        {% else %}
+        <u>{{ language.name_local }}</u>
         {% endif %}
      {% endfor %}
-     </select>
-     <input type="submit" value="OK" />
-</form>
 {% endif %}
 
