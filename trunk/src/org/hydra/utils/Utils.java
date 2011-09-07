@@ -106,7 +106,7 @@ public final class Utils {
 			inResult.setResult(true);
 		} catch (Exception e) {
 			_log.error(e.getMessage());
-			inResult.setResult("Internal server error: INITIAL_FILE_NOT_FOUND");
+			inResult.setErrorString("Internal server error: INITIAL_FILE_NOT_FOUND");
 			inResult.setResult(false);
 		}
 	}

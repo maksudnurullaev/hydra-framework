@@ -2,6 +2,9 @@ package org.hydra.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
@@ -11,6 +14,8 @@ import org.hydra.messages.CommonMessage;
 
 public final class SessionUtils {
 	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionUtils");
+	public static Pattern pattern = Pattern.compile("appid=(\\w+)&uuid=");    		
+	
 
 	/**
 	 * Attache session data (locale, userId and etc.)
@@ -25,12 +30,12 @@ public final class SessionUtils {
 		// 1. set web context
 		inMessage._web_context = WebContextFactory.get();
 		if (inMessage._web_context == null) {
-			inResult.setResult("Could not find web context!");
+			inResult.setErrorString("Could not find web context!");
 			inResult.setResult(false);
 			return inResult;
 		}
 		// 2. set web application
-		setWebApplication(inResult, inMessage, inMessage._web_context);
+		setWebAppId(inResult, inMessage, inMessage._web_context);
 		if (!inResult.isOk())
 			return inResult;
 		// 3. set session id
@@ -66,12 +71,12 @@ public final class SessionUtils {
 		inResult.setResult(true);
 	};
 
-	public static void setWebApplication(
+	public static void setWebAppId(
 			Result inResult,
 			CommonMessage inMessage, 
 			WebContext inWebContext) {
 		if (inMessage == null || inWebContext == null) {
-			inResult.setResult("CommonMessage or WebContext equal NULL!");
+			inResult.setErrorString("CommonMessage or WebContext equal NULL!");
 			inResult.setResult(false);
 			return;
 		}
@@ -91,23 +96,29 @@ public final class SessionUtils {
 				if(url != null
 						&& url.getQuery() != null 
 						&& url.getQuery().contains("mode=")){
-					inMessage._web_application = webApplications.getValidApplication4(url.getQuery());
+					System.out.println("test for mode: " + url.getQuery());
+					inMessage._web_application = webApplications.getValidApplication4(url.getQuery());	
 					if(inMessage._web_application != null){
+						System.out.println("test for mode #2");
 						inResult.setResult(true);
 						return;
 					}
 				}
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				_log.error(e.getMessage());
+				inResult.setErrorString(e.getMessage());
+				return ;
 			}
 			// 2. test for real url
+			System.out.println("test for real url");
 			inMessage._web_application = webApplications.getValidApplication4(urlString);
 			if (inMessage._web_application == null) {
-				inResult.setResult("Could not initialize WebApplication object!");
-				inResult.setResult(false);
-			} else
+				inResult.setErrorString("Could not initialize WebApplication object!");
+			} else {
 				inResult.setResult(true);
-
+			}
+		}else{
+			inResult.setErrorString("Could not find _URL parameter for message!");
 		}
 	};
 
@@ -125,7 +136,7 @@ public final class SessionUtils {
 					|| inKey == null
 			) {
 			inResult.setResult(false);
-			inResult.setResult("Invalid session!");
+			inResult.setErrorString("Invalid session!");
 		} else {
 			inCommonMessage._web_context.getSession().setAttribute(
 					sessionKey,
@@ -140,7 +151,7 @@ public final class SessionUtils {
 			String inKey) {
 		generateSessionDataKey(inResult, inMessage._web_application.getId(), inKey);
 		if (!inResult.isOk()){
-			inResult.setResult("Could not generate unique session ID");
+			inResult.setErrorString("Could not generate unique session ID");
 			inResult.setResult(false);
 			return;
 		}
@@ -157,6 +168,13 @@ public final class SessionUtils {
 
 		inResult.setObject(sessionValue);
 		inResult.setResult(true);
+	}
+
+	public static String getCaptchaId(String queryString) {
+    	Matcher m = pattern.matcher(queryString);
+    	if(m.matches())
+    		return m.group(1);
+		return null;
 	}
 
 }

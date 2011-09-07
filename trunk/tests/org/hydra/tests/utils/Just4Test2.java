@@ -1,19 +1,26 @@
 package org.hydra.tests.utils;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.hydra.utils.Utils;
-
 public class Just4Test2 {
-
+	public static final int FILE_TYPE_UNKNOWN = 0;
+	public static final int FILE_TYPE_IMAGE = 1;
+	public static final int FILE_TYPE_COMPRESSED = FILE_TYPE_IMAGE << 1;
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		for (int i = 0; i < 10; i++) {
-			System.out.println(RandomStringUtils.random(8,"poiuytrewwqlkjhgfdsmnbvcxz"));			
-			System.out.println(RandomStringUtils.random(8,true, true));			
-			System.out.println(Utils.GetUUID());			
+		print_mask(FILE_TYPE_UNKNOWN);
+		print_mask(FILE_TYPE_IMAGE);
+		print_mask(FILE_TYPE_COMPRESSED);
+	}
+
+	private static void print_mask(int num) {
+		for (int i = 0; i < 32; i++) {
+			System.out.print((num >> i) == 1 ? "1" : 0);
+			if(((i+1) % 4) == 0 && i != 0)
+				System.out.print(" ");
 		}
+		System.out.println();
 	}
 
 }

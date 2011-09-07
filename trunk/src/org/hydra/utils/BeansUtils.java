@@ -12,7 +12,7 @@ public final class BeansUtils {
 		WebApplicationContext webApplicationContext =
 				ContextLoader.getCurrentWebApplicationContext();
 		if (webApplicationContext == null) {
-			result.setResult("Could not get WebApplicationContext");
+			result.setErrorString("Could not get WebApplicationContext");
 			_log.warn("Could not get WebApplicationContext");
 			result.setResult(false);
 		} else {
@@ -26,7 +26,7 @@ public final class BeansUtils {
 		getWebApplicationContext(result);
 		if(!result.isOk() || !(result.getObject() instanceof WebApplicationContext)){
 			result.setResult(false);
-			result.setResult("Could not find WebApplicationContext instance!");
+			result.setErrorString("Could not find WebApplicationContext instance!");
 			_log.error("Could not find WebApplicationContext instance!");
 			return ;
 		}
@@ -44,7 +44,7 @@ public final class BeansUtils {
 			result.setResult(true);			
 		} catch (Exception e) {
 			_log.warn(e.getMessage());
-			result.setResult(e.getMessage());
+			result.setErrorString(e.getMessage());
 			result.setResult(false);
 		}		
 	}

@@ -130,9 +130,43 @@ Globals.loadStage12 = function () {
 };
 Globals.loadStage13 = function () {
     if (!Globals.isLoadedStage13()) {
-        Globals.loadJS("dwr/interface/MessageHandler.js", Globals.loadStage2);
+        Globals.loadJS("dwr/interface/MessageHandler.js", Globals.loadStage14);
     }
 };
+
+/* baseBox */
+Globals.loadStage14 = function () {
+	Asset.css('files/css/baseBox.css');
+    Globals.loadJS("files/js/baseBox.js", Globals.loadStage15);
+};
+Globals.loadStage15 = function () {
+    Globals.loadJS("files/js/baseBox.lightBox.js", Globals.loadStage16);
+};
+Globals.loadStage16 = function () {
+	Globals.BusyBox =  new baseBox({        
+		width: 200,
+        height: 100
+		});
+	Globals.BusyBoxOnline = false;
+	dwr.engine.setPreHook(Globals.preHook);
+	dwr.engine.setPostHook(Globals.postHook);		
+    Globals.loadStage2();
+};
+
+Globals.preHook = function(){
+	if(Globals.BusyBox != "undefined" && !Globals.BusyBoxOnline){
+		Globals.BusyBox.doBox("", "&nbsp;<br /><img class='displayed' src='files/images/loading5.gif' />");	
+		Globals.BusyBoxOnline = true;
+	}
+};
+
+Globals.postHook = function(){
+	if(Globals.BusyBox != "undefined" && Globals.BusyBoxOnline){
+		Globals.BusyBox.closeBox();	
+		Globals.BusyBoxOnline = false;
+	}
+};
+
 Globals.loadStage2 = function () {
     // Check that all stages passed #1
     if (!Globals.isLoadedStage13()) {
@@ -267,4 +301,5 @@ Globals.applyIncomingMessages = function (messages) {
         };
     });
 };
+
 

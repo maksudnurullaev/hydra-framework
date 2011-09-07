@@ -25,7 +25,7 @@ public final class BeansUtils4Tests {
 			result.setObject(factory.getBean(inBeanId));
 			result.setResult(true);
 		}catch(Exception e){
-			result.setResult(e.getMessage());
+			result.setErrorString(e.getMessage());
 		}
 		
 		return result;
