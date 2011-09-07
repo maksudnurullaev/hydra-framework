@@ -142,7 +142,9 @@ public final class FileUtils {
 			FileTransfer file,
 			StringWrapper outFilePath) {
 		// initial variables
-		int file_type = getFileType(file.getMimeType());
+		_log.debug("Uploading file MimeType: " + file.getMimeType());
+		int file_type = getFileType(file.getMimeType(), file.getFilename());
+		
 		boolean result = false;
 		// 0. Generate pathname for new image
 		String uri4FilePath;
@@ -158,7 +160,7 @@ public final class FileUtils {
 		
 		return result;
 	}	
-	
+
 	private static boolean saveFile(String realPathFile, FileTransfer file) {
 		InputStream is = null;
 		FileOutputStream os = null;
@@ -245,23 +247,46 @@ public final class FileUtils {
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
 	}
 
-	public static int getFileType(String mimeType) {
-		int result = FILE_TYPE_UNKNOWN;
-		if(mimeType.toUpperCase().contains("ZIP") 
-			|| mimeType.toUpperCase().contains("COMPRESSED")
-			|| mimeType.toUpperCase().contains("JPEG")
-			|| mimeType.toUpperCase().contains("PNG")
-			|| mimeType.toUpperCase().contains("GIF")
-			|| mimeType.toUpperCase().contains("PDF")
-		)
-			result |= FILE_TYPE_COMPRESSED;
-		
-		if(mimeType.toUpperCase().contains("ZIP") 
-				|| mimeType.toUpperCase().contains("COMPRESSED")
-				|| mimeType.toUpperCase().contains("JPEG")
-				|| mimeType.toUpperCase().contains("PDF")
-			)
-				result |= FILE_TYPE_IMAGE;
-		return result;		
+	public static final String[] _image_types 
+		= { "IMAGE"
+			, "JPG"
+			, "JPEG"
+		  };	
+	public static final String[] _compressed_types 
+		= { "COMPRESSED"
+			, "ZIP"
+			, "CHM"
+			, "JPG"
+			, "JPEG"
+			, "7Z"
+			, "RAR"
+			, "PDF"
+		  };
+	
+	public static int getFileType(String mimeType, String fileName) {
+		int result = testForMime(mimeType);
+		if(result != FILE_TYPE_UNKNOWN){ // if MIME type found
+			return result;					
+		}
+		return (testForMime(fileName));		
 	}
+
+	private static int testForMime(String string) {
+		int result = FILE_TYPE_UNKNOWN;
+		for(String t:_compressed_types){
+			if(string.toUpperCase().contains(t)){
+				result |= FILE_TYPE_COMPRESSED;
+				break;
+			}			
+		}
+		for(String t:_image_types){
+			if(string.toUpperCase().contains(t)){
+				result |= FILE_TYPE_IMAGE;
+				break;
+			}			
+		}
+		return result;
+	}
+	
+	
 }
