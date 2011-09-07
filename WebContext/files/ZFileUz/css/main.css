@@ -410,8 +410,9 @@ ol.main li{
 	margin: 2px;
 }
 
-div.warning {
-	text-align: center;
-	border: 1px dotted red;
-	margin: 1px;
+p#waiting {
+	color: red;
+	background: wheat;
+    visibility: hidden;		
 }
+
