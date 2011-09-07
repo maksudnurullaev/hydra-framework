@@ -2,7 +2,7 @@ package org.hydra.utils;
 
 public class Result {
 	private boolean _result = false;
-	private String _resultAsString = null;
+	private String _resultErrAsString = null;
 	private Object object = null;
 	
 	public void setResult(boolean _result) {
@@ -11,12 +11,13 @@ public class Result {
 	public boolean isOk() {
 		return _result;
 	}
-	public void setResult(String _resultAsString) {
-		this._resultAsString = _resultAsString;
+	public void setErrorString(String _resultAsString) {
+		this._resultErrAsString = _resultAsString;
+		_result = false;
 	}
 	
 	public String getResult() {
-		return _resultAsString;
+		return _resultErrAsString;
 	}
 	public void setObject(Object object) {
 		this.object = object;

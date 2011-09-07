@@ -33,7 +33,8 @@ public class UserFiles extends AMessageHandler {
 		StringWrapper filePath = new StringWrapper();
 		
 		String returnFormat = "";
-		if(FileUtils.saveTempFileAndZip(
+		FileUtils.getFileType(inMessage.getFile().getMimeType());
+		if(FileUtils.saveTempFileAndTry2Zip(
 				inMessage._web_context.getServletContext(), 
 				inMessage._web_application.getId(), 
 				inMessage.getFile(), filePath))
@@ -41,7 +42,7 @@ public class UserFiles extends AMessageHandler {
 			returnFormat = "[[DB|Template|FileSavedOk.Header|span]]";
 			String fullPath = getMainUrl(inMessage.getUrl()) + filePath.getString();
 			returnFormat += "[[DB|Text|PathAsText|span]]: " + fullPath;
-			returnFormat += "<br>[[DB|Text|PathAsLink|span]]: " + Utils.T("template.html.a.Href.Label", fullPath, fullPath);
+			returnFormat += "[[DB|Text|PathAsLink|span]]: " + Utils.T("template.html.a.Href.Label", fullPath, fullPath);
 			returnFormat += "[[DB|Template|FileSavedOk.Footer|span]]";
 		}else{
 			returnFormat = "[[DB|Template|FileSavedFailed|span]]";

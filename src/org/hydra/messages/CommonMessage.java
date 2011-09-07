@@ -55,13 +55,13 @@ public class CommonMessage implements IMessage {
 
 		if (_web_context == null || _web_context.getSession() == null) {
 			result.setResult(false);
-			result.setResult("Invalid session!");
+			result.setErrorString("Invalid session!");
 		} else {
 			try {
 				_web_context.getSession().setAttribute(_web_application.getId()	+ inKey, inObj);
 				result.setResult(true);
 			} catch (Exception e) {
-				result.setResult(e.getMessage());
+				result.setErrorString(e.getMessage());
 				result.setResult(false);
 			}
 		}

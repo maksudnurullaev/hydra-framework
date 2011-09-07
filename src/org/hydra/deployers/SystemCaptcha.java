@@ -37,7 +37,7 @@ public final class SystemCaptcha {
 			String inLocale, 
 			String inApplicationID,
 			String inUserID) {
-		String resultStr =  String.format("<image src=\"capcha/?%s\">", Utils.GetUUID());
+		String resultStr =  String.format("<image src=\"capcha/?appid=%s&uuid=%s\">", inApplicationID, Utils.GetUUID());
 		resultStr += " = <input class=\"captcha\" id=\"captchaResult\" type=\"text\" value=\"\" size=\"3\">";
 		return resultStr;
 	}

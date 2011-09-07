@@ -20,12 +20,15 @@ public class ImageServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse response)
 			throws ServletException, IOException {
-		int lValue = RandomUtils.nextInt(10);
-		int rValue = RandomUtils.nextInt(10);
-		String resultStr = "" + lValue + " + " + rValue;
+		int lValue = RandomUtils.nextInt(10) ;
+		int rValue = RandomUtils.nextInt(10) ;
+		int resultValue = lValue + rValue ;
+		String resultStr = "" + lValue + " + " + rValue ;
 		
-		System.out.println("req.getRequestURL(): " + req.getRequestURL());
-
+		System.out.println("req.getQueryString(): " + req.getQueryString());
+		System.out.println("capcha id: " + SessionUtils.getCaptchaId(req.getQueryString()));
+		System.out.println("resultValue: " + resultValue);
+		
 		BufferedImage image = new BufferedImage(1, 1,
 				BufferedImage.TYPE_INT_RGB); // 
 		Graphics2D graphics2D = image.createGraphics();

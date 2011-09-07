@@ -63,26 +63,3 @@ ZFileUz.try2SendFile = function(){
 		$(ZFileUz.Content).innerHTML = "Ждем ответа от сервера...";
 	} 
 };
-
-// SET GLOBAL HOOKS 
-ZFileUz.preHook = function(){
-	if($('topmenu')){
-		$('topmenu').fade('hide');
-	}
-	if($('contentcontainer')){
-		$('contentcontainer').fade('hide');
-	}
-	
-};
-ZFileUz.postHook = function(){
-	if($('topmenu')){
-		$('topmenu').fade('show');
-	}
-	if($('contentcontainer')){
-		$('contentcontainer').fade('show');
-	}
-};
-if(dwr.engine){
-	dwr.engine.setPreHook(ZFileUz.preHook);
-	dwr.engine.setPostHook(ZFileUz.postHook);
-};

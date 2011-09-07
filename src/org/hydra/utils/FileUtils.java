@@ -21,6 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.io.FileTransfer;
 
 public final class FileUtils {
+	public static final int FILE_TYPE_UNKNOWN = 0;
+	public static final int FILE_TYPE_IMAGE = 1;
+	public static final int FILE_TYPE_COMPRESSED = FILE_TYPE_IMAGE << 1;
+
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.FileUtils");	
 	public static final String generalImageFormat = "png";
 	public static String saveImage4(ServletContext servletContext, String inAppId, BufferedImage inImage){
@@ -132,16 +136,50 @@ public final class FileUtils {
 		return result;
 	}	
 	
-	public static boolean saveTempFileAndZip(
+	public static boolean saveTempFileAndTry2Zip(
 			ServletContext servletContext, 
 			String inAppId,
 			FileTransfer file,
 			StringWrapper outFilePath) {
-		// 0. Generate pathname for new image
-		String uri4FileZip = Utils.F("files/%s/image/temp/%s.zip", inAppId, file.getFilename());
-		String realPath = servletContext.getRealPath(uri4FileZip);
+		// initial variables
+		int file_type = getFileType(file.getMimeType());
 		boolean result = false;
-		// 1. 
+		// 0. Generate pathname for new image
+		String uri4FilePath;
+		if((file_type & FILE_TYPE_COMPRESSED) > 0){
+			uri4FilePath = Utils.F("files/%s/image/temp/%s", inAppId, file.getFilename());
+			result = saveFile(servletContext.getRealPath(uri4FilePath), file);
+		} else {
+			uri4FilePath = Utils.F("files/%s/image/temp/%s.zip", inAppId, file.getFilename());
+			result = saveFileAndZip(servletContext.getRealPath(uri4FilePath), file.getFilename(), file);
+		}
+		if(result)
+			outFilePath.setString(String.format("%s/%s", servletContext.getContextPath(), uri4FilePath));
+		
+		return result;
+	}	
+	
+	private static boolean saveFile(String realPathFile, FileTransfer file) {
+		InputStream is = null;
+		FileOutputStream os = null;
+		byte[] bufer = new byte[4096];
+		int bytesRead = 0;
+		try {
+			is = file.getInputStream();
+			os = new FileOutputStream(realPathFile);			
+			while((bytesRead = is.read(bufer)) != -1){
+				_log.debug("bytesRead: " + bytesRead);
+				os.write(bufer, 0, bytesRead);
+			}
+			os.close();
+			return(true);
+		} catch (Exception e) {
+			_log.error(e.toString());
+			return(false);
+		}	
+	}
+
+	private static boolean saveFileAndZip(String realPathFile, String fileName, FileTransfer file) {
 		InputStream is = null;
 		FileOutputStream os = null;
 		ZipOutputStream zos = null;
@@ -149,27 +187,23 @@ public final class FileUtils {
 		int bytesRead = 0;
 		try {
 			is = file.getInputStream();
-			os = new FileOutputStream(realPath);			
+			os = new FileOutputStream(realPathFile);			
 			zos = new ZipOutputStream(os);
 			zos.setLevel(9);
-			ZipEntry ze = new ZipEntry(file.getFilename());
+			ZipEntry ze = new ZipEntry(fileName);
 			zos.putNextEntry(ze);
 			while((bytesRead = is.read(bufer)) != -1){
 				_log.debug("bytesRead: " + bytesRead);
 				zos.write(bufer, 0, bytesRead);
 			}
 			zos.close();
-			outFilePath.setString(String.format("%s/%s", servletContext.getContextPath(), uri4FileZip));
-			result = true;
+			return(true);
 		} catch (Exception e) {
 			_log.error(e.toString());
-			outFilePath.setString(e.toString());
-			result = false;
+			return(false);
 		}	
-		// finish
-		return result;
-	}	
-	
+	}
+
 	public static String getFileBox(String inAppID, String filePath) {
 		StringBuffer content = new StringBuffer();
 		String mimeType = URLConnection.guessContentTypeFromName(filePath);
@@ -184,7 +218,7 @@ public final class FileUtils {
     	String htmlTag = "NOT_DEFINED";
 		if(mimeType.compareToIgnoreCase("image") >= 0){
 			htmlTag = Utils.F("<img src=\"%s\" border=\"0\">", filePath);
-		}else{
+		}else{			
 			htmlTag = Utils.F("<a href=\"%s\" target=\"_blank\">TEXT</a>", filePath);
 		}
 		content.append(Utils.toogleLink(divHiddenID, filePath));
@@ -209,5 +243,25 @@ public final class FileUtils {
 				,"dest", Utils.Q("admin.app.action")
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
+	}
+
+	public static int getFileType(String mimeType) {
+		int result = FILE_TYPE_UNKNOWN;
+		if(mimeType.toUpperCase().contains("ZIP") 
+			|| mimeType.toUpperCase().contains("COMPRESSED")
+			|| mimeType.toUpperCase().contains("JPEG")
+			|| mimeType.toUpperCase().contains("PNG")
+			|| mimeType.toUpperCase().contains("GIF")
+			|| mimeType.toUpperCase().contains("PDF")
+		)
+			result |= FILE_TYPE_COMPRESSED;
+		
+		if(mimeType.toUpperCase().contains("ZIP") 
+				|| mimeType.toUpperCase().contains("COMPRESSED")
+				|| mimeType.toUpperCase().contains("JPEG")
+				|| mimeType.toUpperCase().contains("PDF")
+			)
+				result |= FILE_TYPE_IMAGE;
+		return result;		
 	}
 }
