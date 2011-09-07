@@ -33,7 +33,6 @@ public class UserFiles extends AMessageHandler {
 		StringWrapper filePath = new StringWrapper();
 		
 		String returnFormat = "";
-		FileUtils.getFileType(inMessage.getFile().getMimeType());
 		if(FileUtils.saveTempFileAndTry2Zip(
 				inMessage._web_context.getServletContext(), 
 				inMessage._web_application.getId(), 
