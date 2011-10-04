@@ -110,7 +110,6 @@ public final class SessionUtils {
 				return ;
 			}
 			// 2. test for real url
-			System.out.println("test for real url");
 			inMessage._web_application = webApplications.getValidApplication4(urlString);
 			if (inMessage._web_application == null) {
 				inResult.setErrorString("Could not initialize WebApplication object!");
