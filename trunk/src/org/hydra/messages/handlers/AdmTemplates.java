@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.hydra.deployers.ADeployer;
 import org.hydra.html.fields.FieldInput;
@@ -76,7 +77,8 @@ public class AdmTemplates extends AMessageHandler {
 				"admin.app.action", fields, null);
 		
 		String temp = ADeployer.deployContent2(form,inMessage);
-		temp = temp.replaceAll("__1__", content);
+		temp = temp.replaceAll("__1__", Matcher.quoteReplacement(content));
+		
 		inMessage.setHtmlContent(temp);
 		return(inMessage);
 	}	
