@@ -58,7 +58,8 @@ public final class FileUtils {
 		if(!URL.endsWith("/")) URL += "/";
 		
 		String realURI = Utils.getServletContent().getRealPath(URL);
-
+		if(realURI == null) return;
+			
 		File dir = new File(realURI);
 		if(dir.isDirectory() && dir.list() != null){
 			for(String path2File: dir.list()){
@@ -76,7 +77,7 @@ public final class FileUtils {
 			ServletContext servletContext, 
 			String inAppId,
 			FileTransfer file) {
-		// 0. Generate pathname for new image
+		// Generate pathname for new image
 		String uri4File = Utils.F("files/%s/image/%s", inAppId, file.getFilename());
 		String realPath = servletContext.getRealPath(uri4File);
 		String resultStr = "";

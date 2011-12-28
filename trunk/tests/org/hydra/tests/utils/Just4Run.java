@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 */
 public class Just4Run {
 //	public static Pattern pattern4Deployer = Pattern.compile("\\[{2}(\\S+?)\\|(\\S+?)\\|(\\S+?)\\|(\\S+?)\\]{2}");
-	public static Pattern pattern = Pattern.compile("appid=(\\w+)&uuid=");    		
+	public static Pattern pattern = Pattern.compile("appid=(\\w+).*");    		
     public static void main(String[] args) throws Exception {
-    	test("appid=TestId1&uuid=");
+    	test("appid=ZFileUz&uuid=0afa206e-b424-444f-9df3-d02fb8f0d2f6");
     	test("appid=&uuid=");
     	test("appid= &uuid=");
     	test("appid=TestId4&uuid=");
