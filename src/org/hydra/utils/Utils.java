@@ -628,7 +628,6 @@ public final class Utils {
 			}
 		}
 		return(roleLevel >= inRoleLevel);
-//		return (true);
 	}
 
 	public static boolean errDBCodeValueExest(ERROR_CODES err) {

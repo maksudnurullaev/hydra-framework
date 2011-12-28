@@ -14,7 +14,7 @@ import org.hydra.messages.CommonMessage;
 
 public final class SessionUtils {
 	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionUtils");
-	public static Pattern pattern = Pattern.compile("appid=(\\w+)&uuid=");    		
+	public static Pattern pattern = Pattern.compile("appid=(\\w+).*");    		
 	
 
 	/**
@@ -87,7 +87,7 @@ public final class SessionUtils {
 			return;		
 		WebApplications webApplications = (WebApplications) inResult.getObject();
 
-		// 1. test for mode
+		// 1. validate mode
 		String urlString = inMessage.getUrl();
 		if(urlString != null){
 			URL url = null;
@@ -96,10 +96,8 @@ public final class SessionUtils {
 				if(url != null
 						&& url.getQuery() != null 
 						&& url.getQuery().contains("mode=")){
-					System.out.println("test for mode: " + url.getQuery());
 					inMessage._web_application = webApplications.getValidApplication4(url.getQuery());	
 					if(inMessage._web_application != null){
-						System.out.println("test for mode #2");
 						inResult.setResult(true);
 						return;
 					}

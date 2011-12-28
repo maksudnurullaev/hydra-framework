@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.hydra.utils.Constants;
 import org.hydra.utils.SessionUtils;
 
 public class ImageServlet extends HttpServlet {
@@ -24,10 +25,13 @@ public class ImageServlet extends HttpServlet {
 		int rValue = RandomUtils.nextInt(10) ;
 		int resultValue = lValue + rValue ;
 		String resultStr = "" + lValue + " + " + rValue ;
+		String sessionId = SessionUtils.getCaptchaId(req.getQueryString());
 		
 		System.out.println("req.getQueryString(): " + req.getQueryString());
-		System.out.println("capcha id: " + SessionUtils.getCaptchaId(req.getQueryString()));
+		System.out.println("capcha id: " + sessionId);
 		System.out.println("resultValue: " + resultValue);
+		
+		req.getSession().setAttribute(sessionId + Constants._captcha_value, lValue + rValue);
 		
 		BufferedImage image = new BufferedImage(1, 1,
 				BufferedImage.TYPE_INT_RGB); // 
@@ -56,9 +60,6 @@ public class ImageServlet extends HttpServlet {
 		outputStream.close();
 	}
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 }
