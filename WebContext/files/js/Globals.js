@@ -7,6 +7,7 @@ if (Globals == null) {
     		,'editLinks': 'editLinks'    	
     		,'sessionID': 'unknown'	
     		,'tryToLoadCount': 0
+			,'pageBusy': false
     	};
 };
 /* Highlight them */
@@ -65,20 +66,6 @@ Globals.editIt = function(divId, handleName, actionName){
        dest: Globals.editBox
     });
 };
-/* Upload online 
-Globals.uploadIt = function(elemId, handleName, actionName){
-	var localTempTextAreaId = elemId + ".textarea";
-	if(!($(localTempTextAreaId)) || !($(elemId))) return ;
-	
-	// Get initial html body
-    Globals.sendMessage({
-        handler: handleName,
-        action: actionName,
-        value:  $(localTempTextAreaId).value,
-        dest: divId
-    });
-};
-*/
 /* JS Loader */
 Globals.loadJS = function (pathToJS, onLoadFn) {
     new Asset.javascript(pathToJS, {
@@ -98,7 +85,8 @@ Globals.initializeAll = function () {
 Globals.isLoadedStage1 = function () {
     return Globals.isLoadedStage11()
     	&& Globals.isLoadedStage12()
-    	&& Globals.isLoadedStage13();
+    	&& Globals.isLoadedStage13()
+		&& Globals.isLoadedStage14();
 };
 Globals.isLoadedStage11 = function () {
     return typeof DWREngine != "undefined";
@@ -108,6 +96,9 @@ Globals.isLoadedStage12 = function () {
 };
 Globals.isLoadedStage13 = function () {
     return typeof MessageHandler != "undefined";
+};
+Globals.isLoadedStage14 = function () {
+    return typeof Globals.yuiPanelWait != "undefined";
 };
 /* JS loading stages */
 Globals.loadStages = function () {
@@ -130,7 +121,12 @@ Globals.loadStage12 = function () {
 };
 Globals.loadStage13 = function () {
     if (!Globals.isLoadedStage13()) {
-        Globals.loadJS("dwr/interface/MessageHandler.js", Globals.loadStage2);
+        Globals.loadJS("dwr/interface/MessageHandler.js", Globals.loadStage14);
+    }
+};
+Globals.loadStage14 = function () {
+    if (!Globals.isLoadedStage14()) {
+        Globals.loadJS("files/js/yui_wait.js", Globals.loadStage2);
     }
 };
 Globals.loadStage2 = function () {
@@ -183,6 +179,15 @@ Globals.setHtmlContents = function (contentsMap) {
 /* Test DOM object existance */
 Globals.chk = function (obj) {
     return !!(obj || obj === 0);
+};
+/* decode & content from from server */
+Globals.decodeContent = function(content){
+    Globals.sendMessage({
+        handler: 'General',
+        action:  'getContent',
+        content: ('[[' + content + ']]'),
+        dest: 'content'
+    });		
 };
 /* Send message to server*/
 Globals.sendMessage = function (data) {
@@ -266,6 +271,20 @@ Globals.applyIncomingMessages = function (messages) {
             Globals.highlightFields(message.highlightFields);
         };
     });
+};
+
+// SET GLOBAL HOOKS 
+Globals.preHook = function(){
+	Globals.pageBusy = true;
+	if(Globals.yuiPanelWait){
+		Globals.yuiPanelWait.show();
+	}
+};
+Globals.postHook = function(){
+	Globals.pageBusy = false;
+	if(Globals.yuiPanelWait){
+		Globals.yuiPanelWait.hide();
+	}
 };
 
 

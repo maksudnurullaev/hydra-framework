@@ -1,6 +1,6 @@
 package org.hydra.deployers;
 
-import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,24 +17,24 @@ public final class Db {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			List<String> links) {
+			Map<String, String> editLinks) {
 		_log.debug("Enter to: getDbWhatKeyHow");
 		
 		if(inWhat.compareToIgnoreCase("text") == 0){
-			return getTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, links);
+			return getTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, editLinks);
 		}
 		if(inWhat.compareToIgnoreCase("NonUserText") == 0){
 			if(inUserID == null)
-				return getTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, links);
+				return getTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, editLinks);
 			else
 				return "&nbsp;";
 		}
 		if(inWhat.compareToIgnoreCase("template") == 0){
-			return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, links);
+			return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, editLinks);
 		}
 		if(inWhat.compareToIgnoreCase("NonUserTemplate") == 0){
 			if(inUserID == null)
-				return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, links);
+				return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, editLinks);
 			else
 				return "&nbsp;";
 		}
@@ -49,14 +49,14 @@ public final class Db {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			List<String> links){
+			Map<String, String> editLinks){
 		_log.debug("Enter to: getDbTextKeyHow");
 		if(inHow.compareToIgnoreCase("div") == 0) // div wrapper 
-			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div"));
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, editLinks, "div"));
 		if(inHow.compareToIgnoreCase("span") == 0) //span wrapper
-			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "span"));
-		_log.error(Utils.F("Could not find HOW part for {{DB|Text|%s|%s}}",inKey, inHow));
-		return DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "span");
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, editLinks, "span"));
+		_log.warn(Utils.F("Could not find HOW part for {{DB|Text|%s|%s}}",inKey, inHow));
+		return DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, editLinks, "span");
 	};
 	
 	private static String getTemplateKeyANY(
@@ -64,11 +64,11 @@ public final class Db {
 			String inHow,			 // reserved
 			String inApplicationID,  // reserved
 			String inUserID, 		 // reserved
-			List<String> links){
+			Map<String, String> editLinks){
 		_log.debug("Try to insert...");
 		_log.debug("inKeyspace: " + inApplicationID);
 		_log.debug("inColumnFamily: " + "Template");
 		_log.debug("inKey: " + inKey);
-		return DBUtils.wrap2IfNeeds(inApplicationID, "Template", inKey, "content", inUserID, links, "div");
+		return DBUtils.wrap2IfNeeds(inApplicationID, "Template", inKey, "content", inUserID, editLinks, "div");
 	};
 }

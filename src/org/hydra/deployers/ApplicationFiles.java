@@ -1,5 +1,6 @@
 package org.hydra.deployers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -25,15 +26,19 @@ public class ApplicationFiles extends AMessageHandler {
 			String inAppID) {
 		StringBuffer content = new StringBuffer();
 		
-		List<String> filePathes = FileUtils.getListOfFiles(inAppID);
-		_log.debug("filePathes.size(): " + filePathes.size());
-		for (String filePath : filePathes) {
+		List<String> fileURLs = new ArrayList<String>();		
+		FileUtils.getListOfFiles4Dir(
+				String.format(FileUtils.URL4FILES_APPID_IMAGE, inAppID),
+				fileURLs,
+				null);		
+		_log.debug("filePathes.size(): " + fileURLs.size());
+		for (String filePath : fileURLs) {
 			content.append(FileUtils.getFileBox(inAppID, filePath));
 	    }
-	    if(filePathes.size() == 0)
+	    if(fileURLs.size() == 0)
 	    	content.append("...");
     	StringBuffer header = new StringBuffer();
-    	header.append("Count: " + filePathes.size());					
+    	header.append("Count: " + fileURLs.size());					
 	    header.append(" | ");
 	    header.append(Utils.createJSLinkHAAD(
 					Utils.Q("AdmFiles"), 

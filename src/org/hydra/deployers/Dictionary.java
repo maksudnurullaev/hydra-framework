@@ -3,6 +3,7 @@ package org.hydra.deployers;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.managers.MessagesManager;
+import org.hydra.utils.Roles;
 import org.hydra.utils.Utils;
 
 public final class Dictionary {
@@ -37,7 +38,7 @@ public final class Dictionary {
 		_log.debug("HOW: " + inHow);	
 		int roleLevel = Utils.isSpecialKey(inKey);
 		if(roleLevel >= 0){
-			if(Utils.roleNotLessThen(roleLevel, inApplicationID, inUserID))
+			if(Roles.roleNotLessThen(roleLevel, inApplicationID, inUserID))
 				MessagesManager.getText(inKey, null, inLocale);
 			else
 				return "";

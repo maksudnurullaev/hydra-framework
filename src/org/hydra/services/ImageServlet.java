@@ -23,13 +23,8 @@ public class ImageServlet extends HttpServlet {
 			throws ServletException, IOException {
 		int lValue = RandomUtils.nextInt(10) ;
 		int rValue = RandomUtils.nextInt(10) ;
-		int resultValue = lValue + rValue ;
 		String resultStr = "" + lValue + " + " + rValue ;
 		String sessionId = SessionUtils.getCaptchaId(req.getQueryString());
-		
-		System.out.println("req.getQueryString(): " + req.getQueryString());
-		System.out.println("capcha id: " + sessionId);
-		System.out.println("resultValue: " + resultValue);
 		
 		req.getSession().setAttribute(sessionId + Constants._captcha_value, lValue + rValue);
 		

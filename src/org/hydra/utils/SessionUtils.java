@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
@@ -35,7 +37,7 @@ public final class SessionUtils {
 			return inResult;
 		}
 		// 2. set web application
-		setWebAppId(inResult, inMessage, inMessage._web_context);
+		setWebApp(inResult, inMessage, inMessage._web_context);
 		if (!inResult.isOk())
 			return inResult;
 		// 3. set session id
@@ -71,7 +73,7 @@ public final class SessionUtils {
 		inResult.setResult(true);
 	};
 
-	public static void setWebAppId(
+	public static void setWebApp(
 			Result inResult,
 			CommonMessage inMessage, 
 			WebContext inWebContext) {
@@ -172,6 +174,21 @@ public final class SessionUtils {
     	if(m.matches())
     		return m.group(1);
 		return null;
+	}
+
+	public static boolean validateCaptcha(CommonMessage inMessage) {
+		try{
+			HttpSession session = inMessage._web_context.getSession();
+			int sessionValue = (Integer) session.getAttribute(inMessage._web_application.getId() + Constants._captcha_value);
+			if(inMessage.getData().containsKey(Constants._captcha_value)){
+				String captchaValue = inMessage.getData().get(Constants._captcha_value);
+				int passedValue = Integer.parseInt(captchaValue);
+				if(passedValue == sessionValue)	return(true);
+			}
+		}catch (Exception e){
+			_log.error(e.getMessage());
+		}
+		return false;
 	}
 
 }

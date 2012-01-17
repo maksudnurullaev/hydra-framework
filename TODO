@@ -1,5 +1,14 @@
 1.
-	ZFile.Uz - captcha verification does not work!
-	Show session values for each web application
+	Edit box should exclude same text definitions
+	Dont show non public files
+	Safe file in zFile with unique name but old extention
+	Safe file in zFile.uz with tags and public description with old name
 2.
+	test.txt
+	test.txt.desc
+	Public
+	File.Video
+	None
+	
+	
 3.
