@@ -9,6 +9,7 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 
 /**

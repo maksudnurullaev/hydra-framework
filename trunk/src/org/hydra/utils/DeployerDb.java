@@ -1,6 +1,7 @@
 package org.hydra.utils;
 
-import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -14,12 +15,12 @@ public final class DeployerDb {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			List<String> links) {
+			Map<String, String> editLinks) {
 		_log.debug("Enter to: getDbWhatKeyHow");
 		if(inWhat.compareToIgnoreCase("text") == 0)
-			return getDbTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, links);
+			return getDbTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, editLinks);
 		if(inWhat.compareToIgnoreCase("template") == 0)
-			return getDbTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, links);
+			return getDbTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, editLinks);
 		
 		_log.warn(String.format("Could not find WHAT part for {{DB|%s|%s|%s}}", inWhat,inKey, inHow));
 		return String.format("{{DB|%s|%s|%s}}", inWhat,inKey, inHow) ;
@@ -31,14 +32,14 @@ public final class DeployerDb {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			List<String> links){
+			Map<String, String> editLinks){
 		_log.debug("Enter to: getDbTextKeyHow");
 		if(inHow.compareToIgnoreCase("locale") == 0)
-			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div"));
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, editLinks, "div"));
 		if(inHow.compareToIgnoreCase("div") == 0)
-			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "div"));
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, editLinks, "div"));
 		if(inHow.compareToIgnoreCase("span") == 0)
-			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, links, "span"));
+			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, editLinks, "span"));
 		_log.error(String.format("Could not find WHAT part for {{DB|Text|%s|%s}}",inKey, inHow));
 		return String.format("{{DB|Text|%s|%s}}",inKey, inHow);
 	};
@@ -48,9 +49,9 @@ public final class DeployerDb {
 			String inHow,			 // reserved
 			String inApplicationID,  // reserved
 			String inUserID, 		 // reserved
-			List<String> links){
+			Map<String, String> editLinks){
 		_log.debug("Enter to: getDbTemplateKeyHow");
-		return DBUtils.wrap2IfNeeds(inApplicationID, "Template", inKey, "content", inUserID, links, "div");
+		return DBUtils.wrap2IfNeeds(inApplicationID, "Template", inKey, "content", inUserID, editLinks, "div");
 	};
 	
 }

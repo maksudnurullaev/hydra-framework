@@ -75,10 +75,11 @@ public class WebMessagesHandler extends ALogger {
 		getLog().debug("START: Waiting...");
 		while (!messagesCollector.hasNewMessages(inMessage.getSessionID())) {
 			// if timeout
-			if (System.currentTimeMillis() - startTime > Constants._max_response_wating_time) {
+			if (System.currentTimeMillis() - startTime > inMessage._web_application.getTimeout()) {
 
 				inMessage.setError("Waiting time limit is over...");
 				getLog().debug("Waiting time limit is over...");
+				inMessage.setError("ERROR: timeout: " + (inMessage._web_application.getTimeout()/1000) + " seconds!");
 
 				_return_result.add(inMessage);
 				return _return_result.toArray();

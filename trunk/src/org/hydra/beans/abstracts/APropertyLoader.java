@@ -1,6 +1,9 @@
 package org.hydra.beans.abstracts;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,7 +16,6 @@ import java.util.ResourceBundle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.utils.Constants;
-import org.hydra.utils.DBUtils;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class APropertyLoader extends ALogger {
@@ -85,8 +87,7 @@ public abstract class APropertyLoader extends ALogger {
 				// Returns null on lookup failures:
 				in = loader.getResourceAsStream(name);
 				if (in != null) {
-					result = new Properties();
-					parsePropertyFile(result, in);
+					result = parsePropertyFile(in);
 				}
 			}
 		} catch (Exception e) {
@@ -111,9 +112,21 @@ public abstract class APropertyLoader extends ALogger {
 		return result;
 	}
 
-	private static void parsePropertyFile(Properties result, InputStream in)
+	public static Properties parsePropertyFile(String fileName){
+		Properties result = null;
+		try {
+			FileInputStream fis = new FileInputStream(fileName);
+			result = parsePropertyFile(fis);
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+		}
+		return result;
+	}
+	
+	public static Properties parsePropertyFile(InputStream in)
 			throws UnsupportedEncodingException, IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in,Constants._utf8));
+		Properties result = new Properties();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in,Constants._utf_8));
 
 		String line = null;
 		String curKey = null;
@@ -130,13 +143,17 @@ public abstract class APropertyLoader extends ALogger {
 					savePreviousKeyValue(result, curKey, curValue);
 					curKey = line.substring(0, found - 1).trim();
 					curValue = line.substring(found + 1, line.length()).trim();
+				}else{
+					curValue += "\n";
+					curValue += line;
 				}
 			} else {
-					curValue += " " + line.substring(1).trim();
+					curValue += " " + line.substring(1).trim(); // remove first tabs
 			}
 		}
 		// Save last pair
 		savePreviousKeyValue(result, curKey, curValue);
+		return result;
 	}
 
 	private static void savePreviousKeyValue(Properties inProp, String inKey,
@@ -162,6 +179,6 @@ public abstract class APropertyLoader extends ALogger {
 			.getLog(org.hydra.executors.Executor.class);
 	private static final boolean THROW_ON_LOAD_FAILURE = true;
 	private static final boolean LOAD_AS_RESOURCE_BUNDLE = false;
-	private static final String SUFFIX = ".properties";
+	public static final String SUFFIX = ".properties";
 
 }

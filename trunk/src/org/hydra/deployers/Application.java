@@ -17,7 +17,9 @@ public final class Application {
 	static String getWhatKeyHow(
 			String inWhat,
 			String inKey, 
-			String inHow) {
+			String inHow, 
+			String inApplicationID, 
+			String inUserID) {
 		if(inWhat.compareToIgnoreCase("options") == 0)
 			return getOptionsKeyHow(inKey,inHow);
 		else if(inWhat.compareToIgnoreCase("tags") == 0)
@@ -30,8 +32,10 @@ public final class Application {
 			return ApplicationFiles.getKeyHow(inKey,inHow);	
 		else if(inWhat.compareToIgnoreCase("ClientMessages") == 0)
 			return ApplicationClientMessages.getKeyHow(inKey,inHow);	
+		else if(inWhat.compareToIgnoreCase("TempFiles") == 0)
+			return ApplicationTempFiles.getKeyHow(inKey,inHow, inApplicationID, inUserID);	
 		
-		_log.error("Could not find WHAT part: " + inWhat);
+		_log.warn("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;
 		
 	}

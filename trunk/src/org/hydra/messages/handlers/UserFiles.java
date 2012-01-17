@@ -1,12 +1,16 @@
 package org.hydra.messages.handlers;
 
+import java.util.ArrayList;
+
 import org.hydra.deployers.ADeployer;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
 import org.hydra.utils.FileUtils;
+import org.hydra.utils.SessionUtils;
 import org.hydra.utils.StringWrapper;
 import org.hydra.utils.Utils;
 
@@ -30,24 +34,31 @@ public class UserFiles extends AMessageHandler {
 			inMessage.clearContent();
 			return(inMessage);
 		}
+		
 		StringWrapper filePath = new StringWrapper();
+
+		if(!SessionUtils.validateCaptcha(inMessage)){
+			ArrayList<String> errorFields = new ArrayList<String>();
+			errorFields.add(Constants._captcha_value);
+			inMessage.setHighlightFields(errorFields);
+			return(inMessage);
+		}
 		
 		String returnFormat = "";
-		if(FileUtils.saveTempFileAndTry2Zip(
-				inMessage._web_context.getServletContext(), 
-				inMessage._web_application.getId(), 
-				inMessage.getFile(), filePath))
+		if(FileUtils.saveFile(inMessage, filePath, "Name", "Public", "Tag", "Text"))
 		{
 			returnFormat = "[[DB|Template|FileSavedOk.Header|span]]";
 			String fullPath = getMainUrl(inMessage.getUrl()) + filePath.getString();
 			returnFormat += "[[DB|Text|PathAsText|span]]: " + fullPath;
 			returnFormat += "[[DB|Text|PathAsLink|span]]: " + Utils.T("template.html.a.Href.Label", fullPath, fullPath);
 			returnFormat += "[[DB|Template|FileSavedOk.Footer|span]]";
+			
 		}else{
 			returnFormat = "[[DB|Template|FileSavedFailed|span]]";
 			inMessage.setError(filePath.getString());
 		}	
 		// finish
+		
 		return (ADeployer.deployContent(returnFormat, inMessage));
 	}
 

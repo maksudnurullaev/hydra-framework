@@ -2,6 +2,7 @@ package org.hydra.deployers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
 
 public final class SystemCaptcha {
@@ -38,7 +39,7 @@ public final class SystemCaptcha {
 			String inApplicationID,
 			String inUserID) {
 		String resultStr =  String.format("<image src=\"capcha/?appid=%s&uuid=%s\">", inApplicationID, Utils.GetUUID());
-		resultStr += " = <input class=\"captcha\" id=\"captchaResult\" type=\"text\" value=\"\" size=\"3\">";
+		resultStr += " = <input class=\"captcha\" id=\"" + Constants._captcha_value + "\" type=\"text\" value=\"\" size=\"3\">";
 		return resultStr;
 	}
 

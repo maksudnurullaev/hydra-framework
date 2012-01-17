@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.KspManager;
 import org.hydra.deployers.Db;
 import org.hydra.managers.CryptoManager;
-import org.hydra.managers.MessagesManager;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 /**
@@ -245,13 +244,13 @@ public final class DBUtils {
 			String inKey,
 			String inCName,
 			String inUserID, 		 // reserved
-			List<String> links,
+			Map<String, String> editLinks,
 			String inWrapper){
 		Db._log.debug("Enter to: getDbTemplateKeyHow");
 		// test user access by key
 		int keyLevel = Utils.isSpecialKey(inKey); 
 		if(keyLevel >= 0){
-			if(!Utils.roleNotLessThen(keyLevel, inKsp, inUserID))
+			if(!Roles.roleNotLessThen(keyLevel, inKsp, inUserID))
 				return "";
 		}
 		// get result from DB
@@ -268,8 +267,8 @@ public final class DBUtils {
 			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
-		if(Utils.roleNotLessThen(Roles.USER_EDITOR, inKsp, inUserID))
-			wrap2EditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), links, inWrapper);
+		if(Roles.roleNotLessThen(Roles.USER_EDITOR, inKsp, inUserID))
+			wrap2EditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), editLinks, inWrapper);
 		
 		return content.getString();			
 	}
@@ -280,14 +279,14 @@ public final class DBUtils {
 			String inHandlerName,
 			String inEditObjectName,
 			boolean noError, 
-			List<String> links,
+			Map<String, String> editLinks,
 			String inWrapper) {
 	
 		String spanId = String.format("%s.%s", inEditObjectName, inKey);
 		String wrapString = String.format("<%s id='%s'>%s</%s>", inWrapper, spanId, content.getString(), inWrapper);
 		content.setString(wrapString.toString());
 		// List of Link
-		if(links != null){
+		if(editLinks != null && !editLinks.containsKey(spanId)){
 			StringBuffer result = new StringBuffer();
 			
 			// main link
@@ -301,7 +300,7 @@ public final class DBUtils {
 			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.toggle('");
 			result.append(spanId).append("')); return false;\" href=\"#\">").append(inEditObjectName).append("</a>)</sup>");
 			
-			links.add(result.toString());
+			editLinks.put(spanId, result.toString());
 		}
 	}
 

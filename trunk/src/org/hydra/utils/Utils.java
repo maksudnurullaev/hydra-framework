@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import javax.servlet.ServletContext;
@@ -102,7 +103,7 @@ public final class Utils {
 		try {
 			File file = new File(inPath2File);
 			inResult.setObject(FileUtils
-					.readFileToString(file, Constants._utf8));
+					.readFileToString(file, Constants._utf_8));
 			inResult.setResult(true);
 		} catch (Exception e) {
 			_log.error(e.getMessage());
@@ -120,14 +121,14 @@ public final class Utils {
 		return inString;
 	}
 
-	public static String formatEditLinks(List<String> links) {
-		if (links == null || links.size() == 0)
+	public static String formatEditLinks(Map<String, String> editLinks) {
+		if (editLinks == null || editLinks.size() == 0)
 			return "CLOSE_ME: " + (new Date(System.currentTimeMillis())).toString();
 		StringBuffer result = new StringBuffer();
-		for (String link : links) {
+		for (Map.Entry<String, String> link : editLinks.entrySet()) {
 			if (result.length() != 0)
 				result.append(" ");
-			result.append(link);
+			result.append(link.getValue());
 		}
 		result.append("<div id=\"editBox\"></div>");
 		return result.toString();
@@ -601,33 +602,6 @@ public final class Utils {
 		char cRole = inKey.charAt(0);
 		if(!Character.isDigit(cRole)) return(-1);
 		return (cRole - '0');
-	}
-
-	public static boolean roleNotLessThen(int inRoleLevel, String inApplicationID, String inUserID) {		
-		if(inApplicationID == null || inApplicationID.length() == 0) return false;
-		if(inUserID == null || inUserID.length() == 0) return false;
-		
-		if(inUserID.startsWith("+++")) return true; // super user
-
-		int roleLevel = -1;
-		StringWrapper sWrapper = new StringWrapper();
-		ERROR_CODES err = DBUtils.getValue(inApplicationID, "User", inUserID, "tag", sWrapper);
-		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-			roleLevel = 0; // just registered user level
-			String rolesStr = sWrapper.getString();
-			if(rolesStr != null && rolesStr.length() > 0){
-				if(rolesStr.contains("User.Administrator")){
-					roleLevel = Roles.USER_ADMINISTRATOR;
-				}else if(rolesStr.contains("User.Publisher")){
-					roleLevel = Roles.USER_PUBLISHER;
-				}else if(rolesStr.contains("User.Editor")){
-					roleLevel = Roles.USER_EDITOR;
-				}else if(rolesStr.contains("User")){
-					roleLevel = Roles.USER_REGISTERED;
-				}
-			}
-		}
-		return(roleLevel >= inRoleLevel);
 	}
 
 	public static boolean errDBCodeValueExest(ERROR_CODES err) {

@@ -29,6 +29,7 @@
 				<value>.*127\.0\.0\.1.*</value>
 				<value>.*91\.212\.89\.163.*</value>
 				<value>.*(www\.)?hydra\.uz.*</value>
+				<value>.*localhost.*</value>
 			</set>
 		</property>
 	    <!-- Set locales -->
@@ -168,5 +169,6 @@
 		<property name="defaultLocale">
 			<value>rus</value>
 		</property>	    
+		<property name="timeout" value="600000"/> <!-- 10 min -->
 	</bean>		
 </beans>

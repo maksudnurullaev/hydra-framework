@@ -1,7 +1,7 @@
 package org.hydra.deployers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +14,6 @@ import org.hydra.utils.Utils;
 public final class ADeployer {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.ADeployer");
 	
-	//public static Pattern pattern4Deployer = Pattern.compile("\\[\\[(\\S+)\\|(\\S+)\\|(\\S+)\\|(\\S+)\\]\\]");
 	public static Pattern pattern4Deployer = Pattern.compile("\\[{2}(\\S+?)\\|(\\S+?)\\|(\\S+?)\\|(\\S+?)\\]{2}");
 	
 	public static IMessage deployContent(
@@ -27,16 +26,16 @@ public final class ADeployer {
 	public static String deployContent2(
 			String inContent,
 			CommonMessage inMessage) {
-		List<String> links = new ArrayList<String>();
+		Map<String, String> editLinks = new HashMap<String, String>();
 		String content = deployContent(
 				inContent, 
 				inMessage._web_application.getId(), 
 				inMessage._locale, 
 				inMessage._user_id,
-				links);
+				editLinks);
 				
 		inMessage.setHtmlContent(content);
-		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(links));
+		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(editLinks));
 		
 		return(content);
 	}	
@@ -47,7 +46,7 @@ public final class ADeployer {
 			String inLocale, 
 			String inUserID, 
 			int recursionCount,
-			List<String> links) {
+			Map<String, String> editLinks) {
 		
 		if(++recursionCount > 10){
 			_log.warn("No more recursion permited!!!");
@@ -71,7 +70,7 @@ public final class ADeployer {
 							inApplicationID, 
 							inLocale,
 							inUserID,
-							links);
+							editLinks);
 			//tempContent.replace("$", "\\$");
 			matcher.appendReplacement(
 					buf,
@@ -83,7 +82,7 @@ public final class ADeployer {
 		matcher = pattern4Deployer.matcher(buf.toString());
 		if(matcher.find()){
 			_log.debug("Found recursive entring, recursionCount: " + recursionCount);
-			return(deployContent(buf.toString(), inApplicationID, inLocale, inUserID, recursionCount,links));
+			return(deployContent(buf.toString(), inApplicationID, inLocale, inUserID, recursionCount,editLinks));
 		}
 		return(buf.toString());
 		//return(buf.toString());
@@ -95,11 +94,11 @@ public final class ADeployer {
 			String inApplicationID, 
 			String inLocale, 
 			String inUserID, 
-			List<String> links) {
+			Map<String, String> editLinks) {
 		_log.debug("ApplicationID: " + inApplicationID);
 		_log.debug("Locale: " + inLocale);
 		_log.debug("UserID: " + inUserID);
-		return deployContent(inContent, inApplicationID, inLocale, inUserID, 0, links);
+		return deployContent(inContent, inApplicationID, inLocale, inUserID, 0, editLinks);
 	}
 
 	private static String getWhereWhatKeyHow(
@@ -110,9 +109,9 @@ public final class ADeployer {
 			String inApplicationID, 
 			String inLocale,
 			String inUserID, 
-			List<String> links) {
+			Map<String, String> editLinks) {
 		if(inWhere.compareToIgnoreCase("db") == 0)
-			return Db.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, links);
+			return Db.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, editLinks);
 		else if(inWhere.compareToIgnoreCase("system") == 0)
 			return System.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID, inUserID);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)
@@ -120,7 +119,7 @@ public final class ADeployer {
 		else if(inWhere.compareToIgnoreCase("Applications") == 0)
 			return Applications.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
 		else if(inWhere.compareToIgnoreCase("Application") == 0)
-			return Application.getWhatKeyHow(inWhat, inKey, inHow);
+			return Application.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inUserID);
 		
 		return "Deployer: No WHERE part: " + inWhere ;
 	}

@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.hydra.utils.Constants;
 import org.hydra.utils.abstracts.ALogger;
 
 public class WebApplication extends ALogger {
@@ -16,6 +18,7 @@ public class WebApplication extends ALogger {
 	private String _jscript = null;
 	private String _styleSheet = null;
 	private String _title = "...";
+	private long _timeout = Constants._max_response_wating_time;
 	
 	public String getId() {
 		return _id;
@@ -86,6 +89,14 @@ public class WebApplication extends ALogger {
 
 	public String getTitle() {
 		return _title;
+	}
+
+	public void setTimeout(long _timeout) {
+		this._timeout = _timeout;
+	}
+
+	public long getTimeout() {
+		return _timeout;
 	}
 
 }

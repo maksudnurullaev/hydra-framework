@@ -9,6 +9,7 @@ if ( ZFileUz == null ) {
 };
 
 ZFileUz.setMainContent = function(inEl){	
+	if(Globals.pageBusy) return;
 	$$('#topmenuul a').each(function(el){
  		if(el.id == inEl.id){
     		el.setProperty('class', 'highlight');
@@ -27,7 +28,7 @@ ZFileUz.setMainContent = function(inEl){
         content: content,
         dest: ZFileUz.MainContent
     });		
-};  	
+};
 
 ZFileUz.sendClientMessage = function(){
 	if(!$('textarea.message') || !$('textarea.message').value.trim()){
@@ -43,52 +44,31 @@ ZFileUz.sendClientMessage = function(){
     });		
 };
 
-ZFileUz.acceptAgreement = function(el){
-	$('sending').disabled = (!el.checked);
+ZFileUz.testValue = function(val, name){
+	if(!val){
+		$(name).setStyle('background','red');
+		return false;
+	}
+	$(name).setStyle('background','');	
+	return true;
 };
 
 ZFileUz.try2SendFile = function(){
-	if(!$('input_file').value){
-		$('input_file').setStyle('background','red');
-		$('input_file').highlight('#ddf');
-		return;
+	var test1 = ZFileUz.testValue($('checkAgreement').checked, 'licheckAgreement');
+	var test2 = ZFileUz.testValue($('input_file').value, 'input_file');
+	var test3 = ZFileUz.testValue($('CaptchaValue').value, 'CaptchaValue');
+	if( test1 && test2 && test3 )
+	{
+		Globals.sendMessage2(
+			{handler:'UserFiles'
+				, action:'add'
+				, dest:ZFileUz.Content
+				, CaptchaValue:$('CaptchaValue').value 
+				, Tag:$('tagId').value
+				, Text:$('fileDescription').value 
+				, Public:($('publicCheckbox').checked?'true':'false')
+				, Name: dwr.util.getValue('input_file').value
+			}
+			, dwr.util.getValue('input_file'));
 	}
-	if(!$('captchaResult').value){
-		$('captchaResult').setStyle('background','red');
-		$('captchaResult').highlight('#ddf');
-		return;
-	}
-	Globals.sendMessage2({handler:'UserFiles',action:'add', dest:ZFileUz.Content, tag:$('tagId').value}, dwr.util.getValue('input_file'));
-	if($(ZFileUz.Content) && $(ZFileUz.Content).innerHTML){
-		$(ZFileUz.Content).innerHTML = "Ждем ответа от сервера...";
-	} 
-};
-
-// SET GLOBAL HOOKS 
-ZFileUz.preHook = function(){
-	if($('waiting')){
-		$('waiting').fade('show');
-	}
-	if($('topmenu')){
-		$('topmenu').fade('hide');
-	}
-	if($('contentcontainer')){
-		$('contentcontainer').fade('hide');
-	}
-	
-};
-ZFileUz.postHook = function(){
-	if($('waiting')){
-		$('waiting').fade('hide');
-	}
-	if($('topmenu')){
-		$('topmenu').fade('show');
-	}
-	if($('contentcontainer')){
-		$('contentcontainer').fade('show');
-	}
-};
-if(dwr.engine){
-	dwr.engine.setPreHook(ZFileUz.preHook);
-	dwr.engine.setPostHook(ZFileUz.postHook);
 };
