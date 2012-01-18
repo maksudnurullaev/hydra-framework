@@ -218,6 +218,11 @@ Globals.applyIncomingMessages = function (messages) {
         if (Globals.chk(message.error)) {
             alert(message.error);
         };  
+		// check to reload page
+		if(message.reloadPage){
+			window.location.reload();
+			return;
+		};
     	// check for existence of sessionID
     	if(!Globals.chk(message.sessionID)){
     		alert('Could not initialize Sesson ID!');

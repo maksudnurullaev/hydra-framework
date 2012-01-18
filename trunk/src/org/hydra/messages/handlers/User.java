@@ -21,10 +21,8 @@ public class User extends AMessageHandler { // NO_UCD
 		Result result = new Result();
 		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, null);
 		if(result.isOk()){
-			inMessage._user_id = null;
-			inMessage.getData().put("dest", "body");
-			General general = new General();
-			return(general.getInitialBody(inMessage));
+			inMessage.setReloadPage(true);
+			return(inMessage);
 		}
 		inMessage.setError(result.getResult());
 		return inMessage;
@@ -81,10 +79,8 @@ public class User extends AMessageHandler { // NO_UCD
 		Result result = new Result();
 		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, userId);
 		if(result.isOk()){
-			inMessage._user_id = userId;
-			inMessage.getData().put("dest", "body");
-			General general = new General();
-			return(general.getInitialBody(inMessage));
+			inMessage.setReloadPage(true);
+			return(inMessage);
 		}
 		inMessage.clearContent();
 		inMessage.setError(result.toString());
