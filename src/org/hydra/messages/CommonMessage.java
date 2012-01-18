@@ -31,6 +31,7 @@ public class CommonMessage implements IMessage {
 	private List<String> _highlightFields = new ArrayList<String>();
 	private List<String> _noHighlightFields = new ArrayList<String>();
 	private String _title;
+	private boolean reloadPage = false;
 		
 	private String _error = null;
 	private FileTransfer file = null;
@@ -159,6 +160,14 @@ public class CommonMessage implements IMessage {
 	}
 	public String getTitle() {
 		return _title;
+	}
+
+	public void setReloadPage(boolean reloadPage) {
+		this.reloadPage = reloadPage;
+	}
+
+	public boolean isReloadPage() {
+		return reloadPage;
 	}
 
 
