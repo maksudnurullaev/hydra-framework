@@ -185,12 +185,12 @@
 	    <property name="locales">
 	    	<map>
 	    		<entry key="rus" value="Рус"/>
-	    		<entry key="end" value="Eng"/>
+	    		<entry key="eng" value="Eng"/>
 	    	</map>
 	    </property>
 		<!-- Set default locale -->
 		<property name="defaultLocale">
-			<value>end</value>
+			<value>eng</value>
 		</property>	    
 	</bean>			
 </beans>
