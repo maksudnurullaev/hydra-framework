@@ -273,9 +273,9 @@ public final class FileUtils {
 			content.append("<span class=\"file_name\">" + properties.get("Name") + "</span>");
 			content.append("<br />");
 	    	// download link
-			String htmlTag = Utils.F("<a href=\"%s\" target=\"_blank\">%s</a>", 
+			String htmlTag = Utils.F("&nbsp;&nbsp;<a href=\"%s\" target=\"_blank\">%s</a>", 
 					stripPropertiesExtension(propertiesFilePath),
-					"&nbsp;&nbsp;&nbsp;[[DB|Text|Download|locale]]");
+					"[[DB|Text|Download|locale]]");
 			content.append(htmlTag);
 			content.append(" ");
 			// description
