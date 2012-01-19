@@ -8,6 +8,7 @@ if (Globals == null) {
     		,'sessionID': 'unknown'	
     		,'tryToLoadCount': 0
 			,'pageBusy': false
+			,'loadingImage': '<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif">'
     	};
 };
 /* Highlight them */
@@ -121,12 +122,7 @@ Globals.loadStage12 = function () {
 };
 Globals.loadStage13 = function () {
     if (!Globals.isLoadedStage13()) {
-        Globals.loadJS("dwr/interface/MessageHandler.js", Globals.loadStage14);
-    }
-};
-Globals.loadStage14 = function () {
-    if (!Globals.isLoadedStage14()) {
-        Globals.loadJS("files/js/yui_wait.js", Globals.loadStage2);
+        Globals.loadJS("dwr/interface/MessageHandler.js", Globals.loadStage2);
     }
 };
 Globals.loadStage2 = function () {
@@ -191,6 +187,9 @@ Globals.decodeContent = function(content){
 };
 /* Send message to server*/
 Globals.sendMessage = function (data) {
+	if(Globals.chk(data.dest) && ($(data.dest).innerHTML != undefined)){
+		$(data.dest).innerHTML = Globals.loadingImage ;
+	}
     var message = {
         data: data,
         sessionID: Globals.sessionID,
@@ -200,6 +199,9 @@ Globals.sendMessage = function (data) {
 };
 /* Send message to server*/
 Globals.sendMessage2 = function (data, file) {
+	if(Globals.chk(data.dest) && ($(data.dest).innerHTML != undefined)){
+		$(data.dest).innerHTML = Globals.loadingImage ;
+	}
     var message = {
         data: data,
         sessionID: Globals.sessionID,
@@ -219,7 +221,7 @@ Globals.applyIncomingMessages = function (messages) {
             alert(message.error);
         };  
 		// check to reload page
-		if(message.reloadPage){
+		if(Globals.chk(message.reloadPage)){
 			window.location.reload();
 			return;
 		};
@@ -276,20 +278,6 @@ Globals.applyIncomingMessages = function (messages) {
             Globals.highlightFields(message.highlightFields);
         };
     });
-};
-
-// SET GLOBAL HOOKS 
-Globals.preHook = function(){
-	Globals.pageBusy = true;
-	if(Globals.yuiPanelWait){
-		Globals.yuiPanelWait.show();
-	}
-};
-Globals.postHook = function(){
-	Globals.pageBusy = false;
-	if(Globals.yuiPanelWait){
-		Globals.yuiPanelWait.hide();
-	}
 };
 
 
