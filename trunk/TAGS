@@ -10,3 +10,4 @@
 [[DB|Text|%s|locale]]
 [[System|Login|form|NULL]]
 [[System|Captcha|Text|html]]
+<font color="white">[[System|LanguageBar|NULL|a]]</font>
