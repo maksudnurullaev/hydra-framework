@@ -36,7 +36,7 @@
 		<url-pattern>/dwr/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- Cpatche Image Servlet -->
+	<!-- Captcha -->
 	<servlet>
 	   <servlet-name>capcha</servlet-name>
 	   <servlet-class>org.hydra.services.ImageServlet</servlet-class>
