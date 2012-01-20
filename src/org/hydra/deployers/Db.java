@@ -32,12 +32,14 @@ public final class Db {
 		if(inWhat.compareToIgnoreCase("template") == 0){
 			return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, editLinks);
 		}
+		/*
 		if(inWhat.compareToIgnoreCase("NonUserTemplate") == 0){
 			if(inUserID == null)
 				return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, editLinks);
 			else
 				return "&nbsp;";
 		}
+		*/
 		_log.warn(String.format("Could not find WHAT part for [[DB|->%s<-|%s|%s]]", inWhat,inKey, inHow));
 		return String.format("Could not find WHAT part for {{DB|<strong>%s</strong>|%s|%s}}", inWhat,inKey, inHow) ;
 	}
