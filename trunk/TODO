@@ -1,4 +1,6 @@
 1.
 	Wait bar should be let upper place on screen
+	Wait bar should be in index template too
+	Is it possible to index.html set text before/after <header>,<body>,<header>,<body>
 2.
 3.

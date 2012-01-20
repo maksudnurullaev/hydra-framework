@@ -451,3 +451,7 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 	margin:0;
 	padding:0;
 	}
+	
+div.edit { border-top: 2px solid gray; border-bottom: 2px solid gray; padding: 10px; margin: 15px; text-align: center; background: white; color: black; }
+textarea.edittextarea { width: 100%; height: 200px; border: 1px solid #7F9DB9; }
+input {width: 100%; border: 1px solid rgb(127, 157, 185);}	
