@@ -1,11 +1,5 @@
 package org.hydra.messages.handlers;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.servlet.ServletContext;
-
-import org.apache.commons.io.FileUtils;
 import org.hydra.deployers.ADeployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
@@ -15,6 +9,7 @@ import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
+import org.hydra.utils.FileUtils;
 
 public class General extends AMessageHandler { // NO_UCD
 	public IMessage getTextByKey(CommonMessage inMessage) {
@@ -87,29 +82,16 @@ public class General extends AMessageHandler { // NO_UCD
 	};	
 
 	public IMessage getInitialBody(CommonMessage inMessage) {		
-		getLog().debug("... App ID: " + inMessage._web_application.getId());
-		getLog().debug("... Locale: " + inMessage._locale);
-		getLog().debug("... User ID: " + inMessage._user_id);
-		
 		String content = 
-				getBodyFromFile(inMessage._web_context.getServletContext(), inMessage._web_application.getId());
-		getLog().debug("... HTML body content length: " + content.length());		
-		
-		inMessage.setTitle(inMessage._web_application.getTitle());
-		
-		return(ADeployer.deployContent(content,inMessage));
-	}
-
-	private String getBodyFromFile(ServletContext servletContext, String inAppId) {
-				
-		String content = "CONTENT_NOT_FOUND";
-		String filePath = String.format("/files/%s/html/body.html", inAppId);
-		File file = new File(servletContext.getRealPath(filePath));
-		try {
-			content = FileUtils.readFileToString(file,"UTF8");
-		} catch (IOException e) {
-			e.printStackTrace();
+				FileUtils.getFromHtmlFile(inMessage._web_context.getServletContext(), 
+						inMessage._web_application.getId(),
+						"body");
+		if(content != null){
+			getLog().debug("... HTML body content length: " + content.length());			
+			inMessage.setTitle(inMessage._web_application.getTitle());
+			return(ADeployer.deployContent(content,inMessage));
 		}
-		return(content); 
+		inMessage.setHtmlContent("Could not find initial body for: " + inMessage._web_application.getId());
+		return(inMessage);
 	};
 }

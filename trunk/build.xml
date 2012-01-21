@@ -37,7 +37,7 @@
 	<target name="build" description="Build project">
 		<mkdir dir="${classes}" />
 		<javac destdir="${classes}" source="1.5" target="1.5" debug="true"
-			deprecation="true" optimize="false" failonerror="true">
+			deprecation="true" optimize="false" failonerror="true" includeantruntime="false">
 			<src path="${src}" />
 			<src path="${src.tests}" />
 			<classpath refid="master-classpath" />

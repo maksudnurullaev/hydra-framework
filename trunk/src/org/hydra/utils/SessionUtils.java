@@ -1,7 +1,5 @@
 package org.hydra.utils;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +35,7 @@ public final class SessionUtils {
 			return inResult;
 		}
 		// 2. set web application
-		setWebApp(inResult, inMessage, inMessage._web_context);
+		setWebApp(inResult, inMessage);
 		if (!inResult.isOk())
 			return inResult;
 		// 3. set session id
@@ -75,14 +73,7 @@ public final class SessionUtils {
 
 	public static void setWebApp(
 			Result inResult,
-			CommonMessage inMessage, 
-			WebContext inWebContext) {
-		if (inMessage == null || inWebContext == null) {
-			inResult.setErrorString("CommonMessage or WebContext equal NULL!");
-			inResult.setResult(false);
-			return;
-		}
-		
+			CommonMessage inMessage) {
 		BeansUtils.getWebContextBean(inResult,
 				Constants._bean_hydra_web_applications);
 		if (!inResult.isOk() || !(inResult.getObject() instanceof WebApplications))
@@ -92,24 +83,14 @@ public final class SessionUtils {
 		// 1. validate mode
 		String urlString = inMessage.getUrl();
 		if(urlString != null){
-			URL url = null;
-			try {
-				url = new URL(urlString);
-				if(url != null
-						&& url.getQuery() != null 
-						&& url.getQuery().contains("mode=")){
-					inMessage._web_application = webApplications.getValidApplication4(url.getQuery());	
-					if(inMessage._web_application != null){
-						inResult.setResult(true);
-						return;
-					}
-				}
-			} catch (MalformedURLException e) {
-				_log.error(e.getMessage());
-				inResult.setErrorString(e.getMessage());
-				return ;
+			int found = urlString.indexOf("mode=");
+			if(found != -1){
+				inMessage._web_application = webApplications.getValidApplication4(urlString.toLowerCase().substring(found));	
+				if(inMessage._web_application != null){
+					inResult.setResult(true);
+					return;
+				}				
 			}
-			// 2. test for real url
 			inMessage._web_application = webApplications.getValidApplication4(urlString);
 			if (inMessage._web_application == null) {
 				inResult.setErrorString("Could not initialize WebApplication object!");

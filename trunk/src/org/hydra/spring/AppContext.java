@@ -15,9 +15,7 @@ public class AppContext extends ALogger{
 
 	private static Log _log = LogFactory.getLog("org.hydra.spring.AppContext");	
 	
-    private static ApplicationContext ctx;
-
-	private static boolean debugMode = false;
+    private static boolean debugMode = false;
 
     /**
      * Injected from the class "ApplicationContextProvider" which is automatically
@@ -25,7 +23,6 @@ public class AppContext extends ALogger{
      */
     public static void setApplicationContext(ApplicationContext applicationContext) {
     	_log.info("Spring AppContext initialized successfully");
-        ctx = applicationContext;
     }
 
     

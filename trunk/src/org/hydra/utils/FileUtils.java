@@ -302,4 +302,18 @@ public final class FileUtils {
 		Properties properties = APropertyLoader.parsePropertyFile(servletContext.getRealPath(propertiesFilePath));
 		return properties;
 	}
+
+	public static String getFromHtmlFile(ServletContext servletContext, String inAppId, String fileName) {
+		String filePath = String.format("/files/%s/html/%s.html", inAppId, fileName);
+		String realPath = servletContext.getRealPath(filePath);
+		String content = null;
+		if(realPath != null){
+			File file = new File(realPath);
+			try {
+				content = org.apache.commons.io.FileUtils.readFileToString(file,"UTF8");
+			} catch (IOException e) {
+			}			
+		}
+		return(content); 
+	}
 }
