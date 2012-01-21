@@ -1,9 +1,5 @@
 package org.hydra.messages.handlers;
 
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpSession;
-
 import org.hydra.beans.StatisticsCollector;
 import org.hydra.beans.WebApplications;
 import org.hydra.deployers.ADeployer;

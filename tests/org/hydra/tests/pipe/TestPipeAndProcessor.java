@@ -123,12 +123,10 @@ public class TestPipeAndProcessor{
 	@Test(expected = RichedMaxCapacityException.class)
 	public void test_pipe_with_exeption() throws RichedMaxCapacityException {
 		int messageCount = 10;
-		int counter = 0;
 		MessageBean message = null;
 		_inPipe.setMaxCapacity(messageCount);
 		// Test with (messageCount x 2) messages
 		for (int i = 0; i < (messageCount * 2); i++) {
-			counter++;
 			message = new MessageBean();
 			message.getData().put("sessionID", String.format("Message #%d", i));
 			_inPipe.setMessage(message);
