@@ -187,7 +187,7 @@ Globals.decodeContent = function(content){
 };
 /* Send message to server*/
 Globals.sendMessage = function (data) {
-	if(Globals.chk(data.dest) && ($(data.dest).innerHTML != undefined)){
+	if(Globals.chk(data.dest) && ($(data.dest).innerHTML != "undefined")){
 		$(data.dest).innerHTML = Globals.loadingImage ;
 	}
     var message = {
@@ -199,7 +199,7 @@ Globals.sendMessage = function (data) {
 };
 /* Send message to server*/
 Globals.sendMessage2 = function (data, file) {
-	if(Globals.chk(data.dest) && ($(data.dest).innerHTML != undefined)){
+	if(Globals.chk(data.dest) && ($(data.dest).innerHTML != "undefined")){
 		$(data.dest).innerHTML = Globals.loadingImage ;
 	}
     var message = {
