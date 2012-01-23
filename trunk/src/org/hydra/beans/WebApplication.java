@@ -15,9 +15,6 @@ public class WebApplication extends ALogger {
 	
 	private Map<String, String> _locales = new HashMap<String, String>();	
 	private String _defaultLocale = null;
-	private String _jscript = null;
-	private String _styleSheet = null;
-	private String _title = "...";
 	private long _timeout = Constants._max_response_wating_time;
 	
 	public String getId() {
@@ -26,14 +23,6 @@ public class WebApplication extends ALogger {
 
 	public void setId(String inId) {
 		this._id = inId;
-	}
-
-	public void setStyleSheet(String stylessheet) {
-		this._styleSheet = stylessheet;
-	}
-
-	public String getStyleSheet() {
-		return _styleSheet;
 	}
 
 	public void setUrls(Set<String> inUrlsSet) {
@@ -73,22 +62,6 @@ public class WebApplication extends ALogger {
 
 	public String getDefaultLocale() {
 		return _defaultLocale;
-	}
-
-	public void setJscript(String jscript) {
-		this._jscript = jscript;
-	}
-
-	public String getJscript() {
-		return _jscript;
-	}
-
-	public void setTitle(String title) {
-		this._title = title;
-	}
-
-	public String getTitle() {
-		return _title;
 	}
 
 	public void setTimeout(long _timeout) {

@@ -24,7 +24,6 @@
 	
 	<bean id="HydraUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="HydraUz" />
-		<property name="title" value="Hydra Framework - Non progredi est regredi!" />
 		<property name="urls">
 			<set>
 				<value>.*127\.0\.0\.1.*</value>
@@ -48,7 +47,6 @@
 	
 	<bean id="UristUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="UristUz" />
-		<property name="title" value="Urist.Uz - Sic Luceat Lux!" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?urist\.uz.*</value>
@@ -69,7 +67,6 @@
 
 	<bean id="MaxmsUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="MaxmsUz" />
-		<property name="title" value="Max Micro Systems | Счастье - дело техники! " />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?maxms\.uz.*</value>
@@ -90,7 +87,6 @@
 
 	<bean id="TestUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="TestUz" />
-		<property name="title" value="Test.Uz - Simple site #1" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?test\.uz.*</value>
@@ -111,7 +107,6 @@
 
 	<bean id="Test2Uz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="Test2Uz" />
-		<property name="title" value="Test2.Uz - Simple site #2" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?test2\.uz.*</value>
@@ -132,7 +127,6 @@
 	
 	<bean id="Test3Uz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="Test3Uz" />
-		<property name="title" value="Test3.Uz - Simple site #3" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?test3\.uz.*</value>
@@ -153,7 +147,6 @@
 	
 	<bean id="ZFileUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="ZFileUz" />
-		<property name="title" value="zFile.Uz - Файлообменник и только..." />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?zfile\.uz.*</value>
@@ -175,7 +168,6 @@
 
 	<bean id="SKTourUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="SKTourUz" />
-		<property name="title" value="SKTour.UZ - Surprise yourself, come to Uzbekistan!" />
 		<property name="urls">
 			<set>
 				<value>.*(www\.)?sktour\.uz.*</value>

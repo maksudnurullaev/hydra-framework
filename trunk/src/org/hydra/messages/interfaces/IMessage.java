@@ -8,7 +8,6 @@ import org.hydra.utils.Result;
 public interface IMessage {	
 	Map<String, String> getData();
 	String getError();
-	String getStyleSheet();
 	Result set2HttpSession(String inKey, Object inObj);
 	void setData(Map<String, String> data);
 	void setError(String inErrorMessage);
@@ -16,10 +15,8 @@ public interface IMessage {
 	void setHtmlContents(String keyElementID, String htmlContent);
 	void setSessionID(String sessionID);
 	String getSessionID();
-	void setStyleSheet(String styleSheet);
 	void setUrl(String url);
 	String getUrl();
 	void setFile(FileTransfer file);
 	FileTransfer getFile();
-	void setTitle(String title);
 }
