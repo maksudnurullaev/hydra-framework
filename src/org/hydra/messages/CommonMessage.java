@@ -24,29 +24,17 @@ public class CommonMessage implements IMessage {
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
 	private String sessionID = null;
 	private String url = null;
-	private Map<String, String> _htmlContents = new HashMap<String, String>();
-	private String _styleSheet = null;
-	private String _jsFile = null;
-	private List<String> _highlightFields = new ArrayList<String>();
-	private List<String> _noHighlightFields = new ArrayList<String>();
-	private String _title;
+	private Map<String, String> _htmlContents = null ;
+	private List<String> _highlightFields = null;
+	private List<String> _noHighlightFields = null;
 	private boolean reloadPage = false;
 		
 	private String _error = null;
 	private FileTransfer file = null;
 
 	@Override
-	public String getStyleSheet() {
-		return _styleSheet;
-	}
-
-	@Override
-	public void setStyleSheet(String styleSheet) {
-		this._styleSheet = styleSheet;
-	}
-
-	@Override
 	public void setHtmlContents(String keyElementID, String htmlContent) {
+		if(_htmlContents == null) _htmlContents = new HashMap<String, String>();
 		_htmlContents.put(keyElementID, htmlContent);
 	}
 
@@ -98,15 +86,7 @@ public class CommonMessage implements IMessage {
 	public Map<String, String> getHtmlContents() {
 		return _htmlContents;
 	}
-
-	public void setJSFile(String inJSFilePath) {
-		this._jsFile = inJSFilePath;
-	}
-
-	public String getJSFile() {
-		return _jsFile;
-	}
-
+	
 	public void clearContent() {
 		_htmlContents.clear();
 	}
@@ -153,14 +133,6 @@ public class CommonMessage implements IMessage {
 	public FileTransfer getFile() {
 		return file;
 	}
-	@Override
-	public void setTitle(String title) {
-		this._title = title;
-	}
-	public String getTitle() {
-		return _title;
-	}
-
 	public void setReloadPage(boolean reloadPage) {
 		this.reloadPage = reloadPage;
 	}
@@ -168,6 +140,4 @@ public class CommonMessage implements IMessage {
 	public boolean isReloadPage() {
 		return reloadPage;
 	}
-
-
 }

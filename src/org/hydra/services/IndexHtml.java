@@ -39,7 +39,8 @@ public class IndexHtml extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html");
-
+		_log.debug("START process index.html page");
+		
 		ServletContext context = Utils.getServletContent();
 		String index_file_path = context.getRealPath(index_file);
 		PrintWriter out = response.getWriter();
@@ -53,13 +54,14 @@ public class IndexHtml extends HttpServlet {
 		CommonMessage msg = new CommonMessage();
 		msg.setUrl(req.getRequestURL().toString() + "?" + req.getQueryString());
 		Result inResult = new Result();
-		SessionUtils.setWebApp(inResult , msg);
+		SessionUtils.setWebApp(inResult , msg);		
 		if(!inResult.isOk()){
 			_log.error(index_file + msg.getUrl() + " - not found responsible application!");
 			out.println(index_with_err.replaceFirst(err_code,
 					index_file + msg.getUrl() + " - not found responsible application!"));
 			return;
 		}
+		_log.debug("Corresponding web application is: " + msg._web_application.getId());
 
 		File file = new File(index_file_path);
 		FileInputStream fis = null;
@@ -88,6 +90,7 @@ public class IndexHtml extends HttpServlet {
 			out.println(index_with_err.replaceFirst(err_code,
 					e.getMessage()));
 		}
+		_log.debug("END process index.html page");		
 	}
 
 	private String updateIfHtmlHead(String strLine, String inAppId) {
@@ -97,8 +100,10 @@ public class IndexHtml extends HttpServlet {
 		String strLine2 = strLine.toLowerCase();
 		if(strLine2.endsWith(_header_tag)
 				|| strLine2.endsWith(_header_tag.toLowerCase())){
-			ServletContext context = Utils.getServletContent();
-			String header = FileUtils.getFromHtmlFile(context, inAppId, "head");
+			_log.debug("Try to insert head.html before </head> tag for: " + inAppId);			
+			String header = FileUtils.getFromHtmlFile(inAppId, "head");
+			if(header == null) _log.warn("Additional head.html file for application not found!");
+			else _log.debug("head.html file found for: " + inAppId);
 			return("<!-- " + inAppId + " -->" + (header == null?"<!-- additional head elements not found -->":header) + strLine);
 		}	
 		return(strLine);

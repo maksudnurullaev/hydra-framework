@@ -1,11 +1,14 @@
 package org.hydra.utils;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.net.URLConnection;
@@ -303,14 +306,23 @@ public final class FileUtils {
 		return properties;
 	}
 
-	public static String getFromHtmlFile(ServletContext servletContext, String inAppId, String fileName) {
+	public static String getFromHtmlFile(String inAppId, String fileName) {
+		ServletContext servletContext = Utils.getServletContent();
 		String filePath = String.format("/files/%s/html/%s.html", inAppId, fileName);
 		String realPath = servletContext.getRealPath(filePath);
 		String content = null;
 		if(realPath != null){
 			File file = new File(realPath);
 			try {
-				content = org.apache.commons.io.FileUtils.readFileToString(file,"UTF8");
+				FileInputStream fis = new FileInputStream(file);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(fis,Constants._utf_8));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					if (!line.trim().isEmpty()){
+						if(content == null) content = line;
+						else content += line;
+					}
+				}
 			} catch (IOException e) {
 			}			
 		}

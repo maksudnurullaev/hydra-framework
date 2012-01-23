@@ -6,10 +6,9 @@ import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
+import org.hydra.utils.FileUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
-import org.hydra.utils.Utils;
-import org.hydra.utils.FileUtils;
 
 public class General extends AMessageHandler { // NO_UCD
 	public IMessage getTextByKey(CommonMessage inMessage) {
@@ -67,28 +66,10 @@ public class General extends AMessageHandler { // NO_UCD
 		return inMessage;
 	};
 	
-	public IMessage loadCSSFile(CommonMessage inMessage){
-		inMessage.setStyleSheet(Utils.F("files/%s/css/main.css", 
-				inMessage._web_application.getId()));
-		inMessage.clearContent();
-		return inMessage;
-	};
-	
-	public IMessage loadJSFile(CommonMessage inMessage){
-		inMessage.setJSFile(Utils.F("files/%s/js/main.js", 
-				inMessage._web_application.getId()));
-		inMessage.clearContent();
-		return inMessage;
-	};	
-
 	public IMessage getInitialBody(CommonMessage inMessage) {		
-		String content = 
-				FileUtils.getFromHtmlFile(inMessage._web_context.getServletContext(), 
-						inMessage._web_application.getId(),
-						"body");
+		String content = FileUtils.getFromHtmlFile(inMessage._web_application.getId(),"body");
 		if(content != null){
-			getLog().debug("... HTML body content length: " + content.length());			
-			inMessage.setTitle(inMessage._web_application.getTitle());
+			getLog().debug("... HTML body content length: " + content.length());
 			return(ADeployer.deployContent(content,inMessage));
 		}
 		inMessage.setHtmlContent("Could not find initial body for: " + inMessage._web_application.getId());
