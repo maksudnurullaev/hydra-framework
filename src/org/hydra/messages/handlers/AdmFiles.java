@@ -42,20 +42,14 @@ public class AdmFiles extends AMessageHandler {
 		return(ADeployer.deployContent(form,inMessage));		
 	}	
 	
-	public IMessage add(CommonMessage inMessage){
-		String appId = inMessage.getData().containsKey("appid")
-			?  inMessage.getData().get("appid") : inMessage._web_application.getId();
-			
+	public IMessage add(CommonMessage inMessage){			
 		if(inMessage.getFile() == null){
 			inMessage.setError("NO_FILE");
 			inMessage.clearContent();
 			return(inMessage);
 		}
-		String result  = FileUtils.saveFile4Admin(
-				inMessage._web_context.getServletContext(), 
-				appId, 
-				inMessage.getFile());
-		inMessage.setHtmlContents("action_result", result);
+		String result  = FileUtils.saveFile4Admin(inMessage);
+		inMessage.setHtmlContent(result);
 		// finish
 		return (inMessage);
 	}
