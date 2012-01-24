@@ -81,12 +81,12 @@ public final class FileUtils {
 		}
 	}
 
-	public static String saveFile4Admin(
-			ServletContext servletContext, 
-			String inAppId,
-			FileTransfer file) {
+	public static String saveFile4Admin(CommonMessage inMessage) {
+		FileTransfer file = inMessage.getFile();
+		ServletContext servletContext = inMessage._web_context.getServletContext(); 
+		String appId = inMessage._web_application.getId();
 		// Generate pathname for new image
-		String uri4File = Utils.F(URL4FILES_APPID_FILES + "%s", inAppId, file.getFilename());
+		String uri4File = Utils.F(URL4FILES_APPID_IMAGE + "%s", appId, file.getFilename());
 		String realPath = servletContext.getRealPath(uri4File);
 		String resultStr = "";
 		// 1. 
@@ -102,13 +102,13 @@ public final class FileUtils {
 				os.write(bufer, 0, bytesRead);
 			}
 			os.close();
-			resultStr = getFileBox(inAppId, uri4File);
+			resultStr = getFileBox(appId, uri4File);
 		} catch (Exception e) {
 			_log.error(e.toString());
 			resultStr = e.toString();
 		}	
 		// finish
-		return (resultStr);		
+		return (resultStr + "<br />" + Utils.createJSLinkAdmNewFile(appId, inMessage.getData().get("dest")));		
 	}
 	
 	public static boolean saveFile(CommonMessage inMessage,

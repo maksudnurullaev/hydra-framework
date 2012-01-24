@@ -144,12 +144,14 @@ Globals.porcessMessage = function (message) {
 	};  
 	// check to reload page
 	if(Globals.chk(message.reloadPage)){
+		$('body').innerHTML = Globals.loadingImage ;
 		window.location.reload();
 		return;
 	};
 	// is it new session?
 	if(Globals.chk(Globals.sessionID)){ 
 		if(Globals.sessionID != message.sessionID){
+			$('body').innerHTML = Globals.loadingImage ;
 			window.location.reload();
 		}
 	} else {

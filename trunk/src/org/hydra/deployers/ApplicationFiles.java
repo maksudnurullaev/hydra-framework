@@ -40,14 +40,7 @@ public class ApplicationFiles extends AMessageHandler {
     	StringBuffer header = new StringBuffer();
     	header.append("Count: " + fileURLs.size());					
 	    header.append(" | ");
-	    header.append(Utils.createJSLinkHAAD(
-					Utils.Q("AdmFiles"), 
-					Utils.Q("addForm"), 
-					Utils.Q(inAppID),
-					Utils.Q("admin.app.action"), 
-					"New"
-					)
-	    		);
+	    header.append(Utils.createJSLinkAdmNewFile(inAppID,"admin.app.action"));
 			
 	    header.append("<hr />");
 

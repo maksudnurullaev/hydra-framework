@@ -151,6 +151,16 @@ public final class Utils {
 				, inName);
 	}
 
+	public static String createJSLinkAdmNewFile(String inAppId, String inDest){
+		return Utils.createJSLinkHAAD(
+				Utils.Q("AdmFiles"), 
+				Utils.Q("addForm"), 
+				Utils.Q(inAppId),
+				Utils.Q(inDest), 
+				"New"
+				);
+	}
+	
 	public static String createJSLink(
 			String inJSData
 			, String inName

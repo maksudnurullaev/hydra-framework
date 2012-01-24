@@ -93,6 +93,7 @@ public class WebMessagesHandler extends ALogger {
 		while ((messageBean = messagesCollector.getMessage(inMessage.getSessionID())) != null)
 		{
 			if(messageBean.getData() != null) messageBean.getData().clear();
+			if(messageBean.getFile() != null) messageBean.setFile(null);
 			_return_result.add((MessageBean) messageBean);
 		}
 		return _return_result.toArray();
