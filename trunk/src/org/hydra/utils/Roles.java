@@ -10,7 +10,7 @@ public final class Roles {
 	
 	public static boolean roleNotLessThen(int inRoleLevel, String inApplicationID, String inUserID) {
 		//TODO REMOVE IF NEES FULL ACCESS!
-		if(inApplicationID != null) return true;
+		//if(inApplicationID != null) return true;
 		if(inApplicationID == null || inApplicationID.length() == 0) return false;
 		if(inUserID == null || inUserID.length() == 0) return false;
 		
