@@ -8,6 +8,7 @@ if (Globals == null) {
             ,'tryToLoadCount': 0
             ,'pageBusy': false
             ,'loadingImage': '<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif">'
+			,'waitOldContent': null
         };
 };
 /* Highlight them */
@@ -101,16 +102,24 @@ Globals.decodeContent = function(content){
         dest: 'content'
     });        
 };
-/* set wait element*/
+/* set & restore wait element*/
 Globals.setWaitElement = function (data){
 	Globals.pageBusy = true;
     if(Globals.chk($('wait_element')) && (typeof $('wait_element').innerHTML != "undefined")){
+		Globals.waitOldContent = $('wait_element').innerHTML;
         $('wait_element').innerHTML = Globals.loadingImage ;
     } else {
         if(Globals.chk(data.dest) && (typeof $(data.dest).innerHTML != "undefined")){
             $(data.dest).innerHTML = Globals.loadingImage ;
         }    
     }
+};
+Globals.restoreWaitElement = function(){
+	if(Globals.chk(Globals.waitOldContent) && Globals.chk($('wait_element')) && (typeof $('wait_element').innerHTML != "undefined")){
+		$('wait_element').innerHTML = Globals.waitOldContent;
+		Globals.waitOldContent = null;
+	}
+	Globals.pageBusy = false;
 };
 /* Send message to server*/
 Globals.sendMessage = function (data) {
@@ -143,7 +152,7 @@ Globals.applyIncomingMessages = function (messages) {
     } else {
         Globals.porcessMessage(messages);
     }
-	Globals.pageBusy = false;	
+	Globals.restoreWaitElement();
 };
 Globals.porcessMessage = function (message) {
     // check for error
