@@ -88,9 +88,7 @@ public class CommonMessage implements IMessage {
 	}
 	
 	public void clearContent() {
-		if(_htmlContents != null) _htmlContents.clear();
-	}
-
+		if(_htmlContents != null)_htmlContents.clear();	}
 	public void setHighlightFields(List<String> _highlightFields) {
 		this._highlightFields = _highlightFields;
 	}
