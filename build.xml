@@ -45,7 +45,7 @@
 	</target>
 
 	<target name="clean.build" description="Clean project">
-		<delete dir="${classes}/org" />
+		<delete dir="${classes}/org"/>
 		<delete dir="${classes}/doc" />
 	</target>	
 	
