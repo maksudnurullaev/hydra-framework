@@ -16,6 +16,10 @@ import org.hydra.utils.Result;
  * 
  */
 public class CommonMessage implements IMessage {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public WebApplication _web_application = null;
 	public WebContext _web_context = null;
 	public String _locale = null;
