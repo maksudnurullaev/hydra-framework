@@ -29,20 +29,3 @@ HydraUz.setContent = function(content, dest){
         , dest: dest
     });	
 };
-
-
-// SET GLOBAL HOOKS 
-HydraUz.preHook = function(){
-	if($('html.body.vmiddle')){
-		$('html.body.vmiddle').fade('hide');
-	}
-};
-HydraUz.postHook = function(){
-	if($('html.body.vmiddle')){
-		$('html.body.vmiddle').fade('show');
-	}
-};
-if(dwr.engine){
-	dwr.engine.setPreHook(HydraUz.preHook);
-	dwr.engine.setPostHook(HydraUz.postHook);
-};

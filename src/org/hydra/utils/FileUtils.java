@@ -84,7 +84,8 @@ public final class FileUtils {
 	public static String saveFile4Admin(CommonMessage inMessage) {
 		FileTransfer file = inMessage.getFile();
 		ServletContext servletContext = inMessage._web_context.getServletContext(); 
-		String appId = inMessage._web_application.getId();
+		String appId = (inMessage.getData().containsKey("appid")?
+				inMessage.getData().get("appid") : inMessage._web_application.getId());
 		// Generate pathname for new image
 		String uri4File = Utils.F(URL4FILES_APPID_IMAGE + "%s", appId, file.getFilename());
 		String realPath = servletContext.getRealPath(uri4File);

@@ -10,20 +10,6 @@
 		<create creator="new" javascript="MessageHandler">
 			<param name="class" value="org.hydra.services.WebMessagesHandler" />
 		</create>
-
-<!--		<create creator="new" javascript="Users">-->
-<!--			<param name="class" value="org.supposition.db.proxy.Users" />-->
-<!--		</create>-->
-
-<!--		<create creator="new" javascript="UserProxy">-->
-<!--			<param name="class" value="org.supposition.db.proxy.UserProxy" />-->
-<!--		</create>-->
-
-<!--		<create creator="new" javascript="System">-->
-<!--			<param name="class" value="org.dwr.SystemProxy" />-->
-<!--		</create>-->
-<!--		-->
-
 		<convert match="org.hydra.messages.MessageBean" converter="bean"/>
 	</allow>	
 	
