@@ -49,8 +49,8 @@ public class UserFiles extends AMessageHandler {
 		{
 			returnFormat = "[[DB|Template|FileSavedOk.Header|span]]";
 			String fullPath = getMainUrl(inMessage.getUrl()) + filePath.getString();
-			returnFormat += "[[DB|Text|PathAsText|span]]: " + fullPath;
-			returnFormat += "[[DB|Text|PathAsLink|span]]: " + Utils.T("template.html.a.Href.Label", fullPath, fullPath);
+			returnFormat += "[[DB|Text|PathAsText|span]] " + fullPath;
+			returnFormat += "[[DB|Text|PathAsLink|span]] " + Utils.T("template.html.a.Href.Label", fullPath, fullPath);
 			returnFormat += "[[DB|Template|FileSavedOk.Footer|span]]";
 			
 		}else{

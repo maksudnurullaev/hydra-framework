@@ -103,6 +103,7 @@ Globals.decodeContent = function(content){
 };
 /* set wait element*/
 Globals.setWaitElement = function (data){
+	Globals.pageBusy = true;
     if(Globals.chk($('wait_element')) && (typeof $('wait_element').innerHTML != "undefined")){
         $('wait_element').innerHTML = Globals.loadingImage ;
     } else {
@@ -142,6 +143,7 @@ Globals.applyIncomingMessages = function (messages) {
     } else {
         Globals.porcessMessage(messages);
     }
+	Globals.pageBusy = false;	
 };
 Globals.porcessMessage = function (message) {
     // check for error

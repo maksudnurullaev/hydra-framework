@@ -11,7 +11,5 @@
 			<param name="class" value="org.hydra.services.WebMessagesHandler" />
 		</create>
 		<convert match="org.hydra.messages.MessageBean" converter="bean"/>
-	</allow>	
-	
-
+	</allow>		
 </dwr>
