@@ -15,6 +15,7 @@ import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
 import org.hydra.processors.exceptions.NullProcessorException;
 import org.hydra.processors.interfaces.IProcessor;
+import org.hydra.services.remote.interfaces.IMessageService;
 import org.hydra.utils.Constants;
 
 /**
@@ -22,6 +23,13 @@ import org.hydra.utils.Constants;
  *
  */
 public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage> {
+	private IMessageService remoteMessageService = null;
+	public IMessageService getRemoteMessageService() {
+		return remoteMessageService;
+	}
+	public void setRemoteMessageService(IMessageService remoteMessageService) {
+		this.remoteMessageService = remoteMessageService;
+	}
 
 	private int _maxCapacity = Constants._unlimited;
 	private volatile LinkedList<IMessage> _stack = null;
@@ -40,6 +48,7 @@ public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage
 		Object[] listeners = _listenerList.getListenerList();
 		
 		getLog().debug(String.format("Pipe(%s) has %d listeners", getName(), listeners.length/2));
+		getLog().error("remoteMessageService == null: " + (remoteMessageService == null));
 		
 		for (int i = 0; i < listeners.length; i+=2) {
 			if(listeners[i] == IPipeEventListener.class){

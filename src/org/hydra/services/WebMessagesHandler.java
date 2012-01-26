@@ -17,7 +17,6 @@ import org.hydra.utils.SessionUtils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
-
 	public Object[] sendMessage2(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException{
 		if(inFile != null){
 			getLog().debug("inFile.getFilename(): " + inFile.getFilename());
@@ -98,5 +97,4 @@ public class WebMessagesHandler extends ALogger {
 		}
 		return _return_result.toArray();
 	}
-
 }

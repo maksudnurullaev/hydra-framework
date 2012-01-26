@@ -182,7 +182,16 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 					message.getSessionID()));
 
 			if (message instanceof CommonMessage) {
-				applyMessage((CommonMessage)message);
+/* MAKE CommomMessage serializible 				
+				IMessageService remoteMessageService = getInPipe().getRemoteMessageService();
+				if(remoteMessageService != null)
+					message.get
+					for(IMessage message_: remoteMessageService.processMessage(message)){
+						applyMessage((CommonMessage)message_);
+					}
+				else
+*/								
+					applyMessage((CommonMessage)message);
 			} else{
 				message.setError("Expected CommonMessage type!");
 				getMessageCollector().putMessage(message);

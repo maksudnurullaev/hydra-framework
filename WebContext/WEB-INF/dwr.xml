@@ -3,9 +3,7 @@
 <!DOCTYPE dwr PUBLIC 
 	"-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN" 
 	"http://getahead.org/dwr//dwr30.dtd">
-
 <dwr>
-
 	<allow>
 		<create creator="new" javascript="MessageHandler">
 			<param name="class" value="org.hydra.services.WebMessagesHandler" />

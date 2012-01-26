@@ -13,7 +13,6 @@ import org.hydra.pipes.interfaces.IPipe;
 import org.hydra.utils.Constants;
 
 public class MessagesCollector implements ICollector {
-	
 	private Log _log = LogFactory.getLog(this.getClass());	
 	private int _total_message = 0;
 	private Map<String, IPipe<IMessage>> _groupOfMessages = new HashMap<String, IPipe<IMessage>>();
