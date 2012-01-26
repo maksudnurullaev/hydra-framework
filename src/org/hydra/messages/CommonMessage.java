@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
@@ -22,7 +23,6 @@ public class CommonMessage implements IMessage {
 	public String _locale = null;
 	public String _user_id = null;
 	
-	public WebContext _web_context = null;
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
 	private String sessionID = null;
 	private String url = null;
@@ -44,12 +44,13 @@ public class CommonMessage implements IMessage {
 	public Result set2HttpSession(String inKey, Object inObj) {
 		Result result = new Result();
 
-		if (_web_context == null || _web_context.getSession() == null) {
-			result.setResult(false);
+		WebContext context = WebContextFactory.get();
+		if (context == null || context.getSession() == null) {
+			result.setResult(false); 
 			result.setErrorString("Invalid session!");
 		} else {
 			try {
-				_web_context.getSession().setAttribute(_web_application.getId()	+ inKey, inObj);
+				context.getSession().setAttribute(_web_application.getId()	+ inKey, inObj);
 				result.setResult(true);
 			} catch (Exception e) {
 				result.setErrorString(e.getMessage());

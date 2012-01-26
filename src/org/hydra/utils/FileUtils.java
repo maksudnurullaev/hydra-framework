@@ -24,6 +24,8 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.messages.CommonMessage;
@@ -83,7 +85,8 @@ public final class FileUtils {
 
 	public static String saveFile4Admin(CommonMessage inMessage) {
 		FileTransfer file = inMessage.getFile();
-		ServletContext servletContext = inMessage._web_context.getServletContext(); 
+		WebContext context = WebContextFactory.get();		
+		ServletContext servletContext = context.getServletContext(); 
 		String appId = (inMessage.getData().containsKey("appid")?
 				inMessage.getData().get("appid") : inMessage._web_application.getId());
 		// Generate pathname for new image
@@ -114,7 +117,8 @@ public final class FileUtils {
 	
 	public static boolean saveFile(CommonMessage inMessage,
 			StringWrapper outFilePath, String ... dataDescriptionKeys) {
-		ServletContext servletContext = inMessage._web_context.getServletContext();
+		WebContext context = WebContextFactory.get();
+		ServletContext servletContext = context.getServletContext();
 		String inAppId = inMessage._web_application.getId();
 		FileTransfer file = inMessage.getFile();
 		boolean result = false;
