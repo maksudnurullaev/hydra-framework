@@ -27,9 +27,9 @@ public final class SessionUtils {
 			Result inResult,
 			CommonMessage inMessage, 
 			WebContext inWebContext) {
+		WebContext context = WebContextFactory.get();
 		// 1. set web context
-		inMessage._web_context = WebContextFactory.get();
-		if (inMessage._web_context == null) {
+		if (context == null) {
 			inResult.setErrorString("Could not find web context!");
 			inResult.setResult(false);
 			return inResult;
@@ -39,7 +39,7 @@ public final class SessionUtils {
 		if (!inResult.isOk())
 			return inResult;
 		// 3. set session id
-		inMessage.setSessionID(inMessage._web_context.getSession().getId());
+		inMessage.setSessionID(context.getSession().getId());
 		// 4. set locale
 		getSessionData(inResult, inMessage, Constants._session_locale);
 		if(inResult.isOk()){
@@ -107,18 +107,18 @@ public final class SessionUtils {
 			CommonMessage inCommonMessage,
 			String inKey,
 			Object inValue) {
+		WebContext context = WebContextFactory.get();
 		generateSessionDataKey(inResult, inCommonMessage._web_application.getId(), inKey);
 		if(!inResult.isOk()) return;
 		String sessionKey = (String) inResult.getObject();
 		if (inCommonMessage == null
-					|| inCommonMessage._web_context == null
 					|| inCommonMessage._web_application == null
 					|| inKey == null
 			) {
 			inResult.setResult(false);
 			inResult.setErrorString("Invalid session!");
 		} else {
-			inCommonMessage._web_context.getSession().setAttribute(
+			context.getSession().setAttribute(
 					sessionKey,
 					inValue);
 			inResult.setResult(true);
@@ -135,10 +135,10 @@ public final class SessionUtils {
 			inResult.setResult(false);
 			return;
 		}
-		
+		WebContext context = WebContextFactory.get();
 		String sessionKey = (String) inResult.getObject();
 		_log.debug("Try to get session data by key: " + sessionKey);		
-		String sessionValue = (String) inMessage._web_context.getSession()
+		String sessionValue = (String) context.getSession()
 				.getAttribute(sessionKey);
 		if (sessionValue == null){
 			_log.info("Could not get session session data for key: " + sessionKey);
@@ -158,8 +158,9 @@ public final class SessionUtils {
 	}
 
 	public static boolean validateCaptcha(CommonMessage inMessage) {
+		WebContext context = WebContextFactory.get();
 		try{
-			HttpSession session = inMessage._web_context.getSession();
+			HttpSession session = context.getSession();
 			int sessionValue = (Integer) session.getAttribute(inMessage._web_application.getId() + Constants._captcha_value);
 			if(inMessage.getData().containsKey(Constants._captcha_value)){
 				String captchaValue = inMessage.getData().get(Constants._captcha_value);
