@@ -16,15 +16,13 @@ import org.hydra.utils.Result;
  * 
  */
 public class CommonMessage implements IMessage {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	public WebApplication _web_application = null;
-	public WebContext _web_context = null;
 	public String _locale = null;
 	public String _user_id = null;
 	
+	public WebContext _web_context = null;
 	private Map<String, String> _requestDataMap = new HashMap<String, String>();
 	private String sessionID = null;
 	private String url = null;
@@ -92,7 +90,9 @@ public class CommonMessage implements IMessage {
 	}
 	
 	public void clearContent() {
-		if(_htmlContents != null)_htmlContents.clear();	}
+		if(_htmlContents != null) _htmlContents.clear();
+	}
+
 	public void setHighlightFields(List<String> _highlightFields) {
 		this._highlightFields = _highlightFields;
 	}
