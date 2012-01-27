@@ -70,7 +70,7 @@ public class UserFiles extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "key")) return inMessage;
+		if(!validateData(inMessage, "appid", "key")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("key");
 				

@@ -5,7 +5,7 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.abstracts.ALogger;
 
 public abstract class AMessageHandler extends ALogger implements IMessageHandler {
-	public static boolean testData(IMessage inMessage, String ...keys){
+	public static boolean validateData(IMessage inMessage, String ...keys){
 		if(inMessage.getData() == null ) return false;
 		for(String key:keys){
 			if(!inMessage.getData().containsKey(key)){

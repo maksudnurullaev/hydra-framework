@@ -21,7 +21,7 @@ import org.hydra.utils.Utils;
 public class AdmUsers extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-		if(!testData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		
 		String content  = String.format("[[Application|Users|%s|html]]", appId);
@@ -31,7 +31,7 @@ public class AdmUsers extends AMessageHandler {
 	}	
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!testData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
@@ -57,7 +57,7 @@ public class AdmUsers extends AMessageHandler {
 	
 	public IMessage add(CommonMessage inMessage){
 		String[] mandatoryFields = {"appid","user_mail","user_password","user_password2","user_tag"};
-		if(!testData(inMessage, mandatoryFields)) return inMessage;
+		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		getLog().debug("All necessary fields exits");
 		
 		
@@ -108,7 +108,7 @@ public class AdmUsers extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "key")) return inMessage;
+		if(!validateData(inMessage, "appid", "key")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("key").trim();
 				

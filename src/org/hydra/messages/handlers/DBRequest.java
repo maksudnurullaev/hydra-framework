@@ -52,7 +52,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 	}	
 	
 	public IMessage editText(CommonMessage inMessage){
-		if(!testData(	inMessage, "key", "dest")) return inMessage;
+		if(!validateData(	inMessage, "key", "dest")) return inMessage;
 		String key = inMessage.getData().get("key");
 		
 		getTextarea2Edit(inMessage, "Text", key, inMessage._locale,
@@ -61,7 +61,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 	}	
 	
 	public IMessage editTemplate(CommonMessage inMessage){
-		if(!testData(	inMessage, "key", "dest")) return inMessage;
+		if(!validateData(	inMessage, "key", "dest")) return inMessage;
 		String key = inMessage.getData().get("key");
 		
 		getTextarea2Edit(inMessage, "Template", key, "content",
@@ -70,7 +70,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 	}	
 	
 	public IMessage updateText(CommonMessage inMessage){
-		if(!testData(	inMessage, "key", "value", "dest")) return inMessage;
+		if(!validateData(	inMessage, "key", "value", "dest")) return inMessage;
 		
 		String key = inMessage.getData().get("key");
 		String value = inMessage.getData().get("value");		
@@ -108,7 +108,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 	}
 	
 	public IMessage updateTemplate(CommonMessage inMessage){
-		if(!testData(	inMessage, "key", "value", "dest")) return inMessage;
+		if(!validateData(	inMessage, "key", "value", "dest")) return inMessage;
 		
 		String key = inMessage.getData().get("key");
 		String value = inMessage.getData().get("value");		

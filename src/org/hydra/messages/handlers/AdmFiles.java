@@ -16,7 +16,7 @@ import org.hydra.utils.Utils;
 public class AdmFiles extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-		if(!testData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		
 		String content  = String.format("[[Application|Files|%s|html]]", appId);
@@ -26,7 +26,7 @@ public class AdmFiles extends AMessageHandler {
 	}	
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!testData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid")) return inMessage;
 		String appID = inMessage.getData().get("appid");
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
@@ -57,7 +57,7 @@ public class AdmFiles extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!testData(inMessage, "key")) return inMessage;
+		if(!validateData(inMessage, "key")) return inMessage;
 		
 		WebContext context = WebContextFactory.get();
 		String filePath = inMessage.getData().get("key");

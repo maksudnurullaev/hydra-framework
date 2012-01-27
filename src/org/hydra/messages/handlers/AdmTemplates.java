@@ -21,7 +21,7 @@ import org.hydra.utils.Utils;
 public class AdmTemplates extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-		if(!testData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		
 		String content  = String.format("[[Application|Templates|%s|html]]", appId);
@@ -31,7 +31,7 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!testData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid")) return inMessage;
 		String appID = inMessage.getData().get("appid");
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
@@ -49,7 +49,7 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage updateForm(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "key")) return inMessage;
+		if(!validateData(inMessage, "appid", "key")) return inMessage;
 		String appID = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("key");
 		String cfName = "Template";
@@ -85,7 +85,7 @@ public class AdmTemplates extends AMessageHandler {
 	
 	public IMessage add(CommonMessage inMessage){
 		String[] mandatoryFields = {"appid","template_key", "template_content"};
-		if(!testData(inMessage, mandatoryFields)) return inMessage;
+		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		
 		List<String> errorFields = new ArrayList<String>();
 		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();
@@ -131,7 +131,7 @@ public class AdmTemplates extends AMessageHandler {
 
 	public IMessage update(CommonMessage inMessage){
 		String[] mandatoryFields = {"appid","template_key", "template_content"};
-		if(!testData(inMessage, mandatoryFields)) return inMessage;
+		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		
 		List<String> errorFields = new ArrayList<String>();
 		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();
@@ -176,7 +176,7 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage delete(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "key")) return inMessage;
+		if(!validateData(inMessage, "appid", "key")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("key");
 				

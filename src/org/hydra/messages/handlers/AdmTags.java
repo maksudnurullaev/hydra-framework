@@ -17,7 +17,7 @@ import org.hydra.utils.Utils;
 public class AdmTags extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-		if(!testData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		
 		String content  = String.format("[[Application|Tags|%s|html]]", appId);
@@ -27,7 +27,7 @@ public class AdmTags extends AMessageHandler {
 	}
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!testData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		
 		
@@ -44,7 +44,7 @@ public class AdmTags extends AMessageHandler {
 	}
 
 	public IMessage add(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "tag_new")) return inMessage;
+		if(!validateData(inMessage, "appid", "tag_new")) return inMessage;
 		String appID = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("tag_new").trim();
 		String cfName = "Tag";
@@ -73,7 +73,7 @@ public class AdmTags extends AMessageHandler {
 	}
 	
 	public IMessage delete(CommonMessage inMessage){
-		if(!testData(inMessage, "appid", "value")) return inMessage;
+		if(!validateData(inMessage, "appid", "value")) return inMessage;
 		String appId = inMessage.getData().get("appid");
 		String value = inMessage.getData().get("value").trim();
 				
