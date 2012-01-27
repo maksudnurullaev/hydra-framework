@@ -48,7 +48,6 @@ public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage
 		Object[] listeners = _listenerList.getListenerList();
 		
 		getLog().debug(String.format("Pipe(%s) has %d listeners", getName(), listeners.length/2));
-		getLog().error("remoteMessageService == null: " + (remoteMessageService == null));
 		
 		for (int i = 0; i < listeners.length; i+=2) {
 			if(listeners[i] == IPipeEventListener.class){
