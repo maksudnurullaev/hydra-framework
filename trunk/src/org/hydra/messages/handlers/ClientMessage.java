@@ -68,7 +68,7 @@ public class ClientMessage extends AMessageHandler {
 	}
 	
 	public IMessage delete(CommonMessage inMessage){
-		if(!testData(inMessage, "key")) return inMessage;
+		if(!validateData(inMessage, "key")) return inMessage;
 		String appId = inMessage._web_application.getId();
 		String key = inMessage.getData().get("key");
 				

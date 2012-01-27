@@ -11,7 +11,7 @@ import org.hydra.utils.Utils;
 public class Tagger extends AMessageHandler {
 
 	public IMessage add(CommonMessage inMessage){
-		if (!testData(inMessage, "appid", "elemid", "value", "addvalue", "prefixes", "dest"))
+		if (!validateData(inMessage, "appid", "elemid", "value", "addvalue", "prefixes", "dest"))
 			return inMessage;
 		
 		String appId = inMessage.getData().get("appid");
@@ -28,7 +28,7 @@ public class Tagger extends AMessageHandler {
 	}
 	
 	public IMessage delete(CommonMessage inMessage){
-		if (!testData(inMessage, "appid", "elemid", "value", "delvalue", "prefixes", "dest"))
+		if (!validateData(inMessage, "appid", "elemid", "value", "delvalue", "prefixes", "dest"))
 			return inMessage;
 		
 		String appId = inMessage.getData().get("appid");

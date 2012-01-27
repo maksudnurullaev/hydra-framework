@@ -30,7 +30,7 @@ public class User extends AMessageHandler { // NO_UCD
 	
 	public IMessage login(CommonMessage inMessage) {
 		String[] mandatoryFields = {"appid","user_mail","user_password"};
-		if(!testData(inMessage, mandatoryFields)) return inMessage;
+		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		getLog().debug("All necessary fields exits");
 		
 		List<String> errorFields = new ArrayList<String>();

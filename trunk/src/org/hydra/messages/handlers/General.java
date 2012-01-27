@@ -12,7 +12,7 @@ import org.hydra.utils.SessionUtils;
 
 public class General extends AMessageHandler { // NO_UCD
 	public IMessage getTextByKey(CommonMessage inMessage) {
-		if (!testData(inMessage, "key"))
+		if (!validateData(inMessage, "key"))
 			return inMessage;
 		
 		String content = MessagesManager.getText(
@@ -24,7 +24,7 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 
 	public IMessage changeLocale(CommonMessage inMessage) {
-		if (!testData(inMessage, Constants._session_locale))
+		if (!validateData(inMessage, Constants._session_locale))
 			return inMessage;
 		getLog().debug(
 				"Try to change current locale to: "
@@ -52,7 +52,7 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 	
 	public IMessage getContent(CommonMessage inMessage){
-		if (!testData(inMessage, "content"))
+		if (!validateData(inMessage, "content"))
 			return inMessage;
 		
 		String content = inMessage.getData().get("content");
