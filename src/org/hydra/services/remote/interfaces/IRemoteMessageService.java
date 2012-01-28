@@ -6,5 +6,5 @@ import java.rmi.RemoteException;
 import org.hydra.messages.interfaces.IMessage;
 
 public interface IRemoteMessageService extends Remote {
-	public Object[] processMessage(IMessage inMessage) throws RemoteException;
+	public IMessage[] processMessage(IMessage inMessage) throws RemoteException;
 }

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
 import org.hydra.messages.CommonMessage;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
-import org.hydra.utils.Utils;
 
 public class IndexHtml extends HttpServlet {
 	protected Log _log = LogFactory.getLog("org.hydra.services.IndexHtml");
@@ -41,8 +41,8 @@ public class IndexHtml extends HttpServlet {
 		response.setContentType("text/html");
 		_log.debug("START process index.html page");
 		
-		ServletContext context = Utils.getServletContent();
-		String index_file_path = context.getRealPath(index_file);
+		WebContext context = WebContextFactory.get();
+		String index_file_path = context.getServletContext().getRealPath(index_file);
 		PrintWriter out = response.getWriter();
 		if (index_file_path == null) {
 			_log.error(index_file + " file not found!");
@@ -54,14 +54,14 @@ public class IndexHtml extends HttpServlet {
 		CommonMessage msg = new CommonMessage();
 		msg.setUrl(req.getRequestURL().toString() + "?" + req.getQueryString());
 		Result inResult = new Result();
-		SessionUtils.setWebApp(inResult , msg);		
+		SessionUtils.setWebAppParameters(inResult,msg, context);		
 		if(!inResult.isOk()){
 			_log.error(index_file + msg.getUrl() + " - not found responsible application!");
 			out.println(index_with_err.replaceFirst(err_code,
 					index_file + msg.getUrl() + " - not found responsible application!"));
 			return;
 		}
-		_log.debug("Corresponding web application is: " + msg.getWebApplication().getId());
+		_log.debug("Corresponding web application is: " + msg.getData().get("appid"));
 
 		File file = new File(index_file_path);
 		FileInputStream fis = null;
@@ -80,7 +80,7 @@ public class IndexHtml extends HttpServlet {
 			String strLine;
 			// Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
-				sb.append(updateIfHtmlHead(strLine, msg.getWebApplication().getId()));
+				sb.append(updateIfHtmlHead(strLine, msg.getData().get("appid")));
 			}
 			out.println(sb.toString());
 			// Close the input stream

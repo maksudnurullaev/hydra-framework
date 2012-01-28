@@ -36,13 +36,6 @@ public class UserFiles extends AMessageHandler {
 		}
 		
 		StringWrapper filePath = new StringWrapper();
-
-		if(!SessionUtils.validateCaptcha(inMessage)){
-			ArrayList<String> errorFields = new ArrayList<String>();
-			errorFields.add(Constants._captcha_value);
-			inMessage.setHighlightFields(errorFields);
-			return(inMessage);
-		}
 		
 		String returnFormat = "";
 		if(FileUtils.saveFile(inMessage, filePath, "Name", "Public", "Tag", "Text"))

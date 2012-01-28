@@ -16,7 +16,7 @@ public class ClientMessage extends AMessageHandler {
 	
 	public IMessage list(CommonMessage inMessage){		
 		String content  = String.format("[[Application|ClientMessages|%s|%s]]", 
-				inMessage.getWebApplication().getId(),
+				inMessage.getData().get("appid"),
 				inMessage.getData().get("dest"));
 		getLog().debug("Try to get content for: " + content);
 		
@@ -29,7 +29,7 @@ public class ClientMessage extends AMessageHandler {
 			return inMessage;
 		}
 		
-		String appId = inMessage.getWebApplication().getId();
+		String appId = inMessage.getData().get("appid");
 		String key = Utils.GetDateUUID();
 		// test data
 		for(Map.Entry<String, String> entry: inMessage.getData().entrySet()){
@@ -69,7 +69,7 @@ public class ClientMessage extends AMessageHandler {
 	
 	public IMessage delete(CommonMessage inMessage){
 		if(!validateData(inMessage, "key")) return inMessage;
-		String appId = inMessage.getWebApplication().getId();
+		String appId = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("key");
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, _cfName, key);

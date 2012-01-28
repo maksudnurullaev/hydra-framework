@@ -1,6 +1,5 @@
 package org.hydra.messages.handlers;
 
-import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.hydra.beans.StatisticsCollector;
 import org.hydra.beans.WebApplications;
@@ -11,7 +10,6 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
-import org.hydra.utils.Utils;
 
 public class Adm extends AMessageHandler { // NO_UCD	
 
@@ -46,24 +44,6 @@ public class Adm extends AMessageHandler { // NO_UCD
 		return(ADeployer.deployContent("[[Applications|All|NULL|html]]",inMessage));
 	}		
 
-	public static IMessage getCassandraConfiguration(CommonMessage inMessage){
-		WebContext context = inMessage.getWebContext();
-		String result = Utils.T("template.table.with.class",
-				"table.name.value",
-				String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Server", context.getServletContext().getServerInfo())
-				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Protocol", context.getHttpServletRequest().getProtocol())
-				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Server Name", context.getHttpServletRequest().getServerName())
-				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Server Port", context.getHttpServletRequest().getServerPort())
-				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Web Applicication ID", inMessage.getWebApplication().getId())
-				);
-		inMessage.setHtmlContent(result);
-		return inMessage;
-	}
 	// NO_UCD	
 	public static IMessage getApp(CommonMessage inMessage) {
 		if(!validateData(inMessage, "appid")) return inMessage;

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
+import org.hydra.beans.WebApplication;
 import org.hydra.beans.WebApplications;
 import org.hydra.messages.CommonMessage;
 
@@ -22,31 +23,33 @@ public final class SessionUtils {
 	 * @param inMessage
 	 * @param inSession
 	 */
-	public static Result attachSessionData(
+	public static Result setApplicationData(
 			Result inResult,
-			CommonMessage inMessage) {
+			CommonMessage inMessage,
+			WebContext context) {
 		// 1. set web context
-		WebContext context = inMessage.getWebContext();
 		if (context == null) {
 			inResult.setErrorString("Could not find web context!");
 			inResult.setResult(false);
 			return inResult;
 		}
+		// 1.1 context path
+		inMessage.setContextPath(context.getServletContext().getContextPath());
 		// 2. set web application
-		setWebApp(inResult, inMessage);
+		setWebAppParameters(inResult, inMessage, context);
 		if (!inResult.isOk())
 			return inResult;
 		// 3. set session id
 		inMessage.setSessionID(context.getSession().getId());
 		// 4. set locale
-		getSessionData(inResult, inMessage, Constants._session_locale);
+		getSessionData(inResult, inMessage, Constants._session_locale, context);
 		if(inResult.isOk()){
 			inMessage.setLocale((String) inResult.getObject());
 		}else{
-			inMessage.setLocale(inMessage.getWebApplication().getDefaultLocale());
+			inMessage.setLocale(inMessage.getData().get("default_locale"));
 		}
 		// 5. set session user id
-		SessionUtils.getSessionData(inResult, inMessage, Constants._session_user_id);
+		SessionUtils.getSessionData(inResult, inMessage, Constants._session_user_id, context);
 		if(inResult.isOk()){
 			inMessage.setUserId((String) inResult.getObject());
 		}
@@ -55,23 +58,10 @@ public final class SessionUtils {
 		return inResult;
 	};
 	
-	private static void generateSessionDataKey(
+	public static void setWebAppParameters(
 			Result inResult,
-			String inAppId, 
-			String inKey) {
-		if (inAppId == null || inKey == null) {
-			inResult.setObject("Could not generate Session Data Key!");
-			_log.warn("Could not generate Session Data Key!");
-			inResult.setResult(false);
-			return;
-		}
-		inResult.setObject(inAppId + inKey);
-		inResult.setResult(true);
-	};
-
-	public static void setWebApp(
-			Result inResult,
-			CommonMessage inMessage) {
+			CommonMessage inMessage, 
+			WebContext context) {
 		BeansUtils.getWebContextBean(inResult,
 				Constants._bean_hydra_web_applications);
 		if (!inResult.isOk() || !(inResult.getObject() instanceof WebApplications))
@@ -82,19 +72,16 @@ public final class SessionUtils {
 		String urlString = inMessage.getUrl();
 		if(urlString != null){
 			int found = urlString.indexOf("mode=");
-			if(found != -1){
-				inMessage.setWebApplication(webApplications.getValidApplication4(urlString.toLowerCase().substring(found)));	
-				if(inMessage.getWebApplication() != null){
-					inResult.setResult(true);
-					return;
-				}				
-			}
-			inMessage.setWebApplication(webApplications.getValidApplication4(urlString));
-			if (inMessage.getWebApplication() == null) {
-				inResult.setErrorString("Could not initialize WebApplication object!");
-			} else {
+			WebApplication app = webApplications.getValidApplication4(
+					(found != -1) ? urlString.toLowerCase().substring(found) 
+							: urlString);	
+			if(app != null){
+				inMessage.getData().put("appid", app.getId());
+				inMessage.getData().put("locale", app.getDefaultLocale());
+				inMessage.setTimeout(app.getTimeout());
 				inResult.setResult(true);
-			}
+				return;
+			}				
 		}else{
 			inResult.setErrorString("Could not find _URL parameter for message!");
 		}
@@ -104,40 +91,22 @@ public final class SessionUtils {
 			Result inResult,
 			CommonMessage inMessage,
 			String inKey,
-			Object inValue) {
-		WebContext context = inMessage.getWebContext();
-		generateSessionDataKey(inResult, inMessage.getWebApplication().getId(), inKey);
-		if(!inResult.isOk()) return;
-		String sessionKey = (String) inResult.getObject();
-		if (inMessage == null
-					|| inMessage.getWebApplication() == null
-					|| inKey == null
-			) {
-			inResult.setResult(false);
-			inResult.setErrorString("Invalid session!");
-		} else {
-			context.getSession().setAttribute(
-					sessionKey,
-					inValue);
-			inResult.setResult(true);
-		}
+			Object inValue,
+			WebContext context) {
+		context.getSession().setAttribute(
+				(inMessage.getData().get("appid") +  inKey),
+				inValue);
 	};
 	
 	public static void getSessionData(
 			Result inResult,
 			CommonMessage inMessage,
-			String inKey) {
-		generateSessionDataKey(inResult, inMessage.getWebApplication().getId(), inKey);
-		if (!inResult.isOk()){
-			inResult.setErrorString("Could not generate unique session ID");
-			inResult.setResult(false);
-			return;
-		}
-		WebContext context = inMessage.getWebContext();
-		String sessionKey = (String) inResult.getObject();
+			String inKey,
+			WebContext context) {
+		
+		String sessionKey = inMessage.getData().get("appid") + inKey;
 		_log.debug("Try to get session data by key: " + sessionKey);		
-		String sessionValue = (String) context.getSession()
-				.getAttribute(sessionKey);
+		String sessionValue = (String) context.getSession().getAttribute(sessionKey);
 		if (sessionValue == null){
 			_log.info("Could not get session session data for key: " + sessionKey);
 			inResult.setResult(false);
@@ -155,11 +124,10 @@ public final class SessionUtils {
 		return null;
 	}
 
-	public static boolean validateCaptcha(CommonMessage inMessage) {
-		WebContext context = inMessage.getWebContext();
+	public static boolean validateCaptcha(CommonMessage inMessage, WebContext context) {
 		try{
 			HttpSession session = context.getSession();
-			int sessionValue = (Integer) session.getAttribute(inMessage.getWebApplication().getId() + Constants._captcha_value);
+			int sessionValue = (Integer) session.getAttribute(inMessage.getData().get("appid") + Constants._captcha_value);
 			if(inMessage.getData().containsKey(Constants._captcha_value)){
 				String captchaValue = inMessage.getData().get(Constants._captcha_value);
 				int passedValue = Integer.parseInt(captchaValue);

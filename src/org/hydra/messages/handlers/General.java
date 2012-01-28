@@ -1,5 +1,6 @@
 package org.hydra.messages.handlers;
 
+import org.directwebremoting.WebContext;
 import org.hydra.deployers.ADeployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
@@ -23,7 +24,7 @@ public class General extends AMessageHandler { // NO_UCD
 		return (ADeployer.deployContent(content,inMessage));
 	}
 
-	public IMessage changeLocale(CommonMessage inMessage) {
+	public IMessage changeLocale(CommonMessage inMessage, WebContext context) {
 		if (!validateData(inMessage, Constants._session_locale))
 			return inMessage;
 		getLog().debug(
@@ -38,7 +39,8 @@ public class General extends AMessageHandler { // NO_UCD
 				result, 
 				inMessage, 
 				Constants._session_locale,
-				new_locale);
+				new_locale,
+				context);
 		// if something wrong
 		if (!result.isOk()) {
 			inMessage.setError(result.getResult());
@@ -67,12 +69,12 @@ public class General extends AMessageHandler { // NO_UCD
 	};
 	
 	public IMessage getInitialBody(CommonMessage inMessage) {		
-		String content = FileUtils.getFromHtmlFile(inMessage.getWebApplication().getId(),"body");
+		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("appid"),"body");
 		if(content != null){
 			getLog().debug("... HTML body content length: " + content.length());
 			return(ADeployer.deployContent(content,inMessage));
 		}
-		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getWebApplication().getId());
+		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("appid"));
 		return(inMessage);
 	};
 }

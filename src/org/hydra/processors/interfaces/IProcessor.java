@@ -16,7 +16,7 @@ public interface IProcessor extends Runnable, IPipeEventListener {
 	 * @author M.Nurullayev
 	 */
 	public enum ProcessorStatus {
-		WORKING, WAITING
+		WORKING, FREE
 	};
 
 	/**

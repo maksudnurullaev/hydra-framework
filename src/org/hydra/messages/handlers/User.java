@@ -3,6 +3,7 @@ package org.hydra.messages.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.directwebremoting.WebContext;
 import org.hydra.managers.CryptoManager;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
@@ -17,9 +18,9 @@ import org.hydra.utils.Utils;
 
 public class User extends AMessageHandler { // NO_UCD	
 
-	public IMessage logout(CommonMessage inMessage) {
+	public IMessage logout(CommonMessage inMessage, WebContext context) {
 		Result result = new Result();
-		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, null);
+		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, null, context);
 		if(result.isOk()){
 			inMessage.setReloadPage(true);
 			return(inMessage);
@@ -28,7 +29,7 @@ public class User extends AMessageHandler { // NO_UCD
 		return inMessage;
 	}
 	
-	public IMessage login(CommonMessage inMessage) {
+	public IMessage login(CommonMessage inMessage, WebContext context) {
 		String[] mandatoryFields = {"appid","user_mail","user_password"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		getLog().debug("All necessary fields exits");
@@ -48,7 +49,7 @@ public class User extends AMessageHandler { // NO_UCD
 			getLog().debug("Test administrator for user: " + user_mail);
 			if(DBUtils.test4GlobalAdmin(user_mail, user_password)){
 				getLog().debug("Found administrator account for: " + user_mail);
-				return(setupUserSession(inMessage, "+++"));
+				return(setupUserSession(inMessage, "+++", context));
 			}
 		}
 		
@@ -68,16 +69,16 @@ public class User extends AMessageHandler { // NO_UCD
 
 		// 3. test for user/password
 		if(CryptoManager.checkPassword(user_password, user_password_cryped)){ // check password
-			return(setupUserSession(inMessage, user_mail));
+			return(setupUserSession(inMessage, user_mail, context));
 		}
 			
 		inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getLocale()));
 		return(inMessage);
 	}
 
-	private IMessage setupUserSession(CommonMessage inMessage, String userId) {
+	private IMessage setupUserSession(CommonMessage inMessage, String userId, WebContext context) {
 		Result result = new Result();
-		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, userId);
+		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, userId, context);
 		if(result.isOk()){
 			inMessage.setReloadPage(true);
 			return(inMessage);

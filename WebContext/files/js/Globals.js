@@ -121,23 +121,15 @@ Globals.restoreWaitElement = function(){
 	}
 	Globals.pageBusy = false;
 };
+
 /* Send message to server*/
-Globals.sendMessage = function (data) {
+Globals.sendMessage = function (data, file) {
     Globals.setWaitElement(data);
     var message = {
         data: data,
         url: document.URL
     };
-    MessageHandler.sendMessage(message, Globals.applyIncomingMessages);
-};
-/* Send message to server*/
-Globals.sendMessage2 = function (data, file) {
-    Globals.setWaitElement(data);
-    var message = {
-        data: data,
-        url: document.URL
-    };
-    MessageHandler.sendMessage2(message, file, Globals.applyIncomingMessages);
+    MessageHandler.sendMessage(message, file, Globals.applyIncomingMessages);
 };
 Globals.confirmAndSendMessage = function (data) {
     if(!confirm("Confirm action!\nПодтвердите действие!"))return;
