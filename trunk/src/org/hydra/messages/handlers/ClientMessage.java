@@ -16,7 +16,7 @@ public class ClientMessage extends AMessageHandler {
 	
 	public IMessage list(CommonMessage inMessage){		
 		String content  = String.format("[[Application|ClientMessages|%s|%s]]", 
-				inMessage._web_application.getId(),
+				inMessage.getWebApplication().getId(),
 				inMessage.getData().get("dest"));
 		getLog().debug("Try to get content for: " + content);
 		
@@ -25,18 +25,18 @@ public class ClientMessage extends AMessageHandler {
 	
 	public IMessage add(CommonMessage inMessage){		
 		if(inMessage.getData().isEmpty()){
-			inMessage.setError(MessagesManager.getText("NoData", null, inMessage._locale));
+			inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getLocale()));
 			return inMessage;
 		}
 		
-		String appId = inMessage._web_application.getId();
+		String appId = inMessage.getWebApplication().getId();
 		String key = Utils.GetDateUUID();
 		// test data
 		for(Map.Entry<String, String> entry: inMessage.getData().entrySet()){
 			if(!isValidDataKey(entry.getKey())) continue;
 			if(entry.getValue().length() > 1024){
 				inMessage.clearContent();
-				inMessage.setError(MessagesManager.getText("Error.Too.Long.Data", null, inMessage._locale));
+				inMessage.setError(MessagesManager.getText("Error.Too.Long.Data", null, inMessage.getLocale()));
 				return inMessage;
 			}
 		}
@@ -55,7 +55,7 @@ public class ClientMessage extends AMessageHandler {
 			return inMessage;
 		}
 
-		inMessage.setHtmlContent(MessagesManager.getText("MessageSaved", null, inMessage._locale));
+		inMessage.setHtmlContent(MessagesManager.getText("MessageSaved", null, inMessage.getLocale()));
 		return inMessage;
 	}
 
@@ -69,7 +69,7 @@ public class ClientMessage extends AMessageHandler {
 	
 	public IMessage delete(CommonMessage inMessage){
 		if(!validateData(inMessage, "key")) return inMessage;
-		String appId = inMessage._web_application.getId();
+		String appId = inMessage.getWebApplication().getId();
 		String key = inMessage.getData().get("key");
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, _cfName, key);

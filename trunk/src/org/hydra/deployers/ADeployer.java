@@ -29,9 +29,9 @@ public final class ADeployer {
 		Map<String, String> editLinks = new HashMap<String, String>();
 		String content = deployContent(
 				inContent, 
-				inMessage._web_application.getId(), 
-				inMessage._locale, 
-				inMessage._user_id,
+				inMessage.getWebApplication().getId(), 
+				inMessage.getLocale(), 
+				inMessage.getIserId(),
 				editLinks);
 				
 		inMessage.setHtmlContent(content);

@@ -71,7 +71,7 @@ public class User extends AMessageHandler { // NO_UCD
 			return(setupUserSession(inMessage, user_mail));
 		}
 			
-		inMessage.setError(MessagesManager.getText("NoData", null, inMessage._locale));
+		inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getLocale()));
 		return(inMessage);
 	}
 

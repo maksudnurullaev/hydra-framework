@@ -61,7 +61,7 @@ public class IndexHtml extends HttpServlet {
 					index_file + msg.getUrl() + " - not found responsible application!"));
 			return;
 		}
-		_log.debug("Corresponding web application is: " + msg._web_application.getId());
+		_log.debug("Corresponding web application is: " + msg.getWebApplication().getId());
 
 		File file = new File(index_file_path);
 		FileInputStream fis = null;
@@ -80,7 +80,7 @@ public class IndexHtml extends HttpServlet {
 			String strLine;
 			// Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
-				sb.append(updateIfHtmlHead(strLine, msg._web_application.getId()));
+				sb.append(updateIfHtmlHead(strLine, msg.getWebApplication().getId()));
 			}
 			out.println(sb.toString());
 			// Close the input stream

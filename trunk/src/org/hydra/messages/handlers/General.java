@@ -18,7 +18,7 @@ public class General extends AMessageHandler { // NO_UCD
 		String content = MessagesManager.getText(
 				inMessage.getData().get("key"),
 				"div",
-				inMessage._locale);
+				inMessage.getLocale());
 
 		return (ADeployer.deployContent(content,inMessage));
 	}
@@ -46,7 +46,7 @@ public class General extends AMessageHandler { // NO_UCD
 		}
 		getLog().debug("Locale sucessefully changed to: " + new_locale);
 		// Change message locale too...
-		inMessage._locale = new_locale;
+		inMessage.setLocale(new_locale);
 		
 		return getInitialBody(inMessage);
 	}
@@ -67,12 +67,12 @@ public class General extends AMessageHandler { // NO_UCD
 	};
 	
 	public IMessage getInitialBody(CommonMessage inMessage) {		
-		String content = FileUtils.getFromHtmlFile(inMessage._web_application.getId(),"body");
+		String content = FileUtils.getFromHtmlFile(inMessage.getWebApplication().getId(),"body");
 		if(content != null){
 			getLog().debug("... HTML body content length: " + content.length());
 			return(ADeployer.deployContent(content,inMessage));
 		}
-		inMessage.setHtmlContent("Could not find initial body for: " + inMessage._web_application.getId());
+		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getWebApplication().getId());
 		return(inMessage);
 	};
 }
