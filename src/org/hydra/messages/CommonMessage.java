@@ -19,38 +19,50 @@ import org.hydra.utils.Result;
 public class CommonMessage implements IMessage {
 
 	private static final long serialVersionUID = 1L;
-	public WebApplication _web_application = null;
-	public String _locale = null;
-	public String _user_id = null;
+	private WebApplication webApplication = null;
+
+	private String locale = null;
+	private String userId = null;
 	
-	private Map<String, String> _requestDataMap = new HashMap<String, String>();
+	private Map<String, String> requestDataMap = new HashMap<String, String>();
 	private String sessionID = null;
 	private String url = null;
-	private Map<String, String> _htmlContents = null ;
-	private List<String> _highlightFields = null;
-	private List<String> _noHighlightFields = null;
+	private Map<String, String> htmlContents = null ;
+	private List<String> highlightFields = null;
+	private List<String> noHighlightFields = null;
 	private boolean reloadPage = false;
 		
-	private String _error = null;
+	private String error = null;
 	private FileTransfer file = null;
+	private WebContext webContext = null;
 
 	@Override
+	public void setWebContext(WebContext webContext) {
+		this.webContext  = webContext;
+	}	
+	
+	@Override
+	public WebContext getWebContext() {
+		return(webContext);
+	}	
+	
+	@Override
 	public void setHtmlContents(String keyElementID, String htmlContent) {
-		if(_htmlContents == null) _htmlContents = new HashMap<String, String>();
-		_htmlContents.put(keyElementID, htmlContent);
+		if(htmlContents == null) htmlContents = new HashMap<String, String>();
+		htmlContents.put(keyElementID, htmlContent);
 	}
 
 	@Override
 	public Result set2HttpSession(String inKey, Object inObj) {
 		Result result = new Result();
-
-		WebContext context = WebContextFactory.get();
+		
+		WebContext context = getWebContext();		
 		if (context == null || context.getSession() == null) {
 			result.setResult(false); 
 			result.setErrorString("Invalid session!");
 		} else {
 			try {
-				context.getSession().setAttribute(_web_application.getId()	+ inKey, inObj);
+				context.getSession().setAttribute(webApplication.getId()	+ inKey, inObj);
 				result.setResult(true);
 			} catch (Exception e) {
 				result.setErrorString(e.getMessage());
@@ -62,23 +74,23 @@ public class CommonMessage implements IMessage {
 
 	@Override
 	public void setData(Map<String, String> _data) {
-		this._requestDataMap = _data;
+		this.requestDataMap = _data;
 	}
 
 	@Override
 	public Map<String, String> getData() {
-		return _requestDataMap;
+		return requestDataMap;
 	}
 
 	@Override
 	public String getError() {
-		return _error;
+		return error;
 	}
 
 	@Override
 	public void setError(String inErrorString) {
 		clearContent();
-		_error = inErrorString;
+		error = inErrorString;
 	}
 
 	@Override
@@ -87,29 +99,29 @@ public class CommonMessage implements IMessage {
 	}
 
 	public Map<String, String> getHtmlContents() {
-		return _htmlContents;
+		return htmlContents;
 	}
 	
 	public void clearContent() {
-		if(_htmlContents != null) _htmlContents.clear();
+		if(htmlContents != null) htmlContents.clear();
 	}
 
 	public void setHighlightFields(List<String> _highlightFields) {
-		this._highlightFields = _highlightFields;
+		this.highlightFields = _highlightFields;
 	}
 
 	public List<String> getHighlightFields() {
-		return _highlightFields;
+		return highlightFields;
 	}
 
 	public void setNoHighlightFields(String[] mandatoryFields) {
-		this._noHighlightFields = new ArrayList<String>();
+		this.noHighlightFields = new ArrayList<String>();
 		for(String field:mandatoryFields)
-			_noHighlightFields.add(field);
+			noHighlightFields.add(field);
 	}
 
 	public List<String> getNoHighlightFields() {
-		return _noHighlightFields;
+		return noHighlightFields;
 	}
 	
 	@Override
@@ -140,7 +152,39 @@ public class CommonMessage implements IMessage {
 		this.reloadPage = reloadPage;
 	}
 
-	public boolean isReloadPage() {
+	@Override
+public boolean isReloadPage() {
 		return reloadPage;
 	}
+
+	@Override
+	public void setLocale(String inLocale) {
+		this.locale = inLocale;
+	}
+
+	@Override
+	public String getLocale() {
+		return locale;
+	}
+
+	@Override
+	public void setUserId(String _user_id) {
+		this.userId = _user_id;
+	}
+
+	@Override
+	public String getIserId() {
+		return userId;
+	}
+	
+	@Override
+	public WebApplication getWebApplication() {
+		return webApplication;
+	}
+
+	@Override
+	public void setWebApplication(WebApplication webApplication) {
+		this.webApplication = webApplication;
+	}
+	
 }

@@ -59,7 +59,7 @@ public class AdmFiles extends AMessageHandler {
 	public IMessage delete(CommonMessage inMessage){
 		if(!validateData(inMessage, "key")) return inMessage;
 		
-		WebContext context = WebContextFactory.get();
+		WebContext context = inMessage.getWebContext();
 		String filePath = inMessage.getData().get("key");
 		String realPath = context.getServletContext().getRealPath(filePath);				
 		org.apache.cassandra.io.util.FileUtils.delete(realPath);

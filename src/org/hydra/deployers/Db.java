@@ -18,7 +18,12 @@ public final class Db {
 			String inLocale,
 			String inUserID, 
 			Map<String, String> editLinks) {
-		_log.debug("Enter to: getDbWhatKeyHow");
+		_log.debug("inWhat: " + inWhat);
+		_log.debug("inKey: " + inKey);
+		_log.debug("inHow: " + inHow);
+		_log.debug("inApplicationID: " + inApplicationID);
+		_log.debug("inLocale: " + inLocale);
+		_log.debug("inUserID: " + inUserID);
 		
 		if(inWhat.compareToIgnoreCase("text") == 0){
 			return getTextKeyHow(inKey, inHow, inApplicationID, inLocale, inUserID, editLinks);
@@ -32,14 +37,6 @@ public final class Db {
 		if(inWhat.compareToIgnoreCase("template") == 0){
 			return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, editLinks);
 		}
-		/*
-		if(inWhat.compareToIgnoreCase("NonUserTemplate") == 0){
-			if(inUserID == null)
-				return getTemplateKeyANY(inKey, inHow, inApplicationID, inUserID, editLinks);
-			else
-				return "&nbsp;";
-		}
-		*/
 		_log.warn(String.format("Could not find WHAT part for [[DB|->%s<-|%s|%s]]", inWhat,inKey, inHow));
 		return String.format("Could not find WHAT part for {{DB|<strong>%s</strong>|%s|%s}}", inWhat,inKey, inHow) ;
 	}

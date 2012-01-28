@@ -47,7 +47,7 @@ public class Adm extends AMessageHandler { // NO_UCD
 	}		
 
 	public static IMessage getCassandraConfiguration(CommonMessage inMessage){
-		WebContext context = WebContextFactory.get();
+		WebContext context = inMessage.getWebContext();
 		String result = Utils.T("template.table.with.class",
 				"table.name.value",
 				String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
@@ -59,7 +59,7 @@ public class Adm extends AMessageHandler { // NO_UCD
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
 						"Server Port", context.getHttpServletRequest().getServerPort())
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Web Applicication ID", inMessage._web_application.getId())
+						"Web Applicication ID", inMessage.getWebApplication().getId())
 				);
 		inMessage.setHtmlContent(result);
 		return inMessage;

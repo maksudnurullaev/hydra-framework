@@ -19,7 +19,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			String inAction,
 			String inActionMethod){
 		
-		String appId = inMessage._web_application.getId();
+		String appId = inMessage.getWebApplication().getId();
 		String spanId = String.format("%s.%s", inCFName, inKey); 
 		String textAreaId =  String.format("%s.%s.%s.textarea", appId, inCFName, inKey);
 		
@@ -33,7 +33,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 				);
 		
 		StringWrapper stringWrapper = new StringWrapper();		
-		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage._web_application.getId(), inCFName, inKey, inCName, stringWrapper);
+		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage.getWebApplication().getId(), inCFName, inKey, inCName, stringWrapper);
 		
 		StringBuffer resultBuffer = new StringBuffer("<div class=\"edit\">");
 		
@@ -55,7 +55,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		if(!validateData(	inMessage, "key", "dest")) return inMessage;
 		String key = inMessage.getData().get("key");
 		
-		getTextarea2Edit(inMessage, "Text", key, inMessage._locale,
+		getTextarea2Edit(inMessage, "Text", key, inMessage.getLocale(),
 				"DBRequest","updateText");
 		return inMessage;
 	}	
@@ -75,7 +75,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		String key = inMessage.getData().get("key");
 		String value = inMessage.getData().get("value");		
 				
-		update(inMessage, "Text", key, inMessage._locale, value);
+		update(inMessage, "Text", key, inMessage.getLocale(), value);
 		
 		return inMessage;
 	}
@@ -87,7 +87,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			String inColumnName, 
 			String inValue){
 		
-		ErrorUtils.ERROR_CODES err = DBUtils.setValue(inMessage._web_application.getId(), inCFName, inKey, inColumnName, inValue);
+		ErrorUtils.ERROR_CODES err = DBUtils.setValue(inMessage.getWebApplication().getId(), inCFName, inKey, inColumnName, inValue);
 		
 		if(err != ErrorUtils.ERROR_CODES.NO_ERROR){
 			getLog().error(err.toString());
@@ -96,7 +96,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		}		
 		
 		StringWrapper outValue = new StringWrapper();
-		err = DBUtils.getValue(inMessage._web_application.getId(), inCFName, inKey, inColumnName, outValue);
+		err = DBUtils.getValue(inMessage.getWebApplication().getId(), inCFName, inKey, inColumnName, outValue);
 		
 		if(err != ErrorUtils.ERROR_CODES.NO_ERROR){
 			getLog().error(err.toString());
