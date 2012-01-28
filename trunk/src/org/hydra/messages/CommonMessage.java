@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Result;
 
 /**
  * @author M.Nurullayev
@@ -19,67 +16,45 @@ import org.hydra.utils.Result;
 public class CommonMessage implements IMessage {
 
 	private static final long serialVersionUID = 1L;
-	private WebApplication webApplication = null;
 
 	private String locale = null;
 	private String userId = null;
-	
-	private Map<String, String> requestDataMap = new HashMap<String, String>();
+	private String realFilePath = null;
+	private Map<String, String> data = new HashMap<String, String>();
 	private String sessionID = null;
 	private String url = null;
-	private Map<String, String> htmlContents = null ;
+	private Map<String, String> htmlContents = null;
 	private List<String> highlightFields = null;
 	private List<String> noHighlightFields = null;
 	private boolean reloadPage = false;
-		
+
 	private String error = null;
 	private FileTransfer file = null;
-	private WebContext webContext = null;
+	private String contextPath;
+	private long timeOut;
 
-	@Override
-	public void setWebContext(WebContext webContext) {
-		this.webContext  = webContext;
+	public long getTimeout() {
+		return(timeOut);
 	}	
 	
-	@Override
-	public WebContext getWebContext() {
-		return(webContext);
-	}	
-	
+	public void setTimeout(long timeout){
+		timeOut = timeout;
+	}
 	@Override
 	public void setHtmlContents(String keyElementID, String htmlContent) {
-		if(htmlContents == null) htmlContents = new HashMap<String, String>();
+		if (htmlContents == null)
+			htmlContents = new HashMap<String, String>();
 		htmlContents.put(keyElementID, htmlContent);
 	}
 
 	@Override
-	public Result set2HttpSession(String inKey, Object inObj) {
-		Result result = new Result();
-		
-		WebContext context = getWebContext();		
-		if (context == null || context.getSession() == null) {
-			result.setResult(false); 
-			result.setErrorString("Invalid session!");
-		} else {
-			try {
-				context.getSession().setAttribute(webApplication.getId()	+ inKey, inObj);
-				result.setResult(true);
-			} catch (Exception e) {
-				result.setErrorString(e.getMessage());
-				result.setResult(false);
-			}
-		}
-		return result;
-	}
-
-	@Override
 	public void setData(Map<String, String> _data) {
-		this.requestDataMap = _data;
+		this.data = _data;
 	}
 
 	@Override
 	public Map<String, String> getData() {
-		return requestDataMap;
+		return data;
 	}
 
 	@Override
@@ -101,9 +76,10 @@ public class CommonMessage implements IMessage {
 	public Map<String, String> getHtmlContents() {
 		return htmlContents;
 	}
-	
+
 	public void clearContent() {
-		if(htmlContents != null) htmlContents.clear();
+		if (htmlContents != null)
+			htmlContents.clear();
 	}
 
 	public void setHighlightFields(List<String> _highlightFields) {
@@ -116,44 +92,50 @@ public class CommonMessage implements IMessage {
 
 	public void setNoHighlightFields(String[] mandatoryFields) {
 		this.noHighlightFields = new ArrayList<String>();
-		for(String field:mandatoryFields)
+		for (String field : mandatoryFields)
 			noHighlightFields.add(field);
 	}
 
 	public List<String> getNoHighlightFields() {
 		return noHighlightFields;
 	}
-	
+
 	@Override
 	public void setSessionID(String sessionID) {
 		this.sessionID = sessionID;
 	}
+
 	@Override
 	public String getSessionID() {
 		return sessionID;
 	}
+
 	@Override
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 	@Override
 	public String getUrl() {
 		return url;
 	}
+
 	@Override
 	public void setFile(FileTransfer file) {
 		this.file = file;
 	}
+
 	@Override
 	public FileTransfer getFile() {
 		return file;
 	}
+
 	public void setReloadPage(boolean reloadPage) {
 		this.reloadPage = reloadPage;
 	}
 
 	@Override
-public boolean isReloadPage() {
+	public boolean isReloadPage() {
 		return reloadPage;
 	}
 
@@ -173,18 +155,27 @@ public boolean isReloadPage() {
 	}
 
 	@Override
-	public String getIserId() {
+	public String getUserId() {
 		return userId;
-	}
-	
-	@Override
-	public WebApplication getWebApplication() {
-		return webApplication;
 	}
 
 	@Override
-	public void setWebApplication(WebApplication webApplication) {
-		this.webApplication = webApplication;
+	public void setRealFilePath(String realFilePath) {
+		this.realFilePath = realFilePath;
 	}
-	
+
+	@Override
+	public String getRealFilePath() {
+		return realFilePath;
+	}
+
+	@Override
+	public void setContextPath(String inContextPath) {
+		contextPath = inContextPath;	
+	}
+
+	@Override
+	public String getContextPath() {
+		return(contextPath);	
+	}
 }

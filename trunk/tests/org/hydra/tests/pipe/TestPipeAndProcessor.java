@@ -73,9 +73,9 @@ public class TestPipeAndProcessor{
 		Assert.assertTrue(_inPipe.getMaxCapacity() == Constants._unlimited);
 		Assert.assertTrue(_outPipe.getMaxCapacity() == Constants._unlimited);
 		
-		Assert.assertTrue(_processor1.getState() == Processor.ProcessorStatus.WAITING);
-		Assert.assertTrue(_processor2.getState() == Processor.ProcessorStatus.WAITING);
-		Assert.assertTrue(_processor3.getState() == Processor.ProcessorStatus.WAITING);
+		Assert.assertTrue(_processor1.getState() == Processor.ProcessorStatus.FREE);
+		Assert.assertTrue(_processor2.getState() == Processor.ProcessorStatus.FREE);
+		Assert.assertTrue(_processor3.getState() == Processor.ProcessorStatus.FREE);
 	}
 
 	@Test

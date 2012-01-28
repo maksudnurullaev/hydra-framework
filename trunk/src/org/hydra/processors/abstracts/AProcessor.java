@@ -3,7 +3,9 @@ package org.hydra.processors.abstracts;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.directwebremoting.WebContext;
 import org.hydra.beans.StatisticsCollector.StatisticsTypes;
+import org.hydra.beans.WebApplication;
 import org.hydra.beans.abstracts.AStatisticsApplyer;
 import org.hydra.beans.interfaces.ICollector;
 import org.hydra.events.PipeEvent;
@@ -14,6 +16,7 @@ import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
 import org.hydra.processors.exceptions.NullPipeException;
 import org.hydra.processors.interfaces.IProcessor;
+import org.hydra.services.remote.interfaces.IMessageService;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
 
@@ -25,7 +28,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 	private IPipe<IMessage> _inPipe = null;
 	private IPipe<IMessage> _outPipe = null;
 	private String _name = null;
-	private ProcessorStatus _myState = ProcessorStatus.WAITING;
+	private ProcessorStatus _myState = ProcessorStatus.FREE;
 	private IExecutor _executor = null;
 	private ICollector _messagesCollector = null;
 
@@ -101,7 +104,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 	public void eventHandleIncomingMessage(PipeEvent evt) {
 		getLog().debug(
 				String.format("Processor(%s) has new PipeEvent", getName()));
-		if (getState() == ProcessorStatus.WAITING) {
+		if (getState() == ProcessorStatus.FREE) {
 			if (isValidExecutor()) {
 				_executor.execute(this);
 				getLog().debug(
@@ -182,25 +185,32 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 					message.getSessionID()));
 
 			if (message instanceof CommonMessage) {
-/* MAKE CommomMessage serializible 				
+/*TODO CommomMessage serializible
 				IMessageService remoteMessageService = getInPipe().getRemoteMessageService();
-				if(remoteMessageService != null)
-					message.get
+				if(remoteMessageService != null){
+					getLog().debug("Message --> RMI : " + message.getSessionID());
+					WebApplication app = message.getWebApplication();
+					WebContext context = message.getWebContext();
+					message.setWebApplication(null);
+					message.setWebContext(null);
 					for(IMessage message_: remoteMessageService.processMessage(message)){
-						applyMessage((CommonMessage)message_);
+						getLog().debug("Message <-- RMI: " + message_.getSessionID());
+						message_.setWebApplication(app);
+						message_.setWebContext(context);
+						getMessageCollector().putMessage(message_);
 					}
-				else
+				}else{
 */								
 					applyMessage((CommonMessage)message);
+//				}
 			} else{
 				message.setError("Expected CommonMessage type!");
-				getMessageCollector().putMessage(message);
 			}
 
 		}
 		// Stop
 		// **** Change thread state
-		setState(ProcessorStatus.WAITING);
+		setState(ProcessorStatus.FREE);
 		// ****
 	}
 

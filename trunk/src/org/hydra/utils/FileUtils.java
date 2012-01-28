@@ -24,7 +24,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.WebContext;
 import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.messages.CommonMessage;
@@ -84,13 +83,10 @@ public final class FileUtils {
 
 	public static String saveFile4Admin(CommonMessage inMessage) {
 		FileTransfer file = inMessage.getFile();
-		WebContext context = inMessage.getWebContext();		
-		ServletContext servletContext = context.getServletContext(); 
-		String appId = (inMessage.getData().containsKey("appid")?
-				inMessage.getData().get("appid") : inMessage.getWebApplication().getId());
+		String appId = inMessage.getData().get("appid");
 		// Generate pathname for new image
 		String uri4File = Utils.F(URL4FILES_APPID_IMAGE + "%s", appId, file.getFilename());
-		String realPath = servletContext.getRealPath(uri4File);
+		String realPath = inMessage.getRealFilePath();
 		String resultStr = "";
 		// 1. 
 		InputStream is = null;
@@ -116,22 +112,19 @@ public final class FileUtils {
 	
 	public static boolean saveFile(CommonMessage inMessage,
 			StringWrapper outFilePath, String ... dataDescriptionKeys) {
-		WebContext context = inMessage.getWebContext();
-		ServletContext servletContext = context.getServletContext();
-		String inAppId = inMessage.getWebApplication().getId();
 		FileTransfer file = inMessage.getFile();
 		boolean result = false;
 		// 0. Generate pathname for new image
 		String uri4FilePath;
 		String orginalFileName = sanitize(file.getFilename());
 		
-		uri4FilePath = Utils.F(URL4FILES_APPID_FILES + "%s", inAppId, getMD5FileName(orginalFileName) + getFileExtension(orginalFileName));
+		uri4FilePath = Utils.F(URL4FILES_APPID_FILES + "%s", inMessage.getData().get("appid"), getMD5FileName(orginalFileName) + getFileExtension(orginalFileName));
 		
-		result = saveFile(servletContext.getRealPath(uri4FilePath), file);
-		result = saveFileDescriptions(inMessage, servletContext.getRealPath(uri4FilePath), orginalFileName, dataDescriptionKeys);
+		result = saveFile(inMessage.getRealFilePath(), file);
+		result = saveFileDescriptions(inMessage, inMessage.getRealFilePath(), orginalFileName, dataDescriptionKeys);
 			
 		if(result)
-			outFilePath.setString(String.format("%s/%s", servletContext.getContextPath(), uri4FilePath));
+			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), uri4FilePath));
 		
 		return result;
 	}	

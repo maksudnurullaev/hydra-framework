@@ -2,8 +2,6 @@ package org.hydra.messages.handlers;
 
 import java.util.ArrayList;
 
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
 import org.hydra.deployers.ADeployer;
 import org.hydra.html.fields.FieldInput;
 import org.hydra.html.fields.IField;
@@ -57,13 +55,11 @@ public class AdmFiles extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "key")) return inMessage;
-		
-		WebContext context = inMessage.getWebContext();
-		String filePath = inMessage.getData().get("key");
-		String realPath = context.getServletContext().getRealPath(filePath);				
-		org.apache.cassandra.io.util.FileUtils.delete(realPath);
-				
+		if(inMessage.getRealFilePath() == null){
+			inMessage.setError("File path not defined");
+			return(inMessage);
+		}
+		org.apache.cassandra.io.util.FileUtils.delete(inMessage.getRealFilePath());				
 		return(list(inMessage));		
 	}
 }
