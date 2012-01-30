@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.directwebremoting.io.FileTransfer;
-import org.hydra.beans.WebApplication;
 import org.hydra.messages.interfaces.IMessage;
 
 /**

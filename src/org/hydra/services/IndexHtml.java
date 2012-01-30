@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
 import org.hydra.messages.CommonMessage;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Result;
@@ -41,8 +39,7 @@ public class IndexHtml extends HttpServlet {
 		response.setContentType("text/html");
 		_log.debug("START process index.html page");
 		
-		WebContext context = WebContextFactory.get();
-		String index_file_path = context.getServletContext().getRealPath(index_file);
+		String index_file_path = getServletContext().getRealPath(index_file);
 		PrintWriter out = response.getWriter();
 		if (index_file_path == null) {
 			_log.error(index_file + " file not found!");
@@ -54,7 +51,7 @@ public class IndexHtml extends HttpServlet {
 		CommonMessage msg = new CommonMessage();
 		msg.setUrl(req.getRequestURL().toString() + "?" + req.getQueryString());
 		Result inResult = new Result();
-		SessionUtils.setWebAppParameters(inResult,msg, context);		
+		SessionUtils.setWebAppParameters(inResult,msg);		
 		if(!inResult.isOk()){
 			_log.error(index_file + msg.getUrl() + " - not found responsible application!");
 			out.println(index_with_err.replaceFirst(err_code,
@@ -90,7 +87,7 @@ public class IndexHtml extends HttpServlet {
 			out.println(index_with_err.replaceFirst(err_code,
 					e.getMessage()));
 		}
-		_log.debug("END process index.html page");		
+		_log.debug("END process index.html page");	
 	}
 
 	private String updateIfHtmlHead(String strLine, String inAppId) {
