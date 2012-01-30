@@ -1,6 +1,5 @@
 package org.hydra.messages.handlers;
 
-import org.directwebremoting.WebContextFactory;
 import org.hydra.beans.StatisticsCollector;
 import org.hydra.beans.WebApplications;
 import org.hydra.deployers.ADeployer;

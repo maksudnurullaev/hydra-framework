@@ -36,7 +36,7 @@ public final class SessionUtils {
 		// 1.1 context path
 		inMessage.setContextPath(context.getServletContext().getContextPath());
 		// 2. set web application
-		setWebAppParameters(inResult, inMessage, context);
+		setWebAppParameters(inResult, inMessage);
 		if (!inResult.isOk())
 			return inResult;
 		// 3. set session id
@@ -60,8 +60,7 @@ public final class SessionUtils {
 	
 	public static void setWebAppParameters(
 			Result inResult,
-			CommonMessage inMessage, 
-			WebContext context) {
+			CommonMessage inMessage) {
 		BeansUtils.getWebContextBean(inResult,
 				Constants._bean_hydra_web_applications);
 		if (!inResult.isOk() || !(inResult.getObject() instanceof WebApplications))
