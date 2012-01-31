@@ -35,15 +35,7 @@ public final class Constants {
 	public static final int _max_textarea_field_limit = 4096;
 	public static final int _max_input_field_limit = 128;
 	public static final long _max_response_wating_time = 5000;
-	
-	// **** Message action keys
-	public static final String _handler_id = "handler";
-	public static final String _action_id = "action";
-	
-	// **** Session keys
-	public static final String _session_locale = "locale";
-	public static final String _session_user_id = "user_id";	
-	
+		
 	// **** Constant templates
 	public static final String _language_bar_a_template = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({handler:'General',action:'changeLocale', locale:'%s', dest:'body', url: document.URL })); return false;\">%s</a>";
 	
@@ -54,7 +46,9 @@ public final class Constants {
 	public static final String _mode_edit_templates = "edit_templates";
 	public static final String _utf_8 = "UTF-8";
 	
-	public static final String[] _GLOBAL_TAGS = {"User", "User.Editor", "User.Publisher", "User.Administrator"};
-	public static final String _captcha_value = "CaptchaValue";
+	public static final String[] _GLOBAL_TAGS= {"User", "User.Editor", "User.Publisher", "User.Administrator"};
 	public static final String _user_content = "content";
+	
+	public static final String _captcha_value = "_captcha_value";
+	public static final String _captcha_OK = "_captcha_OK";
 }

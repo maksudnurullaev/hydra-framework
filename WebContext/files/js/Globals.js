@@ -61,8 +61,8 @@ Globals.editIt = function(divId, handleName, actionName){
     Globals.hideEditorLinksExcept(divId);
     // Get initial html body
     Globals.sendMessage({
-       handler: handleName,
-       action: actionName,
+       _handler: handleName,
+       _action: actionName,
        key: divId,
        dest: Globals.editBox
     });
@@ -71,8 +71,8 @@ Globals.editIt = function(divId, handleName, actionName){
 Globals.loadInitialPage = function(){
     // Get initial html body
     Globals.sendMessage({
-        handler: 'General',
-        action: 'getInitialBody',
+        _handler: 'General',
+        _action: 'getInitialBody',
         dest: 'body'
     });
 };
@@ -96,8 +96,8 @@ Globals.chk = function (obj) {
 /* decode & content from from server */
 Globals.decodeContent = function(content){
     Globals.sendMessage({
-        handler: 'General',
-        action:  'getContent',
+        _handler: 'General',
+        _action:  'getContent',
         content: ('[[' + content + ']]'),
         dest: 'content'
     });        

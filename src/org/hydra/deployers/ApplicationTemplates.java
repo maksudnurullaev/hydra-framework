@@ -86,10 +86,10 @@ public class ApplicationTemplates extends AMessageHandler {
 			String inAppID, 
 			String key) {
 		String jsData = Utils.jsData(
-				 "handler", Utils.Q("AdmTemplates")
-				,"action",  Utils.Q("delete")
-				,"appid", Utils.Q(inAppID)
-				,"key", Utils.Q(key)
+				 "_handler", Utils.Q("AdmTemplates")
+				,"_action",  Utils.Q("delete")
+				,"_appid", Utils.Q(inAppID)
+				,"_key", Utils.Q(key)
 				,"dest", Utils.Q("admin.app.action")
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
@@ -99,11 +99,11 @@ public class ApplicationTemplates extends AMessageHandler {
 			String inAppID, 
 			String key) {
 		String jsData = Utils.jsData(
-				 "handler", Utils.Q("AdmTemplates")
-				,"action",  Utils.Q("updateForm")
-				,"appid", Utils.Q(inAppID)
-				,"key", Utils.Q(key)
-				,"dest", Utils.Q("admin.app.action")
+				 "_handler", Utils.Q("AdmTemplates")
+				,"_action",  Utils.Q("updateForm")
+				,"_appid", Utils.Q(inAppID)
+				,"_key", Utils.Q(key)
+				,"_dest", Utils.Q("admin.app.action")
 			);
 		return(Utils.F("[%s]", Utils.createJSLink("Update",jsData, "U")));		
 	}

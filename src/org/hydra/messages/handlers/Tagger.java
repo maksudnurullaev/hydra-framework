@@ -11,10 +11,10 @@ import org.hydra.utils.Utils;
 public class Tagger extends AMessageHandler {
 
 	public IMessage add(CommonMessage inMessage){
-		if (!validateData(inMessage, "appid", "elemid", "value", "addvalue", "prefixes", "dest"))
+		if (!validateData(inMessage, "_appid", "elemid", "value", "addvalue", "prefixes", "dest"))
 			return inMessage;
 		
-		String appId = inMessage.getData().get("appid");
+		String appId = inMessage.getData().get("_appid");
 		String elemid = inMessage.getData().get("elemid");
 		String value = inMessage.getData().get("value");
 		String addvalue = inMessage.getData().get("addvalue");
@@ -28,10 +28,10 @@ public class Tagger extends AMessageHandler {
 	}
 	
 	public IMessage delete(CommonMessage inMessage){
-		if (!validateData(inMessage, "appid", "elemid", "value", "delvalue", "prefixes", "dest"))
+		if (!validateData(inMessage, "_appid", "elemid", "value", "delvalue", "prefixes", "dest"))
 			return inMessage;
 		
-		String appId = inMessage.getData().get("appid");
+		String appId = inMessage.getData().get("_appid");
 		String elemid = inMessage.getData().get("elemid");
 		String value = inMessage.getData().get("value");
 		String delvalue = inMessage.getData().get("delvalue");

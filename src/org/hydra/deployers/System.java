@@ -46,9 +46,12 @@ public final class System {
 	}
 
 	private static String getSystemLanguagebarKeyA(
-			String inKey, // IGNORE 
+			String inKey,  
 			String inLocale, 
 			String inApplicationID) {
+		_log.error("inKey: " + inKey);
+		_log.error("inLocale: " + inLocale);
+		_log.error("inApplicationID: " + inApplicationID);
 		Result result = new Result();
 		BeansUtils.getWebContextBean(result, (inApplicationID + Constants._bean_web_app_id_postfix));
 		if(result.isOk() && result.getObject() instanceof WebApplication){ // generate language bar

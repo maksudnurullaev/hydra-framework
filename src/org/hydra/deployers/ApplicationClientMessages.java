@@ -69,10 +69,10 @@ public final class ApplicationClientMessages {
 			String key, 
 			String inDivId) {
 		String jsData = Utils.jsData(
-				 "handler", Utils.Q(_cfName)
-				,"action",  Utils.Q("delete")
-				,"appid", Utils.Q(inAppID)
-				,"key", Utils.Q(key)
+				 "_handler", Utils.Q(_cfName)
+				,"_action",  Utils.Q("delete")
+				,"_appid", Utils.Q(inAppID)
+				,"_key", Utils.Q(key)
 				,"dest", Utils.Q(inDivId)
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		

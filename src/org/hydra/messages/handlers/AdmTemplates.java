@@ -21,8 +21,8 @@ import org.hydra.utils.Utils;
 public class AdmTemplates extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid")) return inMessage;
-		String appId = inMessage.getData().get("appid");
+		if(!validateData(inMessage, "_appid")) return inMessage;
+		String appId = inMessage.getData().get("_appid");
 		
 		String content  = String.format("[[Application|Templates|%s|html]]", appId);
 		getLog().debug("Try to get content for: " + content);
@@ -31,8 +31,8 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid")) return inMessage;
-		String appID = inMessage.getData().get("appid");
+		if(!validateData(inMessage, "_appid")) return inMessage;
+		String appID = inMessage.getData().get("_appid");
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
 		fields.add(new FieldInput("template_key", "", 35));
@@ -49,9 +49,9 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage updateForm(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid", "key")) return inMessage;
-		String appID = inMessage.getData().get("appid");
-		String key = inMessage.getData().get("key");
+		if(!validateData(inMessage, "_appid", "_key")) return inMessage;
+		String appID = inMessage.getData().get("_appid");
+		String key = inMessage.getData().get("_key");
 		String cfName = "Template";
 		
 		List<String> errorFields = new ArrayList<String>();
@@ -76,7 +76,8 @@ public class AdmTemplates extends AMessageHandler {
 				"AdmTemplates", "list", 
 				"admin.app.action", fields, null);
 		
-		String temp = ADeployer.deployContent2(form,inMessage);
+		IMessage msg = ADeployer.deployContent(form,inMessage);
+		String temp = msg.getData().get(msg.getData().get("dest"));
 		temp = temp.replaceAll("__1__", Matcher.quoteReplacement(content));
 		
 		inMessage.setHtmlContent(temp);
@@ -84,13 +85,13 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
-		String[] mandatoryFields = {"appid","template_key", "template_content"};
+		String[] mandatoryFields = {"_appid","template_key", "template_content"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		
 		List<String> errorFields = new ArrayList<String>();
 		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();
 		
-		String appID = inMessage.getData().get("appid");
+		String appID = inMessage.getData().get("_appid");
 		String cfName = "Template";
 		
 		getLog().debug("Test for valid key");
@@ -130,13 +131,13 @@ public class AdmTemplates extends AMessageHandler {
 	}
 
 	public IMessage update(CommonMessage inMessage){
-		String[] mandatoryFields = {"appid","template_key", "template_content"};
+		String[] mandatoryFields = {"_appid","template_key", "template_content"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		
 		List<String> errorFields = new ArrayList<String>();
 		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();
 		
-		String appID = inMessage.getData().get("appid");
+		String appID = inMessage.getData().get("_appid");
 		String cfName = "Template";
 		
 		getLog().debug("Test for valid key");
@@ -176,9 +177,9 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid", "key")) return inMessage;
-		String appId = inMessage.getData().get("appid");
-		String key = inMessage.getData().get("key");
+		if(!validateData(inMessage, "_appid", "_key")) return inMessage;
+		String appId = inMessage.getData().get("_appid");
+		String key = inMessage.getData().get("_key");
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "Template", key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){

@@ -233,11 +233,11 @@ public final class Utils {
 			ArrayList<IField> optionaFields) {
 
 		List<String> strSaveArrayData = new ArrayList<String>();
-		strSaveArrayData.add("appid");
+		strSaveArrayData.add("_appid");
 		strSaveArrayData.add(Utils.Q(inAppId));
-		strSaveArrayData.add("handler");
+		strSaveArrayData.add("_handler");
 		strSaveArrayData.add(Utils.Q(inSaveHandler));
-		strSaveArrayData.add("action");
+		strSaveArrayData.add("_action");
 		strSaveArrayData.add(Utils.Q(inSaveAction));
 		strSaveArrayData.add("dest");
 		strSaveArrayData.add(Utils.Q(inDest));
@@ -267,11 +267,11 @@ public final class Utils {
 				.toArray(new String[0]));
 
 		List<String> strCancelArrayData = new ArrayList<String>();
-		strCancelArrayData.add("appid");
+		strCancelArrayData.add("_appid");
 		strCancelArrayData.add(Utils.Q(inAppId));
-		strCancelArrayData.add("handler");
+		strCancelArrayData.add("_handler");
 		strCancelArrayData.add(Utils.Q(inCancelHandler));
-		strCancelArrayData.add("action");
+		strCancelArrayData.add("_action");
 		strCancelArrayData.add(Utils.Q(inCancelAction));
 		strCancelArrayData.add("dest");
 		strCancelArrayData.add(Utils.Q(inDest));
@@ -483,13 +483,13 @@ public final class Utils {
 		selectPart.append("</select> | ");
 		
 		String jsData = Utils.jsData(
-				 "handler", Utils.Q("Tagger")
-				,"action",  Utils.Q("add")
-				,"appid", Utils.Q(appId)
-				,"elemid", Utils.Q(elemID)
-				,"value", Utils.V(elemID)
-				,"addvalue", Utils.V(selectID)
-				,"prefixes", Utils.V(prefixesID)
+				 "_handler", Utils.Q("Tagger")
+				,"_action",  Utils.Q("add")
+				,"_appid", Utils.Q(appId)
+				,"_elemid", Utils.Q(elemID)
+				,"_value", Utils.V(elemID)
+				,"_addvalue", Utils.V(selectID)
+				,"_prefixes", Utils.V(prefixesID)
 				,"dest", Utils.Q(divId)
 			);			
 		selectPart.append(Utils.createJSLink(jsData, "Add"));		
@@ -505,13 +505,13 @@ public final class Utils {
 				if(!textPart.isEmpty()) textPart += ", ";
 				textPart += String.format("[[DB|Text|%s|span]]", t);
 				jsData = Utils.jsData(
-						 "handler", Utils.Q("Tagger")
-						,"action",  Utils.Q("delete")
-						,"appid", Utils.Q(appId)
-						,"elemid", Utils.Q(elemID)
-						,"value", Utils.V(elemID)
-						,"delvalue", Utils.Q(t)
-						,"prefixes", Utils.V(prefixesID)
+						 "_handler", Utils.Q("Tagger")
+						,"_action",  Utils.Q("delete")
+						,"_appid", Utils.Q(appId)
+						,"_elemid", Utils.Q(elemID)
+						,"_value", Utils.V(elemID)
+						,"_delvalue", Utils.Q(t)
+						,"_prefixes", Utils.V(prefixesID)
 						,"dest", Utils.Q(divId)
 					);			
 				textPart += F("[%s]", Utils.createJSLink(jsData, "X"));	

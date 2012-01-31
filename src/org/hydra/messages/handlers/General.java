@@ -6,18 +6,17 @@ import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Constants;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
 
 public class General extends AMessageHandler { // NO_UCD
 	public IMessage getTextByKey(CommonMessage inMessage) {
-		if (!validateData(inMessage, "key"))
+		if (!validateData(inMessage, "_key"))
 			return inMessage;
 		
 		String content = MessagesManager.getText(
-				inMessage.getData().get("key"),
+				inMessage.getData().get("_key"),
 				"div",
 				inMessage.getLocale());
 
@@ -25,20 +24,20 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 
 	public IMessage changeLocale(CommonMessage inMessage, WebContext context) {
-		if (!validateData(inMessage, Constants._session_locale))
+		if (!validateData(inMessage, "_locale"))
 			return inMessage;
 		getLog().debug(
 				"Try to change current locale to: "
-						+ inMessage.getData().get(Constants._session_locale));
+						+ inMessage.getData().get("_locale"));
 
 		// change session
-		String new_locale = inMessage.getData().get(Constants._session_locale);
+		String new_locale = inMessage.getData().get("_locale");
 
 		Result result = new Result();
 		SessionUtils.setSessionData(
 				result, 
 				inMessage, 
-				Constants._session_locale,
+				"_locale",
 				new_locale,
 				context);
 		// if something wrong
@@ -69,12 +68,12 @@ public class General extends AMessageHandler { // NO_UCD
 	};
 	
 	public IMessage getInitialBody(CommonMessage inMessage) {		
-		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("appid"),"body");
+		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("_appid"),"body");
 		if(content != null){
 			getLog().debug("... HTML body content length: " + content.length());
 			return(ADeployer.deployContent(content,inMessage));
 		}
-		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("appid"));
+		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("_appid"));
 		return(inMessage);
 	};
 }

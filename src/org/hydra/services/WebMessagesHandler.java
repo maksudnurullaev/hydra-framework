@@ -24,31 +24,34 @@ public class WebMessagesHandler extends ALogger {
 		return sendMessage(inMessage, null);
 	}
 	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {
-		//TODO Detect web context
-		//TODO Restore data from web context
-		//TODO Detect type of oparation [CHANGE_SESSION_DATA | NO_CHANGE_SESSION_DATA]
-		//
-		// return result messages array
 		List<MessageBean> resultList = new ArrayList<MessageBean>();
-		// set session context
+		// Detect web context
 		if(WebContextFactory.get() == null){
 			getLog().error("WebContext is null!");
 			inMessage.setError("WebContext is null!");
 			resultList.add(inMessage);
 			return(resultList.toArray());
 		}
-		WebContext context = WebContextFactory.get();
+		WebContext webContext = WebContextFactory.get();
 		// Attach session's data
 		Result result = new Result();
-		SessionUtils.setApplicationData(result, inMessage, context);
+		SessionUtils.setApplicationData(result, inMessage, webContext);
 		if (!result.isOk()) {
 			inMessage.setError(result.getResult());
 			resultList.add(inMessage);
 			return resultList.toArray();
 		}
-		// test for captcha
-		//if(context.getSession().getAttribute())
-		if(needTestCaptcha(inMessage) && !SessionUtils.validateCaptcha(inMessage, context)){
+/*		
+		for(Map.Entry<String, String> key:inMessage.getData().entrySet()){
+			System.out.println(String.format("%s: %s", key.getKey(),key.getValue()));
+		}
+		inMessage.setError("JUST TESTING");
+		resultList.add(inMessage);
+		return resultList.toArray();
+*/
+		
+		// test captcha if needs
+		if(needTestCaptcha(inMessage) && !SessionUtils.validateCaptcha(inMessage, webContext)){
 			ArrayList<String> errorFields = new ArrayList<String>();
 			errorFields.add(Constants._captcha_value);
 			inMessage.setHighlightFields(errorFields);
@@ -57,9 +60,9 @@ public class WebMessagesHandler extends ALogger {
 		}			
 		// sets for file
 		if(inFile != null){
-			inMessage.setRealFilePath(context.getServletContext().getRealPath(inMessage.getData().get("filePath")));
+			inMessage.setRealFilePath(webContext.getServletContext().getRealPath(inMessage.getData().get("_file_plath")));
 		}
-	
+
 		// set message collector
 		MessagesCollector messagesCollector = null;
 		BeansUtils.getWebContextBean(result, Constants._bean_main_message_collector);
@@ -118,9 +121,9 @@ public class WebMessagesHandler extends ALogger {
 	}
 
 	private boolean needTestCaptcha(MessageBean inMessage) {
-		//TODO Fix it later with treal test
-		return false;
+		return(inMessage.getData().containsKey(Constants._captcha_value));
 	}
+
 	public static IMessage getCassandraConfiguration(CommonMessage inMessage, WebContext inContext){
 		String result = Utils.T("template.table.with.class",
 				"table.name.value",
@@ -133,7 +136,7 @@ public class WebMessagesHandler extends ALogger {
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
 						"Server Port", inContext.getHttpServletRequest().getServerPort())
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Web Applicication ID", inMessage.getData().get("appid"))
+						"Web Applicication ID", inMessage.getData().get("_appid"))
 	
 				);
 		inMessage.setHtmlContent(result);

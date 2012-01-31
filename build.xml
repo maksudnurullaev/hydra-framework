@@ -57,6 +57,7 @@
 		<copy todir="${deploy.path}/${name}" preservelastmodified="true">
 			<fileset dir="${basedir}/WebContext">
 				<include name="**/*.*" />
+				<exclude name="**/.svn" />
 			</fileset>
 		</copy>
 		<echo message="goto: http://yourserver/${name}"/>

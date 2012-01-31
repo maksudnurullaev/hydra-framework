@@ -19,21 +19,21 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			String inAction,
 			String inActionMethod){
 		
-		String appId = inMessage.getData().get("appid");
+		String appId = inMessage.getData().get("_appid");
 		String spanId = String.format("%s.%s", inCFName, inKey); 
 		String textAreaId =  String.format("%s.%s.%s.textarea", appId, inCFName, inKey);
 		
 		String jsData = Utils.jsData(
-					"appid", Utils.Q(appId)
-					, "handler", Utils.Q(inAction)
-					, "action", Utils.Q(inActionMethod)
-					, "key", Utils.Q(inKey)
-					, "value", String.format("$('%s').value",textAreaId)
+					"_appid", Utils.Q(appId)
+					, "_handler", Utils.Q(inAction)
+					, "_action", Utils.Q(inActionMethod)
+					, "_key", Utils.Q(inKey)
+					, "_value", String.format("$('%s').value",textAreaId)
 					, "dest", Utils.Q(spanId)
 				);
 		
 		StringWrapper stringWrapper = new StringWrapper();		
-		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage.getData().get("appid"), inCFName, inKey, inCName, stringWrapper);
+		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage.getData().get("_appid"), inCFName, inKey, inCName, stringWrapper);
 		
 		StringBuffer resultBuffer = new StringBuffer("<div class=\"edit\">");
 		
@@ -52,8 +52,8 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 	}	
 	
 	public IMessage editText(CommonMessage inMessage){
-		if(!validateData(	inMessage, "key", "dest")) return inMessage;
-		String key = inMessage.getData().get("key");
+		if(!validateData(inMessage, "_key", "dest")) return inMessage;
+		String key = inMessage.getData().get("_key");
 		
 		getTextarea2Edit(inMessage, "Text", key, inMessage.getLocale(),
 				"DBRequest","updateText");
@@ -61,8 +61,8 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 	}	
 	
 	public IMessage editTemplate(CommonMessage inMessage){
-		if(!validateData(	inMessage, "key", "dest")) return inMessage;
-		String key = inMessage.getData().get("key");
+		if(!validateData(	inMessage, "_key", "dest")) return inMessage;
+		String key = inMessage.getData().get("_key");
 		
 		getTextarea2Edit(inMessage, "Template", key, "content",
 				"DBRequest", "updateTemplate");
@@ -70,9 +70,9 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 	}	
 	
 	public IMessage updateText(CommonMessage inMessage){
-		if(!validateData(	inMessage, "key", "value", "dest")) return inMessage;
+		if(!validateData(	inMessage, "_key", "value", "dest")) return inMessage;
 		
-		String key = inMessage.getData().get("key");
+		String key = inMessage.getData().get("_key");
 		String value = inMessage.getData().get("value");		
 				
 		update(inMessage, "Text", key, inMessage.getLocale(), value);
@@ -87,7 +87,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			String inColumnName, 
 			String inValue){
 		
-		ErrorUtils.ERROR_CODES err = DBUtils.setValue(inMessage.getData().get("appid"), inCFName, inKey, inColumnName, inValue);
+		ErrorUtils.ERROR_CODES err = DBUtils.setValue(inMessage.getData().get("_appid"), inCFName, inKey, inColumnName, inValue);
 		
 		if(err != ErrorUtils.ERROR_CODES.NO_ERROR){
 			getLog().error(err.toString());
@@ -96,7 +96,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		}		
 		
 		StringWrapper outValue = new StringWrapper();
-		err = DBUtils.getValue(inMessage.getData().get("appid"), inCFName, inKey, inColumnName, outValue);
+		err = DBUtils.getValue(inMessage.getData().get("_appid"), inCFName, inKey, inColumnName, outValue);
 		
 		if(err != ErrorUtils.ERROR_CODES.NO_ERROR){
 			getLog().error(err.toString());
@@ -108,9 +108,9 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 	}
 	
 	public IMessage updateTemplate(CommonMessage inMessage){
-		if(!validateData(	inMessage, "key", "value", "dest")) return inMessage;
+		if(!validateData(	inMessage, "_key", "value", "dest")) return inMessage;
 		
-		String key = inMessage.getData().get("key");
+		String key = inMessage.getData().get("_key");
 		String value = inMessage.getData().get("value");		
 		
 		update(inMessage, "Template", key, "content", value);
