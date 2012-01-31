@@ -10,7 +10,6 @@ import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.processors.Processor;
 import org.hydra.processors.exceptions.NullProcessorException;
-import org.hydra.utils.Constants;
 import org.junit.Test;
 
 public class TestThreadPool {
@@ -76,9 +75,9 @@ public class TestThreadPool {
 			MessageBean message = null;
 			for (int i = 0; i < messageCount; i++) {
 				message = new MessageBean();
-				message.getData().put(Constants._handler_id, "General");
-				message.getData().put(Constants._action_id, "getTextByKey");
-				message.getData().put("key", "home.context");
+				message.getData().put("_handler", "General");
+				message.getData().put("_action", "getTextByKey");
+				message.getData().put("_key", "home.context");
 				message.getData().put("sessionID",
 						String.format("Test Message #%d", i));
 				_main_inPipe.setMessage(message);

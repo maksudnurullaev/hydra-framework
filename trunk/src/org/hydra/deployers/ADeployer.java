@@ -11,6 +11,8 @@ import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Utils;
 
+import sun.net.www.protocol.http.InMemoryCookieStore;
+
 public final class ADeployer {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.ADeployer");
 	
@@ -19,34 +21,29 @@ public final class ADeployer {
 	public static IMessage deployContent(
 			String inContent,
 			CommonMessage inMessage) {
-		deployContent2(inContent, inMessage);
-		return(inMessage);
-	}
-
-	public static String deployContent2(
-			String inContent,
-			CommonMessage inMessage) {
 		Map<String, String> editLinks = new HashMap<String, String>();
 		String content = deployContent(
 				inContent, 
-				inMessage.getData().get("appid"), 
-				inMessage.getLocale(), 
-				inMessage.getUserId(),
-				editLinks);
+				editLinks,
+				inMessage);
 				
 		inMessage.setHtmlContent(content);
 		inMessage.setHtmlContents("editLinks", Utils.formatEditLinks(editLinks));
-		
-		return(content);
+		return(inMessage);
+	}
+
+	private static String deployContent(
+			String inContent, 
+			Map<String, String> editLinks,
+			CommonMessage inMessage) {
+		return deployContent(inContent, 0, editLinks, inMessage);
 	}	
 	
 	public static String deployContent(
 			String inContent, 
-			String inApplicationID, 
-			String inLocale, 
-			String inUserID, 
 			int recursionCount,
-			Map<String, String> editLinks) {
+			Map<String, String> editLinks,
+			CommonMessage inMessage) {
 		
 		if(++recursionCount > 10){
 			_log.warn("No more recursion permited!!!");
@@ -67,10 +64,8 @@ public final class ADeployer {
 							matcher.group(2),  // WHAT
 							matcher.group(3),  // KEY
 							matcher.group(4),  // HOW
-							inApplicationID, 
-							inLocale,
-							inUserID,
-							editLinks);
+							editLinks,
+							inMessage);
 			//tempContent.replace("$", "\\$");
 			matcher.appendReplacement(
 					buf,
@@ -82,36 +77,22 @@ public final class ADeployer {
 		matcher = pattern4Deployer.matcher(buf.toString());
 		if(matcher.find()){
 			_log.debug("Found recursive entring, recursionCount: " + recursionCount);
-			return(deployContent(buf.toString(), inApplicationID, inLocale, inUserID, recursionCount,editLinks));
+			return(deployContent(buf.toString(), recursionCount,editLinks, inMessage));
 		}
 		return(buf.toString());
 		//return(buf.toString());
 	}
 
 	/* **** Content Deployment **** */
-	private static String deployContent(
-			String inContent, 
-			String inApplicationID, 
-			String inLocale, 
-			String inUserID, 
-			Map<String, String> editLinks) {
-		_log.debug("ApplicationID: " + inApplicationID);
-		_log.debug("Locale: " + inLocale);
-		_log.debug("UserID: " + inUserID);
-		return deployContent(inContent, inApplicationID, inLocale, inUserID, 0, editLinks);
-	}
-
 	private static String getWhereWhatKeyHow(
 			String inWhere, 
 			String inWhat,
 			String inKey, 
 			String inHow,
-			String inApplicationID, 
-			String inLocale,
-			String inUserID, 
-			Map<String, String> editLinks) {
+			Map<String, String> editLinks,
+			CommonMessage inMessage) {
 		if(inWhere.compareToIgnoreCase("db") == 0)
-			return Db.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inLocale, inUserID, editLinks);
+			return Db.getWhatKeyHow(inWhat, inKey, inHow, editLinks, inMessage);
 		else if(inWhere.compareToIgnoreCase("system") == 0)
 			return System.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID, inUserID);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)

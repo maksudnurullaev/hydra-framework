@@ -9,7 +9,6 @@ import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
 import org.hydra.utils.Result;
@@ -20,7 +19,7 @@ public class User extends AMessageHandler { // NO_UCD
 
 	public IMessage logout(CommonMessage inMessage, WebContext context) {
 		Result result = new Result();
-		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, null, context);
+		SessionUtils.setSessionData(result, inMessage, "user", null, context);
 		if(result.isOk()){
 			inMessage.setReloadPage(true);
 			return(inMessage);
@@ -30,14 +29,14 @@ public class User extends AMessageHandler { // NO_UCD
 	}
 	
 	public IMessage login(CommonMessage inMessage, WebContext context) {
-		String[] mandatoryFields = {"appid","user_mail","user_password"};
+		String[] mandatoryFields = {"_appid","user_mail","user_password"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		getLog().debug("All necessary fields exits");
 		
 		List<String> errorFields = new ArrayList<String>();
 		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();
 		
-		String appID = inMessage.getData().get("appid");
+		String appID = inMessage.getData().get("_appid");
 		
 		getLog().debug("Test for valid mail");
 		String user_mail = inMessage.getData().get("user_mail").trim();
@@ -78,7 +77,7 @@ public class User extends AMessageHandler { // NO_UCD
 
 	private IMessage setupUserSession(CommonMessage inMessage, String userId, WebContext context) {
 		Result result = new Result();
-		SessionUtils.setSessionData(result, inMessage, Constants._session_user_id, userId, context);
+		SessionUtils.setSessionData(result, inMessage, "user", userId, context);
 		if(result.isOk()){
 			inMessage.setReloadPage(true);
 			return(inMessage);

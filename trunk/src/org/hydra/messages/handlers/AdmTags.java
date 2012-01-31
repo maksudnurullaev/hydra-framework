@@ -17,8 +17,8 @@ import org.hydra.utils.Utils;
 public class AdmTags extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid")) return inMessage;
-		String appId = inMessage.getData().get("appid");
+		if(!validateData(inMessage, "_appid")) return inMessage;
+		String appId = inMessage.getData().get("_appid");
 		
 		String content  = String.format("[[Application|Tags|%s|html]]", appId);
 		getLog().debug("Try to get content for: " + content);
@@ -27,8 +27,8 @@ public class AdmTags extends AMessageHandler {
 	}
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid")) return inMessage;
-		String appId = inMessage.getData().get("appid");
+		if(!validateData(inMessage, "_appid")) return inMessage;
+		String appId = inMessage.getData().get("_appid");
 		
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
@@ -44,8 +44,8 @@ public class AdmTags extends AMessageHandler {
 	}
 
 	public IMessage add(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid", "tag_new")) return inMessage;
-		String appID = inMessage.getData().get("appid");
+		if(!validateData(inMessage, "_appid", "tag_new")) return inMessage;
+		String appID = inMessage.getData().get("_appid");
 		String key = inMessage.getData().get("tag_new").trim();
 		String cfName = "Tag";
 		
@@ -73,8 +73,8 @@ public class AdmTags extends AMessageHandler {
 	}
 	
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid", "value")) return inMessage;
-		String appId = inMessage.getData().get("appid");
+		if(!validateData(inMessage, "_appid", "value")) return inMessage;
+		String appId = inMessage.getData().get("_appid");
 		String value = inMessage.getData().get("value").trim();
 				
 		String inColumnFamily = "Tag";

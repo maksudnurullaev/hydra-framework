@@ -12,7 +12,6 @@ import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
-import org.hydra.processors.exceptions.NullPipeException;
 import org.hydra.processors.interfaces.IProcessor;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
@@ -167,8 +166,8 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 		// 1.1 Incoming Pipe
 		if (getInPipe() == null)
 			try {
-				throw new NullPipeException();
-			} catch (NullPipeException e) {
+				throw new NullPointerException();
+			} catch (NullPointerException e) {
 				e.printStackTrace();
 			}
 
@@ -216,8 +215,8 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 				String.format("Handle new message for group(%s)...", 
 						inMessage.getSessionID()));
 
-		String handlerName = inMessage.getData().get(Constants._handler_id);
-		String methodName = inMessage.getData().get(Constants._action_id);
+		String handlerName = inMessage.getData().get("_handler");
+		String methodName = inMessage.getData().get("_action");
 
 		_log.debug("check for valid handler and action");
 		if (Utils.isInvalidString(handlerName)) {

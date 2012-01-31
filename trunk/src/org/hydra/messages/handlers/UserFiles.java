@@ -13,8 +13,8 @@ import org.hydra.utils.Utils;
 public class UserFiles extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-//		if(!testData(inMessage, "appid")) return inMessage;
-//		String appId = inMessage.getData().get("appid");
+//		if(!testData(inMessage, "_appid")) return inMessage;
+//		String appId = inMessage.getData().get("_appid");
 //		
 //		String content  = String.format("[[Application|Files|%s|html]]", appId);
 //		getLog().debug("Try to get content for: " + content);
@@ -59,9 +59,9 @@ public class UserFiles extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid", "key")) return inMessage;
-		String appId = inMessage.getData().get("appid");
-		String key = inMessage.getData().get("key");
+		if(!validateData(inMessage, "_appid", "_key")) return inMessage;
+		String appId = inMessage.getData().get("_appid");
+		String key = inMessage.getData().get("_key");
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "Template", key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){

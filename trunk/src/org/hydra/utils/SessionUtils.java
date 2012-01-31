@@ -1,8 +1,10 @@
 package org.hydra.utils;
 
+import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
@@ -26,33 +28,16 @@ public final class SessionUtils {
 	public static Result setApplicationData(
 			Result inResult,
 			CommonMessage inMessage,
-			WebContext context) {
-		// 1. set web context
-		if (context == null) {
-			inResult.setErrorString("Could not find web context!");
-			inResult.setResult(false);
-			return inResult;
-		}
-		// 1.1 context path
-		inMessage.setContextPath(context.getServletContext().getContextPath());
-		// 2. set web application
-		setWebAppParameters(inResult, inMessage);
+			WebContext inWebCotext) {
+		ServletContext context = inWebCotext.getServletContext();
+		// Set session ID
+		inMessage.setSessionID(inWebCotext.getSession().getId());
+		// Context path
+		inMessage.setContextPath(context.getContextPath());
+		// Set web application's data 
+		setWebAppParameters(inResult, inMessage, context);
 		if (!inResult.isOk())
 			return inResult;
-		// 3. set session id
-		inMessage.setSessionID(context.getSession().getId());
-		// 4. set locale
-		getSessionData(inResult, inMessage, Constants._session_locale, context);
-		if(inResult.isOk()){
-			inMessage.setLocale((String) inResult.getObject());
-		}else{
-			inMessage.setLocale(inMessage.getData().get("default_locale"));
-		}
-		// 5. set session user id
-		SessionUtils.getSessionData(inResult, inMessage, Constants._session_user_id, context);
-		if(inResult.isOk()){
-			inMessage.setUserId((String) inResult.getObject());
-		}
 		
 		inResult.setResult(true);
 		return inResult;
@@ -60,7 +45,8 @@ public final class SessionUtils {
 	
 	public static void setWebAppParameters(
 			Result inResult,
-			CommonMessage inMessage) {
+			CommonMessage inMessage,
+			ServletContext inContext) {
 		BeansUtils.getWebContextBean(inResult,
 				Constants._bean_hydra_web_applications);
 		if (!inResult.isOk() || !(inResult.getObject() instanceof WebApplications))
@@ -75,12 +61,20 @@ public final class SessionUtils {
 					(found != -1) ? urlString.toLowerCase().substring(found) 
 							: urlString);	
 			if(app != null){
-				inMessage.getData().put("appid", app.getId());
-				inMessage.getData().put("locale", app.getDefaultLocale());
+				inMessage.getData().put("_appid", app.getId());
+				inMessage.getData().put("_default_locale", app.getDefaultLocale());
+				inMessage.getData().put("_user", getFromContext(inContext, "_user", app.getId()));
+				inMessage.getData().put("_context_path", inContext.getContextPath());
 				inMessage.setTimeout(app.getTimeout());
 				inResult.setResult(true);
+				if(isContextContain(inContext, "_locale", app.getId())){
+					inMessage.getData().put("_locale", getFromContext(inContext, "_locale", app.getId()));				
+				}else{
+					inMessage.getData().put("_locale", app.getDefaultLocale());				
+				}
 				return;
-			}				
+			}
+			
 		}else{
 			inResult.setErrorString("Could not find _URL parameter for message!");
 		}
@@ -93,29 +87,24 @@ public final class SessionUtils {
 			Object inValue,
 			WebContext context) {
 		context.getSession().setAttribute(
-				(inMessage.getData().get("appid") +  inKey),
+				(inMessage.getData().get("_appid") +  inKey),
 				inValue);
 	};
 	
-	public static void getSessionData(
-			Result inResult,
-			CommonMessage inMessage,
-			String inKey,
-			WebContext context) {
-		
-		String sessionKey = inMessage.getData().get("appid") + inKey;
-		_log.debug("Try to get session data by key: " + sessionKey);		
-		String sessionValue = (String) context.getSession().getAttribute(sessionKey);
-		if (sessionValue == null){
-			_log.info("Could not get session session data for key: " + sessionKey);
-			inResult.setResult(false);
-			return;
+	public static String getFromContext(ServletContext inContext, String inKey, String inAppId){
+		return ((String)inContext.getAttribute(inAppId + inKey));
+	}
+	
+	public static boolean isContextContain(ServletContext inContext, String inKey, String inAppId){
+		Enumeration<String> enumerator = inContext.getAttributeNames();
+		while(enumerator.hasMoreElements()){
+			String key = enumerator.nextElement();
+			if(key.equals(inAppId + inKey)) return true;
 		}
-
-		inResult.setObject(sessionValue);
-		inResult.setResult(true);
+		return(false);
 	}
 
+	
 	public static String getCaptchaId(String queryString) {
     	Matcher m = pattern.matcher(queryString);
     	if(m.matches())
@@ -126,11 +115,14 @@ public final class SessionUtils {
 	public static boolean validateCaptcha(CommonMessage inMessage, WebContext context) {
 		try{
 			HttpSession session = context.getSession();
-			int sessionValue = (Integer) session.getAttribute(inMessage.getData().get("appid") + Constants._captcha_value);
+			int sessionValue = (Integer) session.getAttribute(inMessage.getData().get("_appid") + Constants._captcha_value);
 			if(inMessage.getData().containsKey(Constants._captcha_value)){
 				String captchaValue = inMessage.getData().get(Constants._captcha_value);
 				int passedValue = Integer.parseInt(captchaValue);
-				if(passedValue == sessionValue)	return(true);
+				if(passedValue == sessionValue){
+					inMessage.getData().put(Constants._captcha_value, Constants._captcha_OK);
+					return(true);
+				}
 			}
 		}catch (Exception e){
 			_log.error(e.getMessage());
@@ -138,4 +130,11 @@ public final class SessionUtils {
 		return false;
 	}
 
+	public static boolean isCaptchaVerified(CommonMessage inMessage) {
+		if(inMessage.getData().containsKey(Constants._captcha_value)){
+			String value = inMessage.getData().get(Constants._captcha_value);
+			return(value.equalsIgnoreCase(Constants._captcha_OK));
+		}
+		return false;
+	}	
 }

@@ -83,7 +83,7 @@ public final class FileUtils {
 
 	public static String saveFile4Admin(CommonMessage inMessage) {
 		FileTransfer file = inMessage.getFile();
-		String appId = inMessage.getData().get("appid");
+		String appId = inMessage.getData().get("_appid");
 		// Generate pathname for new image
 		String uri4File = Utils.F(URL4FILES_APPID_IMAGE + "%s", appId, file.getFilename());
 		String realPath = inMessage.getRealFilePath();
@@ -118,7 +118,7 @@ public final class FileUtils {
 		String uri4FilePath;
 		String orginalFileName = sanitize(file.getFilename());
 		
-		uri4FilePath = Utils.F(URL4FILES_APPID_FILES + "%s", inMessage.getData().get("appid"), getMD5FileName(orginalFileName) + getFileExtension(orginalFileName));
+		uri4FilePath = Utils.F(URL4FILES_APPID_FILES + "%s", inMessage.getData().get("_appid"), getMD5FileName(orginalFileName) + getFileExtension(orginalFileName));
 		
 		result = saveFile(inMessage.getRealFilePath(), file);
 		result = saveFileDescriptions(inMessage, inMessage.getRealFilePath(), orginalFileName, dataDescriptionKeys);
@@ -242,10 +242,10 @@ public final class FileUtils {
 			String inAppID, 
 			String key) {
 		String jsData = Utils.jsData(
-				 "handler", Utils.Q(inHandler)
-				,"action",  Utils.Q("delete")
-				,"appid", Utils.Q(inAppID)
-				,"key", Utils.Q(key)
+				 "_handler", Utils.Q(inHandler)
+				,"_action",  Utils.Q("delete")
+				,"_appid", Utils.Q(inAppID)
+				,"_key", Utils.Q(key)
 				,"dest", inDest
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
