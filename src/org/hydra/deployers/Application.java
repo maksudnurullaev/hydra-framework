@@ -3,6 +3,7 @@ package org.hydra.deployers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.messages.CommonMessage;
 import org.hydra.utils.Utils;
 
 public final class Application {
@@ -17,9 +18,8 @@ public final class Application {
 	static String getWhatKeyHow(
 			String inWhat,
 			String inKey, 
-			String inHow, 
-			String inApplicationID, 
-			String inUserID) {
+			String inHow,
+			CommonMessage inMessage) {
 		if(inWhat.compareToIgnoreCase("options") == 0)
 			return getOptionsKeyHow(inKey,inHow);
 		else if(inWhat.compareToIgnoreCase("tags") == 0)
@@ -33,7 +33,7 @@ public final class Application {
 		else if(inWhat.compareToIgnoreCase("ClientMessages") == 0)
 			return ApplicationClientMessages.getKeyHow(inKey,inHow);	
 		else if(inWhat.compareToIgnoreCase("TempFiles") == 0)
-			return ApplicationTempFiles.getKeyHow(inKey,inHow, inApplicationID, inUserID);	
+			return ApplicationTempFiles.getKeyHow(inKey,inHow, inMessage);	
 		
 		_log.warn("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;

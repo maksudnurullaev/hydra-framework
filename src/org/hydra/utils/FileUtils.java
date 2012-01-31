@@ -251,9 +251,8 @@ public final class FileUtils {
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
 	}
 
-	public static String getFilePropertiesDescription(String inAppID,
-			String inUserID, String propertiesFilePath) {
-		boolean isAdmin = Roles.roleNotLessThen(Roles.USER_ADMINISTRATOR, inAppID, inUserID);
+	public static String getFilePropertiesDescription(CommonMessage inMessage, String propertiesFilePath) {
+		boolean isAdmin = Roles.roleNotLessThen(Roles.USER_ADMINISTRATOR, inMessage);
 		Properties properties = parseProperties(propertiesFilePath);
 		String Public = properties.getProperty(FILE_DESCRIPTION_PUBLIC);
     	boolean isPublic = ((Public != null) 

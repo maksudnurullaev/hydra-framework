@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.WebApplication;
+import org.hydra.messages.CommonMessage;
 import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
@@ -15,30 +16,29 @@ public final class System {
 	public static String getWhatKeyHow(
 			String inWhat, 
 			String inKey,
-			String inHow, 
-			String inLocale, 
-			String inApplicationID, 
-			String inUserID) {
+			String inHow,
+			CommonMessage inMessage
+			) {
 		
 		if(inWhat.compareToIgnoreCase("LanguageBar") == 0)
-			return getSystemLanguagebarKeyHow(inKey, inHow, inLocale, inApplicationID);
+			return getSystemLanguagebarKeyHow(inKey, inHow, inMessage);
 		if(inWhat.compareToIgnoreCase("Login") == 0)
-			return SystemLogin.getKeyHow(inKey, inHow, inLocale, inApplicationID, inUserID);
+			return SystemLogin.getKeyHow(inKey, inHow, inMessage);
 		if(inWhat.compareToIgnoreCase("Captcha") == 0)
-			return SystemCaptcha.getKeyHow(inKey, inHow, inLocale, inApplicationID, inUserID);
+			return SystemCaptcha.getKeyHow(inKey, inHow, inMessage);
 		if(inWhat.compareToIgnoreCase("Tagger") == 0)
-			return SystemTagger.getKeyHow(inKey, inHow, inLocale, inApplicationID, inUserID);
+			return SystemTagger.getKeyHow(inKey, inHow, inMessage);
 		_log.error("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;
 	}
 	
 	private static String getSystemLanguagebarKeyHow(
 			String inKey, // IGNORE 
-			String inHow, 
-			String inLocale, 
-			String inApplicationID) {
+			String inHow,
+			CommonMessage inMessage
+			) {
 		if(inHow.compareToIgnoreCase("a") == 0) // HTML <a>...</a>
-			return getSystemLanguagebarKeyA(inKey, inLocale, inApplicationID);
+			return getSystemLanguagebarKeyA(inKey, inMessage);
 		
 		String tempStr = String.format("{{System|Languagebar|%s|%s}}",inKey, inHow);
 		_log.error("Could not find HOW part for: " + tempStr);
@@ -46,19 +46,15 @@ public final class System {
 	}
 
 	private static String getSystemLanguagebarKeyA(
-			String inKey,  
-			String inLocale, 
-			String inApplicationID) {
-		_log.error("inKey: " + inKey);
-		_log.error("inLocale: " + inLocale);
-		_log.error("inApplicationID: " + inApplicationID);
+			String inKey,
+			CommonMessage inMessage) {
 		Result result = new Result();
-		BeansUtils.getWebContextBean(result, (inApplicationID + Constants._bean_web_app_id_postfix));
+		BeansUtils.getWebContextBean(result, (inMessage.getData().get("_appid") + Constants._bean_web_app_id_postfix));
 		if(result.isOk() && result.getObject() instanceof WebApplication){ // generate language bar
 			WebApplication app = (WebApplication) result.getObject();
 			String resultStr = "";
 			for (Map.Entry<String, String> entry:app.getLocales().entrySet()) {
-				if(entry.getKey().compareToIgnoreCase(inLocale) == 0){ // selected
+				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("_appid")) == 0){ // selected
 					resultStr += entry.getValue();
 				}else{
 					resultStr += String.format(Constants._language_bar_a_template, entry.getKey(), entry.getValue());
@@ -68,8 +64,8 @@ public final class System {
 			}
 			return resultStr;
 		}
-		_log.error("Could not define locale for:" + inApplicationID);
-		return ("Could not define locale for:" + inApplicationID);
+		_log.error("Could not define locale for:" + inMessage.getData().get("_appid"));
+		return ("Could not define locale for:" + inMessage.getData().get("_appid"));
 	}
 
 }
