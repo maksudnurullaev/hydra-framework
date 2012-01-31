@@ -35,25 +35,45 @@ public final class Db {
 			String inHow, 
 			Map<String, String> editLinks,
 			CommonMessage inMessage){
-		_log.debug("Enter to: getDbTextKeyHow");
+		String locale = inMessage.getData().get("_locale");
 		if(inHow.compareToIgnoreCase("div") == 0) // div wrapper 
-			return(DBUtils.wrap2IfNeeds(inMessage.getData().get("_appid"), "Text", inKey, inLocale, inUserID, editLinks, "div"));
+			return(DBUtils.wrap2IfNeeds(inMessage.getData().get("_appid"), 
+					"Text", 
+					inKey, 
+					locale, 
+					inMessage, 
+					editLinks, 
+					"div"));
 		if(inHow.compareToIgnoreCase("span") == 0) //span wrapper
-			return(DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, editLinks, "span"));
+			return(DBUtils.wrap2IfNeeds(inMessage.getData().get("_appid"), 
+					"Text", 
+					inKey, 
+					locale, 
+					inMessage, 
+					editLinks, 
+					"span"));
 		_log.warn(Utils.F("Could not find HOW part for {{DB|Text|%s|%s}}",inKey, inHow));
-		return DBUtils.wrap2IfNeeds(inApplicationID, "Text", inKey, inLocale, inUserID, editLinks, "span");
+		return DBUtils.wrap2IfNeeds(inMessage.getData().get("_appid"), 
+				"Text", 
+				inKey,
+				locale, 
+				inMessage, 
+				editLinks, 
+				"span");
 	};
 	
 	private static String getTemplateKeyANY(
 			String inKey,
 			String inHow,			 // reserved
-			String inApplicationID,  // reserved
-			String inUserID, 		 // reserved
-			Map<String, String> editLinks){
-		_log.debug("Try to insert...");
-		_log.debug("inKeyspace: " + inApplicationID);
-		_log.debug("inColumnFamily: " + "Template");
-		_log.debug("inKey: " + inKey);
-		return DBUtils.wrap2IfNeeds(inApplicationID, "Template", inKey, "content", inUserID, editLinks, "div");
+			Map<String, String> editLinks,
+			CommonMessage inMessage){
+		return DBUtils.wrap2IfNeeds(
+				inMessage.getData().get("_appid"), 
+				"Template", 
+				inKey, 
+				"content", 
+				inMessage, 
+				editLinks, 
+				"div");
 	};
 }

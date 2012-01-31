@@ -8,6 +8,7 @@ import me.prettyprint.hector.api.beans.Row;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.messages.CommonMessage;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Utils;
 
@@ -16,13 +17,12 @@ public final class SystemLogin {
 
 	public static String getKeyHow(
 			String inKey, 
-			String inHow, 
-			String inLocale,
-			String inApplicationID, 
-			String inUserID) {
+			String inHow,
+			CommonMessage inMessage
+			) {
 		
 		if(inKey.compareToIgnoreCase("form") == 0)
-			return getFormAny(inHow, inLocale, inApplicationID,inUserID);
+			return getFormAny(inHow, inMessage);
 		
 		String tempStr = String.format("{{System|Loging|%s|%s}}",inKey, inHow);
 		_log.error("Could not find KEY part for: " + tempStr);
@@ -31,14 +31,15 @@ public final class SystemLogin {
 
 	private static String getFormAny(
 			String inHow, 
-			String inLocale,
-			String inApplicationID, 
-			String inUserID) {
-		
-		if(inUserID == null || inUserID.isEmpty())
-			return getFormLogin(inHow, inLocale, inApplicationID);
+			CommonMessage inMessage
+			) {
+		String userId = inMessage.getData().get("_user");
+		String appId = inMessage.getData().get("_appid");
+		String locale = inMessage.getData().get("_locale");
+		if(userId == null || userId.isEmpty())
+			return getFormLogin(inHow, locale, appId);
 
-		return(getUserInfo(inHow, inLocale, inApplicationID, inUserID));
+		return(getUserInfo(inHow, locale, appId, userId));
 	}
 
 	private static String getUserInfo(

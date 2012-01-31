@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.KspManager;
 import org.hydra.deployers.Db;
 import org.hydra.managers.CryptoManager;
+import org.hydra.messages.CommonMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 /**
@@ -243,14 +244,14 @@ public final class DBUtils {
 			String inCFname,
 			String inKey,
 			String inCName,
-			String inUserID, 		 // reserved
+			CommonMessage inMessage,
 			Map<String, String> editLinks,
 			String inWrapper){
 		Db._log.debug("Enter to: getDbTemplateKeyHow");
 		// test user access by key
 		int keyLevel = Utils.isSpecialKey(inKey); 
 		if(keyLevel >= 0){
-			if(!Roles.roleNotLessThen(keyLevel, inKsp, inUserID))
+			if(!Roles.roleNotLessThen(keyLevel, inMessage))
 				return "";
 		}
 		// get result from DB
@@ -267,7 +268,7 @@ public final class DBUtils {
 			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
-		if(Roles.roleNotLessThen(Roles.USER_EDITOR, inKsp, inUserID))
+		if(Roles.roleNotLessThen(Roles.USER_EDITOR, inMessage))
 			wrap2EditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), editLinks, inWrapper);
 		
 		return content.getString();			

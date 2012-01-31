@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.WebApplication;
 import org.hydra.beans.WebApplications;
+import org.hydra.messages.CommonMessage;
 import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
@@ -15,12 +16,11 @@ public final class Applications {
 	static String getWhatKeyHow(
 			String inWhat,
 			String inKey,
-			String inHow, 
-			String inLocale, 
-			String inApplicationID) {
+			String inHow,
+			CommonMessage inMessage) {
 		
 		if(inWhat.compareToIgnoreCase("All") == 0)
-			return getAllKeyHow(inKey, inHow, inLocale, inApplicationID);
+			return getAllKeyHow(inKey, inHow, inMessage);
 		_log.error("Could not find WHAT part: " + inKey);
 		return "Could not find WHAT part: " + inKey;
 		
@@ -29,11 +29,12 @@ public final class Applications {
 	static String getAllKeyHow(
 			String inKey,
 			String inHow,
-			String inLocale, 
-			String inApplicationID) {
+			CommonMessage inMessage) {
 		
 		if(inHow.compareToIgnoreCase("html") == 0)
-			return getAllAnyHtml(inLocale, inApplicationID);
+			return getAllAnyHtml(
+					inMessage.getData().get("_locale"), 
+					inMessage.getData().get("_appid"));
 		_log.error("Could not find HOW part: " + inHow);
 		return "Could not find HOW part: " + inHow;
 		

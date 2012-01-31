@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.managers.MessagesManager;
+import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Roles;
@@ -23,29 +24,28 @@ public class ApplicationTempFiles extends AMessageHandler {
 	static String getKeyHow(
 			String inKey, 
 			String inHow,
-			String inApplicationID,
-			String inUserID) {
+			CommonMessage inMessage) {
 		if(inKey.compareToIgnoreCase("all") == 0 && 
 				inHow.compareToIgnoreCase("html") == 0)
-			return getAllHtml(inApplicationID, inUserID);
+			return getAllHtml(inMessage);
 		if(inHow.compareToIgnoreCase("html") == 0)
-			return getExtHtml(inKey, inApplicationID, inUserID);
+			return getExtHtml(inKey, inMessage);
 		if(inKey.compareToIgnoreCase("ExtJS") == 0 && 
 				inHow.compareToIgnoreCase("UL") == 0)
-			return getExtjsUl(inApplicationID, inUserID);
+			return getExtjsUl(inMessage);
 		
 		_log.error("Could not find KEY/HOW part: " + inKey + '/' + inHow);
 		return("Could not find KEY/HOW part: " + inKey + '/' + inHow);
 	}
 
-	private static String getExtjsUl(String inAppID, String inUserID) {
+	private static String getExtjsUl(CommonMessage inMessage) {
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inAppID),
+				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("_appid")),
 				fileURLs,
 				APropertyLoader.SUFFIX);
 		if(fileURLs.isEmpty()) return("");
-		boolean isAdmin = Roles.roleNotLessThen(Roles.USER_ADMINISTRATOR, inAppID, inUserID);		
+		boolean isAdmin = Roles.roleNotLessThen(Roles.USER_ADMINISTRATOR, inMessage);		
 		int fileCount = 0;
 		
 		String jsActionFormat =  MessagesManager.getTemplate("template.html.a.onClick.decodeContent.Label");		 
@@ -86,37 +86,35 @@ public class ApplicationTempFiles extends AMessageHandler {
 		return("");
 	}
 
-	static String getAllHtml(
-			String inApplicationID, 
-			String inUserID) {		
+	static String getAllHtml(CommonMessage inMessage) {		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inApplicationID),
+				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("_appid")),
 				fileURLs,
 				APropertyLoader.SUFFIX);
 		
-		return getFilePropBox(inApplicationID, inUserID, fileURLs);
+		return getFilePropBox(inMessage, fileURLs);
 	}	
 	
 	static String getExtHtml(
 			String fileExtension,
-			String inApplicationID, 
-			String inUserID) {
+			CommonMessage inMessage) {
 		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inApplicationID),
+				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("_appid")),
 				fileURLs,
 				(fileExtension + APropertyLoader.SUFFIX));
 		
-		return getFilePropBox(inApplicationID, inUserID, fileURLs);
+		return getFilePropBox(inMessage, fileURLs);
 	}
 
-	private static String getFilePropBox(String inApplicationID,
-			String inUserID, List<String> fileURLs) {
+	private static String getFilePropBox(CommonMessage inMessage, List<String> fileURLs) {
 		StringBuffer content = new StringBuffer();
 		for (String filePath : fileURLs) {
-			String filebox = FileUtils.getFilePropertiesDescription(inApplicationID, inUserID, filePath);
+			String filebox = FileUtils.getFilePropertiesDescription(
+					inMessage, 
+					filePath);
 			if(filebox != null) content.append(filebox);
 	    }
 	    if(fileURLs.size() == 0)

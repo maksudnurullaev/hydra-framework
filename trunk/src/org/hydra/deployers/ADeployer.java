@@ -11,8 +11,6 @@ import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Utils;
 
-import sun.net.www.protocol.http.InMemoryCookieStore;
-
 public final class ADeployer {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.ADeployer");
 	
@@ -94,13 +92,13 @@ public final class ADeployer {
 		if(inWhere.compareToIgnoreCase("db") == 0)
 			return Db.getWhatKeyHow(inWhat, inKey, inHow, editLinks, inMessage);
 		else if(inWhere.compareToIgnoreCase("system") == 0)
-			return System.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID, inUserID);
+			return System.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)
-			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID, inUserID);
+			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("Applications") == 0)
-			return Applications.getWhatKeyHow(inWhat, inKey, inHow, inLocale, inApplicationID);
+			return Applications.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("Application") == 0)
-			return Application.getWhatKeyHow(inWhat, inKey, inHow, inApplicationID, inUserID);
+			return Application.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		
 		return "Deployer: No WHERE part: " + inWhere ;
 	}
