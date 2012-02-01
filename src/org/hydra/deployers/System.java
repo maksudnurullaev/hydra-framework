@@ -54,7 +54,7 @@ public final class System {
 			WebApplication app = (WebApplication) result.getObject();
 			String resultStr = "";
 			for (Map.Entry<String, String> entry:app.getLocales().entrySet()) {
-				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("_appid")) == 0){ // selected
+				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("_locale")) == 0){ // selected
 					resultStr += entry.getValue();
 				}else{
 					resultStr += String.format(Constants._language_bar_a_template, entry.getKey(), entry.getValue());
