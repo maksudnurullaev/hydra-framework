@@ -2,7 +2,6 @@ package org.hydra.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -24,14 +23,6 @@ import org.hydra.utils.abstracts.ALogger;
 public class WebMessagesHandler extends ALogger {
 	public Object[] sendMessage(MessageBean inMessage) throws RichedMaxCapacityException {
 		return sendMessage(inMessage, null);
-	}
-	
-	public static void printPrittyMessage(CommonMessage inMessage){
-		System.out.println("#### MESSAGE ####");
-		for(Map.Entry<String, String> key:inMessage.getData().entrySet()){
-			System.out.println(String.format("%s: %s", key.getKey(),key.getValue()));
-		}		
-		System.out.println("#### END ####");
 	}
 	
 	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {

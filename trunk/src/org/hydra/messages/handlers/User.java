@@ -17,7 +17,8 @@ import org.hydra.utils.Utils;
 public class User extends AMessageHandler { // NO_UCD	
 
 	public IMessage logout(CommonMessage inMessage, WebContext context) {
-		SessionUtils.setSessionData(inMessage, "user", null, context);
+		String appId = inMessage.getData().get("_appid");
+		SessionUtils.setSessionData(context.getServletContext(), "user", appId, null);
 		inMessage.setReloadPage(true);
 		return(inMessage);
 	}
@@ -70,7 +71,8 @@ public class User extends AMessageHandler { // NO_UCD
 	}
 
 	private IMessage setupUserSession(CommonMessage inMessage, String userId, WebContext context) {
-		SessionUtils.setSessionData(inMessage, "user", userId, context);
+		String appId = inMessage.getData().get("_appid");
+		SessionUtils.setSessionData(context.getServletContext(), "user", appId, userId);
 		inMessage.setReloadPage(true);
 		return(inMessage);
 	}
