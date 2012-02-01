@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +78,7 @@ public class IndexHtml extends HttpServlet {
 			String strLine;
 			// Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
-				sb.append(updateIfHtmlHead(strLine, msg.getData().get("_appid")));
+				sb.append(updateIfHtmlHead(strLine, msg.getData().get("_appid"), req.getServletContext()));
 			}
 			out.println(sb.toString());
 			// Close the input stream
@@ -90,7 +91,7 @@ public class IndexHtml extends HttpServlet {
 		_log.debug("END process index.html page");	
 	}
 
-	private String updateIfHtmlHead(String strLine, String inAppId) {
+	private String updateIfHtmlHead(String strLine, String inAppId, ServletContext inServletContext) {
 		if(strLine == null || strLine.trim().isEmpty()){
 			return "";
 		}
@@ -98,7 +99,7 @@ public class IndexHtml extends HttpServlet {
 		if(strLine2.endsWith(_header_tag)
 				|| strLine2.endsWith(_header_tag.toLowerCase())){
 			_log.debug("Try to insert head.html before </head> tag for: " + inAppId);			
-			String header = FileUtils.getFromHtmlFile(inAppId, "head");
+			String header = FileUtils.getFromHtmlFile(inAppId, "head", inServletContext);
 			if(header == null) _log.warn("Additional head.html file for application not found!");
 			else _log.debug("head.html file found for: " + inAppId);
 			return("<!-- " + inAppId + " -->" + (header == null?"<!-- additional head elements not found -->":header) + strLine);

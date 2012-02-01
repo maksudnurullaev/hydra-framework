@@ -302,8 +302,7 @@ public final class FileUtils {
 		return properties;
 	}
 
-	public static String getFromHtmlFile(String inAppId, String fileName) {
-		ServletContext servletContext = Utils.getServletContent();
+	public static String getFromHtmlFile(String inAppId, String fileName, ServletContext servletContext)  {
 		String filePath = String.format("/files/%s/html/%s.html", inAppId, fileName);
 		String realPath = servletContext.getRealPath(filePath);
 		String content = null;

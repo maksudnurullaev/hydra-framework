@@ -19,8 +19,6 @@ public interface IMessage extends Serializable {
 	void setFile(FileTransfer inFile);
 	FileTransfer getFile();
 	boolean isReloadPage();
-	void setLocale(String inLocale);
-	String getLocale();
 	void setUserId(String inUserId);
 	String getUserId();
 	void setRealFilePath(String inRealFilePath);

@@ -25,7 +25,7 @@ public class ClientMessage extends AMessageHandler {
 	
 	public IMessage add(CommonMessage inMessage){		
 		if(inMessage.getData().isEmpty()){
-			inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getLocale()));
+			inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getData().get("_locale")));
 			return inMessage;
 		}
 		
@@ -36,7 +36,7 @@ public class ClientMessage extends AMessageHandler {
 			if(!isValidDataKey(entry.getKey())) continue;
 			if(entry.getValue().length() > 1024){
 				inMessage.clearContent();
-				inMessage.setError(MessagesManager.getText("Error.Too.Long.Data", null, inMessage.getLocale()));
+				inMessage.setError(MessagesManager.getText("Error.Too.Long.Data", null, inMessage.getData().get("_locale")));
 				return inMessage;
 			}
 		}
@@ -55,7 +55,7 @@ public class ClientMessage extends AMessageHandler {
 			return inMessage;
 		}
 
-		inMessage.setHtmlContent(MessagesManager.getText("MessageSaved", null, inMessage.getLocale()));
+		inMessage.setHtmlContent(MessagesManager.getText("MessageSaved", null, inMessage.getData().get("_locale")));
 		return inMessage;
 	}
 

@@ -55,7 +55,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		if(!validateData(inMessage, "_key", "dest")) return inMessage;
 		String key = inMessage.getData().get("_key");
 		
-		getTextarea2Edit(inMessage, "Text", key, inMessage.getLocale(),
+		getTextarea2Edit(inMessage, "Text", key, inMessage.getData().get("_locale"),
 				"DBRequest","updateText");
 		return inMessage;
 	}	
@@ -75,7 +75,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		String key = inMessage.getData().get("_key");
 		String value = inMessage.getData().get("value");		
 				
-		update(inMessage, "Text", key, inMessage.getLocale(), value);
+		update(inMessage, "Text", key, inMessage.getData().get("_locale"), value);
 		
 		return inMessage;
 	}

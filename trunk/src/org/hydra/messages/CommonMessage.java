@@ -16,7 +16,6 @@ public class CommonMessage implements IMessage {
 
 	private static final long serialVersionUID = 1L;
 
-	private String locale = null;
 	private String userId = null;
 	private String realFilePath = null;
 	private Map<String, String> data = new HashMap<String, String>();
@@ -136,16 +135,6 @@ public class CommonMessage implements IMessage {
 	@Override
 	public boolean isReloadPage() {
 		return reloadPage;
-	}
-
-	@Override
-	public void setLocale(String inLocale) {
-		this.locale = inLocale;
-	}
-
-	@Override
-	public String getLocale() {
-		return locale;
 	}
 
 	@Override
