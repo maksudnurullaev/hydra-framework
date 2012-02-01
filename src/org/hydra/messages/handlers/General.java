@@ -8,13 +8,12 @@ import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.services.WebMessagesHandler;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.SessionUtils;
 
 public class General extends AMessageHandler { // NO_UCD
 	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.AMessageHandler");
-	public IMessage getTextByKey(CommonMessage inMessage) {
+	public static IMessage getTextByKey(CommonMessage inMessage) {
 		if (!validateData(inMessage, "_key"))
 			return inMessage;
 		
@@ -30,21 +29,15 @@ public class General extends AMessageHandler { // NO_UCD
 		if (!validateData(inMessage, "_locale"))
 			return inMessage;
 
-		// change session
 		String locale = inMessage.getData().get("_locale");
-
-		SessionUtils.setSessionData(
-				inMessage, 
-				"_locale",
-				locale,
-				webContext);
+		String appId = inMessage.getData().get("_appid");
 		
-		// Change message locale too...
-		inMessage.getData().put("_locale", locale);
-		_log.debug("set new locale to: " + 
+		SessionUtils.setSessionData(webContext.getServletContext(), "_locale", appId, locale);
+		
+		_log.debug("set locale to: " + 
 				SessionUtils.getSessionData(webContext.getServletContext(), 
-						"_locale", 
-						inMessage.getData().get("_appid")));
+				"_locale", 
+				appId));
 				
 		return getInitialBody(inMessage, webContext);
 	}
@@ -52,7 +45,6 @@ public class General extends AMessageHandler { // NO_UCD
 	public static IMessage getInitialBody(CommonMessage inMessage, WebContext webContext) {		
 		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("_appid"),"body", webContext.getServletContext());
 		if(content != null){
-			WebMessagesHandler.printPrittyMessage(inMessage);
 			_log.debug(String.format("deploy connent for (appid/locale): ", 
 					inMessage.getData().get("_appid"), 
 					inMessage.getData().get("_locale")));
@@ -61,21 +53,5 @@ public class General extends AMessageHandler { // NO_UCD
 		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("_appid"));
 		return(inMessage);
 	};
-/*	
-	public IMessage getContent(CommonMessage inMessage){
-		if (!validateData(inMessage, "content"))
-			return inMessage;
-		
-		String content = inMessage.getData().get("content");
-		getLog().debug("Try to get content for: " + content);
-		
-		if(!content.isEmpty())
-			ADeployer.deployContent(content,inMessage);
-		else
-			inMessage.setError("_error_empty_request_");
-
-		return inMessage;
-	};
-	*/
 
 }

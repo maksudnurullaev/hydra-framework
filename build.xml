@@ -7,6 +7,7 @@
 	<property name="src.tests" value="${basedir}/tests" />
 	<property name="properties.dir" value="${basedir}/properties" />
 	<property name="name" value="${application.name}" />
+	<property name="classes" value="${basedir}/WebContext/WEB-INF/classes" />
 
 	<fileset id="local.libs" dir="${basedir}/WebContext/WEB-INF/lib">
 		<include name="*.jar" />

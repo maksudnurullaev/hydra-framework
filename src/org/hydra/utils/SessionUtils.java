@@ -17,14 +17,7 @@ import org.hydra.messages.CommonMessage;
 public final class SessionUtils {
 	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionUtils");
 	public static Pattern pattern = Pattern.compile("appid=(\\w+).*");    		
-	
 
-	/**
-	 * Attache session data (locale, userId and etc.)
-	 * 
-	 * @param inMessage
-	 * @param inSession
-	 */
 	public static Result setApplicationData(
 			Result inResult,
 			CommonMessage inMessage,
@@ -80,21 +73,17 @@ public final class SessionUtils {
 		}
 	};
 
-	public static void setSessionData(
-			CommonMessage inMessage,
-			String inKey,
-			Object inValue,
-			WebContext context) {
-		String sessionDataKey = inMessage.getData().get("_appid") +  inKey;
-		context.getSession().setAttribute(sessionDataKey, inValue);
-		_log.error("sessionKey: " + sessionDataKey);
-		_log.error("context.getSession().getAttribute(sessionKey): " + context.getSession().getAttribute(sessionDataKey));
+	public static void setSessionData(ServletContext inContext, String inKey, String inAppId, Object inValue) {
+		String sessionDataKey = inAppId + inKey;
+		inContext.setAttribute(sessionDataKey, inValue);
+		_log.debug("sessionKey: " + sessionDataKey);
+		_log.debug("sessionData: " + inContext.getAttribute(sessionDataKey));
 	};
 	
 	public static String getSessionData(ServletContext inContext, String inKey, String inAppId){
 		String sessionDataKey = inAppId +  inKey;		
-		_log.error("sessionKey: " + sessionDataKey);
-		_log.error("context.getSession().getAttribute(sessionKey): " + inContext.getAttribute(sessionDataKey));
+		_log.debug("sessionKey: " + sessionDataKey);
+		_log.debug("sessionData: " + inContext.getAttribute(sessionDataKey));
 		return ((String)inContext.getAttribute(sessionDataKey));
 	}
 	

@@ -7,12 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-
 import javax.servlet.ServletContext;
-
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
@@ -646,6 +643,14 @@ public final class Utils {
 		result = result.replaceAll("\\[\\[", "[");
 		result = result.replaceAll("\\]\\]", "]");
 		return (result);
+	}
+
+	public static void printPrittyMessage(CommonMessage inMessage){
+		System.out.println("#### MESSAGE ####");
+		for(Map.Entry<String, String> key:inMessage.getData().entrySet()){
+			System.out.println(String.format("%s: %s", key.getKey(),key.getValue()));
+		}		
+		System.out.println("#### END ####");
 	}
 
 
