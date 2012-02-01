@@ -62,13 +62,13 @@ public final class SessionUtils {
 							: urlString);	
 			if(app != null){
 				inMessage.getData().put("_appid", app.getId());
-				inMessage.getData().put("_default_locale", app.getDefaultLocale());
-				inMessage.getData().put("_user", getFromContext(inContext, "_user", app.getId()));
+				inMessage.getData().put("_user", getSessionData(inContext, "_user", app.getId()));
 				inMessage.getData().put("_context_path", inContext.getContextPath());
 				inMessage.setTimeout(app.getTimeout());
 				inResult.setResult(true);
+				if(inMessage.getData().containsKey("_locale")) return; // not need to init locale state
 				if(isContextContain(inContext, "_locale", app.getId())){
-					inMessage.getData().put("_locale", getFromContext(inContext, "_locale", app.getId()));				
+					inMessage.getData().put("_locale", getSessionData(inContext, "_locale", app.getId()));				
 				}else{
 					inMessage.getData().put("_locale", app.getDefaultLocale());				
 				}
@@ -81,18 +81,21 @@ public final class SessionUtils {
 	};
 
 	public static void setSessionData(
-			Result inResult,
 			CommonMessage inMessage,
 			String inKey,
 			Object inValue,
 			WebContext context) {
-		context.getSession().setAttribute(
-				(inMessage.getData().get("_appid") +  inKey),
-				inValue);
+		String sessionDataKey = inMessage.getData().get("_appid") +  inKey;
+		context.getSession().setAttribute(sessionDataKey, inValue);
+		_log.error("sessionKey: " + sessionDataKey);
+		_log.error("context.getSession().getAttribute(sessionKey): " + context.getSession().getAttribute(sessionDataKey));
 	};
 	
-	public static String getFromContext(ServletContext inContext, String inKey, String inAppId){
-		return ((String)inContext.getAttribute(inAppId + inKey));
+	public static String getSessionData(ServletContext inContext, String inKey, String inAppId){
+		String sessionDataKey = inAppId +  inKey;		
+		_log.error("sessionKey: " + sessionDataKey);
+		_log.error("context.getSession().getAttribute(sessionKey): " + inContext.getAttribute(sessionDataKey));
+		return ((String)inContext.getAttribute(sessionDataKey));
 	}
 	
 	public static boolean isContextContain(ServletContext inContext, String inKey, String inAppId){
@@ -103,7 +106,6 @@ public final class SessionUtils {
 		}
 		return(false);
 	}
-
 	
 	public static String getCaptchaId(String queryString) {
     	Matcher m = pattern.matcher(queryString);
@@ -137,4 +139,14 @@ public final class SessionUtils {
 		}
 		return false;
 	}	
+	
+	public static void printSessionData(WebContext webContext, CommonMessage inMessage){
+		System.out.println("#### SESSION DATA for: " + inMessage.getData().get("_appid"));
+		Enumeration<String> keys = webContext.getSession().getAttributeNames();
+		while(keys.hasMoreElements()){
+			String key = keys.nextElement();
+			System.out.println(String.format("%s: %s", webContext.getSession().getAttribute(key)));
+		}		
+		System.out.println("#### END ####");				
+	}
 }

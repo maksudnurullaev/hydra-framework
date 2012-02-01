@@ -9,6 +9,7 @@ import org.hydra.messages.CommonMessage;
 import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Result;
+import org.hydra.utils.Utils;
 
 public final class System {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.System");
@@ -57,7 +58,7 @@ public final class System {
 				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("_locale")) == 0){ // selected
 					resultStr += entry.getValue();
 				}else{
-					resultStr += String.format(Constants._language_bar_a_template, entry.getKey(), entry.getValue());
+					resultStr += Utils.T("template.html.a.language.bar", entry.getKey(), entry.getValue());
 				}
 				if(!resultStr.isEmpty())
 					resultStr += "&nbsp;&nbsp;";

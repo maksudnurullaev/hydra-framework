@@ -11,21 +11,15 @@ import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
-import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
 
 public class User extends AMessageHandler { // NO_UCD	
 
 	public IMessage logout(CommonMessage inMessage, WebContext context) {
-		Result result = new Result();
-		SessionUtils.setSessionData(result, inMessage, "user", null, context);
-		if(result.isOk()){
-			inMessage.setReloadPage(true);
-			return(inMessage);
-		}
-		inMessage.setError(result.getResult());
-		return inMessage;
+		SessionUtils.setSessionData(inMessage, "user", null, context);
+		inMessage.setReloadPage(true);
+		return(inMessage);
 	}
 	
 	public IMessage login(CommonMessage inMessage, WebContext context) {
@@ -71,19 +65,13 @@ public class User extends AMessageHandler { // NO_UCD
 			return(setupUserSession(inMessage, user_mail, context));
 		}
 			
-		inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getLocale()));
+		inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getData().get("_locale")));
 		return(inMessage);
 	}
 
 	private IMessage setupUserSession(CommonMessage inMessage, String userId, WebContext context) {
-		Result result = new Result();
-		SessionUtils.setSessionData(result, inMessage, "user", userId, context);
-		if(result.isOk()){
-			inMessage.setReloadPage(true);
-			return(inMessage);
-		}
-		inMessage.clearContent();
-		inMessage.setError(result.toString());
+		SessionUtils.setSessionData(inMessage, "user", userId, context);
+		inMessage.setReloadPage(true);
 		return(inMessage);
 	}
 

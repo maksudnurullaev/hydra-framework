@@ -1,16 +1,19 @@
 package org.hydra.messages.handlers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.hydra.deployers.ADeployer;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.services.WebMessagesHandler;
 import org.hydra.utils.FileUtils;
-import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
 
 public class General extends AMessageHandler { // NO_UCD
+	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.AMessageHandler");
 	public IMessage getTextByKey(CommonMessage inMessage) {
 		if (!validateData(inMessage, "_key"))
 			return inMessage;
@@ -18,40 +21,47 @@ public class General extends AMessageHandler { // NO_UCD
 		String content = MessagesManager.getText(
 				inMessage.getData().get("_key"),
 				"div",
-				inMessage.getLocale());
+				inMessage.getData().get("_locale"));
 
 		return (ADeployer.deployContent(content,inMessage));
 	}
 
-	public IMessage changeLocale(CommonMessage inMessage, WebContext context) {
+	public static IMessage changeLocale(CommonMessage inMessage, WebContext webContext) {
 		if (!validateData(inMessage, "_locale"))
 			return inMessage;
-		getLog().debug(
-				"Try to change current locale to: "
-						+ inMessage.getData().get("_locale"));
 
 		// change session
-		String new_locale = inMessage.getData().get("_locale");
+		String locale = inMessage.getData().get("_locale");
 
-		Result result = new Result();
 		SessionUtils.setSessionData(
-				result, 
 				inMessage, 
 				"_locale",
-				new_locale,
-				context);
-		// if something wrong
-		if (!result.isOk()) {
-			inMessage.setError(result.getResult());
-			return inMessage;
-		}
-		getLog().debug("Locale sucessefully changed to: " + new_locale);
-		// Change message locale too...
-		inMessage.setLocale(new_locale);
+				locale,
+				webContext);
 		
-		return getInitialBody(inMessage);
+		// Change message locale too...
+		inMessage.getData().put("_locale", locale);
+		_log.debug("set new locale to: " + 
+				SessionUtils.getSessionData(webContext.getServletContext(), 
+						"_locale", 
+						inMessage.getData().get("_appid")));
+				
+		return getInitialBody(inMessage, webContext);
 	}
 	
+	public static IMessage getInitialBody(CommonMessage inMessage, WebContext webContext) {		
+		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("_appid"),"body", webContext.getServletContext());
+		if(content != null){
+			WebMessagesHandler.printPrittyMessage(inMessage);
+			_log.debug(String.format("deploy connent for (appid/locale): ", 
+					inMessage.getData().get("_appid"), 
+					inMessage.getData().get("_locale")));
+			return(ADeployer.deployContent(content,inMessage));
+		}
+		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("_appid"));
+		return(inMessage);
+	};
+/*	
 	public IMessage getContent(CommonMessage inMessage){
 		if (!validateData(inMessage, "content"))
 			return inMessage;
@@ -66,14 +76,6 @@ public class General extends AMessageHandler { // NO_UCD
 
 		return inMessage;
 	};
-	
-	public IMessage getInitialBody(CommonMessage inMessage) {		
-		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("_appid"),"body");
-		if(content != null){
-			getLog().debug("... HTML body content length: " + content.length());
-			return(ADeployer.deployContent(content,inMessage));
-		}
-		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("_appid"));
-		return(inMessage);
-	};
+	*/
+
 }

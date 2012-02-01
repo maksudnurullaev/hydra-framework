@@ -5,7 +5,7 @@
 
 	<property name="src" value="${basedir}/src" />
 	<property name="src.tests" value="${basedir}/tests" />
-	<property name="classes" value="${basedir}/WebContext/WEB-INF/classes" />
+	<property name="properties.dir" value="${basedir}/properties" />
 	<property name="name" value="${application.name}" />
 
 	<fileset id="local.libs" dir="${basedir}/WebContext/WEB-INF/lib">
@@ -45,8 +45,7 @@
 	</target>
 
 	<target name="clean.build" description="Clean project">
-		<delete dir="${classes}/org"/>
-		<delete dir="${classes}/doc" />
+		<delete dir="${classes}"/>
 	</target>	
 	
 	<target name="web.clean" description="Remove project from web server">
@@ -60,7 +59,12 @@
 				<exclude name="**/.svn" />
 			</fileset>
 		</copy>
-		<echo message="goto: http://yourserver/${name}"/>
+		<copy todir="${deploy.path}/${name}/WEB-INF/classes" preservelastmodified="true">
+			<fileset dir="${basedir}/properties">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		<echo message="Everything copied to ${deploy.path}/${name}"/>
 	</target>
 
 	<target name="create.war" depends="build"

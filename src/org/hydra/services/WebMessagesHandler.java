@@ -2,6 +2,7 @@ package org.hydra.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -9,6 +10,7 @@ import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.MessagesCollector;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.MessageBean;
+import org.hydra.messages.handlers.General;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
@@ -23,6 +25,15 @@ public class WebMessagesHandler extends ALogger {
 	public Object[] sendMessage(MessageBean inMessage) throws RichedMaxCapacityException {
 		return sendMessage(inMessage, null);
 	}
+	
+	public static void printPrittyMessage(CommonMessage inMessage){
+		System.out.println("#### MESSAGE ####");
+		for(Map.Entry<String, String> key:inMessage.getData().entrySet()){
+			System.out.println(String.format("%s: %s", key.getKey(),key.getValue()));
+		}		
+		System.out.println("#### END ####");
+	}
+	
 	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {
 		List<MessageBean> resultList = new ArrayList<MessageBean>();
 		// Detect web context
@@ -41,28 +52,26 @@ public class WebMessagesHandler extends ALogger {
 			resultList.add(inMessage);
 			return resultList.toArray();
 		}
-/*		
-		for(Map.Entry<String, String> key:inMessage.getData().entrySet()){
-			System.out.println(String.format("%s: %s", key.getKey(),key.getValue()));
-		}
-		inMessage.setError("JUST TESTING");
-		resultList.add(inMessage);
-		return resultList.toArray();
-*/
-		
+		// test for action with session
+		if(handledWithSession(inMessage, webContext)){
+			resultList.add(inMessage);
+			return resultList.toArray();			
+		}		
 		// test captcha if needs
-		if(needTestCaptcha(inMessage) && !SessionUtils.validateCaptcha(inMessage, webContext)){
+		if(inMessage.getData().containsKey(Constants._captcha_value)
+				&& !SessionUtils.validateCaptcha(inMessage, webContext)){
 			ArrayList<String> errorFields = new ArrayList<String>();
 			errorFields.add(Constants._captcha_value);
 			inMessage.setHighlightFields(errorFields);
 			resultList.add(inMessage);
 			return resultList.toArray();
-		}			
+		}		
+		
 		// sets for file
 		if(inFile != null){
-			inMessage.setRealFilePath(webContext.getServletContext().getRealPath(inMessage.getData().get("_file_plath")));
+			inMessage.setRealFilePath(webContext.getServletContext().getRealPath(inMessage.getData().get("_file_path")));
 		}
-
+		
 		// set message collector
 		MessagesCollector messagesCollector = null;
 		BeansUtils.getWebContextBean(result, Constants._bean_main_message_collector);
@@ -120,8 +129,20 @@ public class WebMessagesHandler extends ALogger {
 		return resultList.toArray();
 	}
 
-	private boolean needTestCaptcha(MessageBean inMessage) {
-		return(inMessage.getData().containsKey(Constants._captcha_value));
+	private boolean handledWithSession(MessageBean inMessage,
+			WebContext webContext) {
+		String handler = inMessage.getData().get("_handler");
+		String action = inMessage.getData().get("_action");
+		if(handler.compareToIgnoreCase("General") == 0){
+			if(action.compareToIgnoreCase("changeLocale") == 0){
+				inMessage = (MessageBean) General.changeLocale(inMessage, webContext);
+				return(true);
+			} else if(action.compareToIgnoreCase("getInitialBody") == 0){
+				inMessage = (MessageBean) General.getInitialBody(inMessage, webContext);
+				return(true);
+			}
+		}
+		return false;
 	}
 
 	public static IMessage getCassandraConfiguration(CommonMessage inMessage, WebContext inContext){
