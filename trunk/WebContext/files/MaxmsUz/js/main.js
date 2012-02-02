@@ -18,9 +18,9 @@ MaxmsUz.setMainContent = function(contentId){
 	content += '<div style="clear: both;"></div>';
 	
     Globals.sendMessage({
-	    handler: 'General'
-	    , action: 'getContent'
-	    , content: content
+	    _handler: 'General'
+	    , _action: 'getContent'
+	    , _content: content
 	    , dest: MaxmsUz.MainContent
 	});	
 };
@@ -29,9 +29,9 @@ MaxmsUz.setContent = function(contentId){
 	var content = '[[DB|Template|' + contentId + '|span]]';
 	
     Globals.sendMessage({
-	    handler: 'General'
-	    , action: 'getContent'
-	    , content: content
+	    _handler: 'General'
+	    , _action: 'getContent'
+	    , _content: content
 	    , dest: MaxmsUz.Content
 	});	
 };
@@ -44,9 +44,9 @@ MaxmsUz.sendClientMessage = function(){
 	var text = $('textarea.message').value.trim();
     Globals.sendMessage({
         handler: 'ClientMessage'
-        , action: 'add'
+        , _action: 'add'
         , dest: MaxmsUz.Content
-        , text: text
+        , _text: text
     });		
 };
 
@@ -54,9 +54,9 @@ MaxmsUz.showCabinet = function(){
 	var content = '[[DB|Template|TPage.Cabinet|span]]';
 	
     Globals.sendMessage({
-	    handler: 'General'
-	    , action: 'getContent'
-	    , content: content
+	    _handler: 'General'
+	    , _action: 'getContent'
+	    , _content: content
 	    , dest: MaxmsUz.MainContent
 	});	
 };

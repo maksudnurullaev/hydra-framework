@@ -21,8 +21,8 @@ import org.hydra.utils.Utils;
 public class AdmUsers extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-		if(!validateData(inMessage, "_appid")) return inMessage;
-		String appId = inMessage.getData().get("_appid");
+		if(!validateData(inMessage, "appid")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		
 		String content  = String.format("[[Application|Users|%s|html]]", appId);
 		getLog().debug("Try to get content for: " + content);
@@ -31,8 +31,8 @@ public class AdmUsers extends AMessageHandler {
 	}	
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!validateData(inMessage, "_appid")) return inMessage;
-		String appId = inMessage.getData().get("_appid");
+		if(!validateData(inMessage, "appid")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
 		fields.add(new FieldInput("user_mail", ""));
@@ -56,7 +56,7 @@ public class AdmUsers extends AMessageHandler {
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
-		String[] mandatoryFields = {"_appid","user_mail","user_password","user_password2","user_tag"};
+		String[] mandatoryFields = {"appid","user_mail","user_password","user_password2","user_tag"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		getLog().debug("All necessary fields exits");
 		
@@ -64,7 +64,7 @@ public class AdmUsers extends AMessageHandler {
 		List<String> errorFields = new ArrayList<String>();
 		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();
 		
-		String appID = inMessage.getData().get("_appid");
+		String appID = inMessage.getData().get("appid");
 		
 		getLog().debug("Test for valid mail");
 		String user_mail = inMessage.getData().get("user_mail").trim();
@@ -108,8 +108,8 @@ public class AdmUsers extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "_appid", "_key")) return inMessage;
-		String appId = inMessage.getData().get("_appid");
+		if(!validateData(inMessage, "appid", "_key")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("_key").trim();
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "User", key);

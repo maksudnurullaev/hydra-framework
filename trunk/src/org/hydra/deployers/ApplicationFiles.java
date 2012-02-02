@@ -31,7 +31,7 @@ public class ApplicationFiles extends AMessageHandler {
 				String.format(FileUtils.URL4FILES_APPID_IMAGE, inAppID),
 				fileURLs,
 				null);		
-		_log.debug("filePathes.size(): " + fileURLs.size());
+		
 		for (String filePath : fileURLs) {
 			content.append(FileUtils.getFileBox(inAppID, filePath));
 	    }

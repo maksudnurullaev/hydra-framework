@@ -83,10 +83,12 @@ public final class FileUtils {
 
 	public static String saveFile4Admin(CommonMessage inMessage) {
 		FileTransfer file = inMessage.getFile();
-		String appId = inMessage.getData().get("_appid");
+		String appId = inMessage.getData().get("appid");
 		// Generate pathname for new image
 		String uri4File = Utils.F(URL4FILES_APPID_IMAGE + "%s", appId, file.getFilename());
+		_log.debug("uri4File: " + uri4File);
 		String realPath = inMessage.getRealFilePath();
+		_log.debug("uri4File: " + realPath);
 		String resultStr = "";
 		// 1. 
 		InputStream is = null;

@@ -45,8 +45,8 @@ public class Adm extends AMessageHandler { // NO_UCD
 
 	// NO_UCD	
 	public static IMessage getApp(CommonMessage inMessage) {
-		if(!validateData(inMessage, "_appid")) return inMessage;
-		String appId = inMessage.getData().get("_appid");
+		if(!validateData(inMessage, "appid")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		
 		if(!appId.isEmpty()){
 			String content = String.format("[[Application|Options|%s|html]]", appId);
