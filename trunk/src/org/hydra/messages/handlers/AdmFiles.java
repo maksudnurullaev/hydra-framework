@@ -50,12 +50,12 @@ public class AdmFiles extends AMessageHandler {
 			inMessage.clearContent();
 			return(inMessage);
 		}
-		/*
+		
 		String result  = FileUtils.saveFile4Admin(inMessage);
 		inMessage.setHtmlContent(result);
-		*/
-		Utils.printPrittyMessage(inMessage);
-		inMessage.setError("!!!TEST!!!");
+		
+//		Utils.printPrittyMessage(inMessage);
+//		inMessage.setError("!!!TEST!!!");
 		// finish
 		return (inMessage);
 	}
