@@ -37,7 +37,7 @@ public final class SystemLogin {
 		String appId = inMessage.getData().get("_appid");
 		String locale = inMessage.getData().get("_locale");
 		if(userId == null || userId.isEmpty())
-			return getFormLogin(inHow, locale, appId);
+			return getFormLogin(inHow, locale);
 
 		return(getUserInfo(inHow, locale, appId, userId));
 	}
@@ -73,9 +73,8 @@ public final class SystemLogin {
 
 	private static String getFormLogin(
 			String inHow, 
-			String inLocale,
-			String inApplicationID) {
-		return(Utils.T("html.form.login", inApplicationID));
+			String inLocale) {
+		return(Utils.T("html.form.login"));
 	}
 
 }

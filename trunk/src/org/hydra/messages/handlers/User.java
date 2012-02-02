@@ -20,22 +20,21 @@ public class User extends AMessageHandler { // NO_UCD
 	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.User");
 
 	public static IMessage logout(CommonMessage inMessage, WebContext webContext) {
-		String appId = inMessage.getData().get("_appid");
+		String appId = inMessage.getData().get("appid");
 		_log.debug("Going to logout for: " + SessionUtils.getSessionData(webContext.getServletContext(), "_user", inMessage.getData().get("_appid")));
-		SessionUtils.setSessionData(webContext.getServletContext(), "user", appId, null);
+		SessionUtils.setSessionData(webContext.getServletContext(), "_user", appId, null);
 		inMessage.setReloadPage(true);
 		return(inMessage);
 	}
 	
 	public static IMessage login(CommonMessage inMessage, WebContext context) {
-		String[] mandatoryFields = {"_appid","user_mail","user_password"};
+		String[] mandatoryFields = {"user_mail","user_password"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		_log.debug("All necessary fields exits");
+		String appId = inMessage.getData().get("_appid");
 		
 		List<String> errorFields = new ArrayList<String>();
-		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();
-		
-		String appID = inMessage.getData().get("_appid");
+		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();		
 		
 		_log.debug("Test for valid mail");
 		String user_mail = inMessage.getData().get("user_mail").trim();
@@ -56,7 +55,7 @@ public class User extends AMessageHandler { // NO_UCD
 		// 2. test for user mail existence
 		if(errorCodes.size() == 0){
 			_log.debug("Test user existence");
-			user_password_cryped = DBUtils.testForExistenceOfKeyAndValue(errorFields, errorCodes, appID, "User", user_mail, "password", "user_mail");
+			user_password_cryped = DBUtils.testForExistenceOfKeyAndValue(errorFields, errorCodes, appId, "User", user_mail, "password", "user_mail");
 		}
 		// 2.5 if error found 
 		if(errorCodes.size() != 0){ 
