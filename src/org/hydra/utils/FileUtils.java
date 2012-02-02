@@ -27,13 +27,14 @@ import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.messages.CommonMessage;
+import org.hydra.messages.handlers.abstracts.AMessageHandler;
 
 public final class FileUtils {
 	public static final int FILE_TYPE_UNKNOWN = 0;
 	public static final int FILE_TYPE_IMAGE = 1;
 	public static final int FILE_TYPE_COMPRESSED = FILE_TYPE_IMAGE << 1;
 	public static final String URL4FILES_APPID_FILES = "files/%s/files/"; 
-	public static final String URL4FILES_APPID_IMAGE = "files/%s/image/"; 
+	public static final String URL4FILES_APPID_SUBFOLDER = "files/%s/%s/"; 
 	public static final String FILE_DESCRIPTION_TEXT = "Text"; 
 	public static final String FILE_DESCRIPTION_PUBLIC = "Public"; 
 
@@ -42,7 +43,7 @@ public final class FileUtils {
 
 	public static String saveImage4(ServletContext servletContext, String inAppId, BufferedImage inImage){
 		// 0. Generate pathname for new image
-		String uri4Image = Utils.F("files/%s/image/%s.%s", inAppId, RandomStringUtils.random(8,true,true), generalImageFormat);
+		String uri4Image = Utils.F("files/%s/images/%s.%s", inAppId, RandomStringUtils.random(8,true,true), generalImageFormat);
 		String realPath = servletContext.getRealPath(uri4Image);
 		// 1. Save image in PNG formate
 		File output = new File(realPath);
@@ -82,10 +83,14 @@ public final class FileUtils {
 	}
 
 	public static String saveFile4Admin(CommonMessage inMessage) {
-		FileTransfer file = inMessage.getFile();
 		String appId = inMessage.getData().get("appid");
+		String folder = inMessage.getData().get("folder");
+		if(!AMessageHandler.validateData(inMessage, "appid", "folder")){
+			return("ERROR!!!");
+		}
+		FileTransfer file = inMessage.getFile();		
 		// Generate pathname for new image
-		String uri4File = Utils.F(URL4FILES_APPID_IMAGE + "%s", appId, file.getFilename());
+		String uri4File = Utils.F(URL4FILES_APPID_SUBFOLDER, appId, folder) + file.getFilename();
 		_log.debug("uri4File: " + uri4File);
 		String realPath = inMessage.getRealFilePath();
 		_log.debug("uri4File: " + realPath);
@@ -112,7 +117,7 @@ public final class FileUtils {
 		return (resultStr + "<br />" + Utils.createJSLinkAdmNewFile(appId, inMessage.getData().get("dest")));		
 	}
 	
-	public static boolean saveFile(CommonMessage inMessage,
+	public static boolean saveFileAndDescriptions(CommonMessage inMessage,
 			StringWrapper outFilePath, String ... dataDescriptionKeys) {
 		FileTransfer file = inMessage.getFile();
 		boolean result = false;

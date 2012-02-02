@@ -28,7 +28,7 @@ public class ApplicationFiles extends AMessageHandler {
 		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_IMAGE, inAppID),
+				String.format(FileUtils.URL4FILES_APPID_SUBFOLDER, inAppID, "images"),
 				fileURLs,
 				null);		
 		

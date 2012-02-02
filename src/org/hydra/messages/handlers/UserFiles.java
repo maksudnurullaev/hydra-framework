@@ -34,7 +34,7 @@ public class UserFiles extends AMessageHandler {
 		StringWrapper filePath = new StringWrapper();
 		
 		String returnFormat = "";
-		if(FileUtils.saveFile(inMessage, filePath, "Name", "Public", "Tag", "Text"))
+		if(FileUtils.saveFileAndDescriptions(inMessage, filePath, "Name", "Public", "Tag", "Text"))
 		{
 			returnFormat = "[[DB|Template|FileSavedOk.Header|span]]";
 			String fullPath = getMainUrl(inMessage.getUrl()) + filePath.getString();
