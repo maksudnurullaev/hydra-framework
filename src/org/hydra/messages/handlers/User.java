@@ -3,6 +3,8 @@ package org.hydra.messages.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.hydra.managers.CryptoManager;
 import org.hydra.managers.MessagesManager;
@@ -15,34 +17,36 @@ import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
 
 public class User extends AMessageHandler { // NO_UCD	
+	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.User");
 
-	public IMessage logout(CommonMessage inMessage, WebContext context) {
+	public static IMessage logout(CommonMessage inMessage, WebContext webContext) {
 		String appId = inMessage.getData().get("_appid");
-		SessionUtils.setSessionData(context.getServletContext(), "user", appId, null);
+		_log.debug("Going to logout for: " + SessionUtils.getSessionData(webContext.getServletContext(), "_user", inMessage.getData().get("_appid")));
+		SessionUtils.setSessionData(webContext.getServletContext(), "user", appId, null);
 		inMessage.setReloadPage(true);
 		return(inMessage);
 	}
 	
-	public IMessage login(CommonMessage inMessage, WebContext context) {
+	public static IMessage login(CommonMessage inMessage, WebContext context) {
 		String[] mandatoryFields = {"_appid","user_mail","user_password"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
-		getLog().debug("All necessary fields exits");
+		_log.debug("All necessary fields exits");
 		
 		List<String> errorFields = new ArrayList<String>();
 		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();
 		
 		String appID = inMessage.getData().get("_appid");
 		
-		getLog().debug("Test for valid mail");
+		_log.debug("Test for valid mail");
 		String user_mail = inMessage.getData().get("user_mail").trim();
 		String user_password = inMessage.getData().get("user_password").trim();
 		String user_password_cryped = null;
 		
 		// 0. Test for global admin
 		if(!user_mail.isEmpty() && !user_password.isEmpty()){
-			getLog().debug("Test administrator for user: " + user_mail);
+			_log.debug("Test administrator for user: " + user_mail);
 			if(DBUtils.test4GlobalAdmin(user_mail, user_password)){
-				getLog().debug("Found administrator account for: " + user_mail);
+				_log.debug("Found administrator account for: " + user_mail);
 				return(setupUserSession(inMessage, "+++", context));
 			}
 		}
@@ -51,7 +55,7 @@ public class User extends AMessageHandler { // NO_UCD
 		Utils.testFieldEMail(errorFields, errorCodes, user_mail, "user_mail");
 		// 2. test for user mail existence
 		if(errorCodes.size() == 0){
-			getLog().debug("Test user existence");
+			_log.debug("Test user existence");
 			user_password_cryped = DBUtils.testForExistenceOfKeyAndValue(errorFields, errorCodes, appID, "User", user_mail, "password", "user_mail");
 		}
 		// 2.5 if error found 
@@ -70,14 +74,14 @@ public class User extends AMessageHandler { // NO_UCD
 		return(inMessage);
 	}
 
-	private IMessage setupUserSession(CommonMessage inMessage, String userId, WebContext context) {
+	private static IMessage setupUserSession(CommonMessage inMessage, String userId, WebContext webContext) {
 		String appId = inMessage.getData().get("_appid");
-		SessionUtils.setSessionData(context.getServletContext(), "user", appId, userId);
+		SessionUtils.setSessionData(webContext.getServletContext(), "_user", appId, userId);
 		inMessage.setReloadPage(true);
 		return(inMessage);
 	}
 
-	private IMessage highLightErrorFields(CommonMessage inMessage,
+	private static IMessage highLightErrorFields(CommonMessage inMessage,
 			String[] mandatoryFields, List<String> errorFields,
 			List<ErrorUtils.ERROR_CODES> errorCodes) {
 		inMessage.clearContent();

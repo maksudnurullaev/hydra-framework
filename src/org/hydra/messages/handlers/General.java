@@ -12,7 +12,7 @@ import org.hydra.utils.FileUtils;
 import org.hydra.utils.SessionUtils;
 
 public class General extends AMessageHandler { // NO_UCD
-	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.AMessageHandler");
+	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.General");
 	public static IMessage getTextByKey(CommonMessage inMessage) {
 		if (!validateData(inMessage, "_key"))
 			return inMessage;
@@ -54,4 +54,18 @@ public class General extends AMessageHandler { // NO_UCD
 		return(inMessage);
 	};
 
+	public static IMessage getContent(CommonMessage inMessage){
+		if (!validateData(inMessage, "_content"))
+			return inMessage;
+		
+		String content = inMessage.getData().get("_content");
+		_log.debug("Try to get content for: " + content);
+		
+		if(!content.isEmpty())
+			ADeployer.deployContent(content,inMessage);
+		else
+			inMessage.setError("_error_empty_request_");
+
+		return inMessage;
+	};	
 }

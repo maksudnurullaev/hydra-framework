@@ -14,8 +14,8 @@ import org.hydra.utils.Utils;
 public class AdmFiles extends AMessageHandler {
 
 	public IMessage list(CommonMessage inMessage){
-		if(!validateData(inMessage, "_appid")) return inMessage;
-		String appId = inMessage.getData().get("_appid");
+		if(!validateData(inMessage, "appid")) return inMessage;
+		String appId = inMessage.getData().get("appid");
 		
 		String content  = String.format("[[Application|Files|%s|html]]", appId);
 		getLog().debug("Try to get content for: " + content);
@@ -24,8 +24,8 @@ public class AdmFiles extends AMessageHandler {
 	}	
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!validateData(inMessage, "_appid")) return inMessage;
-		String appID = inMessage.getData().get("_appid");
+		if(!validateData(inMessage, "appid")) return inMessage;
+		String appID = inMessage.getData().get("appid");
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
 		FieldInput fileField = new FieldInput("input_file");

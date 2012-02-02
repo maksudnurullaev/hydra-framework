@@ -230,7 +230,7 @@ public final class Utils {
 			ArrayList<IField> optionaFields) {
 
 		List<String> strSaveArrayData = new ArrayList<String>();
-		strSaveArrayData.add("_appid");
+		strSaveArrayData.add("appid");
 		strSaveArrayData.add(Utils.Q(inAppId));
 		strSaveArrayData.add("_handler");
 		strSaveArrayData.add(Utils.Q(inSaveHandler));
@@ -264,7 +264,7 @@ public final class Utils {
 				.toArray(new String[0]));
 
 		List<String> strCancelArrayData = new ArrayList<String>();
-		strCancelArrayData.add("_appid");
+		strCancelArrayData.add("appid");
 		strCancelArrayData.add(Utils.Q(inAppId));
 		strCancelArrayData.add("_handler");
 		strCancelArrayData.add(Utils.Q(inCancelHandler));

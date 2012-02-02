@@ -10,6 +10,8 @@ import org.hydra.beans.MessagesCollector;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.handlers.General;
+import org.hydra.messages.handlers.User;
+import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
@@ -21,12 +23,14 @@ import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
-	public Object[] sendMessage(MessageBean inMessage) throws RichedMaxCapacityException {
-		return sendMessage(inMessage, null);
-	}
-	
-	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {
+	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {		
 		List<MessageBean> resultList = new ArrayList<MessageBean>();
+		if(!AMessageHandler.validateData(inMessage, "_handler", "_action")){
+			getLog().error("Not valid _handler and/or _action value!");
+			resultList.add(inMessage);
+			return(resultList.toArray());
+		}
+		
 		// Detect web context
 		if(WebContextFactory.get() == null){
 			getLog().error("WebContext is null!");
@@ -60,7 +64,9 @@ public class WebMessagesHandler extends ALogger {
 		
 		// sets for file
 		if(inFile != null){
-			inMessage.setRealFilePath(webContext.getServletContext().getRealPath(inMessage.getData().get("_file_path")));
+			getLog().debug("File name/size: " + inFile.getFilename() + "/" + inFile.getSize());
+			inMessage.setFile(inFile);
+			//inMessage.setRealFilePath(webContext.getServletContext().getRealPath(inMessage.getData().get("_file_path")));
 		}
 		
 		// set message collector
@@ -132,7 +138,21 @@ public class WebMessagesHandler extends ALogger {
 				inMessage = (MessageBean) General.getInitialBody(inMessage, webContext);
 				return(true);
 			}
+		} else if(handler.compareToIgnoreCase("User") == 0){
+			if(action.compareToIgnoreCase("login") == 0){
+				inMessage = (MessageBean) User.login(inMessage, webContext);
+				return(true);
+			} else if(action.compareToIgnoreCase("logout") == 0){
+				inMessage = (MessageBean) User.logout(inMessage, webContext);
+				return(true);
+			}
+		}else if(handler.compareToIgnoreCase("Adm") == 0){
+			if(action.compareToIgnoreCase("getCassandraConfiguration") == 0){
+				inMessage = (MessageBean) getCassandraConfiguration(inMessage, webContext);
+				return(true);
+			} 
 		}
+		//
 		return false;
 	}
 
