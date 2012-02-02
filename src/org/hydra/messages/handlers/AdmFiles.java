@@ -8,7 +8,9 @@ import org.hydra.html.fields.IField;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.services.WebMessagesHandler;
 import org.hydra.utils.FileUtils;
+import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
 
 public class AdmFiles extends AMessageHandler {
@@ -48,8 +50,12 @@ public class AdmFiles extends AMessageHandler {
 			inMessage.clearContent();
 			return(inMessage);
 		}
+		/*
 		String result  = FileUtils.saveFile4Admin(inMessage);
 		inMessage.setHtmlContent(result);
+		*/
+		Utils.printPrittyMessage(inMessage);
+		inMessage.setError("!!!TEST!!!");
 		// finish
 		return (inMessage);
 	}
