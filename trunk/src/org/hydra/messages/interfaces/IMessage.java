@@ -3,8 +3,6 @@ package org.hydra.messages.interfaces;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.directwebremoting.io.FileTransfer;
-
 public interface IMessage extends Serializable {	
 	Map<String, String> getData();
 	String getError();
@@ -16,13 +14,9 @@ public interface IMessage extends Serializable {
 	String getSessionID();
 	void setUrl(String inUrl);
 	String getUrl();
-	void setFile(FileTransfer inFile);
-	FileTransfer getFile();
 	boolean isReloadPage();
 	void setUserId(String inUserId);
 	String getUserId();
-	void setRealFilePath(String inRealFilePath);
-	String getRealFilePath();
 	void setContextPath(String inContextPath);
 	String getContextPath();
 }

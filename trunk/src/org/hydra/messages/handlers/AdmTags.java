@@ -38,7 +38,7 @@ public class AdmTags extends AMessageHandler {
 				String.format("<h4>[[DB|Text|New_Tag|span]]</h4>"), appId, 
 				"AdmTags", "add", 
 				"AdmTags", "list", 
-				"admin.app.action", fields, null);
+				"admin.app.action", fields, null, inMessage);
 		
 		return(ADeployer.deployContent(form,inMessage));			
 	}

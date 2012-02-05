@@ -50,23 +50,28 @@ public final class SessionUtils {
 		String urlString = inMessage.getUrl();
 		if(urlString != null){
 			int found = urlString.indexOf("mode=");
-			WebApplication app = webApplications.getValidApplication4(
-					(found != -1) ? urlString.toLowerCase().substring(found) 
-							: urlString);	
-			if(app != null){
-				inMessage.getData().put("_appid", app.getId());
-				inMessage.getData().put("_user", getSessionData(inContext, "_user", app.getId()));
-				inMessage.getData().put("_context_path", inContext.getContextPath());
-				inMessage.setTimeout(app.getTimeout());
-				inResult.setResult(true);
-				if(inMessage.getData().containsKey("_locale")) return; // not need to init locale state
-				if(isContextContain(inContext, "_locale", app.getId())){
-					inMessage.getData().put("_locale", getSessionData(inContext, "_locale", app.getId()));				
-				}else{
-					inMessage.getData().put("_locale", app.getDefaultLocale());				
-				}
-				return;
+			WebApplication app = null;
+			if(found == -1){
+				app = webApplications.getValidApplication4(
+						urlString.toLowerCase().substring(found) 
+								);
+				if(app == null)
+					app = webApplications.getValidApplication4("hydra.uz");
+			} else {
+				app = webApplications.getValidApplication4("hydra.uz");				
 			}
+			inMessage.getData().put("_appid", app.getId());
+			inMessage.getData().put("_user", getSessionData(inContext, "_user", app.getId()));
+			inMessage.getData().put("_context_path", inContext.getContextPath());
+			inMessage.setTimeout(app.getTimeout());
+			inResult.setResult(true);
+			if(inMessage.getData().containsKey("_locale")) return; // not need to init locale state
+			if(isContextContain(inContext, "_locale", app.getId())){
+				inMessage.getData().put("_locale", getSessionData(inContext, "_locale", app.getId()));				
+			}else{
+				inMessage.getData().put("_locale", app.getDefaultLocale());				
+			}
+			return;
 			
 		}else{
 			inResult.setErrorString("Could not find _URL parameter for message!");

@@ -7,9 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+
 import javax.servlet.ServletContext;
+
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
@@ -148,16 +151,6 @@ public final class Utils {
 				, inName);
 	}
 
-	public static String createJSLinkAdmNewFile(String inAppId, String inDest){
-		return Utils.createJSLinkHAAD(
-				Utils.Q("AdmFiles"), 
-				Utils.Q("addForm"), 
-				Utils.Q(inAppId),
-				Utils.Q(inDest), 
-				"New"
-				);
-	}
-	
 	public static String createJSLink(
 			String inJSData
 			, String inName
@@ -227,7 +220,8 @@ public final class Utils {
 			String inCancelHandler, String inCancelAction, // Cancel
 			String inDest,
 			ArrayList<IField> fields, 
-			ArrayList<IField> optionaFields) {
+			ArrayList<IField> optionaFields, 
+			CommonMessage inMessage) {
 
 		List<String> strSaveArrayData = new ArrayList<String>();
 		strSaveArrayData.add("appid");
@@ -245,6 +239,10 @@ public final class Utils {
 			for (IField field : fields) {
 				if(isFieldFileUploadType(field)){
 					fileField = field.getValue4JS();
+					if(inMessage != null && inMessage.getData().containsKey("folder")){
+						strSaveArrayData.add("folder");
+						strSaveArrayData.add(Q(inMessage.getData().get("folder")));
+					}
 				}else{
 					strSaveArrayData.add(field.getID());
 					strSaveArrayData.add(field.getValue4JS());
@@ -644,14 +642,5 @@ public final class Utils {
 		result = result.replaceAll("\\]\\]", "]");
 		return (result);
 	}
-
-	public static void printPrittyMessage(CommonMessage inMessage){
-		System.out.println("#### MESSAGE ####");
-		for(Map.Entry<String, String> key:inMessage.getData().entrySet()){
-			System.out.println(String.format("%s: %s", key.getKey(),key.getValue()));
-		}		
-		System.out.println("#### END ####");
-	}
-
 
 }

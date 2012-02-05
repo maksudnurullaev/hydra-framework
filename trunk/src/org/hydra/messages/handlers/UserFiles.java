@@ -25,7 +25,7 @@ public class UserFiles extends AMessageHandler {
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
-		if(inMessage.getFile() == null){
+		if(inMessage.file == null){
 			inMessage.setError("NO_FILE");
 			inMessage.clearContent();
 			return(inMessage);

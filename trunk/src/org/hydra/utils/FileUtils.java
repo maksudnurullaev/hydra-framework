@@ -82,18 +82,16 @@ public final class FileUtils {
 		}
 	}
 
-	public static String saveFile4Admin(CommonMessage inMessage) {
-		String appId = inMessage.getData().get("appid");
-		String folder = inMessage.getData().get("folder");
+	public static String saveFile(CommonMessage inMessage) {
+		if(!AMessageHandler.validateFile(inMessage)){			
+			return("ERROR: no file!");
+		}		
 		if(!AMessageHandler.validateData(inMessage, "appid", "folder")){
-			return("ERROR!!!");
+			return("ERROR: no valid parameters!");
 		}
-		FileTransfer file = inMessage.getFile();		
-		// Generate pathname for new image
-		String uri4File = Utils.F(URL4FILES_APPID_SUBFOLDER, appId, folder) + file.getFilename();
-		_log.debug("uri4File: " + uri4File);
-		String realPath = inMessage.getRealFilePath();
-		_log.debug("uri4File: " + realPath);
+		String appId = inMessage.getData().get("appid");
+		FileTransfer file = inMessage.file;		
+		String realPath = inMessage.fileRealPath;
 		String resultStr = "";
 		// 1. 
 		InputStream is = null;
@@ -108,18 +106,18 @@ public final class FileUtils {
 				os.write(bufer, 0, bytesRead);
 			}
 			os.close();
-			resultStr = getFileBox(appId, uri4File);
+			resultStr = getFileBox(appId, inMessage.filePath);
 		} catch (Exception e) {
 			_log.error(e.toString());
 			resultStr = e.toString();
 		}	
 		// finish
-		return (resultStr + "<br />" + Utils.createJSLinkAdmNewFile(appId, inMessage.getData().get("dest")));		
+		return (resultStr);		
 	}
 	
 	public static boolean saveFileAndDescriptions(CommonMessage inMessage,
 			StringWrapper outFilePath, String ... dataDescriptionKeys) {
-		FileTransfer file = inMessage.getFile();
+		FileTransfer file = inMessage.file;
 		boolean result = false;
 		// 0. Generate pathname for new image
 		String uri4FilePath;
@@ -127,8 +125,8 @@ public final class FileUtils {
 		
 		uri4FilePath = Utils.F(URL4FILES_APPID_FILES + "%s", inMessage.getData().get("_appid"), getMD5FileName(orginalFileName) + getFileExtension(orginalFileName));
 		
-		result = saveFile(inMessage.getRealFilePath(), file);
-		result = saveFileDescriptions(inMessage, inMessage.getRealFilePath(), orginalFileName, dataDescriptionKeys);
+		result = saveFile(inMessage.fileRealPath, file);
+		result = saveFileDescriptions(inMessage, inMessage.fileRealPath, orginalFileName, dataDescriptionKeys);
 			
 		if(result)
 			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), uri4FilePath));
@@ -251,8 +249,8 @@ public final class FileUtils {
 		String jsData = Utils.jsData(
 				 "_handler", Utils.Q(inHandler)
 				,"_action",  Utils.Q("delete")
-				,"_appid", Utils.Q(inAppID)
-				,"_key", Utils.Q(key)
+				,"appid", Utils.Q(inAppID)
+				,"file_path", Utils.Q(key)
 				,"dest", inDest
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
