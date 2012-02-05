@@ -51,7 +51,7 @@ public final class SessionUtils {
 		if(urlString != null){
 			int found = urlString.indexOf("mode=");
 			WebApplication app = null;
-			if(found == -1){
+			if(found != -1){
 				app = webApplications.getValidApplication4(
 						urlString.toLowerCase().substring(found) 
 								);
