@@ -24,7 +24,14 @@ public class AdmFiles extends AMessageHandler {
 	}	
 	
 	public IMessage addForm(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid")) return inMessage;
+		if(!validateData(inMessage, "appid", "dest")) return inMessage;
+		
+		String form = getAddFrom(inMessage);
+		
+		return(ADeployer.deployContent(form,inMessage));		
+	}	
+
+	private String getAddFrom(CommonMessage inMessage){
 		String appId = inMessage.getData().get("appid");
 		String dest = inMessage.getData().get("dest");
 		
@@ -38,9 +45,8 @@ public class AdmFiles extends AMessageHandler {
 				"AdmFiles", "add", 
 				"AdmFiles", "list", 
 				dest, fields, null, inMessage);
-		
-		return(ADeployer.deployContent(form,inMessage));		
-	}	
+		return(form);
+	}
 	
 	public IMessage add(CommonMessage inMessage){			
 		if(inMessage.file == null){
@@ -50,10 +56,9 @@ public class AdmFiles extends AMessageHandler {
 		}
 		
 		String result  = FileUtils.saveFile(inMessage);
-		inMessage.setHtmlContent(result);
+		result += getAddFrom(inMessage);
 		
-		// finish
-		return (inMessage);
+		return(ADeployer.deployContent(result,inMessage));		
 	}
 
 	public IMessage delete(CommonMessage inMessage){
