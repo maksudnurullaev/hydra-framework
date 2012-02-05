@@ -40,7 +40,17 @@ public class ApplicationFiles extends AMessageHandler {
     	StringBuffer header = new StringBuffer();
     	header.append("Count: " + fileURLs.size());					
 	    header.append(" | ");
-	    header.append(Utils.createJSLinkAdmNewFile(inAppID,"admin.app.action"));
+	    
+	    String jsData =  
+	    	  "_handler:'AdmFiles'"
+	    	+ ",_action:'addForm'"
+	    	+ ",appid:" + Utils.Q(inAppID) 
+	    	+ ",dest:'admin.app.action'"
+	    	+ ",folder:'images'";
+	    
+	    header.append(Utils.T("template.html.a.onClick.sendMessage.Label"
+				, jsData
+				, "New"));
 			
 	    header.append("<hr />");
 

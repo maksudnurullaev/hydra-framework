@@ -17,13 +17,14 @@ import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.utils.BeansUtils;
 import org.hydra.utils.Constants;
+import org.hydra.utils.FileUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
-	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {		
+	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {	
 		List<MessageBean> resultList = new ArrayList<MessageBean>();
 		if(!AMessageHandler.validateData(inMessage, "_handler", "_action")){
 			getLog().error("Not valid _handler and/or _action value!");
@@ -52,7 +53,7 @@ public class WebMessagesHandler extends ALogger {
 			resultList.add(inMessage);
 			return resultList.toArray();			
 		}		
-		// test captcha if needs
+		// test & setup captcha if needs
 		if(inMessage.getData().containsKey(Constants._captcha_value)
 				&& !SessionUtils.validateCaptcha(inMessage, webContext)){
 			ArrayList<String> errorFields = new ArrayList<String>();
@@ -62,13 +63,16 @@ public class WebMessagesHandler extends ALogger {
 			return resultList.toArray();
 		}		
 		
-		// sets for file
+		// test & setup file if needs
 		if(inFile != null){
-			getLog().debug("File name/size: " + inFile.getFilename() + "/" + inFile.getSize());
-			inMessage.setFile(inFile);
-			//inMessage.setRealFilePath(webContext.getServletContext().getRealPath(inMessage.getData().get("_file_path")));
+			inMessage.file = inFile;
+			setupFile(inMessage, webContext);
 		}
-		
+		// test for file_path
+		if(inMessage.getData().containsKey("file_path")){
+			inMessage.fileRealPath = 
+					webContext.getServletContext().getRealPath(inMessage.getData().get("file_path"));
+		}
 		// set message collector
 		MessagesCollector messagesCollector = null;
 		BeansUtils.getWebContextBean(result, Constants._bean_main_message_collector);
@@ -120,10 +124,20 @@ public class WebMessagesHandler extends ALogger {
 		while ((messageBean = messagesCollector.getMessage(inMessage.getSessionID())) != null)
 		{
 			if(messageBean.getData() != null) messageBean.getData().clear();
-			if(messageBean.getFile() != null) messageBean.setFile(null);
 			resultList.add((MessageBean) messageBean);
 		}
 		return resultList.toArray();
+	}
+
+	private void setupFile(MessageBean inMessage, WebContext webContext) {
+		getLog().error("File name/size: " + inMessage.file.getFilename() + "/" + inMessage.file.getSize());
+		String appId = inMessage.getData().get("appid");
+		String folder = inMessage.getData().get("folder");
+		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.file.getFilename());
+		inMessage.filePath = uri4File;
+		_log.error("File uri: " + uri4File);
+		inMessage.fileRealPath = webContext.getServletContext().getRealPath(uri4File);
+		_log.error("Real path: " + inMessage.fileRealPath);
 	}
 
 	private boolean handledWithSession(MessageBean inMessage,

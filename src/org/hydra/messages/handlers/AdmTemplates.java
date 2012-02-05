@@ -43,7 +43,7 @@ public class AdmTemplates extends AMessageHandler {
 				String.format("<h4>[[DB|Text|New_Template|span]]</h4>"), appID, 
 				"AdmTemplates", "add", 
 				"AdmTemplates", "list", 
-				"admin.app.action", fields, null);
+				"admin.app.action", fields, null, inMessage);
 		
 		return(ADeployer.deployContent(form,inMessage));		
 	}	
@@ -74,7 +74,7 @@ public class AdmTemplates extends AMessageHandler {
 				String.format("<h4>[[DB|Text|Update_Template|span]]</h4>"), appID, 
 				"AdmTemplates", "update", 
 				"AdmTemplates", "list", 
-				"admin.app.action", fields, null);
+				"admin.app.action", fields, null, inMessage);
 		
 		IMessage msg = ADeployer.deployContent(form,inMessage);
 		String temp = msg.getData().get(msg.getData().get("dest"));

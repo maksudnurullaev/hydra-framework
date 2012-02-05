@@ -2,6 +2,7 @@ package org.hydra.messages.handlers.abstracts;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.intefaces.IMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.abstracts.ALogger;
@@ -23,5 +24,11 @@ public abstract class AMessageHandler extends ALogger implements IMessageHandler
 		}
 		return true;		
 	}
-	
+	public static boolean validateFile(CommonMessage inMessage) {
+		if(inMessage.file == null
+				|| inMessage.file.getSize() == 0){
+			return false;						
+		}
+		return true;
+	}	
 }

@@ -50,7 +50,7 @@ public class AdmUsers extends AMessageHandler {
 				String.format("<h4>[[DB|Text|New_User|span]]</h4>"), appId, 
 				"AdmUsers", "add", 
 				"AdmUsers", "list", 
-				"admin.app.action", fields, optionalFields);
+				"admin.app.action", fields, optionalFields, inMessage);
 		
 		return(ADeployer.deployContent(form,inMessage));		
 	}	

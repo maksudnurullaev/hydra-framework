@@ -16,8 +16,11 @@ public class CommonMessage implements IMessage {
 
 	private static final long serialVersionUID = 1L;
 
+	public String fileRealPath = null;
+	public String filePath = null;
+	public FileTransfer file = null;
+
 	private String userId = null;
-	private String realFilePath = null;
 	private Map<String, String> data = new HashMap<String, String>();
 	private String sessionID = null;
 	private String url = null;
@@ -25,9 +28,7 @@ public class CommonMessage implements IMessage {
 	private List<String> highlightFields = null;
 	private List<String> noHighlightFields = null;
 	private boolean reloadPage = false;
-
 	private String error = null;
-	private FileTransfer file = null;
 	private String contextPath;
 	private long timeOut;
 
@@ -118,16 +119,6 @@ public class CommonMessage implements IMessage {
 		return url;
 	}
 
-	@Override
-	public void setFile(FileTransfer file) {
-		this.file = file;
-	}
-
-	@Override
-	public FileTransfer getFile() {
-		return file;
-	}
-
 	public void setReloadPage(boolean reloadPage) {
 		this.reloadPage = reloadPage;
 	}
@@ -145,16 +136,6 @@ public class CommonMessage implements IMessage {
 	@Override
 	public String getUserId() {
 		return userId;
-	}
-
-	@Override
-	public void setRealFilePath(String realFilePath) {
-		this.realFilePath = realFilePath;
-	}
-
-	@Override
-	public String getRealFilePath() {
-		return realFilePath;
 	}
 
 	@Override
