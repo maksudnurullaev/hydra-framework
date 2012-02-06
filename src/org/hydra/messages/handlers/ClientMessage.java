@@ -68,9 +68,9 @@ public class ClientMessage extends AMessageHandler {
 	}
 	
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "_key")) return inMessage;
-		String appId = inMessage.getData().get("_appid");
-		String key = inMessage.getData().get("_key");
+		if(!validateData(inMessage, "key")) return inMessage;
+		String appId = inMessage.getData().get("appid");
+		String key = inMessage.getData().get("key");
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, _cfName, key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){

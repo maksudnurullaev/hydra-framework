@@ -54,16 +54,16 @@ ZFileUz.testValue = function(val, name){
 };
 
 ZFileUz.try2SendFile = function(){
-	var test1 = ZFileUz.testValue($('checkAgreement').checked, 'licheckAgreement');
+	var test1 = ZFileUz.testValue($('check_agreement').checked, 'li_check_agreement');
 	var test2 = ZFileUz.testValue($('input_file').value, 'input_file');
-	var test3 = ZFileUz.testValue($('CaptchaValue').value, 'CaptchaValue');
+	var test3 = ZFileUz.testValue($('captcha_value').value, 'captcha_value');
 	if( test1 && test2 && test3 )
 	{
-		Globals.sendMessage2(
+		Globals.sendMessage(
 			{handler:'UserFiles'
 				, action:'add'
 				, dest:ZFileUz.Content
-				, CaptchaValue:$('CaptchaValue').value 
+				, CaptchaValue:$('captcha_value').value 
 				, Tag:$('tagId').value
 				, Text:$('fileDescription').value 
 				, Public:($('publicCheckbox').checked?'true':'false')

@@ -59,9 +59,9 @@ public class UserFiles extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "_appid", "_key")) return inMessage;
+		if(!validateData(inMessage, "_appid", "key")) return inMessage;
 		String appId = inMessage.getData().get("_appid");
-		String key = inMessage.getData().get("_key");
+		String key = inMessage.getData().get("key");
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "Template", key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){

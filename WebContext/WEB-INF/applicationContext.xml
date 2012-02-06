@@ -116,8 +116,10 @@
 		<property name="statisticsCollector">
 			<ref bean="_statisticsCollector"/>
 		</property>
+		<!-- 
 		<property name="remoteMessageService">
 			<ref bean="messageServiceClient" />
 		</property>
+		 -->
 	</bean>		
 </beans>

@@ -14,11 +14,11 @@ import org.hydra.utils.SessionUtils;
 public class General extends AMessageHandler { // NO_UCD
 	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.General");
 	public static IMessage getTextByKey(CommonMessage inMessage) {
-		if (!validateData(inMessage, "_key"))
+		if (!validateData(inMessage, "key"))
 			return inMessage;
 		
 		String content = MessagesManager.getText(
-				inMessage.getData().get("_key"),
+				inMessage.getData().get("key"),
 				"div",
 				inMessage.getData().get("_locale"));
 
