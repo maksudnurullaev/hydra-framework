@@ -45,6 +45,6 @@ public final class Constants {
 	
 	public static final String[] _GLOBAL_TAGS= {"User", "User.Editor", "User.Publisher", "User.Administrator"};
 	
-	public static final String _captcha_value = "_captcha_value";
+	public static final String _captcha_value = "captcha_value";
 	public static final String _captcha_OK = "_captcha_OK";
 }

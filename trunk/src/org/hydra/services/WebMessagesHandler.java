@@ -23,7 +23,7 @@ import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
-	public Object[] sendMessage(IMessage inMessage, FileTransfer inFile) throws RichedMaxCapacityException {	
+	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {	
 		List<IMessage> resultList = new ArrayList<IMessage>();
 		if(!AMessageHandler.validateData(inMessage, "handler", "action")){
 			getLog().error("Not valid HANDLER and/or ACTION value!");
