@@ -13,6 +13,7 @@ import org.directwebremoting.WebContext;
 import org.hydra.beans.WebApplication;
 import org.hydra.beans.WebApplications;
 import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 
 public final class SessionUtils {
 	private static Log _log = LogFactory.getLog("org.hydra.utils.SessionUtils");
@@ -20,7 +21,7 @@ public final class SessionUtils {
 
 	public static Result setApplicationData(
 			Result inResult,
-			CommonMessage inMessage,
+			IMessage inMessage,
 			WebContext inWebCotext) {
 		ServletContext context = inWebCotext.getServletContext();
 		// Set session ID
@@ -38,7 +39,7 @@ public final class SessionUtils {
 	
 	public static void setWebAppParameters(
 			Result inResult,
-			CommonMessage inMessage,
+			IMessage inMessage,
 			ServletContext inContext) {
 		BeansUtils.getWebContextBean(inResult,
 				Constants._bean_hydra_web_applications);
@@ -62,7 +63,6 @@ public final class SessionUtils {
 			}
 			inMessage.getData().put("_appid", app.getId());
 			inMessage.getData().put("_user", getSessionData(inContext, "_user", app.getId()));
-			inMessage.getData().put("_context_path", inContext.getContextPath());
 			inMessage.setTimeout(app.getTimeout());
 			inResult.setResult(true);
 			if(inMessage.getData().containsKey("_locale")) return; // not need to init locale state
@@ -108,7 +108,7 @@ public final class SessionUtils {
 		return null;
 	}
 
-	public static boolean validateCaptcha(CommonMessage inMessage, WebContext context) {
+	public static boolean validateCaptcha(IMessage inMessage, WebContext context) {
 		try{
 			HttpSession session = context.getSession();
 			int sessionValue = (Integer) session.getAttribute(inMessage.getData().get("_appid") + Constants._captcha_value);

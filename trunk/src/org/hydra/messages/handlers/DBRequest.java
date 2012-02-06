@@ -24,11 +24,11 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		String textAreaId =  String.format("%s.%s.%s.textarea", appId, inCFName, inKey);
 		
 		String jsData = Utils.jsData(
-					"_appid", Utils.Q(appId)
-					, "_handler", Utils.Q(inAction)
-					, "_action", Utils.Q(inActionMethod)
-					, "_key", Utils.Q(inKey)
-					, "_value", String.format("$('%s').value",textAreaId)
+					"appid", Utils.Q(appId)
+					, "handler", Utils.Q(inAction)
+					, "action", Utils.Q(inActionMethod)
+					, "key", Utils.Q(inKey)
+					, "value", String.format("$('%s').value",textAreaId)
 					, "dest", Utils.Q(spanId)
 				);
 		

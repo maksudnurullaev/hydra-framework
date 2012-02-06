@@ -7,7 +7,6 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.MessagesCollector;
-import org.hydra.messages.CommonMessage;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.handlers.General;
 import org.hydra.messages.handlers.User;
@@ -24,10 +23,10 @@ import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class WebMessagesHandler extends ALogger {
-	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {	
-		List<MessageBean> resultList = new ArrayList<MessageBean>();
-		if(!AMessageHandler.validateData(inMessage, "_handler", "_action")){
-			getLog().error("Not valid _handler and/or _action value!");
+	public Object[] sendMessage(IMessage inMessage, FileTransfer inFile) throws RichedMaxCapacityException {	
+		List<IMessage> resultList = new ArrayList<IMessage>();
+		if(!AMessageHandler.validateData(inMessage, "handler", "action")){
+			getLog().error("Not valid HANDLER and/or ACTION value!");
 			resultList.add(inMessage);
 			return(resultList.toArray());
 		}
@@ -65,14 +64,17 @@ public class WebMessagesHandler extends ALogger {
 		
 		// test & setup file if needs
 		if(inFile != null){
-			inMessage.file = inFile;
+			inMessage.setFile(inFile);
 			setupFile(inMessage, webContext);
 		}
-		// test for file_path
-		if(inMessage.getData().containsKey("file_path")){
-			inMessage.fileRealPath = 
-					webContext.getServletContext().getRealPath(inMessage.getData().get("file_path"));
-		}
+
+		return(handleMessage(inMessage));
+	}
+	
+	public Object[] handleMessage(IMessage inMessage) throws RichedMaxCapacityException {
+		List<IMessage> resultList = new ArrayList<IMessage>();
+		Result result = new Result();
+
 		// set message collector
 		MessagesCollector messagesCollector = null;
 		BeansUtils.getWebContextBean(result, Constants._bean_main_message_collector);
@@ -126,27 +128,27 @@ public class WebMessagesHandler extends ALogger {
 			if(messageBean.getData() != null) messageBean.getData().clear();
 			resultList.add((MessageBean) messageBean);
 		}
-		return resultList.toArray();
+		return resultList.toArray();		
 	}
 
-	private void setupFile(MessageBean inMessage, WebContext webContext) {
-		getLog().error("File name/size: " + inMessage.file.getFilename() + "/" + inMessage.file.getSize());
+	private void setupFile(IMessage inMessage, WebContext webContext) {
+		getLog().error("File name/size: " + inMessage.getFile().getFilename() + "/" + inMessage.getFile().getSize());
 		String appId = inMessage.getData().get("appid");
 		String folder = inMessage.getData().get("folder");
-		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.file.getFilename());
-		inMessage.filePath = uri4File;
+		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.getFile().getFilename());
+		inMessage.setFilePath(uri4File);
 		_log.error("File uri: " + uri4File);
-		inMessage.fileRealPath = webContext.getServletContext().getRealPath(uri4File);
-		_log.error("Real path: " + inMessage.fileRealPath);
+		inMessage.setFileRealPath(webContext.getServletContext().getRealPath(uri4File));
+		_log.error("Real path: " + inMessage.getFileRealPath());
 	}
 
-	private boolean handledWithSession(MessageBean inMessage,
+	private boolean handledWithSession(IMessage inMessage,
 			WebContext webContext) {
-		String handler = inMessage.getData().get("_handler");
-		String action = inMessage.getData().get("_action");
+		String handler = inMessage.getData().get("handler");
+		String action = inMessage.getData().get("action");
 		if(handler.compareToIgnoreCase("General") == 0){
 			if(action.compareToIgnoreCase("changeLocale") == 0){
-				inMessage = (MessageBean) General.changeLocale(inMessage, webContext);
+				inMessage = General.changeLocale(inMessage, webContext);
 				return(true);
 			} else if(action.compareToIgnoreCase("getInitialBody") == 0){
 				inMessage = (MessageBean) General.getInitialBody(inMessage, webContext);
@@ -170,7 +172,7 @@ public class WebMessagesHandler extends ALogger {
 		return false;
 	}
 
-	public static IMessage getCassandraConfiguration(CommonMessage inMessage, WebContext inContext){
+	public static IMessage getCassandraConfiguration(IMessage inMessage, WebContext inContext){
 		String result = Utils.T("template.table.with.class",
 				"table.name.value",
 				String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 

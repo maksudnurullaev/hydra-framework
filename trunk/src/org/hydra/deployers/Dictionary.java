@@ -3,7 +3,7 @@ package org.hydra.deployers;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.managers.MessagesManager;
-import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Roles;
 import org.hydra.utils.Utils;
 
@@ -14,7 +14,7 @@ public final class Dictionary {
 			String inWhat, 
 			String inKey,
 			String inHow,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		if(inWhat.compareToIgnoreCase("Template") == 0)
 			return getDictionaryTemplateKeyANY(inKey, inHow, inMessage);
 		else if(inWhat.compareToIgnoreCase("Text") == 0)
@@ -27,7 +27,7 @@ public final class Dictionary {
 	private static String getDictionaryTextKeyANY(
 			String inKey, 
 			String inHow,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		int roleLevel = Utils.isSpecialKey(inKey);
 		if(roleLevel >= 0){
 			if(Roles.roleNotLessThen(roleLevel, inMessage))
@@ -41,7 +41,7 @@ public final class Dictionary {
 	private static String getDictionaryTemplateKeyANY(
 			String inKey,
 			String inHow,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		return MessagesManager.getTemplate(inKey);
 	}
 

@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.KspManager;
 import org.hydra.deployers.Db;
 import org.hydra.managers.CryptoManager;
-import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 /**
@@ -244,7 +244,7 @@ public final class DBUtils {
 			String inCFname,
 			String inKey,
 			String inCName,
-			CommonMessage inMessage,
+			IMessage inMessage,
 			Map<String, String> editLinks,
 			String inWrapper){
 		Db._log.debug("Enter to: getDbTemplateKeyHow");

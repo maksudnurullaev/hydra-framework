@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Utils;
 
@@ -18,7 +17,7 @@ public final class ADeployer {
 	
 	public static IMessage deployContent(
 			String inContent,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		Map<String, String> editLinks = new HashMap<String, String>();
 		String content = deployContent(
 				inContent, 
@@ -36,7 +35,7 @@ public final class ADeployer {
 	private static String deployContent(
 			String inContent, 
 			Map<String, String> editLinks,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		return deployContent(inContent, 0, editLinks, inMessage);
 	}	
 	
@@ -44,7 +43,7 @@ public final class ADeployer {
 			String inContent, 
 			int recursionCount,
 			Map<String, String> editLinks,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		
 		if(++recursionCount > 10){
 			_log.warn("No more recursion permited!!!");
@@ -91,7 +90,7 @@ public final class ADeployer {
 			String inKey, 
 			String inHow,
 			Map<String, String> editLinks,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		if(inWhere.compareToIgnoreCase("db") == 0)
 			return Db.getWhatKeyHow(inWhat, inKey, inHow, editLinks, inMessage);
 		else if(inWhere.compareToIgnoreCase("system") == 0)

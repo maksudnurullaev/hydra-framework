@@ -8,7 +8,7 @@ Released for free under a Creative Commons Attribution 3.0 License
 body {
 	margin: 11px 0 0 0;
 	padding: 0;
-	background: #ffffff url(../image/header.gif) repeat-x;
+	background: #ffffff url(../images/header.gif) repeat-x;
 	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif, Arial, Helvetica, sans-serif;
 	font-size: 11pt;
 	text-align: justify;
@@ -41,7 +41,7 @@ a:hover {
 	width: 720px;
 	height: 161px;
 	margin: 0 auto;
-	background: url(../image/img2.jpg) no-repeat;
+	background: url(../images/img2.jpg) no-repeat;
 }
 
 #header * {
@@ -187,7 +187,7 @@ a:hover {
 #footer {
 	height: 70px;
 	padding: 15px 0 0 0;
-	background: url(../image/footer.gif) repeat-x;
+	background: url(../images/footer.gif) repeat-x;
 	color: #fff;
 }
 

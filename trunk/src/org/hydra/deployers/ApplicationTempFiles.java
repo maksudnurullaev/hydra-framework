@@ -12,8 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.managers.MessagesManager;
-import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Roles;
 import org.hydra.utils.Utils;
@@ -24,7 +24,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 	static String getKeyHow(
 			String inKey, 
 			String inHow,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		if(inKey.compareToIgnoreCase("all") == 0 && 
 				inHow.compareToIgnoreCase("html") == 0)
 			return getAllHtml(inMessage);
@@ -38,7 +38,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 		return("Could not find KEY/HOW part: " + inKey + '/' + inHow);
 	}
 
-	private static String getExtjsUl(CommonMessage inMessage) {
+	private static String getExtjsUl(IMessage inMessage) {
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
 				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("_appid")),
@@ -86,7 +86,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 		return("");
 	}
 
-	static String getAllHtml(CommonMessage inMessage) {		
+	static String getAllHtml(IMessage inMessage) {		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
 				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("_appid")),
@@ -98,7 +98,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 	
 	static String getExtHtml(
 			String fileExtension,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
@@ -109,7 +109,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 		return getFilePropBox(inMessage, fileURLs);
 	}
 
-	private static String getFilePropBox(CommonMessage inMessage, List<String> fileURLs) {
+	private static String getFilePropBox(IMessage inMessage, List<String> fileURLs) {
 		StringBuffer content = new StringBuffer();
 		for (String filePath : fileURLs) {
 			String filebox = FileUtils.getFilePropertiesDescription(

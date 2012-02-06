@@ -72,29 +72,35 @@ public class CommonMessage implements IMessage {
 		setHtmlContents(getData().get("dest"), inHtmlContent);
 	}
 
+	@Override
 	public Map<String, String> getHtmlContents() {
 		return htmlContents;
 	}
 
+	@Override
 	public void clearContent() {
 		if (htmlContents != null)
 			htmlContents.clear();
 	}
 
+	@Override
 	public void setHighlightFields(List<String> _highlightFields) {
 		this.highlightFields = _highlightFields;
 	}
 
+	@Override
 	public List<String> getHighlightFields() {
 		return highlightFields;
 	}
 
+	@Override
 	public void setNoHighlightFields(String[] mandatoryFields) {
 		this.noHighlightFields = new ArrayList<String>();
 		for (String field : mandatoryFields)
 			noHighlightFields.add(field);
 	}
 
+	@Override
 	public List<String> getNoHighlightFields() {
 		return noHighlightFields;
 	}
@@ -146,5 +152,35 @@ public class CommonMessage implements IMessage {
 	@Override
 	public String getContextPath() {
 		return(contextPath);	
+	}
+
+	@Override
+	public void setFile(FileTransfer inFile) {
+		file = inFile;		
+	}
+
+	@Override
+	public void setFileRealPath(String inFileRealPath) {
+		fileRealPath = inFileRealPath;
+	}
+
+	@Override
+	public FileTransfer getFile() {
+		return (file);
+	}
+
+	@Override
+	public void setFilePath(String inUri4File) {
+		filePath = inUri4File;
+	}
+
+	@Override
+	public String getFilePath() {
+		return(filePath);
+	}
+	
+	@Override
+	public String getFileRealPath() {
+		return(fileRealPath);
 	}
 }

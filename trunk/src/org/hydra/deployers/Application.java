@@ -3,7 +3,7 @@ package org.hydra.deployers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Utils;
 
 public final class Application {
@@ -19,7 +19,7 @@ public final class Application {
 			String inWhat,
 			String inKey, 
 			String inHow,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		if(inWhat.compareToIgnoreCase("options") == 0)
 			return getOptionsKeyHow(inKey,inHow);
 		else if(inWhat.compareToIgnoreCase("tags") == 0)

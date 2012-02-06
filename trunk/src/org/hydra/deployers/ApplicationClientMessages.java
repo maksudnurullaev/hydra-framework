@@ -11,13 +11,13 @@ import org.hydra.utils.Utils;
 
 public final class ApplicationClientMessages {
 	static final String _cfName = "ClientMessage";
-	static final String _actionDiv = "app.action";
+	static final String actionDiv = "app.action";
 
 	private static String getALLDivId(
 			String inAppID, String inDivId) {
 		StringBuffer content = new StringBuffer();
 		content.append("<h2>[[DB|Text|Client_Requests|span]]</h2>");
-		content.append("<div id='" + _actionDiv + "'>");
+		content.append("<div id='" + actionDiv + "'>");
 		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, _cfName, "", "", "", "");
 		int validRows = 0;
 	    for (Row<String, String, String> r : rows) {
@@ -69,10 +69,10 @@ public final class ApplicationClientMessages {
 			String key, 
 			String inDivId) {
 		String jsData = Utils.jsData(
-				 "_handler", Utils.Q(_cfName)
-				,"_action",  Utils.Q("delete")
-				,"_appid", Utils.Q(inAppID)
-				,"_key", Utils.Q(key)
+				 "handler", Utils.Q(_cfName)
+				,"action",  Utils.Q("delete")
+				,"appid", Utils.Q(inAppID)
+				,"key", Utils.Q(key)
 				,"dest", Utils.Q(inDivId)
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		

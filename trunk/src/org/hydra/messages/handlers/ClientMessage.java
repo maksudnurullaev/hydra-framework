@@ -61,8 +61,8 @@ public class ClientMessage extends AMessageHandler {
 
 	private static boolean isValidDataKey(String key) {
 		if(key == null) return false;
-		if(key.compareToIgnoreCase("_handler") == 0) return false;
-		if(key.compareToIgnoreCase("_action") == 0) return false;
+		if(key.compareToIgnoreCase("handler") == 0) return false;
+		if(key.compareToIgnoreCase("action") == 0) return false;
 		if(key.compareToIgnoreCase("dest") == 0) return false;
 		return true;
 	}

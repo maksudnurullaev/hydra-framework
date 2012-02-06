@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Utils;
 
@@ -16,7 +16,7 @@ public final class Db {
 			String inKey,
 			String inHow,
 			Map<String, String> editLinks,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		
 		if(inWhat.compareToIgnoreCase("text") == 0){
 			return getTextKeyHow(inKey, inHow, editLinks, inMessage);
@@ -34,7 +34,7 @@ public final class Db {
 			String inKey,
 			String inHow, 
 			Map<String, String> editLinks,
-			CommonMessage inMessage){
+			IMessage inMessage){
 		String locale = inMessage.getData().get("_locale");
 		if(inHow.compareToIgnoreCase("div") == 0) // div wrapper 
 			return(DBUtils.wrap2IfNeeds(inMessage.getData().get("_appid"), 
@@ -66,7 +66,7 @@ public final class Db {
 			String inKey,
 			String inHow,			 // reserved
 			Map<String, String> editLinks,
-			CommonMessage inMessage){
+			IMessage inMessage){
 		return DBUtils.wrap2IfNeeds(
 				inMessage.getData().get("_appid"), 
 				"Template", 
