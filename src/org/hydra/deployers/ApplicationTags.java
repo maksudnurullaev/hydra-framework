@@ -43,10 +43,10 @@ public final class ApplicationTags {
 				// delete link
 				content2.append("&nbsp;");
 				String jsData = Utils.jsData(
-						 "_handler", Utils.Q("AdmTags")
-						,"_action",  Utils.Q("delete")
-						,"_appid", Utils.Q(inAppID)
-						,"_value", Utils.Q(key)
+						 "handler", Utils.Q("AdmTags")
+						,"action",  Utils.Q("delete")
+						,"appid", Utils.Q(inAppID)
+						,"value", Utils.Q(key)
 						,"dest", Utils.Q("admin.app.action.tag")
 					);			
 				content2.append(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete", jsData, "X")));			
@@ -60,6 +60,7 @@ public final class ApplicationTags {
 	    if(validRows == 0)
 	    	content.append("<div>...</div>");
 		content.append("</div>");
+		
 		return content.toString();
 		
 	}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import javax.servlet.ServletContext;
@@ -21,6 +22,7 @@ import org.hydra.html.fields.FieldInput;
 import org.hydra.html.fields.IField;
 import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 import org.springframework.web.context.ContextLoader;
 
@@ -226,9 +228,9 @@ public final class Utils {
 		List<String> strSaveArrayData = new ArrayList<String>();
 		strSaveArrayData.add("appid");
 		strSaveArrayData.add(Utils.Q(inAppId));
-		strSaveArrayData.add("_handler");
+		strSaveArrayData.add("handler");
 		strSaveArrayData.add(Utils.Q(inSaveHandler));
-		strSaveArrayData.add("_action");
+		strSaveArrayData.add("action");
 		strSaveArrayData.add(Utils.Q(inSaveAction));
 		strSaveArrayData.add("dest");
 		strSaveArrayData.add(Utils.Q(inDest));
@@ -264,9 +266,9 @@ public final class Utils {
 		List<String> strCancelArrayData = new ArrayList<String>();
 		strCancelArrayData.add("appid");
 		strCancelArrayData.add(Utils.Q(inAppId));
-		strCancelArrayData.add("_handler");
+		strCancelArrayData.add("handler");
 		strCancelArrayData.add(Utils.Q(inCancelHandler));
-		strCancelArrayData.add("_action");
+		strCancelArrayData.add("action");
 		strCancelArrayData.add(Utils.Q(inCancelAction));
 		strCancelArrayData.add("dest");
 		strCancelArrayData.add(Utils.Q(inDest));
@@ -312,6 +314,7 @@ public final class Utils {
 		}
 		result.append(String.format("<tr><td>&nbsp;</td><td>%s</td></tr>",
 				jsActions));
+		result.append("<tr><td>&nbsp;</td><td id='wait_element'>&nbsp;</td></tr>");
 		result.append("</tbody>");
 		result.append("</table>");
 
@@ -478,13 +481,13 @@ public final class Utils {
 		selectPart.append("</select> | ");
 		
 		String jsData = Utils.jsData(
-				 "_handler", Utils.Q("Tagger")
-				,"_action",  Utils.Q("add")
-				,"_appid", Utils.Q(appId)
-				,"_elemid", Utils.Q(elemID)
-				,"_value", Utils.V(elemID)
-				,"_addvalue", Utils.V(selectID)
-				,"_prefixes", Utils.V(prefixesID)
+				 "handler", Utils.Q("Tagger")
+				,"action",  Utils.Q("add")
+				,"appid", Utils.Q(appId)
+				,"elemid", Utils.Q(elemID)
+				,"value", Utils.V(elemID)
+				,"addvalue", Utils.V(selectID)
+				,"prefixes", Utils.V(prefixesID)
 				,"dest", Utils.Q(divId)
 			);			
 		selectPart.append(Utils.createJSLink(jsData, "Add"));		
@@ -500,13 +503,13 @@ public final class Utils {
 				if(!textPart.isEmpty()) textPart += ", ";
 				textPart += String.format("[[DB|Text|%s|span]]", t);
 				jsData = Utils.jsData(
-						 "_handler", Utils.Q("Tagger")
-						,"_action",  Utils.Q("delete")
-						,"_appid", Utils.Q(appId)
-						,"_elemid", Utils.Q(elemID)
-						,"_value", Utils.V(elemID)
-						,"_delvalue", Utils.Q(t)
-						,"_prefixes", Utils.V(prefixesID)
+						 "handler", Utils.Q("Tagger")
+						,"action",  Utils.Q("delete")
+						,"appid", Utils.Q(appId)
+						,"elemid", Utils.Q(elemID)
+						,"value", Utils.V(elemID)
+						,"delvalue", Utils.Q(t)
+						,"prefixes", Utils.V(prefixesID)
 						,"dest", Utils.Q(divId)
 					);			
 				textPart += F("[%s]", Utils.createJSLink(jsData, "X"));	
@@ -642,5 +645,25 @@ public final class Utils {
 		result = result.replaceAll("\\]\\]", "]");
 		return (result);
 	}
-
+	
+	public static void dump(IMessage inMessage) {
+		System.out.println("=== Start ===");
+		if(inMessage == null){
+			System.out.println("=== NULL ===");
+		}
+		if(inMessage.getData() != null){
+			System.out.println("DATA:");
+			for(Entry<String, String> kv: inMessage.getData().entrySet()){
+				System.out.println(F("%s: %s", kv.getKey(), kv.getValue()));
+			}
+		}
+		System.out.println("inMessage.isReloadPage(): " + inMessage.isReloadPage());
+		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
+		System.out.println("inMessage.getError(): " + inMessage.getError());
+		System.out.println("inMessage.getSessionID(): " + inMessage.getSessionID());
+		System.out.println("inMessage.getUrl(): " + inMessage.getUrl());
+		System.out.println("inMessage.getUserId(): " + inMessage.getUserId());
+		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
+		System.out.println("=== End ===");
+	}
 }

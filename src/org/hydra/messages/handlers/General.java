@@ -25,7 +25,7 @@ public class General extends AMessageHandler { // NO_UCD
 		return (ADeployer.deployContent(content,inMessage));
 	}
 
-	public static IMessage changeLocale(CommonMessage inMessage, WebContext webContext) {
+	public static IMessage changeLocale(IMessage inMessage, WebContext webContext) {
 		if (!validateData(inMessage, "_locale"))
 			return inMessage;
 
@@ -42,7 +42,7 @@ public class General extends AMessageHandler { // NO_UCD
 		return getInitialBody(inMessage, webContext);
 	}
 	
-	public static IMessage getInitialBody(CommonMessage inMessage, WebContext webContext) {		
+	public static IMessage getInitialBody(IMessage inMessage, WebContext webContext) {		
 		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("_appid"),"body", webContext.getServletContext());
 		if(content != null){
 			_log.debug(String.format("deploy connent for (appid/locale): ", 
@@ -55,10 +55,10 @@ public class General extends AMessageHandler { // NO_UCD
 	};
 
 	public static IMessage getContent(CommonMessage inMessage){
-		if (!validateData(inMessage, "_content"))
+		if (!validateData(inMessage, "content"))
 			return inMessage;
 		
-		String content = inMessage.getData().get("_content");
+		String content = inMessage.getData().get("content");
 		_log.debug("Try to get content for: " + content);
 		
 		if(!content.isEmpty())

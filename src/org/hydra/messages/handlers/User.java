@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.hydra.managers.CryptoManager;
 import org.hydra.managers.MessagesManager;
-import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
@@ -19,7 +18,7 @@ import org.hydra.utils.Utils;
 public class User extends AMessageHandler { // NO_UCD	
 	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.User");
 
-	public static IMessage logout(CommonMessage inMessage, WebContext webContext) {
+	public static IMessage logout(IMessage inMessage, WebContext webContext) {
 		String appId = inMessage.getData().get("appid");
 		_log.debug("Going to logout for: " + SessionUtils.getSessionData(webContext.getServletContext(), "_user", inMessage.getData().get("_appid")));
 		SessionUtils.setSessionData(webContext.getServletContext(), "_user", appId, null);
@@ -27,7 +26,7 @@ public class User extends AMessageHandler { // NO_UCD
 		return(inMessage);
 	}
 	
-	public static IMessage login(CommonMessage inMessage, WebContext context) {
+	public static IMessage login(IMessage inMessage, WebContext context) {
 		String[] mandatoryFields = {"user_mail","user_password"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		_log.debug("All necessary fields exits");
@@ -73,14 +72,14 @@ public class User extends AMessageHandler { // NO_UCD
 		return(inMessage);
 	}
 
-	private static IMessage setupUserSession(CommonMessage inMessage, String userId, WebContext webContext) {
+	private static IMessage setupUserSession(IMessage inMessage, String userId, WebContext webContext) {
 		String appId = inMessage.getData().get("_appid");
 		SessionUtils.setSessionData(webContext.getServletContext(), "_user", appId, userId);
 		inMessage.setReloadPage(true);
 		return(inMessage);
 	}
 
-	private static IMessage highLightErrorFields(CommonMessage inMessage,
+	private static IMessage highLightErrorFields(IMessage inMessage,
 			String[] mandatoryFields, List<String> errorFields,
 			List<ErrorUtils.ERROR_CODES> errorCodes) {
 		inMessage.clearContent();

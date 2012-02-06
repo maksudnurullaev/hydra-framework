@@ -28,6 +28,7 @@ import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
+import org.hydra.messages.interfaces.IMessage;
 
 public final class FileUtils {
 	public static final int FILE_TYPE_UNKNOWN = 0;
@@ -247,8 +248,8 @@ public final class FileUtils {
 			String inAppID, 
 			String key) {
 		String jsData = Utils.jsData(
-				 "_handler", Utils.Q(inHandler)
-				,"_action",  Utils.Q("delete")
+				 "handler", Utils.Q(inHandler)
+				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
 				,"file_path", Utils.Q(key)
 				,"dest", inDest
@@ -256,7 +257,7 @@ public final class FileUtils {
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
 	}
 
-	public static String getFilePropertiesDescription(CommonMessage inMessage, String propertiesFilePath) {
+	public static String getFilePropertiesDescription(IMessage inMessage, String propertiesFilePath) {
 		boolean isAdmin = Roles.roleNotLessThen(Roles.USER_ADMINISTRATOR, inMessage);
 		Properties properties = parseProperties(propertiesFilePath);
 		String Public = properties.getProperty(FILE_DESCRIPTION_PUBLIC);

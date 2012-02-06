@@ -8,7 +8,6 @@ if (Globals == null) {
             ,'tryToLoadCount': 0
             ,'pageBusy': false
             ,'loadingImage': '<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif">'
-			,'waitOldContent': null
         };
 };
 /* Highlight them */
@@ -61,19 +60,19 @@ Globals.editIt = function(divId, handleName, actionName){
     Globals.hideEditorLinksExcept(divId);
     // Get initial html body
     Globals.sendMessage({
-       _handler: handleName,
-       _action: actionName,
-       key: divId,
-       dest: Globals.editBox
+       handler: handleName
+       , action: actionName
+       , key: divId
+       , dest: Globals.editBox
     });
 };
 // load initial page
 Globals.loadInitialPage = function(){
     // Get initial html body
     Globals.sendMessage({
-        _handler: 'General',
-        _action: 'getInitialBody',
-        dest: 'body'
+        handler: 'General'
+        , action: 'getInitialBody'
+        , dest: 'body'
     });
 };
 /* Set html content by contents map */
@@ -96,17 +95,16 @@ Globals.chk = function (obj) {
 /* decode & content from from server */
 Globals.decodeContent = function(content){
     Globals.sendMessage({
-        _handler: 'General',
-        _action:  'getContent',
-        content: ('[[' + content + ']]'),
-        dest: 'content'
+        handler: 'General'
+        , action:  'getContent'
+        , content: ('[[' + content + ']]')
+        , dest: 'content'
     });        
 };
 /* set & restore wait element*/
 Globals.setWaitElement = function (data){
-	Globals.pageBusy = true;
+    Globals.pageBusy = true;
     if(Globals.chk($('wait_element')) && (typeof $('wait_element').innerHTML != "undefined")){
-		Globals.waitOldContent = $('wait_element').innerHTML;
         $('wait_element').innerHTML = Globals.loadingImage ;
     } else {
         if(Globals.chk(data.dest) && (typeof $(data.dest).innerHTML != "undefined")){
@@ -115,11 +113,10 @@ Globals.setWaitElement = function (data){
     }
 };
 Globals.restoreWaitElement = function(){
-	if(Globals.chk(Globals.waitOldContent) && Globals.chk($('wait_element')) && (typeof $('wait_element').innerHTML != "undefined")){
-		$('wait_element').innerHTML = Globals.waitOldContent;
-		Globals.waitOldContent = null;
-	}
-	Globals.pageBusy = false;
+    if(Globals.chk($('wait_element')) && (typeof $('wait_element').innerHTML != "undefined")){
+        $('wait_element').innerHTML = "&nbsp;";
+     }
+     Globals.pageBusy = false;
 };
 
 /* Send message to server*/
@@ -144,7 +141,7 @@ Globals.applyIncomingMessages = function (messages) {
     } else {
         Globals.porcessMessage(messages);
     }
-	Globals.restoreWaitElement();
+    Globals.restoreWaitElement();
 };
 Globals.porcessMessage = function (message) {
     // check for error

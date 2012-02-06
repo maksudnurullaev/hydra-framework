@@ -23,10 +23,10 @@ ZFileUz.setMainContent = function(inEl){
 	content += ']]';
 
     Globals.sendMessage({
-        _handler: 'General',
-        _action:  'getContent',
-        _content: content,
-        dest: ZFileUz.MainContent
+        handler: 'General'
+        , action:  'getContent'
+        , content: content
+        , dest: ZFileUz.MainContent
     });		
 };
 
@@ -37,8 +37,8 @@ ZFileUz.sendClientMessage = function(){
 	}
 	var text = $('textarea.message').value.trim();
     Globals.sendMessage({
-        _handler: 'ClientMessage'
-        , _action: 'add'
+        handler: 'ClientMessage'
+        , action: 'add'
         , dest: ZFileUz.Content
         , text: text
     });		
@@ -60,8 +60,8 @@ ZFileUz.try2SendFile = function(){
 	if( test1 && test2 && test3 )
 	{
 		Globals.sendMessage2(
-			{_handler:'UserFiles'
-				, _action:'add'
+			{handler:'UserFiles'
+				, action:'add'
 				, dest:ZFileUz.Content
 				, CaptchaValue:$('CaptchaValue').value 
 				, Tag:$('tagId').value

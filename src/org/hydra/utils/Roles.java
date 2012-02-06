@@ -1,6 +1,6 @@
 package org.hydra.utils;
 
-import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 public final class Roles {
@@ -9,9 +9,9 @@ public final class Roles {
 	public static final int USER_PUBLISHER = 1;
 	public static final int USER_REGISTERED = 0;
 	
-	public static boolean roleNotLessThen(int inRoleLevel, CommonMessage inMessage) {
+	public static boolean roleNotLessThen(int inRoleLevel, IMessage inMessage) {
 		//TODO REMOVE IF NEES FULL ACCESS!
-		if(inMessage != null) return true;
+		//if(inMessage != null) return true;
 		String appId = inMessage.getData().get("_appid");
 		String userId = inMessage.getData().get("_user");
 		if(appId == null || appId.length() == 0) return false;

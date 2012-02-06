@@ -42,8 +42,8 @@ public class ApplicationFiles extends AMessageHandler {
 	    header.append(" | ");
 	    
 	    String jsData =  
-	    	  "_handler:'AdmFiles'"
-	    	+ ",_action:'addForm'"
+	    	  "handler:'AdmFiles'"
+	    	+ ",action:'addForm'"
 	    	+ ",appid:" + Utils.Q(inAppID) 
 	    	+ ",dest:'admin.app.action'"
 	    	+ ",folder:'images'";

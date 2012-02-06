@@ -13,6 +13,7 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
 import org.hydra.processors.interfaces.IProcessor;
+import org.hydra.services.remote.interfaces.IMessageService;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
 
@@ -89,13 +90,6 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 		return _logPipe;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.supposition.events.IPipeEventListener#pipeHasMessage(org.supposition
-	 * .events.PipeEvent)
-	 */
 	@Override
 	public void eventHandleIncomingMessage(PipeEvent evt) {
 		getLog().debug(
@@ -181,24 +175,18 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 					message.getSessionID()));
 
 			if (message instanceof CommonMessage) {
-/*TODO CommomMessage serializible
 				IMessageService remoteMessageService = getInPipe().getRemoteMessageService();
 				if(remoteMessageService != null){
+					Utils.dump(message);
 					getLog().debug("Message --> RMI : " + message.getSessionID());
-					WebApplication app = message.getWebApplication();
-					WebContext context = message.getWebContext();
-					message.setWebApplication(null);
-					message.setWebContext(null);
 					for(IMessage message_: remoteMessageService.processMessage(message)){
 						getLog().debug("Message <-- RMI: " + message_.getSessionID());
-						message_.setWebApplication(app);
-						message_.setWebContext(context);
 						getMessageCollector().putMessage(message_);
 					}
 				}else{
-*/								
+								
 					applyMessage((CommonMessage)message);
-//				}
+				}
 			} else{
 				message.setError("Expected CommonMessage type!");
 			}
@@ -215,8 +203,8 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 				String.format("Handle new message for group(%s)...", 
 						inMessage.getSessionID()));
 
-		String handlerName = inMessage.getData().get("_handler");
-		String methodName = inMessage.getData().get("_action");
+		String handlerName = inMessage.getData().get("handler");
+		String methodName = inMessage.getData().get("action");
 
 		_log.debug("check for valid handler and action");
 		if (Utils.isInvalidString(handlerName)) {
@@ -264,5 +252,5 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 				getMessageCollector().putMessage(inMessage);
 			}
 		}
-	}
+	}	
 }

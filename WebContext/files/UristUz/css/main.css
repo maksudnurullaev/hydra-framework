@@ -58,7 +58,7 @@ blockquote {
     text-align: center;
 }
 div.hr {
-    background-image: url("../image/three-star-line.jpg");
+    background-image: url("../images/three-star-line.jpg");
     background-position: center center;
     background-repeat: no-repeat;
     height: 13px;
@@ -82,7 +82,7 @@ div.hr hr {
 }
 .codeExample {
     background-color: #F2F1E6;
-    background-image: url("../image/code-box-border-b.jpg");
+    background-image: url("../images/code-box-border-b.jpg");
     background-position: center bottom;
     background-repeat: repeat-x;
     border-top: 1px solid #E0DED2;
@@ -263,7 +263,7 @@ div.hr hr {
     padding: 0;
 }
 .footClub ul li {
-    background-image: url("../image/rss-icon.png");
+    background-image: url("../images/rss-icon.png");
     background-position: 0 0;
     background-repeat: no-repeat;
     font-size: 11px;

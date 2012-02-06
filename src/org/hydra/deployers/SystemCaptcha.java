@@ -2,7 +2,7 @@ package org.hydra.deployers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
 
@@ -12,7 +12,7 @@ public final class SystemCaptcha {
 	public static String getKeyHow(
 			String inKey, 
 			String inHow,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		if(inKey.compareToIgnoreCase("text") == 0)
 			return getTextHow(inHow, inMessage);
 		
@@ -22,7 +22,7 @@ public final class SystemCaptcha {
 
 	private static String getTextHow(
 			String inHow,
-			CommonMessage inMessage) {
+			IMessage inMessage) {
 		if(inHow.compareToIgnoreCase("html") == 0){
 			return getTextHtml(inMessage);
 		}
@@ -31,7 +31,7 @@ public final class SystemCaptcha {
 		return "Could not find HOW part: " + inHow;
 	}
 
-	private static String getTextHtml(CommonMessage inMessage) {
+	private static String getTextHtml(IMessage inMessage) {
 		String resultStr =  String.format("<image src=\"capcha/?appid=%s&uuid=%s\">", inMessage.getData().get("_appid"), Utils.GetUUID());
 		resultStr += " = <input class=\"captcha\" id=\"" + Constants._captcha_value + "\" type=\"text\" value=\"\" size=\"3\">";
 		return resultStr;

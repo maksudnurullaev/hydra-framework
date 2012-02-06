@@ -108,9 +108,9 @@ public class AdmUsers extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid", "_key")) return inMessage;
+		if(!validateData(inMessage, "appid", "key")) return inMessage;
 		String appId = inMessage.getData().get("appid");
-		String key = inMessage.getData().get("_key").trim();
+		String key = inMessage.getData().get("key").trim();
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "User", key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){

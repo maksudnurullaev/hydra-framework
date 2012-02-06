@@ -8,7 +8,7 @@ import me.prettyprint.hector.api.beans.Row;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.messages.CommonMessage;
+import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Utils;
 
@@ -18,7 +18,7 @@ public final class SystemLogin {
 	public static String getKeyHow(
 			String inKey, 
 			String inHow,
-			CommonMessage inMessage
+			IMessage inMessage
 			) {
 		
 		if(inKey.compareToIgnoreCase("form") == 0)
@@ -31,7 +31,7 @@ public final class SystemLogin {
 
 	private static String getFormAny(
 			String inHow, 
-			CommonMessage inMessage
+			IMessage inMessage
 			) {
 		String userId = inMessage.getData().get("_user");
 		String appId = inMessage.getData().get("_appid");

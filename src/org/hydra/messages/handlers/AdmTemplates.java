@@ -49,9 +49,9 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage updateForm(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid", "_key")) return inMessage;
+		if(!validateData(inMessage, "appid", "key")) return inMessage;
 		String appID = inMessage.getData().get("appid");
-		String key = inMessage.getData().get("_key");
+		String key = inMessage.getData().get("key");
 		String cfName = "Template";
 		
 		List<String> errorFields = new ArrayList<String>();
@@ -75,12 +75,8 @@ public class AdmTemplates extends AMessageHandler {
 				"AdmTemplates", "update", 
 				"AdmTemplates", "list", 
 				"admin.app.action", fields, null, inMessage);
-		
-		IMessage msg = ADeployer.deployContent(form,inMessage);
-		String temp = msg.getData().get(msg.getData().get("dest"));
-		temp = temp.replaceAll("__1__", Matcher.quoteReplacement(content));
-		
-		inMessage.setHtmlContent(temp);
+		form = form.replaceAll("__1__", Matcher.quoteReplacement(content));
+		ADeployer.deployContent(form,inMessage);
 		return(inMessage);
 	}	
 	
@@ -177,9 +173,9 @@ public class AdmTemplates extends AMessageHandler {
 	}	
 	
 	public IMessage delete(CommonMessage inMessage){
-		if(!validateData(inMessage, "appid", "_key")) return inMessage;
+		if(!validateData(inMessage, "appid", "key")) return inMessage;
 		String appId = inMessage.getData().get("appid");
-		String key = inMessage.getData().get("_key");
+		String key = inMessage.getData().get("key");
 				
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "Template", key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){

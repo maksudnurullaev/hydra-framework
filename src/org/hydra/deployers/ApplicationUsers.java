@@ -81,10 +81,10 @@ public final class ApplicationUsers {
 			String inAppID, 
 			String key) {
 		String jsData = Utils.jsData(
-				 "_handler", Utils.Q("AdmUsers")
-				,"_action",  Utils.Q("delete")
-				,"_appid", Utils.Q(inAppID)
-				,"_key", Utils.Q(key)
+				 "handler", Utils.Q("AdmUsers")
+				,"action",  Utils.Q("delete")
+				,"appid", Utils.Q(inAppID)
+				,"key", Utils.Q(key)
 				,"dest", Utils.Q("admin.app.action")
 			);
 		return(Utils.F("[%s]",Utils.createJSLinkWithConfirm(jsData, "X")));		
