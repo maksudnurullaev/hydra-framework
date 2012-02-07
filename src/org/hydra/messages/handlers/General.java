@@ -30,7 +30,7 @@ public class General extends AMessageHandler { // NO_UCD
 			return inMessage;
 
 		String locale = inMessage.getData().get("_locale");
-		String appId = inMessage.getData().get("_appid");
+		String appId = inMessage.getData().get("appid");
 		
 		SessionUtils.setSessionData(webContext.getServletContext(), "_locale", appId, locale);
 		
@@ -43,14 +43,14 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 	
 	public static IMessage getInitialBody(IMessage inMessage, WebContext webContext) {		
-		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("_appid"),"body", webContext.getServletContext());
+		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("appid"),"body", webContext.getServletContext());
 		if(content != null){
 			_log.debug(String.format("deploy connent for (appid/locale): ", 
-					inMessage.getData().get("_appid"), 
+					inMessage.getData().get("appid"), 
 					inMessage.getData().get("_locale")));
 			return(ADeployer.deployContent(content,inMessage));
 		}
-		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("_appid"));
+		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("appid"));
 		return(inMessage);
 	};
 

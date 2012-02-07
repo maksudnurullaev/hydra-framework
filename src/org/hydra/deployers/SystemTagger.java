@@ -16,7 +16,7 @@ public final class SystemTagger {
 		List<String> tagPrefixes = new ArrayList<String>();
 		tagPrefixes.add(inHow);
 		
-		return Utils.tagsAsEditableHtml(inMessage.getData().get("_appid"), inKey, "", null, null, tagPrefixes);
+		return Utils.tagsAsEditableHtml(inMessage.getData().get("appid"), inKey, "", null, null, tagPrefixes);
 	}
 
 }

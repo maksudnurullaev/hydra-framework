@@ -16,10 +16,7 @@ public class CommonMessage implements IMessage {
 
 	private static final long serialVersionUID = 1L;
 
-	public String fileRealPath = null;
-	public String filePath = null;
-	public FileTransfer file = null;
-
+	private FileTransfer file = null;	
 	private String userId = null;
 	private Map<String, String> data = new HashMap<String, String>();
 	private String sessionID = null;
@@ -160,27 +157,8 @@ public class CommonMessage implements IMessage {
 	}
 
 	@Override
-	public void setFileRealPath(String inFileRealPath) {
-		fileRealPath = inFileRealPath;
-	}
-
-	@Override
 	public FileTransfer getFile() {
-		return (file);
+		return(file);
 	}
 
-	@Override
-	public void setFilePath(String inUri4File) {
-		filePath = inUri4File;
-	}
-
-	@Override
-	public String getFilePath() {
-		return(filePath);
-	}
-	
-	@Override
-	public String getFileRealPath() {
-		return(fileRealPath);
-	}
 }

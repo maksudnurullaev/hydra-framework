@@ -37,7 +37,7 @@ public final class Db {
 			IMessage inMessage){
 		String locale = inMessage.getData().get("_locale");
 		if(inHow.compareToIgnoreCase("div") == 0) // div wrapper 
-			return(DBUtils.wrap2IfNeeds(inMessage.getData().get("_appid"), 
+			return(DBUtils.wrap2IfNeeds(inMessage.getData().get("appid"), 
 					"Text", 
 					inKey, 
 					locale, 
@@ -45,7 +45,7 @@ public final class Db {
 					editLinks, 
 					"div"));
 		if(inHow.compareToIgnoreCase("span") == 0) //span wrapper
-			return(DBUtils.wrap2IfNeeds(inMessage.getData().get("_appid"), 
+			return(DBUtils.wrap2IfNeeds(inMessage.getData().get("appid"), 
 					"Text", 
 					inKey, 
 					locale, 
@@ -53,7 +53,7 @@ public final class Db {
 					editLinks, 
 					"span"));
 		_log.warn(Utils.F("Could not find HOW part for {{DB|Text|%s|%s}}",inKey, inHow));
-		return DBUtils.wrap2IfNeeds(inMessage.getData().get("_appid"), 
+		return DBUtils.wrap2IfNeeds(inMessage.getData().get("appid"), 
 				"Text", 
 				inKey,
 				locale, 
@@ -68,7 +68,7 @@ public final class Db {
 			Map<String, String> editLinks,
 			IMessage inMessage){
 		return DBUtils.wrap2IfNeeds(
-				inMessage.getData().get("_appid"), 
+				inMessage.getData().get("appid"), 
 				"Template", 
 				inKey, 
 				"content", 

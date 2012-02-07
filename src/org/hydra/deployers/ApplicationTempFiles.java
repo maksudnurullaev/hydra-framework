@@ -41,7 +41,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 	private static String getExtjsUl(IMessage inMessage) {
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("_appid")),
+				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("appid")),
 				fileURLs,
 				APropertyLoader.SUFFIX);
 		if(fileURLs.isEmpty()) return("");
@@ -89,7 +89,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 	static String getAllHtml(IMessage inMessage) {		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("_appid")),
+				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("appid")),
 				fileURLs,
 				APropertyLoader.SUFFIX);
 		
@@ -102,7 +102,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("_appid")),
+				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("appid")),
 				fileURLs,
 				(fileExtension + APropertyLoader.SUFFIX));
 		

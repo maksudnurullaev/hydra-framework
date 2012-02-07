@@ -65,7 +65,7 @@ public class WebMessagesHandler extends ALogger {
 		// test & setup file if needs
 		if(inFile != null){
 			inMessage.setFile(inFile);
-			setupFile(inMessage, webContext);
+			setupFile(inMessage);
 		}
 
 		return(handleMessage(inMessage));
@@ -131,15 +131,15 @@ public class WebMessagesHandler extends ALogger {
 		return resultList.toArray();		
 	}
 
-	private void setupFile(IMessage inMessage, WebContext webContext) {
+	private void setupFile(IMessage inMessage) {
 		getLog().error("File name/size: " + inMessage.getFile().getFilename() + "/" + inMessage.getFile().getSize());
 		String appId = inMessage.getData().get("appid");
 		String folder = inMessage.getData().get("folder");
 		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.getFile().getFilename());
-		inMessage.setFilePath(uri4File);
+		inMessage.getData().put("file_path", uri4File);
 		_log.error("File uri: " + uri4File);
-		inMessage.setFileRealPath(webContext.getServletContext().getRealPath(uri4File));
-		_log.error("Real path: " + inMessage.getFileRealPath());
+		inMessage.getData().put("file_real_path", Utils.getRealPath(uri4File));
+		_log.error("Real path: " + inMessage.getData().get("file_real_path"));
 	}
 
 	private boolean handledWithSession(IMessage inMessage,
@@ -184,7 +184,7 @@ public class WebMessagesHandler extends ALogger {
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
 						"Server Port", inContext.getHttpServletRequest().getServerPort())
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Web Applicication ID", inMessage.getData().get("_appid"))
+						"Web Applicication ID", inMessage.getData().get("appid"))
 	
 				);
 		inMessage.setHtmlContent(result);

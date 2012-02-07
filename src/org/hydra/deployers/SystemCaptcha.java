@@ -32,7 +32,7 @@ public final class SystemCaptcha {
 	}
 
 	private static String getTextHtml(IMessage inMessage) {
-		String resultStr =  String.format("<image src=\"capcha/?appid=%s&uuid=%s\">", inMessage.getData().get("_appid"), Utils.GetUUID());
+		String resultStr =  String.format("<image src=\"capcha/?appid=%s&uuid=%s\">", inMessage.getData().get("appid"), Utils.GetUUID());
 		resultStr += " = <input class=\"captcha\" id=\"" + Constants._captcha_value + "\" type=\"text\" value=\"\" size=\"3\">";
 		return resultStr;
 	}

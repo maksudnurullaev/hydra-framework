@@ -20,7 +20,7 @@ public class User extends AMessageHandler { // NO_UCD
 
 	public static IMessage logout(IMessage inMessage, WebContext webContext) {
 		String appId = inMessage.getData().get("appid");
-		_log.debug("Going to logout for: " + SessionUtils.getSessionData(webContext.getServletContext(), "_user", inMessage.getData().get("_appid")));
+		_log.debug("Going to logout for: " + SessionUtils.getSessionData(webContext.getServletContext(), "_user", inMessage.getData().get("appid")));
 		SessionUtils.setSessionData(webContext.getServletContext(), "_user", appId, null);
 		inMessage.setReloadPage(true);
 		return(inMessage);
@@ -30,7 +30,7 @@ public class User extends AMessageHandler { // NO_UCD
 		String[] mandatoryFields = {"user_mail","user_password"};
 		if(!validateData(inMessage, mandatoryFields)) return inMessage;
 		_log.debug("All necessary fields exits");
-		String appId = inMessage.getData().get("_appid");
+		String appId = inMessage.getData().get("appid");
 		
 		List<String> errorFields = new ArrayList<String>();
 		List<ErrorUtils.ERROR_CODES> errorCodes = new ArrayList<ErrorUtils.ERROR_CODES>();		
@@ -73,7 +73,7 @@ public class User extends AMessageHandler { // NO_UCD
 	}
 
 	private static IMessage setupUserSession(IMessage inMessage, String userId, WebContext webContext) {
-		String appId = inMessage.getData().get("_appid");
+		String appId = inMessage.getData().get("appid");
 		SessionUtils.setSessionData(webContext.getServletContext(), "_user", appId, userId);
 		inMessage.setReloadPage(true);
 		return(inMessage);

@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import javax.servlet.ServletContext;
-
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
 
@@ -24,13 +22,18 @@ import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
-import org.springframework.web.context.ContextLoader;
 
 /**
  * @author M.Nurullayev
  */
 public final class Utils {
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.Utils");
+	private static final String WEBAPP_ROOT = "/home/max/work/jetty-8.0.4"
+			+ "/webapps/root/";
+		
+	public static String getRealPath(String inPath){
+		return(new File(WEBAPP_ROOT, inPath).toString());
+	}
 	
 	public static String wrap2HTMLTag(String inHTMLTagName, String inContent) {
 		return String.format("<%s>%s</%s>", inHTMLTagName, inContent,
@@ -626,10 +629,6 @@ public final class Utils {
 
 	public static String F(String format, Object...args) {
 		return String.format(format, args);
-	}
-
-	public static ServletContext getServletContent() {
-		return ContextLoader.getCurrentWebApplicationContext().getServletContext();
 	}
 
 	public static String toogleLink(

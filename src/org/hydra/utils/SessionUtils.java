@@ -61,7 +61,11 @@ public final class SessionUtils {
 			} else {
 				app = webApplications.getValidApplication4("hydra.uz");				
 			}
+			
 			inMessage.getData().put("_appid", app.getId());
+			if(!inMessage.getData().containsKey("appid"))
+				inMessage.getData().put("appid", app.getId());
+
 			inMessage.getData().put("_user", getSessionData(inContext, "_user", app.getId()));
 			inMessage.setTimeout(app.getTimeout());
 			inResult.setResult(true);
@@ -111,7 +115,7 @@ public final class SessionUtils {
 	public static boolean validateCaptcha(IMessage inMessage, WebContext context) {
 		try{
 			HttpSession session = context.getSession();
-			int sessionValue = (Integer) session.getAttribute(inMessage.getData().get("_appid") + Constants._captcha_value);
+			int sessionValue = (Integer) session.getAttribute(inMessage.getData().get("appid") + Constants._captcha_value);
 			if(inMessage.getData().containsKey(Constants._captcha_value)){
 				String captchaValue = inMessage.getData().get(Constants._captcha_value);
 				int passedValue = Integer.parseInt(captchaValue);
@@ -135,7 +139,7 @@ public final class SessionUtils {
 	}	
 	
 	public static void printSessionData(WebContext webContext, CommonMessage inMessage){
-		System.out.println("#### SESSION DATA for: " + inMessage.getData().get("_appid"));
+		System.out.println("#### SESSION DATA for: " + inMessage.getData().get("appid"));
 		Enumeration<String> keys = webContext.getSession().getAttributeNames();
 		while(keys.hasMoreElements()){
 			String key = keys.nextElement();
