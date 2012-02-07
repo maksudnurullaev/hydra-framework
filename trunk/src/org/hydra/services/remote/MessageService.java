@@ -7,19 +7,17 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.services.WebMessagesHandler;
 import org.hydra.services.remote.interfaces.IMessageService;
-import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class MessageService extends ALogger implements IMessageService {
 
 	@Override
 	public IMessage[] processMessage(IMessage inMessage) {
-		Utils.dump(inMessage);
 		List<IMessage> result = new ArrayList<IMessage>();
 		WebMessagesHandler handler = new WebMessagesHandler();
 		try {
 			handler.handleMessage(inMessage);
-			inMessage.setError("Remote RMI works!");
+			getLog().warn("Remote RMI works!");
 			result.add(inMessage);
 		} catch (RichedMaxCapacityException e) {
 			inMessage.setError(e.getMessage());

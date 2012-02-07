@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
-import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -214,24 +213,32 @@ public final class FileUtils {
 		}	
 	}
 	
-	public static String getFileBox(String inAppID, String filePath) {
-		StringBuffer content = new StringBuffer();
-		String mimeType = URLConnection.guessContentTypeFromName(filePath);
-		if(mimeType == null) mimeType = "unknown";
+	public static String getFileBox(String inAppID, String inFilePath) {
+		if(inFilePath == null){
+			_log.warn("Trying to process null inFilePath");
+			return("");
+		}
 		
-    	String divHiddenID = "template." + filePath;  
+		String fileExtension = getFileExtension(inFilePath);
+		if(fileExtension == null){
+			_log.warn("NULL file extension for: " + inFilePath);
+			return("");
+		}
+		
+		StringBuffer content = new StringBuffer();
+    	String divHiddenID = "template." + inFilePath;  
 		content.append("<div style=\"margin: 5px; padding: 5px; border: 1px solid rgb(127, 157, 185);\">");
 		
-    	content.append(getDeleteLink("AdmFiles", Utils.Q("admin.app.action"), inAppID, filePath) + " ");
-    	content.append("[<strong>" + mimeType + "</strong>] ");
+    	content.append(getDeleteLink("AdmFiles", Utils.Q("admin.app.action"), inAppID, inFilePath) + " ");
+    	content.append("[<strong>" + fileExtension + "</strong>] ");
     	
     	String htmlTag = "NOT_DEFINED";
-		if(mimeType.compareToIgnoreCase("image") >= 0){
-			htmlTag = Utils.F("<img src=\"%s\" border=\"0\">", filePath);
+		if(ImageValidator.validate(inFilePath)){
+			htmlTag = Utils.F("<img src=\"%s\" border=\"0\">", inFilePath);
 		}else{			
-			htmlTag = Utils.F("<a href=\"%s\" target=\"_blank\">TEXT</a>", filePath);
+			htmlTag = Utils.F("<a href=\"%s\" target=\"_blank\">TEXT</a>", inFilePath);
 		}
-		content.append(Utils.toogleLink(divHiddenID, filePath));
+		content.append(Utils.toogleLink(divHiddenID, inFilePath));
 		content.append(Utils.F("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s<hr />%s</div>", 
 				divHiddenID,
 				StringEscapeUtils.escapeHtml(htmlTag),

@@ -56,15 +56,8 @@
 	   <url-pattern>/index.html</url-pattern>
 	</servlet-mapping>	
 
-<!--	
-	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index.htm</welcome-file>
-		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>
--->
-
 	<!-- Spring ApplicationContext -->
+<!--	
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/applicationContext.xml</param-value>
@@ -72,5 +65,5 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-
+	-->
 </web-app>

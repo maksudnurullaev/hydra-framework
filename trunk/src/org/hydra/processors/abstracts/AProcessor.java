@@ -170,17 +170,16 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 				getInPipe().getName()));
 		while ((message = (IMessage) getInPipe().getMessage()) != null) {
 			// Log message
-			getLog().debug(String.format(
-					"Processor(%s) handle message for group(%s)", getName(),
-					message.getSessionID()));
+			getLog().warn(String.format(
+					"Processor(%s) handle message for group(%s) from pipe(size:%s)", getName(),
+					message.getSessionID(), getInPipe().getSize()));
 
 			if (message instanceof CommonMessage) {
 				IMessageService remoteMessageService = getInPipe().getRemoteMessageService();
 				if(remoteMessageService != null){
-					Utils.dump(message);
-					getLog().debug("Message --> RMI : " + message.getSessionID());
+					getLog().warn("Message --> RMI : " + message.getSessionID());
 					for(IMessage message_: remoteMessageService.processMessage(message)){
-						getLog().debug("Message <-- RMI: " + message_.getSessionID());
+						getLog().warn("Message <-- RMI: " + message_.getSessionID());
 						getMessageCollector().putMessage(message_);
 					}
 				}else{
