@@ -65,6 +65,11 @@
 				<include name="**/*.*" />
 			</fileset>
 		</copy>
+		<copy todir="${deploy.path}/${name}/WEB-INF/classes" preservelastmodified="true">
+			<fileset dir="${basedir}/WebContext/WEB-INF">
+				<include name="app*.xml" />
+			</fileset>
+		</copy>		
 		<echo message="Everything copied to ${deploy.path}/${name}"/>
 	</target>
 
@@ -104,7 +109,7 @@ tests.failed=${tests.failed}
 			<formatter type="brief" usefile="false" />			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestModer.class" />
+					<include name="**/TestBeanMainInputPipe.class" />
 				</fileset>
 			</batchtest>			
 		</junit>
