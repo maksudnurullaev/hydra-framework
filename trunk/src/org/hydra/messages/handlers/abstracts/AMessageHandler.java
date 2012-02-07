@@ -25,8 +25,8 @@ public abstract class AMessageHandler extends ALogger implements IMessageHandler
 		return true;		
 	}
 	public static boolean validateFile(CommonMessage inMessage) {
-		if(inMessage.file == null
-				|| inMessage.file.getSize() == 0){
+		if(inMessage.getFile() == null
+				|| inMessage.getFile().getSize() == 0){
 			return false;						
 		}
 		return true;

@@ -12,8 +12,6 @@ public interface IMessage extends Serializable {
 	Map<String, String> getData();
 	String getError();
 	FileTransfer getFile();
-	String getFilePath();
-	String getFileRealPath();
 	List<String> getHighlightFields();
 	Map<String, String> getHtmlContents();
 	List<String> getNoHighlightFields();
@@ -26,8 +24,6 @@ public interface IMessage extends Serializable {
 	void setData(Map<String, String> inData);
 	void setError(String inErrorMessage);
 	void setFile(FileTransfer inFile);
-	void setFilePath(String uri4File);
-	void setFileRealPath(String realPath);
 	void setHighlightFields(List<String> errorFields);
 	void setHtmlContent(String inHtmlContent);
 	void setHtmlContents(String inKeyElementID, String inHtmlContent);

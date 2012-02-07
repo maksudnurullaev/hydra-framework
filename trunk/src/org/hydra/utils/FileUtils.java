@@ -63,7 +63,7 @@ public final class FileUtils {
 		
 		if(!URL.endsWith("/")) URL += "/";
 		
-		String realURI = Utils.getServletContent().getRealPath(URL);
+		String realURI = Utils.getRealPath(URL);
 		
 		if(realURI == null) return;
 			
@@ -86,12 +86,12 @@ public final class FileUtils {
 		if(!AMessageHandler.validateFile(inMessage)){			
 			return("ERROR: no file!");
 		}		
-		if(!AMessageHandler.validateData(inMessage, "appid", "folder")){
+		if(!AMessageHandler.validateData(inMessage, "appid", "folder", "file_path", "file_real_path")){
 			return("ERROR: no valid parameters!");
 		}
 		String appId = inMessage.getData().get("appid");
-		FileTransfer file = inMessage.file;		
-		String realPath = inMessage.fileRealPath;
+		FileTransfer file = inMessage.getFile();		
+		String realPath = inMessage.getData().get("file_real_path");
 		String resultStr = "";
 		// 1. 
 		InputStream is = null;
@@ -106,7 +106,7 @@ public final class FileUtils {
 				os.write(bufer, 0, bytesRead);
 			}
 			os.close();
-			resultStr = getFileBox(appId, inMessage.filePath);
+			resultStr = getFileBox(appId, inMessage.getData().get("file_path"));
 		} catch (Exception e) {
 			_log.error(e.toString());
 			resultStr = e.toString();
@@ -117,16 +117,16 @@ public final class FileUtils {
 	
 	public static boolean saveFileAndDescriptions(CommonMessage inMessage,
 			StringWrapper outFilePath, String ... dataDescriptionKeys) {
-		FileTransfer file = inMessage.file;
+		FileTransfer file = inMessage.getFile();
 		boolean result = false;
 		// 0. Generate pathname for new image
 		String uri4FilePath;
 		String orginalFileName = sanitize(file.getFilename());
 		
-		uri4FilePath = Utils.F(URL4FILES_APPID_FILES + "%s", inMessage.getData().get("_appid"), getMD5FileName(orginalFileName) + getFileExtension(orginalFileName));
+		uri4FilePath = Utils.F(URL4FILES_APPID_FILES + "%s", inMessage.getData().get("appid"), getMD5FileName(orginalFileName) + getFileExtension(orginalFileName));
 		
-		result = saveFile(inMessage.fileRealPath, file);
-		result = saveFileDescriptions(inMessage, inMessage.fileRealPath, orginalFileName, dataDescriptionKeys);
+		result = saveFile(inMessage.getData().get("file_real_path"), file);
+		result = saveFileDescriptions(inMessage, inMessage.getData().get("file_real_path"), orginalFileName, dataDescriptionKeys);
 			
 		if(result)
 			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), uri4FilePath));
@@ -310,8 +310,7 @@ public final class FileUtils {
 	}
 
 	public static Properties parseProperties(String propertiesFilePath) {
-		ServletContext servletContext = Utils.getServletContent();
-		Properties properties = APropertyLoader.parsePropertyFile(servletContext.getRealPath(propertiesFilePath));
+		Properties properties = APropertyLoader.parsePropertyFile(Utils.getRealPath(propertiesFilePath));
 		return properties;
 	}
 

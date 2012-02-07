@@ -16,7 +16,7 @@ public class ClientMessage extends AMessageHandler {
 	
 	public IMessage list(CommonMessage inMessage){		
 		String content  = String.format("[[Application|ClientMessages|%s|%s]]", 
-				inMessage.getData().get("_appid"),
+				inMessage.getData().get("appid"),
 				inMessage.getData().get("dest"));
 		getLog().debug("Try to get content for: " + content);
 		
@@ -29,7 +29,7 @@ public class ClientMessage extends AMessageHandler {
 			return inMessage;
 		}
 		
-		String appId = inMessage.getData().get("_appid");
+		String appId = inMessage.getData().get("appid");
 		String key = Utils.GetDateUUID();
 		// test data
 		for(Map.Entry<String, String> entry: inMessage.getData().entrySet()){

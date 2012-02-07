@@ -170,7 +170,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 				getInPipe().getName()));
 		while ((message = (IMessage) getInPipe().getMessage()) != null) {
 			// Log message
-			getLog().warn(String.format(
+			getLog().debug(String.format(
 					"Processor(%s) handle message for group(%s) from pipe(size:%s)", getName(),
 					message.getSessionID(), getInPipe().getSize()));
 

@@ -34,7 +34,7 @@ public final class SystemLogin {
 			IMessage inMessage
 			) {
 		String userId = inMessage.getData().get("_user");
-		String appId = inMessage.getData().get("_appid");
+		String appId = inMessage.getData().get("appid");
 		String locale = inMessage.getData().get("_locale");
 		if(userId == null || userId.isEmpty())
 			return getFormLogin(inHow, locale);

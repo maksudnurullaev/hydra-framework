@@ -57,7 +57,6 @@
 	</servlet-mapping>	
 
 	<!-- Spring ApplicationContext -->
-<!--	
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/applicationContext.xml</param-value>
@@ -65,5 +64,5 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	-->
+
 </web-app>

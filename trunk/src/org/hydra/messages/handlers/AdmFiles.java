@@ -49,7 +49,7 @@ public class AdmFiles extends AMessageHandler {
 	}
 	
 	public IMessage add(CommonMessage inMessage){			
-		if(inMessage.file == null){
+		if(inMessage.getFile() == null){
 			inMessage.setError("NO_FILE");
 			inMessage.clearContent();
 			return(inMessage);
@@ -62,12 +62,13 @@ public class AdmFiles extends AMessageHandler {
 	}
 
 	public IMessage delete(CommonMessage inMessage){
-		if(inMessage.fileRealPath == null){
+		if(inMessage.getData().get("file_path") == null){
 			inMessage.setError("File path not defined");
 			return(inMessage);
 		}
-		getLog().debug("Delete file: " + inMessage.fileRealPath);
-		org.apache.cassandra.io.util.FileUtils.delete(inMessage.fileRealPath);				
+		String fileRealPath = Utils.getRealPath(inMessage.getData().get("file_path"));
+		getLog().debug("Delete file: " + fileRealPath);
+		org.apache.cassandra.io.util.FileUtils.delete(fileRealPath);				
 		return(list(inMessage));		
 	}
 }

@@ -50,7 +50,7 @@ public final class System {
 			String inKey,
 			IMessage inMessage) {
 		Result result = new Result();
-		BeansUtils.getWebContextBean(result, (inMessage.getData().get("_appid") + Constants._bean_web_app_id_postfix));
+		BeansUtils.getWebContextBean(result, (inMessage.getData().get("appid") + Constants._bean_web_app_id_postfix));
 		if(result.isOk() && result.getObject() instanceof WebApplication){ // generate language bar
 			WebApplication app = (WebApplication) result.getObject();
 			String resultStr = "";
@@ -65,8 +65,8 @@ public final class System {
 			}
 			return resultStr;
 		}
-		_log.error("Could not define locale for:" + inMessage.getData().get("_appid"));
-		return ("Could not define locale for:" + inMessage.getData().get("_appid"));
+		_log.error("Could not define locale for:" + inMessage.getData().get("appid"));
+		return ("Could not define locale for:" + inMessage.getData().get("appid"));
 	}
 
 }
