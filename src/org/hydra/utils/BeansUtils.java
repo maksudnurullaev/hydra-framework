@@ -17,7 +17,7 @@ public final class BeansUtils {
 		ctx = new GenericApplicationContext();
 		xmlReader = new XmlBeanDefinitionReader(ctx);
 		xmlReader.loadBeanDefinitions(new ClassPathResource("applicationContext.xml"));
-		ctx.refresh();		
+		ctx.refresh();
 	}
 	
 	private static BeansUtils Me(){
@@ -36,7 +36,7 @@ public final class BeansUtils {
 	}
 	
 	public static void getWebContextBean(Result result, String inBeanId) {
-		try {
+//		try {
 			_log.debug("Try to find bean: " + inBeanId);
 			Object o = Me().ctx.getBean(inBeanId);
 			if(o == null)
@@ -45,11 +45,13 @@ public final class BeansUtils {
 				_log.debug("Bean o IS: " + o.getClass().getName());
 			result.setObject(o);
 			result.setResult(true);			
+			/*
 		} catch (Exception e) {
 			_log.warn(e.getMessage());
 			result.setErrorString(e.getMessage());
 			result.setResult(false);
 		}		
+		*/
 	}
 
 }

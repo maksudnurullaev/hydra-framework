@@ -28,10 +28,13 @@ import org.hydra.utils.ErrorUtils.ERROR_CODES;
  */
 public final class Utils {
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.Utils");
-	private static final String WEBAPP_ROOT = "/home/max/work/jetty-8.0.4"
-			+ "/webapps/root/";
+	public static String WEBAPP_ROOT = null;
 		
 	public static String getRealPath(String inPath){
+		if(WEBAPP_ROOT == null){
+			_log.error("Web root folder not initialized!");
+			return(inPath);
+		}
 		return(new File(WEBAPP_ROOT, inPath).toString());
 	}
 	

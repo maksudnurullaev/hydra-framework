@@ -137,9 +137,9 @@ public class WebMessagesHandler extends ALogger {
 		String folder = inMessage.getData().get("folder");
 		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.getFile().getFilename());
 		inMessage.getData().put("file_path", uri4File);
-		_log.error("File uri: " + uri4File);
+		_log.debug("File uri: " + uri4File);
 		inMessage.getData().put("file_real_path", Utils.getRealPath(uri4File));
-		_log.error("Real path: " + inMessage.getData().get("file_real_path"));
+		_log.debug("Real path: " + inMessage.getData().get("file_real_path"));
 	}
 
 	private boolean handledWithSession(IMessage inMessage,

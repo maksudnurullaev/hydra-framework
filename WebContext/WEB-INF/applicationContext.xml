@@ -84,25 +84,7 @@
 	<bean id="_main_message_collector" class="org.hydra.beans.MessagesCollector">
 		<property name="name" value="Simple Message Collector" />
 	</bean>
-	
-	<!-- Remote - SERVER PART -->
-	<bean id="messageService" class="org.hydra.services.remote.MessageService">
-	</bean>
-	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
-	    <!-- does not necessarily have to be the same name as the bean to be exported -->
-	    <property name="serviceName" value="MessageService"/>
-	    <property name="service" ref="messageService"/>
-	    <property name="serviceInterface" value="org.hydra.services.remote.interfaces.IMessageService"/>
-	    <!-- defaults to 1099 -->
-	    <property name="registryPort" value="1199"/>
-	</bean>	
-
-	<!--  Remote - CLIENT PART -->
-	<bean id="messageServiceClient" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-	    <property name="serviceUrl" value="rmi://192.168.34.88:1199/MessageService"/>
-	    <property name="serviceInterface" value="org.hydra.services.remote.interfaces.IMessageService"/>
-	</bean>	
-		
+			
 	<!-- Processing messages -->
 	<bean id="_main_input_pipe_" class="org.hydra.pipes.Pipe">
 		<property name="name" value="Pipe1" />
@@ -116,10 +98,5 @@
 		<property name="statisticsCollector">
 			<ref bean="_statisticsCollector"/>
 		</property>
-<!--		 
-		<property name="remoteMessageService">
-			<ref bean="messageServiceClient" />
-		</property>
--->		
 	</bean>		
 </beans>
