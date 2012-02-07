@@ -61,8 +61,6 @@ public final class FileUtils {
 			List<String> result,
 			String ifFileNameEndWith) {
 		
-		if(!URL.endsWith("/")) URL += "/";
-		
 		String realURI = Utils.getRealPath(URL);
 		
 		if(realURI == null) return;
