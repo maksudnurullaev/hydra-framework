@@ -25,6 +25,8 @@ public class ApplicationTempFiles extends AMessageHandler {
 			String inKey, 
 			String inHow,
 			IMessage inMessage) {
+		if(inMessage.getData().get("folder") == null)
+			inMessage.getData().put("folder", "files");	
 		if(inKey.compareToIgnoreCase("all") == 0 && 
 				inHow.compareToIgnoreCase("html") == 0)
 			return getAllHtml(inMessage);
@@ -39,9 +41,9 @@ public class ApplicationTempFiles extends AMessageHandler {
 	}
 
 	private static String getExtjsUl(IMessage inMessage) {
-		List<String> fileURLs = new ArrayList<String>();		
+		List<String> fileURLs = new ArrayList<String>();
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("appid")),
+				String.format(FileUtils.URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder")),
 				fileURLs,
 				APropertyLoader.SUFFIX);
 		if(fileURLs.isEmpty()) return("");
@@ -87,9 +89,11 @@ public class ApplicationTempFiles extends AMessageHandler {
 	}
 
 	static String getAllHtml(IMessage inMessage) {		
-		List<String> fileURLs = new ArrayList<String>();		
+		List<String> fileURLs = new ArrayList<String>();	
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("appid")),
+				String.format(FileUtils.URL4FILES_APPID_SUBFOLDER, 
+						inMessage.getData().get("appid"),
+						inMessage.getData().get("folder")),
 				fileURLs,
 				APropertyLoader.SUFFIX);
 		
@@ -102,7 +106,9 @@ public class ApplicationTempFiles extends AMessageHandler {
 		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_FILES, inMessage.getData().get("appid")),
+				String.format(FileUtils.URL4FILES_APPID_SUBFOLDER, 
+						inMessage.getData().get("appid"),
+						inMessage.getData().get("folder")),
 				fileURLs,
 				(fileExtension + APropertyLoader.SUFFIX));
 		

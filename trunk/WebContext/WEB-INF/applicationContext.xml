@@ -100,10 +100,7 @@
 		</property>
 		<property name="remoteMessageServer">
 			<ref bean="remoteMessageServer" />
-		</property>			
-		<property name="remoteMessageClient">
-			<ref bean="remoteMessageClient" />
-		</property>			
+		</property>					
 	</bean>	
 	
 	<!--  Remote - CLIENT PART -->

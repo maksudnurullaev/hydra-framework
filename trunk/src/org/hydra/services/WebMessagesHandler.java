@@ -132,7 +132,7 @@ public class WebMessagesHandler extends ALogger {
 	}
 
 	private void setupFile(IMessage inMessage) {
-		getLog().error("File name/size: " + inMessage.getFile().getFilename() + "/" + inMessage.getFile().getSize());
+		getLog().debug("File name/size: " + inMessage.getFile().getFilename() + "/" + inMessage.getFile().getSize());
 		String appId = inMessage.getData().get("appid");
 		String folder = inMessage.getData().get("folder");
 		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.getFile().getFilename());
