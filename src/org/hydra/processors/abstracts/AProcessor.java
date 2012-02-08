@@ -176,7 +176,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 
 			if (message instanceof CommonMessage) {
 				IMessageService remoteMessageService = getInPipe().getRemoteMessageService();
-				if(remoteMessageService != null && getInPipe().isUseRemoteMessageService()){
+				if(remoteMessageService != null){
 					getLog().warn("Message --> RMI : " + message.getSessionID());
 					for(IMessage message_: remoteMessageService.processMessage(message)){
 						getLog().warn("Message <-- RMI: " + message_.getSessionID());
