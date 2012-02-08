@@ -25,10 +25,8 @@ public class General extends AMessageHandler { // NO_UCD
 		return (ADeployer.deployContent(content,inMessage));
 	}
 
-	public static IMessage changeLocale(IMessage inMessage, WebContext webContext) {
-		if (!validateData(inMessage, "_locale"))
-			return inMessage;
-
+	public static void changeLocale(IMessage inMessage, WebContext webContext) {
+		if (!validateData(inMessage, "_locale"))return;
 		String locale = inMessage.getData().get("_locale");
 		String appId = inMessage.getData().get("appid");
 		
@@ -37,13 +35,11 @@ public class General extends AMessageHandler { // NO_UCD
 		_log.debug("set locale to: " + 
 				SessionUtils.getSessionData(webContext.getServletContext(), 
 				"_locale", 
-				appId));
-				
-		return getInitialBody(inMessage, webContext);
+				appId));		
 	}
 	
-	public static IMessage getInitialBody(IMessage inMessage, WebContext webContext) {		
-		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("appid"),"body", webContext.getServletContext());
+	public static IMessage getInitialBody(IMessage inMessage) {		
+		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("appid"),"body");
 		if(content != null){
 			_log.debug(String.format("deploy connent for (appid/locale): ", 
 					inMessage.getData().get("appid"), 

@@ -148,11 +148,14 @@ public class WebMessagesHandler extends ALogger {
 		String action = inMessage.getData().get("action");
 		if(handler.compareToIgnoreCase("General") == 0){
 			if(action.compareToIgnoreCase("changeLocale") == 0){
-				inMessage = General.changeLocale(inMessage, webContext);
-				return(true);
-			} else if(action.compareToIgnoreCase("getInitialBody") == 0){
-				inMessage = (MessageBean) General.getInitialBody(inMessage, webContext);
-				return(true);
+				General.changeLocale(inMessage, webContext);
+				
+				if(inMessage.getError() != null) return(true);
+				
+				// send message to initialize body as usual
+				inMessage.getData().put("handler", "General");				
+				inMessage.getData().put("action", "getInitialBody");
+				return(false);
 			}
 		} else if(handler.compareToIgnoreCase("User") == 0){
 			if(action.compareToIgnoreCase("login") == 0){
