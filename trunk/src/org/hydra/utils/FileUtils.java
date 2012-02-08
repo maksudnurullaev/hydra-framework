@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -41,10 +40,10 @@ public final class FileUtils {
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.FileUtils");	
 	public static final String generalImageFormat = "png";
 
-	public static String saveImage4(ServletContext servletContext, String inAppId, BufferedImage inImage){
+	public static String saveImage4(String inAppId, BufferedImage inImage){
 		// 0. Generate pathname for new image
 		String uri4Image = Utils.F("files/%s/images/%s.%s", inAppId, RandomStringUtils.random(8,true,true), generalImageFormat);
-		String realPath = servletContext.getRealPath(uri4Image);
+		String realPath = Utils.getRealPath(uri4Image);
 		// 1. Save image in PNG formate
 		File output = new File(realPath);
 		try {
@@ -312,9 +311,9 @@ public final class FileUtils {
 		return properties;
 	}
 
-	public static String getFromHtmlFile(String inAppId, String fileName, ServletContext servletContext)  {
+	public static String getFromHtmlFile(String inAppId, String fileName)  {
 		String filePath = String.format("/files/%s/html/%s.html", inAppId, fileName);
-		String realPath = servletContext.getRealPath(filePath);
+		String realPath = Utils.getRealPath(filePath);
 		String content = null;
 		if(realPath != null){
 			File file = new File(realPath);

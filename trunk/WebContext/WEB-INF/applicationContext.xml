@@ -118,7 +118,7 @@
 	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
 	    <!-- does not necessarily have to be the same name as the bean to be exported -->
 	    <property name="serviceName" value="MessageService"/>
-	    <property name="service" ref="messageService"/>
+	    <property name="service" ref="remoteMessageServer"/>
 	    <property name="serviceInterface" value="org.hydra.services.remote.interfaces.IMessageService"/>
 	    <!-- defaults to 1099 -->
 	    <property name="registryPort" value="1199"/>
