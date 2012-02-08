@@ -23,14 +23,22 @@ import org.hydra.utils.Constants;
  *
  */
 public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage> {
-	private IMessageService remoteMessageService = null;
+	private IMessageService remoteMessageClient = null;
+	private IMessageService remoteMessageServer = null;
 	
-	public IMessageService getRemoteMessageService() {
-		return remoteMessageService;
+	public IMessageService getRemoteMessageClient() {
+		return remoteMessageClient;
 	}
-	public void setRemoteMessageService(IMessageService remoteMessageService) {
-		this.remoteMessageService = remoteMessageService;
+	public void setRemoteMessageClient(IMessageService inService) {
+		this.remoteMessageClient = inService;
 	}
+	
+	public IMessageService getRemoteMessageServer() {
+		return remoteMessageServer;
+	}
+	public void setRemoteMessageServer(IMessageService inService) {
+		this.remoteMessageServer = inService;
+	}	
 
 	private int _maxCapacity = Constants._unlimited;
 	private volatile LinkedList<IMessage> _stack = null;
