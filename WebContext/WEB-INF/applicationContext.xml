@@ -98,10 +98,22 @@
 		<property name="statisticsCollector">
 			<ref bean="_statisticsCollector"/>
 		</property>
+		<property name="remoteMessageServer">
+			<ref bean="remoteMessageServer" />
+		</property>			
+		<property name="remoteMessageClient">
+			<ref bean="remoteMessageClient" />
+		</property>			
 	</bean>	
 	
+	<!--  Remote - CLIENT PART -->
+	<bean id="remoteMessageClient" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+	    <property name="serviceUrl" value="rmi://192.168.34.88:1199/MessageService"/>
+	    <property name="serviceInterface" value="org.hydra.services.remote.interfaces.IMessageService"/>
+	</bean>		
+	
 	<!-- Remote - SERVER PART -->
-	<bean id="messageService" class="org.hydra.services.remote.MessageService">
+	<bean id="remoteMessageServer" class="org.hydra.services.remote.MessageService">
 	</bean>
 	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
 	    <!-- does not necessarily have to be the same name as the bean to be exported -->

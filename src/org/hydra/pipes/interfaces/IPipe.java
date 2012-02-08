@@ -16,9 +16,12 @@ import org.hydra.services.remote.interfaces.IMessageService;
  * @see {@link IMessage}, {@link IProcessor}, {@link ICollector}
  */
 public interface IPipe<E> {
-	public IMessageService getRemoteMessageService();
-	public void setRemoteMessageService(IMessageService remoteMessageService);
+	public IMessageService getRemoteMessageClient();
+	public void setRemoteMessageClient(IMessageService inService);
 		
+	public IMessageService getRemoteMessageServer();
+	public void setRemoteMessageServer(IMessageService inService);
+	
 	/**
 	 * Add new listener
 	 * @param inListener

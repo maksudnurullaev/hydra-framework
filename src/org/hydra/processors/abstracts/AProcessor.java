@@ -175,9 +175,9 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 					message.getSessionID(), getInPipe().getSize()));
 
 			if (message instanceof CommonMessage) {
-				IMessageService remoteMessageService = getInPipe().getRemoteMessageService();
+				IMessageService remoteMessageService = getInPipe().getRemoteMessageClient();
 				if(remoteMessageService != null){
-					getLog().warn("Message --> RMI : " + message.getSessionID());
+					getLog().warn("Message --> RMI: " + message.getSessionID());
 					for(IMessage message_: remoteMessageService.processMessage(message)){
 						getLog().warn("Message <-- RMI: " + message_.getSessionID());
 						getMessageCollector().putMessage(message_);
