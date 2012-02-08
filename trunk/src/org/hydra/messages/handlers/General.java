@@ -38,7 +38,7 @@ public class General extends AMessageHandler { // NO_UCD
 				appId));		
 	}
 	
-	public static IMessage getInitialBody(IMessage inMessage) {		
+	public static IMessage getInitialBody(CommonMessage inMessage) {		
 		String content = FileUtils.getFromHtmlFile(inMessage.getData().get("appid"),"body");
 		if(content != null){
 			_log.debug(String.format("deploy connent for (appid/locale): ", 
