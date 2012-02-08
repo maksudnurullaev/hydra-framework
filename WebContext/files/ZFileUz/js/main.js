@@ -64,7 +64,7 @@ ZFileUz.try2SendFile = function(){
 				, action:'add'
 				, dest:ZFileUz.Content
 				, folder:'files'
-				, CaptchaValue:$('captcha_value').value 
+				, captcha_value:$('captcha_value').value 
 				, Tag:$('tagId').value
 				, Text:$('fileDescription').value 
 				, Public:($('publicCheckbox').checked?'true':'false')
