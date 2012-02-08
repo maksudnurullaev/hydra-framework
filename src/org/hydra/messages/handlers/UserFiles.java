@@ -25,6 +25,7 @@ public class UserFiles extends AMessageHandler {
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
+		if(!validateData(inMessage, "appid", "folder")) return inMessage;
 		if(inMessage.getFile() == null){
 			inMessage.setError("NO_FILE");
 			inMessage.clearContent();

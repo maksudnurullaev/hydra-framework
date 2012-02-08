@@ -63,6 +63,7 @@ ZFileUz.try2SendFile = function(){
 			{handler:'UserFiles'
 				, action:'add'
 				, dest:ZFileUz.Content
+				, folder:'files'
 				, CaptchaValue:$('captcha_value').value 
 				, Tag:$('tagId').value
 				, Text:$('fileDescription').value 

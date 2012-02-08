@@ -32,7 +32,6 @@ public final class FileUtils {
 	public static final int FILE_TYPE_UNKNOWN = 0;
 	public static final int FILE_TYPE_IMAGE = 1;
 	public static final int FILE_TYPE_COMPRESSED = FILE_TYPE_IMAGE << 1;
-	public static final String URL4FILES_APPID_FILES = "files/%s/files/"; 
 	public static final String URL4FILES_APPID_SUBFOLDER = "files/%s/%s/"; 
 	public static final String FILE_DESCRIPTION_TEXT = "Text"; 
 	public static final String FILE_DESCRIPTION_PUBLIC = "Public"; 
@@ -65,6 +64,10 @@ public final class FileUtils {
 		if(realURI == null) return;
 			
 		File dir = new File(realURI);
+		if(!dir.exists()){
+			_log.error("Directory not exist: " + realURI);
+			return;
+		}
 		if(dir.isDirectory() && dir.list() != null){
 			for(String path2File: dir.list()){
 				File file = new File(realURI, path2File);
@@ -117,13 +120,17 @@ public final class FileUtils {
 		FileTransfer file = inMessage.getFile();
 		boolean result = false;
 		// 0. Generate pathname for new image
-		String uri4FilePath;
-		String orginalFileName = sanitize(file.getFilename());
+		String orginalFileName = sanitize(file.getFilename());		
+		String uri4FilePath = Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder"))
+				+ getMD5FileName(orginalFileName) + getFileExtension(orginalFileName);
+		String realPath = Utils.getRealPath(uri4FilePath);
 		
-		uri4FilePath = Utils.F(URL4FILES_APPID_FILES + "%s", inMessage.getData().get("appid"), getMD5FileName(orginalFileName) + getFileExtension(orginalFileName));
+		System.out.println("uri4FilePath: " + uri4FilePath);
+		System.out.println("realPath: " + realPath);
+		System.out.println("orginalFileName: " + orginalFileName);
 		
-		result = saveFile(inMessage.getData().get("file_real_path"), file);
-		result = saveFileDescriptions(inMessage, inMessage.getData().get("file_real_path"), orginalFileName, dataDescriptionKeys);
+		result = saveFile(realPath, file);
+		result = saveFileDescriptions(inMessage, realPath, orginalFileName, dataDescriptionKeys);
 			
 		if(result)
 			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), uri4FilePath));
