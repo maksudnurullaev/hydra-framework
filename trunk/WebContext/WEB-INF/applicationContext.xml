@@ -103,12 +103,6 @@
 		</property>					
 	</bean>	
 	
-	<!--  Remote - CLIENT PART -->
-	<bean id="remoteMessageClient" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-	    <property name="serviceUrl" value="rmi://192.168.34.88:1199/MessageService"/>
-	    <property name="serviceInterface" value="org.hydra.services.remote.interfaces.IMessageService"/>
-	</bean>		
-	
 	<!-- Remote - SERVER PART -->
 	<bean id="remoteMessageServer" class="org.hydra.services.remote.MessageService">
 	</bean>

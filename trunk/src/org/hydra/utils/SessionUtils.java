@@ -1,6 +1,8 @@
 package org.hydra.utils;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -119,6 +121,7 @@ public final class SessionUtils {
 			if(inMessage.getData().containsKey(Constants._captcha_value)){
 				String captchaValue = inMessage.getData().get(Constants._captcha_value);
 				int passedValue = Integer.parseInt(captchaValue);
+				_log.error(String.format("sessionValue(%s), captchaValue(%s)", sessionValue, captchaValue));
 				if(passedValue == sessionValue){
 					inMessage.getData().put(Constants._captcha_value, Constants._captcha_OK);
 					return(true);
@@ -134,6 +137,10 @@ public final class SessionUtils {
 		if(inMessage.getData().containsKey(Constants._captcha_value)){
 			String value = inMessage.getData().get(Constants._captcha_value);
 			return(value.equalsIgnoreCase(Constants._captcha_OK));
+		}else{
+			List<String> err_ids = new ArrayList<String>();
+			err_ids.add(Constants._captcha_value);
+			inMessage.setHighlightFields(err_ids);
 		}
 		return false;
 	}	
