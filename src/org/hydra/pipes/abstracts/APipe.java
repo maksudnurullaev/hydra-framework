@@ -24,6 +24,7 @@ import org.hydra.utils.Constants;
  */
 public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage> {
 	private IMessageService remoteMessageService = null;
+	
 	public IMessageService getRemoteMessageService() {
 		return remoteMessageService;
 	}
@@ -149,6 +150,7 @@ public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage
 		addPipeEventListener(inProcessor);
 		inProcessor.setInPipe(this);
 	}
+
 	
 }
 
