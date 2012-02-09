@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.hydra.utils.CaptchaUtils;
 import org.hydra.utils.Constants;
-import org.hydra.utils.SessionUtils;
 
 public class ImageServlet extends HttpServlet {
 	@Override
@@ -24,7 +24,7 @@ public class ImageServlet extends HttpServlet {
 		int lValue = RandomUtils.nextInt(10) ;
 		int rValue = RandomUtils.nextInt(10) ;
 		String resultStr = "" + lValue + " + " + rValue ;
-		String sessionId = SessionUtils.getCaptchaId(req.getQueryString());
+		String sessionId = CaptchaUtils.getCaptchaId(req.getQueryString());
 		
 		req.getSession().setAttribute(sessionId + Constants._captcha_value, lValue + rValue);
 		

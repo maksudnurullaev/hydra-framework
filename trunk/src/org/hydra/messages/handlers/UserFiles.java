@@ -4,10 +4,10 @@ import org.hydra.deployers.ADeployer;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.CaptchaUtils;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
 import org.hydra.utils.FileUtils;
-import org.hydra.utils.SessionUtils;
 import org.hydra.utils.StringWrapper;
 import org.hydra.utils.Utils;
 
@@ -26,7 +26,7 @@ public class UserFiles extends AMessageHandler {
 	}	
 	
 	public IMessage add(CommonMessage inMessage){
-		if(!SessionUtils.isCaptchaVerified(inMessage)){
+		if(!CaptchaUtils.validateCaptcha(inMessage)){
 			return inMessage;
 		}
 		if(!validateData(inMessage, "appid", "folder")) return inMessage;

@@ -15,6 +15,7 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.utils.BeansUtils;
+import org.hydra.utils.CaptchaUtils;
 import org.hydra.utils.Constants;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Result;
@@ -54,10 +55,8 @@ public class WebMessagesHandler extends ALogger {
 		}		
 		// test & setup captcha if needs
 		if(inMessage.getData().containsKey(Constants._captcha_value)
-				&& !SessionUtils.validateCaptcha(inMessage, webContext)){
-			ArrayList<String> errorFields = new ArrayList<String>();
-			errorFields.add(Constants._captcha_value);
-			inMessage.setHighlightFields(errorFields);
+				&& !CaptchaUtils.validateCaptcha(inMessage, webContext)){
+			CaptchaUtils.makeCaptchaNotVerifiedMessage(inMessage);
 			resultList.add(inMessage);
 			return resultList.toArray();
 		}		
