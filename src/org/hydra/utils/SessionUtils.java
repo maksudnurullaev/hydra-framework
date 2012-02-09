@@ -54,11 +54,11 @@ public final class SessionUtils {
 				app = webApplications.getValidApplication4(
 						urlString.toLowerCase().substring(found) 
 								);
-				if(app == null)
-					app = webApplications.getValidApplication4("hydra.uz");
-			} else {
-				app = webApplications.getValidApplication4("hydra.uz");				
+				if(app == null) // if still null
+					app = webApplications.getValidApplication4(urlString);
 			}
+			if(app == null) // if still null
+				app = webApplications.getValidApplication4("hydra.uz");				
 			
 			inMessage.getData().put("_appid", app.getId());
 			if(!inMessage.getData().containsKey("appid"))
