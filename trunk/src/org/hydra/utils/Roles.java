@@ -11,7 +11,7 @@ public final class Roles {
 	
 	public static boolean roleNotLessThen(int inRoleLevel, IMessage inMessage) {
 		//TODO REMOVE IF NEES FULL ACCESS!
-		// if(inMessage != null) return true;
+		if(inMessage != null) return true;
 		String appId = inMessage.getData().get("_appid");
 		String userId = inMessage.getData().get("_user");
 		if(appId == null || appId.length() == 0) return false;

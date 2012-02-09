@@ -299,7 +299,8 @@ public final class DBUtils {
 						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
 			// sup - description
 			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.toggle('");
-			result.append(spanId).append("')); return false;\" href=\"#\">").append(inEditObjectName).append("</a>)</sup>");
+			result.append(spanId).append("')); return false;\" href=\"#\">").append(inEditObjectName).append("</a>, ")
+				.append(wrapString.toString().length()).append(")</sup>");
 			
 			editLinks.put(spanId, result.toString());
 		}

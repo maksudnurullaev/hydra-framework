@@ -6,6 +6,7 @@ import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
+import org.hydra.utils.ErrorUtils.ERROR_CODES;
 import org.hydra.utils.StringWrapper;
 import org.hydra.utils.Utils;
 
@@ -34,6 +35,14 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		
 		StringWrapper stringWrapper = new StringWrapper();		
 		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage.getData().get("appid"), inCFName, inKey, inCName, stringWrapper);
+		
+		
+		//TODO Impotant - replace </textarea> from source if template exist
+		if( err == ERROR_CODES.NO_ERROR){
+			String str = stringWrapper.getString();
+			str = str.replaceAll("(?i)</textarea>", "[[Dictionary|Template|template.textarea.endtag|html]]");
+			stringWrapper.setString(str);
+		}		
 		
 		StringBuffer resultBuffer = new StringBuffer("<div class=\"edit\">");
 		
