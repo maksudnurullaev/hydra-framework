@@ -96,6 +96,7 @@ Licence: <a href="http://www.os-templates.com/template-terms">Website Template L
 #topnav li:hover{position:static;}
 
 #topnav li.last{margin-right:0;}
+#li_last{margin-right:0;}
 
 /* ----------------------------------------------Column Navigation-------------------------------------*/
 
