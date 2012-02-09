@@ -54,9 +54,11 @@ public final class SessionUtils {
 				app = webApplications.getValidApplication4(
 						urlString.toLowerCase().substring(found) 
 								);
-				if(app == null) // if still null
-					app = webApplications.getValidApplication4(urlString);
 			}
+			
+			if(app == null) // if still null
+				app = webApplications.getValidApplication4(urlString);
+			
 			if(app == null) // if still null
 				app = webApplications.getValidApplication4("hydra.uz");				
 			

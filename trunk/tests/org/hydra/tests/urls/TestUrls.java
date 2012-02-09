@@ -11,6 +11,7 @@ public class TestUrls {
 	public void test_1() {
 		Pattern p = Pattern.compile(".*127\\.0\\.0\\.1.*");
 		Pattern p2 = Pattern.compile(".*(www\\.)?hydra\\.uz.*");
+		Pattern p3 = Pattern.compile(".*(www\\.)?sktour\\.uz.*");
 		Test("http://127.0.0.1",        p, true);
 		Test("https://127.0.0.1",       p, true);
 		Test("https://127.0.0.1/",      p, true);
@@ -29,6 +30,7 @@ public class TestUrls {
 		Test("lenta.ru",     p2, false);		
 		Test("www.hydra.uz", p2, true);		
 		Test("hydra.uz",     p2, true);		
+		Test("http://sktour.uz",    p3, true);		
 	
 	}
 
