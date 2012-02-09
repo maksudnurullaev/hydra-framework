@@ -35,6 +35,7 @@ public final class Constants {
 	public static final int _max_textarea_field_limit = 4096;
 	public static final int _max_input_field_limit = 128;
 	public static final long _max_response_wating_time = 5000;
+	public static final long _max_client_msg_fields_length = 1024;
 		
 	// **** Constant error strings
 	public static final String _error_db = "ERROR_DB";
