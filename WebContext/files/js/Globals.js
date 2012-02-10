@@ -13,32 +13,40 @@ if (Globals == null) {
 /* Highlight them */
 Globals.highlightFields = function(elementIDs){
     Object.each(elementIDs, function (id){
-        if($(id)){
+        if($(id) && $(id).setStyle){
             $(id).setStyle('border','1px solid red');
-            $(id).highlight('#ddf');
+        }
+        if($(id) && $(id).style){
+            $(id).style.border = '1px solid red';
         }
     });
 };
 /* NO Highlight them */
 Globals.noHighlightFields = function(elementIDs){
     Object.each(elementIDs, function (id){
-        if($(id)){
+        if($(id) && $(id).setStyle){
             $(id).setStyle('border','1px solid #7F9DB9');
+        }
+        if($(id) && $(id).style){
+            $(id).style.border = '1px solid #7F9DB9';
         }
     });
 };
-/* Mootools fade toogle */
-Globals.toggle = function(elemID){
-    if($(elemID)){
-        $(elemID).fade('toggle');
-    }
-};
+/* toogle display */
 Globals.toogleBlock = function(elemID){
     if($(elemID) && $(elemID).getStyle) {
         if($(elemID).getStyle('display') == 'none'){
             $(elemID).setStyle('display', 'block');
         }else{
             $(elemID).setStyle('display', 'none');
+        }
+        return;
+    }
+    if($(elemID) && $(elemID).style) {
+        if($(elemID).style.display == 'none' || (!$(elemID).style.display)){ // fixed for IE
+            $(elemID).style.display = 'block';
+        }else{
+            $(elemID).style.display = 'none';
         }
     }
 };
@@ -75,15 +83,31 @@ Globals.loadInitialPage = function(){
         , dest: 'body'
     });
 };
+// show/hide element
+Globals.setVisibility = function(el, isVisible){
+    if(!Globals.chk(el)){
+        return;
+    }
+    if(Globals.chk(el.style)){ // fix for IE
+        el.style.visibility = (isVisible?'visible':'hidden');
+        return;
+    }
+    if(Globals.chk(el.fade)){
+        el.fade((isVisible?'show':'hide'));
+        return;
+    }
+    alert('Display function does not work!');
+};
+
 /* Set html content by contents map */
 Globals.setHtmlContents = function (contentsMap) {
     Object.each(contentsMap, function (htmlContent, elemId) {
         if ($(elemId) && $(elemId).innerHTML != undefined && htmlContent) {
             if(htmlContent.search(/^close_me/i) >= 0){
-                $(elemId).fade('hide');
+                Globals.setVisibility($(elemId), false);
             }else{
                 $(elemId).innerHTML = htmlContent;
-                $(elemId).fade('show');
+                Globals.setVisibility($(elemId), true);
             }
         };
     });

@@ -49,12 +49,12 @@ ZFileUz.sendClientMessage = function(){
 };
 
 ZFileUz.testValue = function(val, name){
-    if(!val){
-        $(name).setStyle('background','red');
-        return false;
+    if ($(name).setStyle) {
+        $(name).setStyle('background', (val?'':'red'));
+    } else if ($(name).style) {
+    	$(name).style.background = (val?'':'red');    
     }
-    $(name).setStyle('background','');    
-    return true;
+    return (val);
 };
 
 ZFileUz.try2SendFile = function(){

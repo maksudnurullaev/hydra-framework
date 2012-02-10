@@ -30,3 +30,4 @@ SKTourUz.setMainContent = function(inEl){
         , dest: SKTourUz.MainContent
     });        
 };
+
