@@ -10,6 +10,7 @@ import org.hydra.html.fields.IField;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
 import org.hydra.utils.Utils;
@@ -38,7 +39,7 @@ public class AdmTags extends AMessageHandler {
 				String.format("<h4>[[DB|Text|New_Tag|span]]</h4>"), appId, 
 				"AdmTags", "add", 
 				"AdmTags", "list", 
-				"admin.app.action", fields, null, inMessage);
+				Constants._admin_app_action_div, fields, null, inMessage);
 		
 		return(ADeployer.deployContent(form,inMessage));			
 	}
@@ -66,7 +67,7 @@ public class AdmTags extends AMessageHandler {
 			return inMessage;
 		}		
 		
-		inMessage.getData().put("dest", "admin.app.action");
+		inMessage.getData().put("dest", Constants._admin_app_action_div);
 		DBUtils.setValue(appID, cfName, key, "name", key);
 				
 		return(list(inMessage));
@@ -79,7 +80,7 @@ public class AdmTags extends AMessageHandler {
 				
 		String inColumnFamily = "Tag";
 		
-		inMessage.getData().put("dest", "admin.app.action");
+		inMessage.getData().put("dest", Constants._admin_app_action_div);
 		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, inColumnFamily, value);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
 			inMessage.setError(errCode.toString());

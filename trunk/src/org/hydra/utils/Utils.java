@@ -668,4 +668,9 @@ public final class Utils {
 		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
 		System.out.println("=== End ===");
 	}
+
+	public static String sanitazeHtmlId(String string) {
+		if(string == null) return null;
+		return(string.replaceAll("\\W", "_"));
+	}
 }

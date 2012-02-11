@@ -14,6 +14,7 @@ import org.hydra.managers.CryptoManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
 import org.hydra.utils.Utils;
@@ -50,7 +51,7 @@ public class AdmUsers extends AMessageHandler {
 				String.format("<h4>[[DB|Text|New_User|span]]</h4>"), appId, 
 				"AdmUsers", "add", 
 				"AdmUsers", "list", 
-				"admin.app.action", fields, optionalFields, inMessage);
+				Constants._admin_app_action_div, fields, optionalFields, inMessage);
 		
 		return(ADeployer.deployContent(form,inMessage));		
 	}	

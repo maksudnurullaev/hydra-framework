@@ -48,4 +48,6 @@ public final class Constants {
 	
 	public static final String _captcha_value = "captcha_value";
 	public static final String _captcha_OK = "_captcha_OK";
+	public static final String _admin_app_action_div = "admin_app_action_div";
+	public static final Object _admin_app_div = "admin_app_div";
 }

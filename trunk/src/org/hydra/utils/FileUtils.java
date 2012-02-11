@@ -233,7 +233,7 @@ public final class FileUtils {
     	String divHiddenID = "template." + inFilePath;  
 		content.append("<div style=\"margin: 5px; padding: 5px; border: 1px solid rgb(127, 157, 185);\">");
 		
-    	content.append(getDeleteLink("AdmFiles", Utils.Q("admin.app.action"), inAppID, inFilePath) + " ");
+    	content.append(getDeleteLink("AdmFiles", Utils.Q(Constants._admin_app_action_div), inAppID, inFilePath) + " ");
     	content.append("[<strong>" + fileExtension + "</strong>] ");
     	
     	String htmlTag = "NOT_DEFINED";
@@ -275,13 +275,13 @@ public final class FileUtils {
     	boolean isPublic = ((Public != null) 
     			&& (Public.compareToIgnoreCase("true") == 0)) ? true : false;
 		
-    	String divHiddenID = "template." + sanitize(propertiesFilePath);
+    	String divHiddenID = Utils.sanitazeHtmlId("template." + sanitize(propertiesFilePath));
     	String Description = properties.getProperty(FILE_DESCRIPTION_TEXT);
     	if(isPublic || isAdmin){
 			StringBuffer content = new StringBuffer();
 			content.append("<div class=\"file_row\">");
 			
-			//TODO delete link
+			//TODO create delete link later
 	    	// if(isAdmin)
 	    	//	content.append(getDeleteLink("UserFiles", Utils.Q(Constants._user_content), inAppID, propertiesFilePath) + " ");
 			

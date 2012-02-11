@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
+import org.hydra.utils.Constants;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Utils;
 
@@ -45,7 +46,7 @@ public class ApplicationFiles extends AMessageHandler {
 	    	  "handler:'AdmFiles'"
 	    	+ ",action:'addForm'"
 	    	+ ",appid:" + Utils.Q(inAppID) 
-	    	+ ",dest:'admin.app.action'"
+	    	+ ",dest:" + Utils.Q(Constants._admin_app_action_div)
 	    	+ ",folder:'images'";
 	    
 	    header.append(Utils.T("template.html.a.onClick.sendMessage.Label"

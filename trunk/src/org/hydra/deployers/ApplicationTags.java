@@ -19,13 +19,13 @@ public final class ApplicationTags {
 			content.append(Utils.T("template.html.divId.Content", tag, tag));			
 		}
 		content.append("<hr />");
-		content.append("<div id='admin.app.action.tag'>");
+		content.append("<div id='admin_app_action_tag'>");
 		content.append("<strong>Other tags</strong> | ");
 		content.append(Utils.createJSLinkHAAD(
 				Utils.Q("AdmTags"), 
 				Utils.Q("addForm"), 
 				Utils.Q(inAppID),
-				Utils.Q("admin.app.action.tag"), 
+				Utils.Q("admin_app_action_tag"), 
 				"New"
 				)
 			);
@@ -47,7 +47,7 @@ public final class ApplicationTags {
 						,"action",  Utils.Q("delete")
 						,"appid", Utils.Q(inAppID)
 						,"value", Utils.Q(key)
-						,"dest", Utils.Q("admin.app.action.tag")
+						,"dest", Utils.Q("admin_app_action_tag")
 					);			
 				content2.append(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete", jsData, "X")));			
 				// value

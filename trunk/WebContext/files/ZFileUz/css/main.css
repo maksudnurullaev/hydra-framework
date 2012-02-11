@@ -418,3 +418,5 @@ p#waiting {
 
 div.file_row { margin: 5px; padding: 0px; border: 0px; }
 div.file_description { display: none; color: grey; }
+
+.error {background: red;}

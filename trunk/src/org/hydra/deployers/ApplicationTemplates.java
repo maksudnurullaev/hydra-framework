@@ -8,6 +8,7 @@ import me.prettyprint.hector.api.beans.Row;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Utils;
 
@@ -72,7 +73,7 @@ public class ApplicationTemplates extends AMessageHandler {
 					Utils.Q("AdmTemplates"), 
 					Utils.Q("addForm"), 
 					Utils.Q(inAppID),
-					Utils.Q("admin.app.action"), 
+					Utils.Q(Constants._admin_app_action_div), 
 					"New"
 					)
 	    		);
@@ -90,7 +91,7 @@ public class ApplicationTemplates extends AMessageHandler {
 				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
 				,"key", Utils.Q(key)
-				,"dest", Utils.Q("admin.app.action")
+				,"dest", Utils.Q(Constants._admin_app_action_div)
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
 	}
@@ -103,7 +104,7 @@ public class ApplicationTemplates extends AMessageHandler {
 				,"action",  Utils.Q("updateForm")
 				,"appid", Utils.Q(inAppID)
 				,"key", Utils.Q(key)
-				,"dest", Utils.Q("admin.app.action")
+				,"dest", Utils.Q(Constants._admin_app_action_div)
 			);
 		return(Utils.F("[%s]", Utils.createJSLink("Update",jsData, "U")));		
 	}
