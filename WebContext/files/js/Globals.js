@@ -8,64 +8,50 @@ if (Globals == null) {
             ,'tryToLoadCount': 0
             ,'pageBusy': false
             ,'loadingImage': '<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif">'
+            ,'Y': null
         };
 };
 /* Highlight them */
 Globals.highlightFields = function(elementIDs){
-    Object.each(elementIDs, function (id){
-        if($(id) && $(id).setStyle){
-            $(id).setStyle('border','1px solid red');
-        }
-        if($(id) && $(id).style){
-            $(id).style.border = '1px solid red';
-        }
+    Globals.Y.Array.each(elementIDs, function (id){
+        Globals.setErrorClass(false, id);
     });
+};
+Globals.setErrorClass = function(val, id){
+    var node = Globals.Y.one('#' + id);
+    if(val){
+        node.removeClass('error');
+    } else {
+        node.addClass('error');
+    }
+    return (val);
 };
 /* NO Highlight them */
 Globals.noHighlightFields = function(elementIDs){
-    Object.each(elementIDs, function (id){
-        if($(id) && $(id).setStyle){
-            $(id).setStyle('border','1px solid #7F9DB9');
-        }
-        if($(id) && $(id).style){
-            $(id).style.border = '1px solid #7F9DB9';
-        }
+    Globals.Y.Array.each(elementIDs, function (id){
+		var node = Globals.Y.one('#' + id);
+		node.removeClass('error');
     });
 };
 /* toogle display */
 Globals.toogleBlock = function(elemID){
-    if($(elemID) && $(elemID).getStyle) {
-        if($(elemID).getStyle('display') == 'none'){
-            $(elemID).setStyle('display', 'block');
-        }else{
-            $(elemID).setStyle('display', 'none');
-        }
-        return;
-    }
-    if($(elemID) && $(elemID).style) {
-        if($(elemID).style.display == 'none' || (!$(elemID).style.display)){ // fixed for IE
-            $(elemID).style.display = 'block';
-        }else{
-            $(elemID).style.display = 'none';
-        }
-    }
+    var node = Globals.Y.one('#' + elemID);
+    if(node.getStyle('display') == 'none'){
+		Globals.showNode(node, true);
+	} else {
+		Globals.showNode(node, false);
+	}
 };
-
-/* Hide/Show Editor Links */
-Globals.hideEditorLinksExcept = function(id){
-     $$('sup.editorlinks').each(function(el){
-         if(el.id != (id + '.editorlinks')){
-            el.fade('hide');
-        }
-    });        
-};
-Globals.hideEditBox = function(){
-    $(Globals.editBox).innerHTML = "&nbsp;";
+/* clear edit area */
+Globals.clearEditArea = function(){
+    var node = Globals.Y.one('#' + Globals.editBox);
+	if(node){
+		node.setContent("&nbsp;");
+		Globals.showNode(node, false);
+	}
 };
 /* Edit online */
 Globals.editIt = function(divId, handleName, actionName){        
-    // hide editor links
-    Globals.hideEditorLinksExcept(divId);
     // Get initial html body
     Globals.sendMessage({
        handler: handleName
@@ -76,41 +62,42 @@ Globals.editIt = function(divId, handleName, actionName){
 };
 // load initial page
 Globals.loadInitialPage = function(){
-    // Get initial html body
-    Globals.sendMessage({
-        handler: 'General'
-        , action: 'getInitialBody'
-        , dest: 'body'
+    YUI().use('node', function (Y) {
+        Globals.Y = Y;
+        // Get initial html body
+        Globals.sendMessage({
+            handler: 'General'
+            , action: 'getInitialBody'
+            , dest: 'body'
+        });
     });
 };
-// show/hide element
-Globals.setVisibility = function(el, isVisible){
-    if(!Globals.chk(el)){
-        return;
-    }
-    if(Globals.chk(el.style)){ // fix for IE
-        el.style.visibility = (isVisible?'visible':'hidden');
-        return;
-    }
-    if(Globals.chk(el.fade)){
-        el.fade((isVisible?'show':'hide'));
-        return;
-    }
-    alert('Display function does not work!');
+Globals.showNode = function(node, isVisible){
+	if(isVisible){
+		node.setStyle('visibility', 'visible');
+		node.setStyle('display', 'block');
+	} else {
+		node.setStyle('visibility', 'hidden');
+		node.setStyle('display', 'none');
+	}
 };
-
 /* Set html content by contents map */
 Globals.setHtmlContents = function (contentsMap) {
-    Object.each(contentsMap, function (htmlContent, elemId) {
-        if ($(elemId) && $(elemId).innerHTML != undefined && htmlContent) {
+    if(!contentsMap){
+        return;
+    }
+    for(var elemId in contentsMap){
+        var htmlContent = contentsMap[elemId];
+        var node = Globals.Y.one('#' + elemId);
+        if (node && node.setContent != "undefined" && htmlContent) {
             if(htmlContent.search(/^close_me/i) >= 0){
-                Globals.setVisibility($(elemId), false);
+				Globals.showNode(node, false);
             }else{
-                $(elemId).innerHTML = htmlContent;
-                Globals.setVisibility($(elemId), true);
+                node.setContent(htmlContent);
+				Globals.showNode(node, true);
             }
-        };
-    });
+        };        
+    }
 };
 /* Test DOM object existance */
 Globals.chk = function (obj) {
@@ -128,17 +115,20 @@ Globals.decodeContent = function(content){
 /* set & restore wait element*/
 Globals.setWaitElement = function (data){
     Globals.pageBusy = true;
-    if(Globals.chk($('wait_element')) && (typeof $('wait_element').innerHTML != "undefined")){
-        $('wait_element').innerHTML = Globals.loadingImage ;
+	var node = Globals.Y.one('#' + 'wait_element');
+	var destNode = Globals.Y.one('#' + data.dest);
+    if(node && node.setContent){
+        node.setContent(Globals.loadingImage);
     } else {
-        if(Globals.chk(data.dest) && (typeof $(data.dest).innerHTML != "undefined")){
-            $(data.dest).innerHTML = Globals.loadingImage ;
+        if(destNode && destNode.setContent){
+			destNode.setContent(Globals.loadingImage);
         }    
     }
 };
 Globals.restoreWaitElement = function(){
-    if(Globals.chk($('wait_element')) && (typeof $('wait_element').innerHTML != "undefined")){
-        $('wait_element').innerHTML = "&nbsp;";
+	var node = Globals.Y.one('#' + 'wait_element');
+    if(node && node.setContent){
+        node.setContent("&nbsp;");
      }
      Globals.pageBusy = false;
 };
@@ -181,7 +171,7 @@ Globals.porcessMessage = function (message) {
     // is it new session?
     if(Globals.chk(Globals.sessionID)){ 
         if(Globals.sessionID != message.sessionID){
-            $('body').innerHTML = Globals.loadingImage ;
+            document.body.innerHTML = Globals.loadingImage ;
             window.location.reload();
         }
     } else {

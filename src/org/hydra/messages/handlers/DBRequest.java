@@ -49,7 +49,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		resultBuffer.append(Utils.T("template.html.a.onClick.sendMessage.Label"
 				, jsData
 				, "Upload"));	
-		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.hideEditBox()); return false;\" href=\"#\">Close</a>");
+		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.clearEditArea()); return false;\" href=\"#\">Close</a>");
 		resultBuffer.append("<br /><strong>").append(inKey).append("</strong><br />");
 		resultBuffer.append("<textarea class='edittextarea' id='").append(textAreaId).append("'>");
 		resultBuffer.append(err == ErrorUtils.ERROR_CODES.NO_ERROR?stringWrapper.getString():err.toString());

@@ -7,6 +7,7 @@ import me.prettyprint.hector.api.beans.Row;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.utils.Constants;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.Utils;
 
@@ -67,7 +68,7 @@ public final class ApplicationUsers {
 					Utils.Q("AdmUsers"), 
 					Utils.Q("addForm"), 
 					Utils.Q(inAppID),
-					Utils.Q("admin.app.action"), 
+					Utils.Q(Constants._admin_app_action_div), 
 					"New"
 					)
 	    		);
@@ -85,7 +86,7 @@ public final class ApplicationUsers {
 				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
 				,"key", Utils.Q(key)
-				,"dest", Utils.Q("admin.app.action")
+				,"dest", Utils.Q(Constants._admin_app_action_div)
 			);
 		return(Utils.F("[%s]",Utils.createJSLinkWithConfirm(jsData, "X")));		
 	}

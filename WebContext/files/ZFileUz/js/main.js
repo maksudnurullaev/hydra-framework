@@ -10,11 +10,11 @@ if ( ZFileUz == null ) {
 
 ZFileUz.setMainContent = function(inEl){    
     if(Globals.pageBusy) return;
-    $$('#topmenuul a').each(function(el){
-         if(el.id == inEl.id){
-            el.setProperty('class', 'highlight');
+    Globals.Y.all('#topmenuul a').each(function(el){
+         if(el.generateID() == inEl.id){
+            el.addClass('highlight');
         }else{
-            el.setProperty('class', '');
+            el.removeClass('highlight');
         }
     });  
     
@@ -31,36 +31,25 @@ ZFileUz.setMainContent = function(inEl){
 };
 
 ZFileUz.sendClientMessage = function(){
-    if(!$('textarea.message') || !$('textarea.message').value.trim()){
-        alert("Нет теста сообщения!");
-        return;
-    }
-    if(!ZFileUz.testValue($('captcha_value').value, 'captcha_value')){
-        return;
-    }
-    var text = $('textarea.message').value.trim();
-    Globals.sendMessage({
-        handler: 'ClientMessage'
-        , action: 'add'
-        , dest: ZFileUz.Content
-        , text: text
-        , captcha_value:$('captcha_value').value 
-    });        
-};
-
-ZFileUz.testValue = function(val, name){
-    if ($(name).setStyle) {
-        $(name).setStyle('background', (val?'':'red'));
-    } else if ($(name).style) {
-    	$(name).style.background = (val?'':'red');    
-    }
-    return (val);
+	var node = Globals.Y.one('#textarea_message');
+	var captcha_value = Globals.Y.one('#captcha_value');
+    var test1 = Globals.setErrorClass(node.get('value'), 'textarea_message');
+    var test2 = Globals.setErrorClass(captcha_value.get('value'), 'captcha_value');
+	if(test1 && test2){
+		Globals.sendMessage({
+			handler: 'ClientMessage'
+			, action: 'add'
+			, dest: ZFileUz.Content
+			, text: node.get('value')
+			, captcha_value: captcha_value.get('value')
+		});        
+	}
 };
 
 ZFileUz.try2SendFile = function(){
-    var test1 = ZFileUz.testValue($('check_agreement').checked, 'li_check_agreement');
-    var test2 = ZFileUz.testValue($('input_file').value, 'input_file');
-    var test3 = ZFileUz.testValue($('captcha_value').value, 'captcha_value');
+    var test1 = Globals.setErrorClass($('check_agreement').checked, 'li_check_agreement');
+    var test2 = Globals.setErrorClass($('input_file').value, 'input_file');
+    var test3 = Globals.setErrorClass($('captcha_value').value, 'captcha_value');
     if( test1 && test2 && test3 )
     {
         Globals.sendMessage(

@@ -39,7 +39,7 @@ public class Adm extends AMessageHandler { // NO_UCD
 	}	
 
 	public static IMessage getApplications(CommonMessage inMessage){
-		inMessage.getData().put("dest", "admin.action.content");
+		inMessage.getData().put("dest", "admin_action_content");
 		return(ADeployer.deployContent("[[Applications|All|NULL|html]]",inMessage));
 	}		
 
