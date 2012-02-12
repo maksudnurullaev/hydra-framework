@@ -52,7 +52,7 @@ public final class Applications {
 					content.append(String.format("<option value='%s'>%s</option>", app.getId(), app.getId()));
 				}
 				content.append("</select>");
-				content.append(Utils.T("template.html.hr.divId.dots",Constants._admin_app_div));
+				content.append(Utils.T("template.html.hr.divId.dots",Constants._admin_app_action_div));
 				return(content.toString());
 			}
 			_log.error("No applications!");
