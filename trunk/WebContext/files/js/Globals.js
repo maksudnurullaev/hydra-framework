@@ -164,7 +164,7 @@ Globals.porcessMessage = function (message) {
     };  
     // check to reload page
     if(Globals.chk(message.reloadPage)){
-        $('body').innerHTML = Globals.loadingImage ;
+        document.body.innerHTML = Globals.loadingImage ;
         window.location.reload();
         return;
     };
