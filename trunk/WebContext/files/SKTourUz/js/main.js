@@ -1,21 +1,22 @@
 /* Initial global setups */
 if (SKTourUz == null) {
     var SKTourUz = { 
-    	'version': '0.0.1a',
-    	'topNav': 'topNav',
-	'MainContent': 'main.content'
-    	};
+        'version': '0.0.1a',
+        'topNav': 'topNav',
+        'MainContent': 'main_content'
+        };
 };
 
 SKTourUz.setMainContent = function(inEl){    
     if(Globals.pageBusy){
         return;
     }
-    $$('#topmenuul a').each(function(el){
-         if(el.id == inEl.id){
-            el.getParent().setProperty('class', 'active');
+
+    Globals.Y.all('#topmenuul a').each(function(el){
+        if(el.generateID() == inEl.id){
+             el.get('parentNode').addClass('active');
         }else{
-            el.getParent().setProperty('class', '');
+            el.get('parentNode').removeClass('active');
         }
     });  
     

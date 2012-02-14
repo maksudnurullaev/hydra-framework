@@ -9,7 +9,9 @@ if ( ZFileUz == null ) {
 };
 
 ZFileUz.setMainContent = function(inEl){    
-    if(Globals.pageBusy) return;
+    if(Globals.pageBusy){
+        return;
+    }
     Globals.Y.all('#topmenuul a').each(function(el){
          if(el.generateID() == inEl.id){
             el.addClass('highlight');

@@ -25,8 +25,7 @@ public class ApplicationTemplates extends AMessageHandler {
 		return "Could not find HOW part: " + inHow;		
 	}
 
-	static String getKeyHtml(
-			String inAppID) {
+	static String getKeyHtml(String inAppID) {
 		StringBuffer content = new StringBuffer();
 		
 		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Template", "", "", "", "");
@@ -40,7 +39,7 @@ public class ApplicationTemplates extends AMessageHandler {
 	    		continue;
 	    	}
 	    	validRows++;
-	    	String divHiddenID = "template." + r.getKey();  
+	    	String divHiddenID = Utils.sanitazeHtmlId("template." + r.getKey());  
     		content.append("<div style=\"margin: 5px; padding: 5px; border: 1px solid rgb(127, 157, 185);\">");
         	
         	// ... delete
