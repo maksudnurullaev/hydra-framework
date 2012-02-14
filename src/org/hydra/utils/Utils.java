@@ -673,4 +673,8 @@ public final class Utils {
 		if(string == null) return null;
 		return(string.replaceAll("\\W", "_"));
 	}
+
+	public static String replaceAll(String inString) {
+		return(inString.replaceAll("(?i)</textarea>", "[[Dictionary|Template|template.textarea.endtag|html]]"));
+	}
 }

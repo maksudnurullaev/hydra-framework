@@ -22,7 +22,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		
 		String appId = inMessage.getData().get("appid");
 		String spanId = String.format("%s.%s", inCFName, inKey); 
-		String textAreaId =  String.format("%s.%s.%s.textarea", appId, inCFName, inKey);
+		String textAreaId = Utils.sanitazeHtmlId(String.format("%s.%s.%s.textarea", appId, inCFName, inKey));
 		
 		String jsData = Utils.jsData(
 					"appid", Utils.Q(appId)
@@ -40,7 +40,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		//TODO Impotant - replace </textarea> from source if template exist
 		if( err == ERROR_CODES.NO_ERROR){
 			String str = stringWrapper.getString();
-			str = str.replaceAll("(?i)</textarea>", "[[Dictionary|Template|template.textarea.endtag|html]]");
+			str = replaveTextareaEndTagForEdit(str);
 			stringWrapper.setString(str);
 		}		
 		
@@ -58,6 +58,10 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		resultBuffer.append("<div>");
 		
 		inMessage.setHtmlContent(resultBuffer.toString());
+	}
+
+	private String replaveTextareaEndTagForEdit(String inString) {
+		return (Utils.replaceAll(inString));
 	}	
 	
 	public IMessage editText(CommonMessage inMessage){
