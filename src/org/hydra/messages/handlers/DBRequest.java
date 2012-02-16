@@ -30,7 +30,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 					, "action", Utils.Q(inActionMethod)
 					, "key", Utils.Q(inKey)
 					, "value", String.format("$('%s').value",textAreaId)
-					, "dest", Utils.Q(spanId)
+					, "dest", Utils.Q(Utils.sanitazeHtmlId(spanId))
 				);
 		
 		StringWrapper stringWrapper = new StringWrapper();		
@@ -40,7 +40,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		//TODO Impotant - replace </textarea> from source if template exist
 		if( err == ERROR_CODES.NO_ERROR){
 			String str = stringWrapper.getString();
-			str = replaveTextareaEndTagForEdit(str);
+			str = replaceTextareaEndTagForEdit(str);
 			stringWrapper.setString(str);
 		}		
 		
@@ -60,7 +60,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		inMessage.setHtmlContent(resultBuffer.toString());
 	}
 
-	private String replaveTextareaEndTagForEdit(String inString) {
+	private String replaceTextareaEndTagForEdit(String inString) {
 		return (Utils.replaceAll(inString));
 	}	
 	

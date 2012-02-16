@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.utils.Constants;
+import org.hydra.utils.Utils;
 
 public class TextManager extends APropertyLoader {
 	private static final String _fileMessagesBasename = "messages";
@@ -58,6 +59,7 @@ public class TextManager extends APropertyLoader {
 	}
 	
 	public String getTextByKey(String inKey, String inHtmlWrap, String inLocale) {
+		inKey = Utils.sanitazeHtmlId(inKey);
 		// Load properties file, if not loaded yet
 		if(!_dictionary.containsKey(inLocale)){ 
 			_dictionary.put(inLocale, loadProperties(getFileName(inLocale)));

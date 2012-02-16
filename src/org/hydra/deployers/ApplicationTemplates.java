@@ -90,7 +90,7 @@ public class ApplicationTemplates extends AMessageHandler {
 				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
 				,"key", Utils.Q(key)
-				,"dest", Utils.Q(Constants._admin_app_action_div)
+				,"dest", Utils.Q(Utils.sanitazeHtmlId(Constants._admin_app_action_div))
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
 	}
@@ -103,7 +103,7 @@ public class ApplicationTemplates extends AMessageHandler {
 				,"action",  Utils.Q("updateForm")
 				,"appid", Utils.Q(inAppID)
 				,"key", Utils.Q(key)
-				,"dest", Utils.Q(Constants._admin_app_action_div)
+				,"dest", Utils.Q(Utils.sanitazeHtmlId(Constants._admin_app_action_div))
 			);
 		return(Utils.F("[%s]", Utils.createJSLink("Update",jsData, "U")));		
 	}

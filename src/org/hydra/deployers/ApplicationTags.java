@@ -47,7 +47,7 @@ public final class ApplicationTags {
 						,"action",  Utils.Q("delete")
 						,"appid", Utils.Q(inAppID)
 						,"value", Utils.Q(key)
-						,"dest", Utils.Q("admin_app_action_tag")
+						,"dest", Utils.Q(Utils.sanitazeHtmlId("admin_app_action_tag"))
 					);			
 				content2.append(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete", jsData, "X")));			
 				// value
