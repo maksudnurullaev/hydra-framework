@@ -239,7 +239,7 @@ public final class Utils {
 		strSaveArrayData.add("action");
 		strSaveArrayData.add(Utils.Q(inSaveAction));
 		strSaveArrayData.add("dest");
-		strSaveArrayData.add(Utils.Q(inDest));
+		strSaveArrayData.add(Utils.Q(Utils.sanitazeHtmlId(inDest)));
 		
 		String fileField = null;
 		
@@ -277,7 +277,7 @@ public final class Utils {
 		strCancelArrayData.add("action");
 		strCancelArrayData.add(Utils.Q(inCancelAction));
 		strCancelArrayData.add("dest");
-		strCancelArrayData.add(Utils.Q(inDest));
+		strCancelArrayData.add(Utils.Q(Utils.sanitazeHtmlId(inDest)));
 
 		String jsCancelData = jsData(strCancelArrayData
 				.toArray(new String[0]));
@@ -441,9 +441,9 @@ public final class Utils {
 				value = del4Tags(value, delValue);
 		}
 
-		String selectID = "tag.select." + elemID;
-		String prefixesID = "tag.prefixes." + elemID; 
-		String divId = "tag.div." + elemID;
+		String selectID = sanitazeHtmlId("tag_select_" + elemID);
+		String prefixesID = sanitazeHtmlId("tag_prefixes_" + elemID); 
+		String divId = sanitazeHtmlId("tag_div_" + elemID);
 		
 		// input - value
 		String inputHtmlTag = String.format("<input id=\"%s\" type=\"hidden\" value=\"%s\">", 
@@ -494,7 +494,7 @@ public final class Utils {
 				,"value", Utils.V(elemID)
 				,"addvalue", Utils.V(selectID)
 				,"prefixes", Utils.V(prefixesID)
-				,"dest", Utils.Q(divId)
+				,"dest", Utils.Q(Utils.sanitazeHtmlId(divId))
 			);			
 		selectPart.append(Utils.createJSLink(jsData, "Add"));		
 		
@@ -516,7 +516,7 @@ public final class Utils {
 						,"value", Utils.V(elemID)
 						,"delvalue", Utils.Q(t)
 						,"prefixes", Utils.V(prefixesID)
-						,"dest", Utils.Q(divId)
+						,"dest", Utils.Q(Utils.sanitazeHtmlId(divId))
 					);			
 				textPart += F("[%s]", Utils.createJSLink(jsData, "X"));	
 			}

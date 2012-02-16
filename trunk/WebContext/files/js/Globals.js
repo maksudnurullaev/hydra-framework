@@ -34,12 +34,23 @@ Globals.noHighlightFields = function(elementIDs){
     });
 };
 /* toogle display */
-Globals.toogleBlock = function(elemID){
-    var node = Globals.Y.one('#' + elemID);
+Globals.toogleBlock = function(elemId){
+    var node = Globals.Y.one('#' + elemId);
+    if(!node) return;
     if(node.getStyle('display') == 'none'){
 		Globals.showNode(node, true);
 	} else {
 		Globals.showNode(node, false);
+	}
+};
+/* toogle block highlight */ 
+Globals.toogleVisibility = function(elemId){
+    var node = Globals.Y.one('#' + elemId);
+    if(!node) return;
+    if(node.getStyle('visibility') == 'visible'){
+		node.setStyle('visibility', 'hidden');
+	} else {
+		node.setStyle('visibility', 'visible');
 	}
 };
 /* clear edit area */
@@ -81,6 +92,14 @@ Globals.showNode = function(node, isVisible){
 		node.setStyle('display', 'none');
 	}
 };
+/* Get proper destanation node */
+Globals.getDestNode = function(elemId){
+    var node = Globals.Y.one('#' + elemId + "_placeholder");
+    if(node){
+        return(node);
+    }
+    return(Globals.Y.one('#' + elemId));
+};
 /* Set html content by contents map */
 Globals.setHtmlContents = function (contentsMap) {
     if(!contentsMap){
@@ -88,7 +107,7 @@ Globals.setHtmlContents = function (contentsMap) {
     }
     for(var elemId in contentsMap){
         var htmlContent = contentsMap[elemId];
-        var node = Globals.Y.one('#' + elemId);
+        var node = Globals.getDestNode(elemId);
         if (node && node.setContent != "undefined" && htmlContent) {
             if(htmlContent.search(/^close_me/i) >= 0){
 				Globals.showNode(node, false);
@@ -116,7 +135,7 @@ Globals.decodeContent = function(content){
 Globals.setWaitElement = function (data){
     Globals.pageBusy = true;
 	var node = Globals.Y.one('#' + 'wait_element');
-	var destNode = Globals.Y.one('#' + data.dest);
+	var destNode = Globals.getDestNode(data.dest);
     if(node && node.setContent){
         node.setContent(Globals.loadingImage);
     } else {
@@ -164,14 +183,14 @@ Globals.porcessMessage = function (message) {
     };  
     // check to reload page
     if(Globals.chk(message.reloadPage)){
-        document.body.innerHTML = Globals.loadingImage ;
+        Globals.Y.one("#body_placeholder").setContent(loadingImage) ;
         window.location.reload();
         return;
     };
     // is it new session?
     if(Globals.chk(Globals.sessionID)){ 
         if(Globals.sessionID != message.sessionID){
-            document.body.innerHTML = Globals.loadingImage ;
+            Globals.Y.one("#body_placeholder").setContent(Globals.loadingImage) ;
             window.location.reload();
         }
     } else {

@@ -86,7 +86,7 @@ public final class ApplicationUsers {
 				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
 				,"key", Utils.Q(key)
-				,"dest", Utils.Q(Constants._admin_app_action_div)
+				,"dest", Utils.Q(Utils.sanitazeHtmlId(Constants._admin_app_action_div))
 			);
 		return(Utils.F("[%s]",Utils.createJSLinkWithConfirm(jsData, "X")));		
 	}

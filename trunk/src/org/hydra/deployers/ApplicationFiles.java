@@ -18,7 +18,9 @@ public class ApplicationFiles extends AMessageHandler {
 			String inHow) {
 		if(inHow.compareToIgnoreCase("html") == 0)
 			return getANYHtml(inKey);
-		
+//TODO LATER		
+//		else if(inHow.compareToIgnoreCase("html") == 0)
+//			return()
 		_log.error("Could not find HOW part: " + inHow);
 		return "Could not find HOW part: " + inHow;		
 	}

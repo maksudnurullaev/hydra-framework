@@ -230,7 +230,7 @@ public final class FileUtils {
 		}
 		
 		StringBuffer content = new StringBuffer();
-    	String divHiddenID = "template." + inFilePath;  
+    	String divHiddenID = Utils.sanitazeHtmlId("template_" + inFilePath);  
 		content.append("<div style=\"margin: 5px; padding: 5px; border: 1px solid rgb(127, 157, 185);\">");
 		
     	content.append(getDeleteLink("AdmFiles", Utils.Q(Constants._admin_app_action_div), inAppID, inFilePath) + " ");
@@ -263,7 +263,7 @@ public final class FileUtils {
 				,"action",  Utils.Q("delete")
 				,"appid", Utils.Q(inAppID)
 				,"file_path", Utils.Q(key)
-				,"dest", inDest
+				,"dest", Utils.sanitazeHtmlId(inDest)
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
 	}

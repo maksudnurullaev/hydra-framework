@@ -239,7 +239,7 @@ public final class DBUtils {
         } 
 	}
 
-	public static String wrap2IfNeeds(
+	public static String wrapIfNeeds(
 			String inKsp, 
 			String inCFname,
 			String inKey,
@@ -269,12 +269,12 @@ public final class DBUtils {
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
 		if(Roles.roleNotLessThen(Roles.USER_EDITOR, inMessage))
-			wrap2EditObject(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), editLinks, inWrapper);
+			wrapElement(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), editLinks, inWrapper);
 		
 		return content.getString();			
 	}
 
-	public static void wrap2EditObject(
+	public static void wrapElement(
 			String inKey, 
 			StringWrapper content, 
 			String inHandlerName,
@@ -283,11 +283,11 @@ public final class DBUtils {
 			Map<String, String> editLinks,
 			String inWrapper) {
 	
-		String spanId = String.format("%s.%s", inEditObjectName, inKey);
-		String wrapString = String.format("<%s id='%s'>%s</%s>", inWrapper, spanId, content.getString(), inWrapper);
+		String wrapElemId = Utils.sanitazeHtmlId(String.format("%s.%s", inEditObjectName, inKey));
+		String wrapString = String.format("<%s id='%s'>%s</%s>", inWrapper, wrapElemId, content.getString(), inWrapper);
 		content.setString(wrapString.toString());
 		// List of Link
-		if(editLinks != null && !editLinks.containsKey(spanId)){
+		if(editLinks != null && !editLinks.containsKey(wrapElemId)){
 			StringBuffer result = new StringBuffer();
 			
 			// main link
@@ -298,11 +298,11 @@ public final class DBUtils {
 			result.append(inKey).append("','").append(inHandlerName).append("','").append("edit" + inEditObjectName)
 						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
 			// sup - description
-			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.toggle('");
-			result.append(spanId).append("')); return false;\" href=\"#\">").append(inEditObjectName).append("</a>, ")
+			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.toogleVisibility('");
+			result.append(wrapElemId).append("')); return false;\" href=\"#\">Show me</a>, ")
 				.append(wrapString.toString().length()).append(")</sup>");
 			
-			editLinks.put(spanId, result.toString());
+			editLinks.put(wrapElemId, result.toString());
 		}
 	}
 
