@@ -32,3 +32,22 @@ SKTourUz.setMainContent = function(inEl){
     });        
 };
 
+SKTourUz.showImagesAlbum = function(sub_folders){
+	if(!Globals.Y.isLoadedShowImagePanel){
+		YUI().use('panel', function (Y) {
+			Globals.Y = Y;
+			Globals.Y.isLoadedShowImagePanel = true;
+			SKTourUz._showImagesAlbum(sub_folders);
+			return;
+		});
+	} else {
+		SKTourUz._showImagesAlbum(sub_folders);
+	}
+};
+
+SKTourUz._showImagesAlbum = function(sub_folders){
+	window.open('/index.html?mode=zfile.uz', 'winname', 
+	  directories=0,titlebar=0,toolbar=0,location=0,status=0,     
+		menubar=0,scrollbars=no,resizable=no,
+		  width=400,height=350);
+};
