@@ -12,11 +12,11 @@ ZFileUz.setMainContent = function(inEl){
     if(Globals.pageBusy){
         return;
     }
-    Globals.Y.all('#topmenuul a').each(function(el){
-         if(el.generateID() == inEl.id){
-            el.addClass('highlight');
+    jQuery('#topmenuul a').each(function(index, el){
+         if(el.id == inEl.id){
+            jQuery(el).addClass('highlight');
         }else{
-            el.removeClass('highlight');
+            jQuery(el).removeClass('highlight');
         }
     });  
     
@@ -49,9 +49,9 @@ ZFileUz.sendClientMessage = function(){
 };
 
 ZFileUz.try2SendFile = function(){
-    var test1 = Globals.setErrorClass($('check_agreement').checked, 'li_check_agreement');
-    var test2 = Globals.setErrorClass($('input_file').value, 'input_file');
-    var test3 = Globals.setErrorClass($('captcha_value').value, 'captcha_value');
+    var test1 = Globals.setErrorClass(jQuery('#check_agreement').prop('checked'), 'li_check_agreement');
+    var test2 = Globals.setErrorClass(jQuery('#input_file').prop('value'), 'input_file');
+    var test3 = Globals.setErrorClass(jQuery('#captcha_value').prop('value'), 'captcha_value');
     if( test1 && test2 && test3 )
     {
         Globals.sendMessage(
@@ -59,12 +59,13 @@ ZFileUz.try2SendFile = function(){
                 , action:'add'
                 , dest:ZFileUz.Content
                 , folder:'files'
-                , captcha_value:$('captcha_value').value 
-                , Tag:$('tagId').value
-                , Text:$('fileDescription').value 
-                , Public:($('publicCheckbox').checked?'true':'false')
-                , Name: dwr.util.getValue('input_file').value
+                , captcha_value:jQuery('#captcha_value').prop('value') 
+                , Tag:jQuery('#tagId').prop('value')
+                , Text:jQuery('#fileDescription').prop('value') 
+                , Public:(jQuery('#publicCheckbox').prop('checked')?'true':'false')
+                , Name: jQuery('#input_file').prop('value')
             }
-            , dwr.util.getValue('input_file'));
+            , jQuery('#input_file')[0]);
+			//dwr.util.getValue('input_file'));
     }
 };

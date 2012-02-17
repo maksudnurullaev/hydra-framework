@@ -13,12 +13,12 @@ if (Globals == null) {
 };
 /* Highlight them */
 Globals.highlightFields = function(elementIDs){
-    Globals.Y.Array.each(elementIDs, function (id){
+    jQuery.each(elementIDs, function (index, id){
         Globals.setErrorClass(false, id);
     });
 };
 Globals.setErrorClass = function(val, id){
-    var node = Globals.Y.one('#' + id);
+    var node = jQuery('#' + id);
     if(val){
         node.removeClass('error');
     } else {
@@ -28,16 +28,16 @@ Globals.setErrorClass = function(val, id){
 };
 /* NO Highlight them */
 Globals.noHighlightFields = function(elementIDs){
-    Globals.Y.Array.each(elementIDs, function (id){
-		var node = Globals.Y.one('#' + id);
+    jQuery.each(elementIDs, function (index, id){
+		var node = jQuery('#' + id);
 		node.removeClass('error');
     });
 };
 /* toogle display */
 Globals.toogleBlock = function(elemId){
-    var node = Globals.Y.one('#' + elemId);
+    var node = jQuery('#' + elemId);
     if(!node) return;
-    if(node.getStyle('display') == 'none'){
+    if(node.css('display') == 'none'){
 		Globals.showNode(node, true);
 	} else {
 		Globals.showNode(node, false);
@@ -45,19 +45,19 @@ Globals.toogleBlock = function(elemId){
 };
 /* toogle block highlight */ 
 Globals.toogleVisibility = function(elemId){
-    var node = Globals.Y.one('#' + elemId);
+    var node = jQuery('#' + elemId);
     if(!node) return;
-    if(node.getStyle('visibility') == 'visible'){
-		node.setStyle('visibility', 'hidden');
+    if(node.css('visibility') == 'visible'){
+		node.css('visibility', 'hidden');
 	} else {
-		node.setStyle('visibility', 'visible');
+		node.css('visibility', 'visible');
 	}
 };
 /* clear edit area */
 Globals.clearEditArea = function(){
-    var node = Globals.Y.one('#' + Globals.editBox);
+    var node = jQuery('#' + Globals.editBox);
 	if(node){
-		node.setContent("&nbsp;");
+		node.html("&nbsp;");
 		Globals.showNode(node, false);
 	}
 };
@@ -71,34 +71,24 @@ Globals.editIt = function(divId, handleName, actionName){
        , dest: Globals.editBox
     });
 };
-// load initial page
-Globals.loadInitialPage = function(){
-    YUI().use('node', function (Y) {
-        Globals.Y = Y;
-        // Get initial html body
-        Globals.sendMessage({
-            handler: 'General'
-            , action: 'getInitialBody'
-            , dest: 'body'
-        });
-    });
-};
 Globals.showNode = function(node, isVisible){
-	if(isVisible){
-		node.setStyle('visibility', 'visible');
-		node.setStyle('display', 'block');
-	} else {
-		node.setStyle('visibility', 'hidden');
-		node.setStyle('display', 'none');
+	if(isVisible && (node.css('visibility') != 'visible' || node.css('display')) != 'block'){
+		node.css('visibility', 'visible');
+		node.css('display', 'block');
+		return;
+	} 
+	if(!isVisible && (node.css('visibility') != 'hidden'  || node.css('display')) != 'none') {
+		node.css('visibility', 'hidden');
+		node.css('display', 'none');
 	}
 };
-/* Get proper destanation node */
-Globals.getDestNode = function(elemId){
-    var node = Globals.Y.one('#' + elemId + "_placeholder");
-    if(node){
-        return(node);
-    }
-    return(Globals.Y.one('#' + elemId));
+
+Globals.loadInitialPage = function($) {
+	Globals.sendMessage({
+		handler: 'General'
+		, action: 'getInitialBody'
+		, dest: 'body'
+	});
 };
 /* Set html content by contents map */
 Globals.setHtmlContents = function (contentsMap) {
@@ -107,12 +97,12 @@ Globals.setHtmlContents = function (contentsMap) {
     }
     for(var elemId in contentsMap){
         var htmlContent = contentsMap[elemId];
-        var node = Globals.getDestNode(elemId);
-        if (node && node.setContent != "undefined" && htmlContent) {
+        var node = jQuery('#' + elemId);
+        if (node.length && htmlContent) {
             if(htmlContent.search(/^close_me/i) >= 0){
 				Globals.showNode(node, false);
             }else{
-                node.setContent(htmlContent);
+                node.html(htmlContent);
 				Globals.showNode(node, true);
             }
         };        
@@ -134,20 +124,21 @@ Globals.decodeContent = function(content){
 /* set & restore wait element*/
 Globals.setWaitElement = function (data){
     Globals.pageBusy = true;
-	var node = Globals.Y.one('#' + 'wait_element');
-	var destNode = Globals.getDestNode(data.dest);
-    if(node && node.setContent){
-        node.setContent(Globals.loadingImage);
+	var j = jQuery.noConflict();
+	var node = jQuery('#' + 'wait_element');
+	var destNode = jQuery('#' + data.dest);
+    if(node.length){
+        node.html(Globals.loadingImage);
     } else {
-        if(destNode && destNode.setContent){
-			destNode.setContent(Globals.loadingImage);
+        if(destNode.length){
+			destNode.html(Globals.loadingImage);
         }    
     }
 };
 Globals.restoreWaitElement = function(){
-	var node = Globals.Y.one('#' + 'wait_element');
-    if(node && node.setContent){
-        node.setContent("&nbsp;");
+	var node = jQuery('#' + 'wait_element');
+    if(node.length){
+        node.html("&nbsp;");
      }
      Globals.pageBusy = false;
 };
@@ -183,14 +174,14 @@ Globals.porcessMessage = function (message) {
     };  
     // check to reload page
     if(Globals.chk(message.reloadPage)){
-        Globals.Y.one("#body_placeholder").setContent(loadingImage) ;
+        jQuery("#body_placeholder").html(loadingImage) ;
         window.location.reload();
         return;
     };
     // is it new session?
     if(Globals.chk(Globals.sessionID)){ 
         if(Globals.sessionID != message.sessionID){
-            Globals.Y.one("#body_placeholder").setContent(Globals.loadingImage) ;
+            jQuery("#body_placeholder").html(Globals.loadingImage) ;
             window.location.reload();
         }
     } else {
