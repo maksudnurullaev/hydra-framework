@@ -57,9 +57,3 @@ SKTourUz.showImagesAlbum = function(sub_folders, dest){
         , dest: dest
     });
 };
-
-SKTourUz.startImagesAlbum = function(){
-	$(function() {
-		$('#gallery a').lightBox(); // Select all links in object with gallery ID
-	});
-};
