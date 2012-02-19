@@ -180,7 +180,7 @@ public final class Utils {
 	}	
 	
 	public static String V(String id) {
-		return "$('" + id + "').value" ; 
+		return "jQuery('#" + id + "').prop('value')" ; 
 	}
 
 	public static String Q(String inString) {
