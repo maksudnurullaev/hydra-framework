@@ -50,7 +50,12 @@
 	</target>	
 	
 	<target name="web.clean" description="Remove project from web server">
-		<delete dir="${deploy.path}/${name}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${deploy.path}/${name}">
+				<exclude name="**/files/*.*" />
+				<exclude name="**/images/*.*" />
+			</fileset>
+		</delete>
 	</target>	
 	
 	<target name="web.deploy" depends="build" description="Deploy project to web server">
