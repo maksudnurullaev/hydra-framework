@@ -29,7 +29,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 					, "handler", Utils.Q(inAction)
 					, "action", Utils.Q(inActionMethod)
 					, "key", Utils.Q(inKey)
-					, "value", String.format("$('%s').value",textAreaId)
+					, "value", String.format("jQuery('#%s').prop('value')",textAreaId)
 					, "dest", Utils.Q(Utils.sanitazeHtmlId(spanId))
 				);
 		

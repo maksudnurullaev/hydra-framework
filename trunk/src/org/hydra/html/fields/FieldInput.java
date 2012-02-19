@@ -74,7 +74,7 @@ public class FieldInput implements IField {
 	public String getValue4JS(){
 		if(getType().compareToIgnoreCase("file") == 0)
 			return String.format("dwr.util.getValue('%s')", getID());
-		return String.format("$('%s').value", getID());
+		return String.format("jQuery('#%s').prop('value')", getID());
 	}
 	public void setType(String type) {
 		this.type = type;

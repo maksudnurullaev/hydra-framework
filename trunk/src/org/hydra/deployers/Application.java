@@ -34,6 +34,8 @@ public final class Application {
 			return ApplicationClientMessages.getKeyHow(inKey,inHow);	
 		else if(inWhat.compareToIgnoreCase("TempFiles") == 0)
 			return ApplicationTempFiles.getKeyHow(inKey,inHow, inMessage);	
+		else if(inWhat.compareToIgnoreCase("Images") == 0)
+			return ApplicationImages.getKeyHow(inKey,inHow, inMessage);	
 		
 		_log.warn("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;

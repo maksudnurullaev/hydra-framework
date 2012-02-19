@@ -12,11 +12,11 @@ SKTourUz.setMainContent = function(inEl){
         return;
     }
 
-    Globals.Y.all('#topmenuul a').each(function(el){
-        if(el.generateID() == inEl.id){
-             el.get('parentNode').addClass('active');
+    jQuery('#topmenuul a').each(function(index, el){
+        if(el.id == inEl.id){
+            jQuery(el.parentNode).addClass('active');
         }else{
-            el.get('parentNode').removeClass('active');
+            jQuery(el.parentNode).removeClass('active');
         }
     });  
     
@@ -29,7 +29,7 @@ SKTourUz.setMainContent = function(inEl){
         , action:  'getContent'
         , content: content
         , dest: SKTourUz.MainContent
-    });        
+    });
 };
 
 SKTourUz.showImagesAlbum = function(sub_folders){
@@ -45,9 +45,21 @@ SKTourUz.showImagesAlbum = function(sub_folders){
 	}
 };
 
-SKTourUz._showImagesAlbum = function(sub_folders){
-	window.open('/index.html?mode=zfile.uz', 'winname', 
-	  directories=0,titlebar=0,toolbar=0,location=0,status=0,     
-		menubar=0,scrollbars=no,resizable=no,
-		  width=400,height=350);
+SKTourUz.showImagesAlbum = function(sub_folders, dest){
+    var content = '[[';
+    content += ('Application|Images|' + sub_folders + '|lightbox_col4');
+    content += ']]';
+	
+    Globals.sendMessage({
+        handler: 'General'
+        , action:  'getContent'
+        , content: content
+        , dest: dest
+    });
+};
+
+SKTourUz.startImagesAlbum = function(){
+	$(function() {
+		$('#gallery a').lightBox(); // Select all links in object with gallery ID
+	});
 };

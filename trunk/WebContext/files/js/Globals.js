@@ -1,4 +1,4 @@
-/* Initial global setups */
+/* hk global setups */
 if (Globals == null) {
     var Globals = { 
             'version': '0.0.3a'
@@ -94,10 +94,10 @@ Globals.loadInitialPage = function($) {
 Globals.setHtmlContents = function (contentsMap) {
     if(!contentsMap){
         return;
-    }
+    }	
     for(var elemId in contentsMap){
         var htmlContent = contentsMap[elemId];
-        var node = jQuery('#' + elemId);
+        var node = Globals.getPlaceholderOrNode(elemId);
         if (node.length && htmlContent) {
             if(htmlContent.search(/^close_me/i) >= 0){
 				Globals.showNode(node, false);
@@ -121,17 +121,24 @@ Globals.decodeContent = function(content){
         , dest: 'content'
     });        
 };
+/* get element placeholder or real element by id */
+Globals.getPlaceholderOrNode = function(elemId){
+	var node = jQuery('#' + elemId + '_placeholder');
+	if(!node.length){
+		node = jQuery('#' + elemId);
+	}
+	return(node);
+};
 /* set & restore wait element*/
 Globals.setWaitElement = function (data){
     Globals.pageBusy = true;
-	var j = jQuery.noConflict();
-	var node = jQuery('#' + 'wait_element');
-	var destNode = jQuery('#' + data.dest);
+	var node = Globals.getPlaceholderOrNode('wait_element');
     if(node.length){
         node.html(Globals.loadingImage);
     } else {
-        if(destNode.length){
-			destNode.html(Globals.loadingImage);
+		node = Globals.getPlaceholderOrNode(data.dest);
+		if(node.length){
+			node.html(Globals.loadingImage);
         }    
     }
 };
@@ -174,14 +181,16 @@ Globals.porcessMessage = function (message) {
     };  
     // check to reload page
     if(Globals.chk(message.reloadPage)){
-        jQuery("#body_placeholder").html(loadingImage) ;
+		var body = Globals.getPlaceholderOrNode('body');
+        body.html(loadingImage) ;
         window.location.reload();
         return;
     };
     // is it new session?
     if(Globals.chk(Globals.sessionID)){ 
         if(Globals.sessionID != message.sessionID){
-            jQuery("#body_placeholder").html(Globals.loadingImage) ;
+			var body = Globals.getPlaceholderOrNode('body');
+			body.html(loadingImage) ;
             window.location.reload();
         }
     } else {

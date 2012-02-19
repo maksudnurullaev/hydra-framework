@@ -24,7 +24,7 @@ public class FieldSelectTag implements IField {
 
 	@Override
 	public String getValue4JS() {
-		return String.format("$('%s').value", getID());
+		return String.format("jQuery('#%s').prop('value')", getID());
 	}
 
 	@Override
