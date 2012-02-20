@@ -40,7 +40,9 @@ public class ApplicationImages {
 		String format = "<a href='%s' rel='rr' onclick='return jsiBoxOpen(this)' title='%s'><img src='%s' height='150' alt='sample image' /></a> ";
 		
 		for (String filePath : fileURLs) {
-			content.append(String.format(format, filePath, filePath, filePath));
+			if(FileUtils.isImage(filePath)){
+				content.append(String.format(format, filePath, filePath, filePath));
+			}
 	    }
 		
 	    if(fileURLs.size() == 0)

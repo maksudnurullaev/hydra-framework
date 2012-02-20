@@ -339,4 +339,17 @@ public final class FileUtils {
 		}
 		return(content); 
 	}
+
+	public static boolean isImage(String filePath) {
+		if(filePath == null || filePath.isEmpty()) return false;
+		if(filePath.toUpperCase().endsWith(".BMP")
+				|| filePath.toUpperCase().endsWith(".JPG")
+				|| filePath.toUpperCase().endsWith(".GIF")
+				|| filePath.toUpperCase().endsWith(".TIFF")
+				|| filePath.toUpperCase().endsWith(".PNG")
+				){
+			return(true);
+		}
+		return(false);
+	}
 }
