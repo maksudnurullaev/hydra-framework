@@ -18,7 +18,7 @@ public class ApplicationImages {
 		if(inHow.compareToIgnoreCase("jsibox_col4") == 0)
 			return getFoldersLightbox(inKey, inMessage);
 		_log.error("Could not find HOW part: " + inHow);
-		return "Could not find HOW part: " + inHow;		
+		return "Could not find HOW part: " + inHow;		 
 	}
 
 	private static String getFoldersLightbox(
@@ -35,13 +35,16 @@ public class ApplicationImages {
 		FileUtils.getListOfFiles4Dir(
 				String.format(FileUtils.URL4FILES_APPID_SUBFOLDER, appid, inFolders),
 				fileURLs,
-				null);		
+				null,
+				false);		
 		
-		String format = "<a href='%s' rel='rr' onclick='return jsiBoxOpen(this)' title='%s'><img src='%s' height='150' alt='sample image' /></a> ";
+		String format = "<a href='%s' rel='rr' onclick='return jsiBoxOpen(this)' title='%s'><img src='%s' /></a> ";
 		
 		for (String filePath : fileURLs) {
 			if(FileUtils.isImage(filePath)){
-				content.append(String.format(format, filePath, filePath, filePath));
+				int index = filePath.lastIndexOf("/");
+				String thumbPath = filePath.substring(0, index) + "/thumbs/" + filePath.substring(index+1);
+				content.append(String.format(format, filePath, filePath, thumbPath));
 			}
 	    }
 		
