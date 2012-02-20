@@ -12,6 +12,7 @@ import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
 import org.hydra.utils.ErrorUtils;
+import org.hydra.utils.ErrorUtils.ERROR_CODES;
 import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
 
@@ -47,6 +48,20 @@ public class User extends AMessageHandler { // NO_UCD
 				_log.debug("Found administrator account for: " + user_mail);
 				return(setupUserSession(inMessage, "+++", context));
 			}
+		}else{
+			if(user_mail.isEmpty()){
+				errorFields.add("user_mail");
+				errorCodes.add(ERROR_CODES.ERROR_NO_VALID_EMAIL);
+			}
+			if(user_password.isEmpty()){
+				errorFields.add("user_password");
+				errorCodes.add(ERROR_CODES.ERROR_NO_VALID_PASSWORD);
+			}
+			if(errorCodes.size() != 0){ 
+				return highLightErrorFields(inMessage, 
+						mandatoryFields,
+						errorFields, errorCodes);
+			}			
 		}
 		
 		// 1. test for valid mail
