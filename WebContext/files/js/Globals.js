@@ -182,7 +182,7 @@ Globals.porcessMessage = function (message) {
     // check to reload page
     if(Globals.chk(message.reloadPage)){
 		var body = Globals.getPlaceholderOrNode('body');
-        body.html(loadingImage) ;
+        body.html(Globals.loadingImage);
         window.location.reload();
         return;
     };
@@ -190,7 +190,7 @@ Globals.porcessMessage = function (message) {
     if(Globals.chk(Globals.sessionID)){ 
         if(Globals.sessionID != message.sessionID){
 			var body = Globals.getPlaceholderOrNode('body');
-			body.html(loadingImage) ;
+			body.html(Globals.loadingImage);
             window.location.reload();
         }
     } else {
