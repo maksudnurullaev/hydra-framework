@@ -53,11 +53,18 @@ public final class FileUtils {
 		// finish
 		return (uri4Image);
 	}
-	
+
 	public static void getListOfFiles4Dir(
 			String URL,
 			List<String> result,
-			String ifFileNameEndWith) {
+			String ifFileNameEndWith){
+		getListOfFiles4Dir(URL, result, ifFileNameEndWith, true);
+	}	
+	public static void getListOfFiles4Dir(
+			String URL,
+			List<String> result,
+			String ifFileNameEndWith,
+			boolean includeSubDirs) {
 		
 		String realURI = Utils.getRealPath(URL);
 		
@@ -71,7 +78,7 @@ public final class FileUtils {
 		if(dir.isDirectory() && dir.list() != null){
 			for(String path2File: dir.list()){
 				File file = new File(realURI, path2File);
-				if(file.isDirectory()){
+				if(file.isDirectory() && includeSubDirs){
 					getListOfFiles4Dir(URL + path2File, result, ifFileNameEndWith);
 				}else if(file.isFile()){
 					if(ifFileNameEndWith == null || file.getName().endsWith(ifFileNameEndWith)){
