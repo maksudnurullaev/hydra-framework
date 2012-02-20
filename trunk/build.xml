@@ -58,6 +58,13 @@
 		</delete>
 	</target>	
 	
+	<target name="images.to.jpeg" description="Convert images to jpeg format">
+		<image srcdir="${deploy.path}/${name}/files/SKTourUz/files" 
+			destdir="${deploy.path}/${name}/files/SKTourUz/files/tashkent">
+			<scale height="600" proportions="height"/>
+		</image>
+	</target>
+	
 	<target name="web.deploy" depends="build" description="Deploy project to web server">
 		<copy todir="${deploy.path}/${name}" preservelastmodified="true">
 			<fileset dir="${basedir}/WebContext">
