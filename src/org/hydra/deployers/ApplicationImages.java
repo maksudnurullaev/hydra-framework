@@ -15,7 +15,7 @@ public class ApplicationImages {
 			String inKey, 
 			String inHow,
 			IMessage inMessage) {
-		if(inHow.compareToIgnoreCase("lightbox_col4") == 0)
+		if(inHow.compareToIgnoreCase("jsibox_col4") == 0)
 			return getFoldersLightbox(inKey, inMessage);
 		_log.error("Could not find HOW part: " + inHow);
 		return "Could not find HOW part: " + inHow;		
@@ -25,9 +25,9 @@ public class ApplicationImages {
 			String inFolders, 
 			IMessage inMessage) {
 		String appid = inMessage.getData().get("_appid");
-		_log.error("Images as lightbox: ");
-		_log.error("App id: " + appid);
-		_log.error("Folder: " + inFolders);
+		_log.debug("Images as lightbox: ");
+		_log.debug("App id: " + appid);
+		_log.debug("Folder: " + inFolders);
 		
 		StringBuffer content = new StringBuffer("<div id='gallery'>");
 		
@@ -37,12 +37,12 @@ public class ApplicationImages {
 				fileURLs,
 				null);		
 		
-		String format = "<a href='%s' rel='rr' onclick='return jsiBoxOpen(this)' title='Simple Title'><img src='%s' width='151' height='100' alt='sample image' /></a><hr />";
+		String format = "<a href='%s' rel='rr' onclick='return jsiBoxOpen(this)' title='%s'><img src='%s' height='150' alt='sample image' /></a> ";
 		
 		for (String filePath : fileURLs) {
-			content.append(String.format(format, filePath, filePath));
-			content.append(" ");
+			content.append(String.format(format, filePath, filePath, filePath));
 	    }
+		
 	    if(fileURLs.size() == 0)
 	    	content.append("...");
 		content.append("</div>");
