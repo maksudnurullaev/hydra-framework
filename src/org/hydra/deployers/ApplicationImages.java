@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.FileUtils;
+import org.hydra.utils.Roles;
 
 public class ApplicationImages {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.ApplicationImages");
@@ -38,13 +39,22 @@ public class ApplicationImages {
 				null,
 				false);		
 		
-		String format = "<a href='%s' rel='rr' onclick='return jsiBoxOpen(this)' title='%s'><img src='%s' /></a> ";
+		String formatJSiBox = "<a href='%s' rel='rr' onclick='return jsiBoxOpen(this)' title='%s'><img src='%s' /></a> ";
+		String formatEditLink = "<a href='#' onclick='alert(\"test\")' >Edit</a> ";
 		
 		for (String filePath : fileURLs) {
 			if(FileUtils.isImage(filePath)){
 				int index = filePath.lastIndexOf("/");
 				String thumbPath = filePath.substring(0, index) + "/thumbs/" + filePath.substring(index+1);
-				content.append(String.format(format, filePath, filePath, thumbPath));
+				thumbPath = String.format(formatJSiBox, filePath, filePath, thumbPath);
+				if(Roles.roleNotLessThen(Roles.USER_EDITOR, inMessage)){
+					thumbPath = "<span class='editableImages'>"
+								+ thumbPath 
+								+ " "
+								+ formatEditLink 
+								+ "</span>&nbsp;&nbsp;";
+				}
+				content.append(thumbPath);
 			}
 	    }
 		
