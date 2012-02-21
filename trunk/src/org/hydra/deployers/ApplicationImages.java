@@ -16,18 +16,18 @@ public class ApplicationImages {
 			String inHow,
 			IMessage inMessage) {
 		if(inHow.compareToIgnoreCase("jsibox_col4") == 0)
-			return getFoldersLightbox(inKey, inMessage);
+			return getImagesJSIBox(inKey, inMessage);
 		_log.error("Could not find HOW part: " + inHow);
 		return "Could not find HOW part: " + inHow;		 
 	}
 
-	private static String getFoldersLightbox(
+	private static String getImagesJSIBox(
 			String inFolders, 
 			IMessage inMessage) {
 		String appid = inMessage.getData().get("_appid");
-		_log.debug("Images as lightbox: ");
-		_log.debug("App id: " + appid);
-		_log.debug("Folder: " + inFolders);
+		_log.error("Images as jsibox: ");
+		_log.error("App id: " + appid);
+		_log.error("Folder: " + inFolders);
 		
 		StringBuffer content = new StringBuffer("<div id='gallery'>");
 		
