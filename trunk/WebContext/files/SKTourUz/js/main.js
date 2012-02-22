@@ -47,7 +47,7 @@ SKTourUz.showImagesAlbum = function(sub_folders){
 
 SKTourUz.showImagesAlbum = function(sub_folders, dest){
     var content = '[[';
-    content += ('Application|Images|' + sub_folders + '|jsibox_col4');
+    content += ('Application|Images|' + sub_folders + '|jsibox');
     content += ']]';
 	
     Globals.sendMessage({

@@ -64,4 +64,15 @@ public class General extends AMessageHandler { // NO_UCD
 
 		return inMessage;
 	};	
+	
+	public static IMessage getHAKDContent(CommonMessage inMessage){
+		if (!validateData(inMessage, "hakdContent"))
+			return inMessage;
+		
+		String hakdContent = inMessage.getData().get("hakdContent");
+		inMessage.getData().put("content", "[[" + hakdContent + "]]");
+		
+		return(getContent(inMessage));
+		
+	};
 }
