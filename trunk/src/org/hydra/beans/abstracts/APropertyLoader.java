@@ -1,6 +1,7 @@
 package org.hydra.beans.abstracts;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,10 +111,13 @@ public abstract class APropertyLoader extends ALogger {
 		return result;
 	}
 
-	public static Properties parsePropertyFile(String fileName){
+	public static Properties parsePropertyFile(String filePath){
+		if(filePath == null) return(null);
+		File file = new File(filePath);
+		if(!file.exists()) return (null);
 		Properties result = null;
 		try {
-			FileInputStream fis = new FileInputStream(fileName);
+			FileInputStream fis = new FileInputStream(file);
 			result = parsePropertyFile(fis);
 		} catch (Exception e) {
 			_log.error(e.getMessage());

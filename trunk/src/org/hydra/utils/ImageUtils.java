@@ -1,8 +1,12 @@
 package org.hydra.utils;
 
+import java.util.Properties;
 import java.util.regex.Pattern;
 
-public class ImageValidator{
+import org.hydra.beans.abstracts.APropertyLoader;
+import org.hydra.messages.handlers.GalleryImages;
+
+public class ImageUtils{
 	 
 	   private static final String IMAGE_PATTERN = 
 	                "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
@@ -19,4 +23,10 @@ public class ImageValidator{
 	 
 		   return(pattern.matcher(image).matches());
 	   }
+
+	public static String getImageDescription(String filePath) {
+		Properties properties = FileUtils.parseProperties(filePath + APropertyLoader.SUFFIX);
+		String imageDescription = (properties != null && properties.containsKey(GalleryImages.Description)?properties.getProperty(GalleryImages.Description):"No description");
+		return imageDescription;
+	}
 	}
