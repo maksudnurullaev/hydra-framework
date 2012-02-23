@@ -137,7 +137,7 @@ public final class FileUtils {
 		System.out.println("orginalFileName: " + orginalFileName);
 		
 		result = saveFile(realPath, file);
-		result = saveFileDescriptions(inMessage, realPath, orginalFileName, dataDescriptionKeys);
+		result = saveFileDescriptions(inMessage, realPath, dataDescriptionKeys);
 			
 		if(result)
 			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), uri4FilePath));
@@ -162,7 +162,7 @@ public final class FileUtils {
 	}	
 
 	public static boolean saveFileDescriptions(CommonMessage inMessage,
-			String filePath, String orginalFileName, String ... dataDescriptionKeys) {
+			String filePath, String ... dataDescriptionKeys) {
 		if(dataDescriptionKeys.length == 0)return(false);
 		
 		try {

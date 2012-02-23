@@ -33,10 +33,10 @@ ZFileUz.setMainContent = function(inEl){
 };
 
 ZFileUz.sendClientMessage = function(){
-	var node = Globals.Y.one('#textarea_message');
-	var captcha_value = Globals.Y.one('#captcha_value');
-    var test1 = Globals.setErrorClass(node.get('value'), 'textarea_message');
-    var test2 = Globals.setErrorClass(captcha_value.get('value'), 'captcha_value');
+	var node = jQuery('#textarea_message');
+	var captcha_value = jQuery('#captcha_value');
+    var test1 = Globals.setErrorClass(node.prop('value'), 'textarea_message');
+    var test2 = Globals.setErrorClass(captcha_value.prop('value'), 'captcha_value');
 	if(test1 && test2){
 		Globals.sendMessage({
 			handler: 'ClientMessage'

@@ -2,7 +2,12 @@ package org.hydra.html.fields;
 
 import org.hydra.utils.Utils;
 
-public class FieldInput implements IField {
+public class FieldInput extends AField {
+	@Override
+	public boolean isVisible() {
+		return(getType() != null && !getType().equalsIgnoreCase("hidden"));
+	}
+
 	private String ID = "";
 	private String value = "";
 	private int width = 25;

@@ -228,12 +228,14 @@ public final class Utils {
 			String inCancelHandler, String inCancelAction, // Cancel
 			String inDest,
 			ArrayList<IField> fields, 
-			ArrayList<IField> optionaFields, 
+			ArrayList<IField> optionalFields, 
 			CommonMessage inMessage) {
 
 		List<String> strSaveArrayData = new ArrayList<String>();
-		strSaveArrayData.add("appid");
-		strSaveArrayData.add(Utils.Q(inAppId));
+		if(inAppId != null){
+			strSaveArrayData.add("appid");
+			strSaveArrayData.add(Utils.Q(inAppId));
+		}
 		strSaveArrayData.add("handler");
 		strSaveArrayData.add(Utils.Q(inSaveHandler));
 		strSaveArrayData.add("action");
@@ -259,8 +261,8 @@ public final class Utils {
 			}
 		}
 		
-		if(optionaFields != null && optionaFields.size() > 0){
-			for (IField field : optionaFields) {
+		if(optionalFields != null && optionalFields.size() > 0){
+			for (IField field : optionalFields) {
 				strSaveArrayData.add(field.getID());
 				strSaveArrayData.add(field.getValue4JS());
 			}			
@@ -270,8 +272,10 @@ public final class Utils {
 				.toArray(new String[0]));
 
 		List<String> strCancelArrayData = new ArrayList<String>();
-		strCancelArrayData.add("appid");
-		strCancelArrayData.add(Utils.Q(inAppId));
+		if(inAppId != null){
+			strCancelArrayData.add("appid");
+			strCancelArrayData.add(Utils.Q(inAppId));
+		}
 		strCancelArrayData.add("handler");
 		strCancelArrayData.add(Utils.Q(inCancelHandler));
 		strCancelArrayData.add("action");
@@ -304,15 +308,20 @@ public final class Utils {
 		result.append("<table class=\"statistics\">");
 		result.append("<tbody>");
 		if(fields != null){
-			for (IField s : fields)
-				result.append(String.format(
-						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
-								, String.format("[[DB|Text|%s|span]]", s.getID())
-								, s.getAsHtml()));
+			for (IField s : fields){
+				if(s.isVisible()){
+					result.append(String.format(
+							"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
+							, String.format("[[DB|Text|%s|span]]", s.getID())
+							, s.getAsHtml()));
+				}else{
+					result.append(s.getAsHtml());
+				}
+			}
 		}
-		if(optionaFields != null){
+		if(optionalFields != null){
 			result.append("<tr><td colspan=\"2\"><u><i>[[DB|Text|additional|span]]</i></u></td></tr>");			
-			for(IField s :optionaFields)
+			for(IField s :optionalFields)
 				result.append(String.format(
 						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
 								, String.format("[[DB|Text|%s|span]]", s.getID())
