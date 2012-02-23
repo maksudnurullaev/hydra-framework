@@ -8,4 +8,6 @@ public interface IField {
 
 	public abstract String getID();
 
+	public abstract boolean isVisible();
+
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hydra.utils.Utils;
 
-public class FieldSelectTag implements IField {
+public class FieldSelectTag extends AField {
 	private String ID = "";
 	private String value = "";
 	private List<String> tagPrefixes = null;
