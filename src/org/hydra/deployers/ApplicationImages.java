@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.FileUtils;
+import org.hydra.utils.ImageUtils;
 import org.hydra.utils.Roles;
 import org.hydra.utils.Utils;
 
@@ -56,15 +57,16 @@ public class ApplicationImages {
 			if(FileUtils.isImage(filePath)){
 				int index = filePath.lastIndexOf("/");
 				String thumbPath = filePath.substring(0, index) + "/thumbs/" + filePath.substring(index+1);
-				String fileDescription = filePath;
+				String imageDescription = ImageUtils.getImageDescription(filePath);
+
 				if(isUserEditor){
 					content.append("<span class='editable_image'>"
-								+ createThumbLinkImage(filePath, fileDescription, thumbPath)
+								+ createThumbLinkImage(filePath, imageDescription, thumbPath)
 								+ " "
 								+ String.format(editLink, filePath, thumbPath) 
 								+ "</span>&nbsp;&nbsp;");
 				} else {
-					content.append(createThumbLinkImage(filePath, fileDescription, thumbPath));					
+					content.append(createThumbLinkImage(filePath, imageDescription, thumbPath));					
 				}
 			}
 	    }

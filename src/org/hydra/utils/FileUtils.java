@@ -244,7 +244,7 @@ public final class FileUtils {
     	content.append("[<strong>" + fileExtension + "</strong>] ");
     	
     	String htmlTag = "NOT_DEFINED";
-		if(ImageValidator.validate(inFilePath)){
+		if(ImageUtils.validate(inFilePath)){
 			htmlTag = Utils.F("<img src=\"%s\" border=\"0\">", inFilePath);
 		}else{			
 			htmlTag = Utils.F("<a href=\"%s\" target=\"_blank\">TEXT</a>", inFilePath);

@@ -11,6 +11,7 @@ import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.FileUtils;
+import org.hydra.utils.ImageUtils;
 import org.hydra.utils.Utils;
 
 public class GalleryImages extends AMessageHandler {
@@ -26,36 +27,37 @@ public class GalleryImages extends AMessageHandler {
 	}
 
 	public IMessage updateDescription(CommonMessage inMessage){
-		if(!validateData(inMessage, "imagePath", Description)) return inMessage;
+		if(!validateData(inMessage, "imagePath", "thumbImagePath", Description)) return inMessage;
 		String imagePath = Utils.getRealPath(inMessage.getData().get("imagePath"));
 		
 		FileUtils.saveFileDescriptions(inMessage, 
 				imagePath, 
 				Description);
-		inMessage.setError("Done!");
-
-		return(inMessage);
+		return(editImageTags(inMessage));
 	}
 	
 	public IMessage editImageTags(CommonMessage inMessage){
 		if(!validateData(inMessage, "imagePath", "thumbImagePath")) return inMessage;
-		String filePath = inMessage.getData().get("imagePath");
-		String thumbFilePath = inMessage.getData().get("thumbImagePath");
+		String imagePath = inMessage.getData().get("imagePath");
+		String thumbImagePath = inMessage.getData().get("thumbImagePath");
 		String destDivId = inMessage.getData().get("dest");
 
-		//TODO get image desctription
-		String imageDescription = "image description";
+		String imageDescription = ImageUtils.getImageDescription(imagePath);
 		
 		// create thumb image node
-		String thumbImageNode = ApplicationImages.createThumbLinkImage(filePath, imageDescription, thumbFilePath);
+		String thumbImageNode = ApplicationImages.createThumbLinkImage(imagePath, imageDescription, thumbImagePath);
 		
 		// create form to edit image description
 		ArrayList<IField> fields = new ArrayList<IField>();
 		fields.add(new FieldTextArea(Description, imageDescription, "style=\"width: 25em; height: 5em; border: 1px solid #7F9DB9;\""));
 		
-		FieldInput hiddenInput = new FieldInput("imagePath", filePath);
-		hiddenInput.setType("hidden");
-		fields.add(hiddenInput);
+		FieldInput hiddenImagePath = new FieldInput("imagePath", imagePath);
+		hiddenImagePath.setType("hidden");
+		fields.add(hiddenImagePath);
+
+		FieldInput hiddenThumbImagePath = new FieldInput("thumbImagePath", thumbImagePath);
+		hiddenThumbImagePath.setType("hidden");
+		fields.add(hiddenThumbImagePath);
 		
 		String form = Utils.generateForm(
 				String.format("<h4>[[DB|Text|Edit_Description|span]]</h4>"), null, 
