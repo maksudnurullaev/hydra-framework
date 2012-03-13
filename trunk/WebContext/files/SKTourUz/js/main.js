@@ -7,13 +7,13 @@ if (SKTourUz == null) {
         };
 };
 
-SKTourUz.setMainContent = function(inEl){    
+SKTourUz.setMainContent = function(aEl){    
     if(Globals.pageBusy){
         return;
     }
 
     jQuery('#topmenuul a').each(function(index, el){
-        if(el.id == inEl.id){
+        if(el.id == aEl.id){
             jQuery(el.parentNode).addClass('active');
         }else{
             jQuery(el.parentNode).removeClass('active');
@@ -21,7 +21,7 @@ SKTourUz.setMainContent = function(inEl){
     });  
     
     var content = '[[';
-    content += ('DB|Template|Main.' + inEl.id + '.Page|span');
+    content += ('DB|Template|Main.' + aEl.id + '.Page|span');
     content += ']]';
 
     Globals.sendMessage({
@@ -32,28 +32,19 @@ SKTourUz.setMainContent = function(inEl){
     });
 };
 
-SKTourUz.showImagesAlbum = function(sub_folders){
-	if(!Globals.Y.isLoadedShowImagePanel){
-		YUI().use('panel', function (Y) {
-			Globals.Y = Y;
-			Globals.Y.isLoadedShowImagePanel = true;
-			SKTourUz._showImagesAlbum(sub_folders);
-			return;
-		});
-	} else {
-		SKTourUz._showImagesAlbum(sub_folders);
-	}
-};
+SKTourUz.setContent = function(aEl, contentHolderId){    
+    if(Globals.pageBusy){
+        return;
+    }
 
-SKTourUz.showImagesAlbum = function(sub_folders, dest){
     var content = '[[';
-    content += ('Application|Images|' + sub_folders + '|jsibox');
+    content += ('DB|Template|Content.' + aEl.id + '.Page|span');
     content += ']]';
-	
+
     Globals.sendMessage({
         handler: 'General'
         , action:  'getContent'
         , content: content
-        , dest: dest
+        , dest: contentHolderId
     });
 };
