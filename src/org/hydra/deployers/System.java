@@ -49,13 +49,11 @@ public final class System {
 	private static String getSystemLanguagebarKeyA(
 			String inKey,
 			IMessage inMessage) {
-		Result result = new Result();
-		BeansUtils.getWebContextBean(result, (inMessage.getData().get("appid") + Constants._bean_web_app_id_postfix));
-		if(result.isOk() && result.getObject() instanceof WebApplication){ // generate language bar
-			WebApplication app = (WebApplication) result.getObject();
+		Map<String, String> appLocales = getAppDefinedLocales(inMessage);
+		if(appLocales != null && appLocales.size() > 0){
 			String resultStr = "";
-			for (Map.Entry<String, String> entry:app.getLocales().entrySet()) {
-				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("_locale")) == 0){ // selected
+			for (Map.Entry<String, String> entry:appLocales.entrySet()) {
+				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("_locale")) == 0){ 
 					resultStr += entry.getValue();
 				}else{
 					resultStr += Utils.T("template.html.a.language.bar", entry.getKey(), entry.getValue());
@@ -69,4 +67,16 @@ public final class System {
 		return ("Could not define locale for:" + inMessage.getData().get("appid"));
 	}
 
+	public static Map<String, String> getAppDefinedLocales(IMessage inMessage){
+		if(inMessage.getData() == null || inMessage.getData().get("appid") == null){
+			return(null);
+		}
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result, (inMessage.getData().get("appid") + Constants._bean_web_app_id_postfix));
+		if(result.isOk() && result.getObject() instanceof WebApplication){ 
+			WebApplication app = (WebApplication) result.getObject();
+			return(app.getLocales());
+		}
+		return (null);
+	}
 }

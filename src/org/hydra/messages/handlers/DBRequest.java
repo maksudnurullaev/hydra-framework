@@ -1,6 +1,9 @@
 package org.hydra.messages.handlers;
 
+import java.util.Map;
+
 import org.hydra.deployers.ADeployer;
+import org.hydra.deployers.System;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
@@ -16,7 +19,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 			CommonMessage inMessage,
 			String inCFName,
 			String inKey,
-			String inCName, 
+			String inCName, // locale
 			String inAction,
 			String inActionMethod){
 		
@@ -36,23 +39,30 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		StringWrapper stringWrapper = new StringWrapper();		
 		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage.getData().get("appid"), inCFName, inKey, inCName, stringWrapper);
 		
-		
-		//TODO Impotant - replace </textarea> from source if template exist
 		if( err == ERROR_CODES.NO_ERROR){
 			String str = stringWrapper.getString();
 			str = replaceTextareaEndTagForEdit(str);
 			stringWrapper.setString(str);
+		} else {
+			stringWrapper.setString(err.toString()); 
 		}		
 		
 		StringBuffer resultBuffer = new StringBuffer("<div class=\"edit\">");
+
+		if(inCFName.equalsIgnoreCase("TEXT")){
+			resultBuffer.append(getAllLocales2Update(inMessage, inCName, appId, textAreaId, inKey));
+			resultBuffer.append("<br />");
+		}
 		
-		resultBuffer.append(Utils.T("template.html.a.onClick.sendMessage.Label"
-				, jsData
-				, "Upload"));	
+		resultBuffer.append("<strong>").append(inCFName).append(": </strong>").append(inKey);
+		resultBuffer.append("<br />");
+		
+		resultBuffer.append(Utils.T("template.html.a.onClick.sendMessage.Label", jsData, "Upload"));
 		resultBuffer.append(" | <a onclick=\"javascript:void(Globals.clearEditArea()); return false;\" href=\"#\">Close</a>");
-		resultBuffer.append("<br /><strong>").append(inKey).append("</strong><br />");
+		resultBuffer.append("<br />");
+		
 		resultBuffer.append("<textarea class='edittextarea' id='").append(textAreaId).append("'>");
-		resultBuffer.append(err == ErrorUtils.ERROR_CODES.NO_ERROR?stringWrapper.getString():err.toString());
+		resultBuffer.append(stringWrapper.getString());
 		resultBuffer.append("</textarea>");		
 		
 		resultBuffer.append("<div>");
@@ -60,16 +70,71 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		inMessage.setHtmlContent(resultBuffer.toString());
 	}
 
+	public IMessage getText4Locale(CommonMessage inMessage){
+		StringWrapper stringWrapper = new StringWrapper();		
+		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inMessage.getData().get("appid")
+				, "Text"
+				, inMessage.getData().get("key")
+				, inMessage.getData().get("locale")
+				, stringWrapper);
+		
+		if( err == ERROR_CODES.NO_ERROR){
+			String str = stringWrapper.getString();
+			str = replaceTextareaEndTagForEdit(str);
+			stringWrapper.setString(str);
+		} else {
+			stringWrapper.setString(err.toString()); 
+		}		
+		
+		inMessage.setHtmlContent(stringWrapper.getString());
+		
+		return(inMessage);
+	}
+	
+	private String getAllLocales2Update(
+			CommonMessage inMessage
+			, String inLocaleName
+			, String inAppId
+			, String inTextAreaId
+			, String inKey
+			) 
+	{		
+		String jsData = Utils.jsData(
+				"appid", Utils.Q(inAppId)
+				, "handler", Utils.Q("DBRequest")
+				, "locale", Utils.Q("%s")
+				, "action", Utils.Q("getText4Locale")
+				, "key", Utils.Q(inKey)
+				, "dest", Utils.Q(Utils.sanitazeHtmlId(inTextAreaId))
+			);
+		String result = "";
+		Map<String, String> localesMap = System.getAppDefinedLocales(inMessage);
+		for (Map.Entry<String, String> entry : localesMap.entrySet()) {
+			String locale = entry.getKey();
+			if(!result.isEmpty()) result += " | ";
+			String label = locale;
+			if(locale.equals(inLocaleName)){
+				label = "&#8595;" + locale + "&#8595;";
+			}
+			result += Utils.T("template.html.a.onClick.sendMessage.Label", String.format(jsData, locale), label);
+		}
+		return(result);
+}
+
 	private String replaceTextareaEndTagForEdit(String inString) {
 		return (Utils.replaceAll(inString));
 	}	
 	
 	public IMessage editText(CommonMessage inMessage){
 		if(!validateData(inMessage, "key", "dest")) return inMessage;
-		String key = inMessage.getData().get("key");
 		
-		getTextarea2Edit(inMessage, "Text", key, inMessage.getData().get("_locale"),
-				"DBRequest","updateText");
+		getTextarea2Edit(inMessage
+				, "Text"
+				, inMessage.getData().get("key")
+				, inMessage.getData().get("_locale")
+				, "DBRequest"
+				, "updateText");
+		
 		return inMessage;
 	}	
 	
