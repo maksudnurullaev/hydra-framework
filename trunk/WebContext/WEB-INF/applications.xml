@@ -18,6 +18,7 @@
 				<ref bean="Test3Uz_WebAppBean"/>
 				<ref bean="ZFileUz_WebAppBean"/>
 				<ref bean="SKTourUz_WebAppBean"/>
+				<ref bean="BlondinkaUz_WebAppBean"/>
 			</set>
 		</property>				
 	</bean>
@@ -183,6 +184,25 @@
 		<!-- Set default locale -->
 		<property name="defaultLocale">
 			<value>eng</value>
+		</property>	    
+	</bean>		
+	<bean id="BlondinkaUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="BlondinkaUz" />
+		<property name="urls">
+			<set>
+				<value>.*(www\.)?blondinka\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
 		</property>	    
 	</bean>			
 </beans>

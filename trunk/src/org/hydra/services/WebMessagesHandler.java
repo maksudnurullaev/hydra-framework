@@ -2,7 +2,6 @@ package org.hydra.services;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.io.FileTransfer;
@@ -31,7 +30,6 @@ public class WebMessagesHandler extends ALogger {
 			resultList.add(inMessage);
 			return(resultList.toArray());
 		}
-		
 		// Detect web context
 		if(WebContextFactory.get() == null){
 			getLog().error("WebContext is null!");
@@ -40,7 +38,7 @@ public class WebMessagesHandler extends ALogger {
 			return(resultList.toArray());
 		}
 		WebContext webContext = WebContextFactory.get();
-		// Attach session's data
+		// attach session's data
 		Result result = new Result();
 		SessionUtils.setApplicationData(result, inMessage, webContext);
 		if (!result.isOk()) {
@@ -60,12 +58,12 @@ public class WebMessagesHandler extends ALogger {
 			resultList.add(inMessage);
 			return resultList.toArray();
 		}		
-		
 		// test & setup file if needs
 		if(inFile != null){
 			inMessage.setFile(inFile);
 			setupFile(inMessage);
 		}
+		//TODO just for test SessionUtils.printSessionData(webContext, inMessage);
 
 		return(handleMessage(inMessage));
 	}
@@ -187,7 +185,6 @@ public class WebMessagesHandler extends ALogger {
 						"Server Port", inContext.getHttpServletRequest().getServerPort())
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
 						"Web Applicication ID", inMessage.getData().get("appid"))
-	
 				);
 		inMessage.setHtmlContent(result);
 		return inMessage;
