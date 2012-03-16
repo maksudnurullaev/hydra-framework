@@ -80,7 +80,7 @@ public final class SessionUtils {
 			Result inResult,
 			IMessage inMessage,
 			WebApplication app) {
-		// set application id
+		// set application id should be fine
 		inMessage.getData().put("_appid", app.getId());
 		if(!inMessage.getData().containsKey("appid"))
 			inMessage.getData().put("appid", app.getId());
