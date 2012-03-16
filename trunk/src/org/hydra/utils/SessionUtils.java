@@ -67,11 +67,15 @@ public final class SessionUtils {
 								);
 			}
 			
-			if(app == null) // if still null
+			if(app == null) { // if still null
+				_log.debug("Mode not found!");
 				app = webApplications.getValidApplication4(inUrlString);
+			}
 			
-			if(app == null) // if still null
+			if(app == null) { // if still null
+				_log.warn("Valid domain name not found, use default hyhdra.uz!");
 				app = webApplications.getValidApplication4("hydra.uz");
+			}
 		}
 		return(app);
 	}
