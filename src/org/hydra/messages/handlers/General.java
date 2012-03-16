@@ -30,10 +30,10 @@ public class General extends AMessageHandler { // NO_UCD
 		String locale = inMessage.getData().get("_locale");
 		String appId = inMessage.getData().get("appid");
 		
-		SessionUtils.setSessionData(webContext.getServletContext(), "_locale", appId, locale);
+		SessionUtils.setSessionData(webContext, "_locale", appId, locale);
 		
 		_log.debug("set locale to: " + 
-				SessionUtils.getSessionData(webContext.getServletContext(), 
+				SessionUtils.getSessionData(webContext, 
 				"_locale", 
 				appId));		
 	}

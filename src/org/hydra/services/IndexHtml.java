@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.beans.WebApplication;
 import org.hydra.messages.CommonMessage;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Result;
@@ -49,10 +50,12 @@ public class IndexHtml extends HttpServlet {
 			return;
 		}
 		
+		String url = req.getRequestURL().toString() + "?" + req.getQueryString();
+		WebApplication app = SessionUtils.getWebApplication(url);
 		CommonMessage msg = new CommonMessage();
-		msg.setUrl(req.getRequestURL().toString() + "?" + req.getQueryString());
+		msg.setUrl(url);
 		Result inResult = new Result();
-		SessionUtils.setWebAppParameters(inResult,msg, req.getServletContext());		
+		SessionUtils.setWebAppParameters(inResult, msg, app);		
 		if(!inResult.isOk()){
 			_log.error(index_file + msg.getUrl() + " - not found responsible application!");
 			out.println(index_with_err.replaceFirst(err_code,
