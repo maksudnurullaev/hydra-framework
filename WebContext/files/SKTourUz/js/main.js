@@ -48,3 +48,20 @@ SKTourUz.setContent = function(aEl, contentHolderId){
         , dest: contentHolderId
     });
 };
+
+SKTourUz.setTextContent = function(aEl, contentHolderId){    
+    if(Globals.pageBusy){
+        return;
+    }
+
+    var content = '[[';
+    content += ('DB|Text|Content.' + aEl.id + '.Page|locale');
+    content += ']]';
+
+    Globals.sendMessage({
+        handler: 'General'
+        , action:  'getContent'
+        , content: content
+        , dest: contentHolderId
+    });
+};
