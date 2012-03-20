@@ -328,23 +328,27 @@ public final class FileUtils {
 	public static String getFromHtmlFile(String inAppId, String fileName)  {
 		String filePath = String.format("/files/%s/html/%s.html", inAppId, fileName);
 		String realPath = Utils.getRealPath(filePath);
-		String content = null;
+		StringBuffer content = new StringBuffer(String.format("<!-- %s -->", fileName));
 		if(realPath != null){
 			File file = new File(realPath);
+			if(!file.exists()){
+				content.append(String.format("<!-- %s not found! -->", fileName));
+				return(content.toString());
+			}
 			try {
 				FileInputStream fis = new FileInputStream(file);
 				BufferedReader reader = new BufferedReader(new InputStreamReader(fis,Constants._utf_8));
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					if (!line.trim().isEmpty()){
-						if(content == null) content = line;
-						else content += line;
+						content.append(line);
 					}
 				}
 			} catch (IOException e) {
+				content.append(String.format("<!-- ERROR: %s -->", e.getMessage()));
 			}			
 		}
-		return(content); 
+		return(content.toString()); 
 	}
 
 	public static boolean isImage(String filePath) {
