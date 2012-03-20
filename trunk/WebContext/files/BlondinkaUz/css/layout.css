@@ -13,26 +13,26 @@
 .col3 {
 	width:393px;
 }
-#page1 h1 {
+#body h1 {
 	padding:27px 0 0 0;
 }
-#page1 #search {
+#body #search {
 	padding:46px 0 10px 0;
 }
-#page1 #menu {
-	margin-top:32px;
-	margin-bottom:35px;
+#body #menu {
+	margin-top:10px;
+	margin-bottom:15px;
 }
-#page1 .img {
+#body .img {
 	right:-13px;
 	top:236px;
 }
-#page1 .text {
+#body .text {
 	text-align:center;
 	padding:0;
 	width:100%;
 }
-#page1 header {
+#body header {
 	height:612px;
 }
 #page3 .cols {

@@ -33,7 +33,8 @@ public class IndexHtml extends HttpServlet {
 			+ "<HEAD><TITLE>ERROR</TITLE></HEAD>\n"
 			+ "<BODY>\n"
 			+ "<H1>Error: " + err_code + "</H1>\n" + "</BODY></HTML>";
-	final static String _header_tag = "</HEAD>";
+	final static String _header_end_tag = "</head>";
+	final static String _body_end_tag = "</body>";
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse response)
@@ -78,10 +79,17 @@ public class IndexHtml extends HttpServlet {
 			dis = new DataInputStream(bis);
 			BufferedReader br = new BufferedReader(new InputStreamReader(dis));
 
-			String strLine;
+			String nextLine;
 			// Read File Line By Line
-			while ((strLine = br.readLine()) != null) {
-				sb.append(updateIfHtmlHead(strLine, msg.getData().get("appid")));
+			while ((nextLine = br.readLine()) != null) {
+				if(nextLine.trim().isEmpty()) continue;
+				if(nextLine.toLowerCase().endsWith(_header_end_tag)){
+					sb.append(getAdditional(msg.getData().get("appid"), "_head"));					
+				}
+				if(nextLine.toLowerCase().endsWith(_body_end_tag)){
+					sb.append(getAdditional(msg.getData().get("appid"), "_body"));					
+				}
+				sb.append(nextLine);
 			}
 			out.println(sb.toString());
 			// Close the input stream
@@ -94,20 +102,15 @@ public class IndexHtml extends HttpServlet {
 		_log.debug("END process index.html page");	
 	}
 
-	private String updateIfHtmlHead(String strLine, String inAppId) {
-		if(strLine == null || strLine.trim().isEmpty()){
-			return "";
+	private String getAdditional(String inAppId, String htmlEndTagType) {
+		_log.debug("Try to insert " + htmlEndTagType + " tag for: " + inAppId);			
+		String content = FileUtils.getFromHtmlFile(inAppId, htmlEndTagType);
+		if(content == null){
+			_log.warn(htmlEndTagType + " not found for: " + inAppId);
+			return("");
 		}
-		String strLine2 = strLine.toLowerCase();
-		if(strLine2.endsWith(_header_tag)
-				|| strLine2.endsWith(_header_tag.toLowerCase())){
-			_log.debug("Try to insert head.html before </head> tag for: " + inAppId);			
-			String header = FileUtils.getFromHtmlFile(inAppId, "head");
-			if(header == null) _log.warn("Additional head.html file for application not found!");
-			else _log.debug("head.html file found for: " + inAppId);
-			return("<!-- " + inAppId + " -->" + (header == null?"<!-- additional head elements not found -->":header) + strLine);
-		}	
-		return(strLine);
+		else _log.debug(htmlEndTagType + " found for: " + inAppId);
+		return("<!-- " + inAppId + " -->" + (content == null?"<!-- additional head elements not found -->":content));
 	}
 
 	private static final long serialVersionUID = 1L;
