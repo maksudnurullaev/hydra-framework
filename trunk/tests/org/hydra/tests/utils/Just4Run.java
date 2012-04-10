@@ -1,6 +1,8 @@
 package org.hydra.tests.utils;
 
-import org.hydra.utils.FileUtils;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
 * A simple example showing what it takes to page over results using
@@ -13,15 +15,31 @@ import org.hydra.utils.FileUtils;
 *
 */
 public class Just4Run {
+	static String pattern_str = "https?://(www\\.||wap\\.)?hydra\\.uz.*";
+	static Pattern p = Pattern.compile(pattern_str);
     public static void main(String[] args) throws Exception {
-    	String name1 = "test/dfasfas\\1.txt";
-    	String name2 = "test/dfasfas/fsdfas/22.txt";
-    	String name3 = "test\\dfasfas\\333.txt";
-    	String name4 = "4444.txt";
-    	System.out.println(FileUtils.sanitize(name1));
-    	System.out.println(FileUtils.sanitize(name2));
-    	System.out.println(FileUtils.sanitize(name3));
-    	System.out.println(FileUtils.sanitize(name4));
+    	Set<String> urls = new HashSet<String>();
+    	urls.add("http://127.0.0.1");
+		urls.add("https://127.0.0.1");
+		urls.add("http://www.hydra.uz");
+		urls.add("https://www.hydra.uz");
+		urls.add("http://wap.hydra.uz");
+		urls.add("https://wap.hydra.uz");
+		urls.add("http://hydra.uz");
+		urls.add("https://hydra.uz");
+		urls.add("http://some.hydra.uz");    	
+		urls.add("https://some.hydra.uz");    	
+		
+		for(String url:urls){
+			if(!testUrl(url)){
+				System.out.println(String.format("Error: Pattern(%s): Url: %s", pattern_str, url));
+			}else{
+				System.out.println(String.format("Ok: Pattern(%s): Url: %s", pattern_str, url));				
+			}
+		}
     }
+	private static boolean testUrl(String url) {
+		return(p.matcher(url).matches());
+	}
 
 }

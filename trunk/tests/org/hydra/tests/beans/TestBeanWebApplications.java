@@ -14,6 +14,6 @@ public class TestBeanWebApplications extends BaseTest {
 		Assert.assertNotNull(_hydra_applicatons.getValidApplication4("https://www.hydra.uz"));
 		Assert.assertNotNull(_hydra_applicatons.getValidApplication4("http://hydra.uz"));
 		Assert.assertNotNull(_hydra_applicatons.getValidApplication4("https://hydra.uz"));
-		Assert.assertNull(_hydra_applicatons.getValidApplication4("https://zero.hydra.uz"));
+		Assert.assertNull(_hydra_applicatons.getValidApplication4("https://some.hydra.uz"));
 	}
 }
