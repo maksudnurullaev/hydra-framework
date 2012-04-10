@@ -10,7 +10,9 @@ public final class Roles {
 	public static final int USER_REGISTERED = 0;
 	
 	public static boolean roleNotLessThen(int inRoleLevel, IMessage inMessage) {
-		if(inMessage.getUrl() != null && inMessage.getUrl().startsWith("http://localhost:")) return true;
+		if(inMessage.getUrl() != null && (
+				inMessage.getUrl().startsWith("http://localhost")
+						|| inMessage.getUrl().startsWith("http://127.0.0.1"))) return true;
 		String appId = inMessage.getData().get("_appid");
 		String userId = inMessage.getData().get("_user");
 		if(appId == null || appId.length() == 0) return false;
