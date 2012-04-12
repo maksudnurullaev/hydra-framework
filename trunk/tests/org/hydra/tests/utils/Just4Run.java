@@ -2,6 +2,7 @@ package org.hydra.tests.utils;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -15,12 +16,11 @@ import java.util.regex.Pattern;
 *
 */
 public class Just4Run {
-	static String pattern_str = "https?://(www\\.||wap\\.)?hydra\\.uz.*";
+	//static String pattern_str = "(http|https)://(www\\.|wap\\.)?hydra\\.uz.*";
+	static String pattern_str = "^https?://(www\\.|wap\\.)?hydra\\.uz.*";
 	static Pattern p = Pattern.compile(pattern_str);
     public static void main(String[] args) throws Exception {
     	Set<String> urls = new HashSet<String>();
-    	urls.add("http://127.0.0.1");
-		urls.add("https://127.0.0.1");
 		urls.add("http://www.hydra.uz");
 		urls.add("https://www.hydra.uz");
 		urls.add("http://wap.hydra.uz");
@@ -39,7 +39,12 @@ public class Just4Run {
 		}
     }
 	private static boolean testUrl(String url) {
-		return(p.matcher(url).matches());
+		Matcher matcher = p.matcher(url);
+		boolean result = matcher.matches();
+		if(result){
+			System.out.println("matcher.group(1): " + matcher.group(1));
+		}
+		return(result);
 	}
 
 }

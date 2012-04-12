@@ -27,11 +27,10 @@
 		<property name="id" value="HydraUz" />
 		<property name="urls">
 			<set>
-				<!-- ^https?://(www\\.||wap\\.)?hydra\\.uz.* -->
-				<value>^https?://(www\\.||wap\\.)?127\.0\.0\.1.*</value>
-				<value>^https?://(www\\.||wap\\.)?91\.212\.89\.163.*</value>
-				<value>^https?://(www\\.||wap\\.)?hydra\.uz.*</value>
-				<value>^https?://(www\\.||wap\\.)?localhost.*</value>
+				<value>^https?://127\.0\.0\.1.*</value>
+				<value>^https?://91\.212\.89\.163.*</value>
+				<value>^https?://(www\.|wap\.)?hydra\.uz.*</value>
+				<value>^https?://localhost.*</value>
 			</set>
 		</property>
 	    <!-- Set locales -->
@@ -51,7 +50,7 @@
 		<property name="id" value="UristUz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\\.||wap\\.)?urist\.uz.*</value>
+				<value>^https?://(www\.|wap\.)?urist\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
@@ -71,7 +70,7 @@
 		<property name="id" value="MaxmsUz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\\.||wap\\.)?maxms\.uz.*</value>
+				<value>^https?://(www\.|wap\.)?maxms\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
@@ -91,7 +90,7 @@
 		<property name="id" value="TestUz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\\.||wap\\.)?test\.uz.*</value>
+				<value>^https?://(www\.|wap\.)?test\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
@@ -111,7 +110,7 @@
 		<property name="id" value="Test2Uz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\\.||wap\\.)?test2\.uz.*</value>
+				<value>^https?://(www\.|wap\.)?test2\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
@@ -131,7 +130,7 @@
 		<property name="id" value="Test3Uz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\\.||wap\\.)?test3\.uz.*</value>
+				<value>^https?://(www\.|wap\.)?test3\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
@@ -151,7 +150,7 @@
 		<property name="id" value="ZFileUz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\\.||wap\\.)?zfile\.uz.*</value>
+				<value>^https?://(www\.|wap\.)?zfile\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
@@ -172,7 +171,7 @@
 		<property name="id" value="SKTourUz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\\.||wap\\.)?sktour\.uz.*</value>
+				<value>^https?://(www\.|wap\.)?sktour\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
@@ -191,7 +190,7 @@
 		<property name="id" value="BlondinkaUz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\\.||wap\\.)?blondinka\.uz.*</value>
+				<value>^https?://(www\.|wap\.)?blondinka\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
