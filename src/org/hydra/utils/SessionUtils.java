@@ -60,11 +60,10 @@ public final class SessionUtils {
 
 		// 1. validate mode
 		if(inUrlString != null){
-			int found = inUrlString.indexOf("mode=");
+			int found = inUrlString.indexOf(Constants._url_mode_param);
 			if(found != -1){
-				app = webApplications.getValidApplication4(
-						inUrlString.toLowerCase().substring(found) 
-								);
+				String mode_str = inUrlString.toLowerCase().substring(found + Constants._url_mode_param.length());
+				app = webApplications.getValidApplication4(mode_str);
 			}
 			
 			if(app == null) { // if still null
