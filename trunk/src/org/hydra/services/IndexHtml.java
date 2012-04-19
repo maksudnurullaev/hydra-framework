@@ -54,7 +54,7 @@ public class IndexHtml extends HttpServlet {
 		String url = req.getRequestURL().toString() + "?" + req.getQueryString();
 		WebApplication app = SessionUtils.getWebApplication(url);
 		if(app == null){
-			String err_string = "For: " + url + " - not found responsible application!";
+			String err_string = " not found responsible application!";
 			_log.error(err_string);
 			out.println(index_with_err.replaceFirst(err_code, err_string));
 			return;
