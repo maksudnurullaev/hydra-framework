@@ -53,16 +53,16 @@ public class IndexHtml extends HttpServlet {
 		
 		String url = req.getRequestURL().toString() + "?" + req.getQueryString();
 		WebApplication app = SessionUtils.getWebApplication(url);
+		if(app == null){
+			String err_string = "For: " + url + " - not found responsible application!";
+			_log.error(err_string);
+			out.println(index_with_err.replaceFirst(err_code, err_string));
+			return;
+		}
 		CommonMessage msg = new CommonMessage();
 		msg.setUrl(url);
 		Result inResult = new Result();
-		SessionUtils.setWebAppParameters(inResult, msg, app);		
-		if(!inResult.isOk()){
-			_log.error(index_file + msg.getUrl() + " - not found responsible application!");
-			out.println(index_with_err.replaceFirst(err_code,
-					index_file + msg.getUrl() + " - not found responsible application!"));
-			return;
-		}
+		SessionUtils.setWebAppParameters(inResult, msg, app);
 		_log.debug("Corresponding web application is: " + msg.getData().get("appid"));
 
 		File file = new File(index_file_path);
