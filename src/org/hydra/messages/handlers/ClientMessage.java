@@ -44,7 +44,7 @@ public class ClientMessage extends AMessageHandler {
 					getLog().warn(Utils.F("Message length limit: %s(%s)", 
 							entry.getKey(),
 							entry.getValue().length()));
-					inMessage.setError(MessagesManager.getText("Error.Too.Long.Data", null, inMessage.getData().get("_locale")));
+					inMessage.setError(MessagesManager.getText("Error.Too.Long.Data", null, inMessage.getData().get("locale")));
 					return inMessage;
 				}
 				message_entries.put(entry.getKey(), entry.getValue());
@@ -59,7 +59,7 @@ public class ClientMessage extends AMessageHandler {
 				return inMessage;
 			}
 		}
-		inMessage.setHtmlContent(MessagesManager.getText("MessageSaved", null, inMessage.getData().get("_locale")));
+		inMessage.setHtmlContent(MessagesManager.getText("MessageSaved", null, inMessage.getData().get("locale")));
 		return inMessage;
 	}
 

@@ -29,6 +29,8 @@ public final class System {
 			return SystemCaptcha.getKeyHow(inKey, inHow, inMessage);
 		if(inWhat.compareToIgnoreCase("Tagger") == 0)
 			return SystemTagger.getKeyHow(inKey, inHow, inMessage);
+		if(inWhat.compareToIgnoreCase("Session") == 0)
+			return SystemSession.getKeyHow(inKey, inHow, inMessage);
 		_log.error("Could not find WHAT part: " + inWhat);
 		return "Could not find WHAT part: " + inWhat;
 	}
@@ -53,7 +55,7 @@ public final class System {
 		if(appLocales != null && appLocales.size() > 0){
 			String resultStr = "";
 			for (Map.Entry<String, String> entry:appLocales.entrySet()) {
-				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("_locale")) == 0){ 
+				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("locale")) == 0){ 
 					resultStr += entry.getValue();
 				}else{
 					resultStr += Utils.T("template.html.a.language.bar", entry.getKey(), entry.getValue());

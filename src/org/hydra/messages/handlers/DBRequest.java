@@ -131,7 +131,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		getTextarea2Edit(inMessage
 				, "Text"
 				, inMessage.getData().get("key")
-				, inMessage.getData().get("_locale")
+				, inMessage.getData().get("locale")
 				, "DBRequest"
 				, "updateText");
 		
@@ -153,7 +153,7 @@ public class DBRequest extends AMessageHandler{ // NO_UCD
 		String key = inMessage.getData().get("key");
 		String value = inMessage.getData().get("value");		
 				
-		update(inMessage, "Text", key, inMessage.getData().get("_locale"), value);
+		update(inMessage, "Text", key, inMessage.getData().get("locale"), value);
 		
 		return inMessage;
 	}

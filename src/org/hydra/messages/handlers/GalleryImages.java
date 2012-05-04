@@ -1,5 +1,6 @@
 package org.hydra.messages.handlers;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.hydra.deployers.ADeployer;
@@ -28,10 +29,10 @@ public class GalleryImages extends AMessageHandler {
 
 	public IMessage updateDescription(CommonMessage inMessage){
 		if(!validateData(inMessage, "imagePath", "thumbImagePath", Description)) return inMessage;
-		String imagePath = Utils.getRealPath(inMessage.getData().get("imagePath"));
+		File image = FileUtils.getRealFile(inMessage.getData().get("imagePath"));
 		
 		FileUtils.saveFileDescriptions(inMessage, 
-				imagePath, 
+				image.getPath(), 
 				Description);
 		return(editImageTags(inMessage));
 	}

@@ -11,11 +11,7 @@
 		<property name="applications">
 			<set>
 				<ref bean="HydraUz_WebAppBean"/>
-				<ref bean="UristUz_WebAppBean"/>
-				<ref bean="MaxmsUz_WebAppBean"/>
 				<ref bean="TestUz_WebAppBean"/>
-				<ref bean="Test2Uz_WebAppBean"/>
-				<ref bean="Test3Uz_WebAppBean"/>
 				<ref bean="ZFileUz_WebAppBean"/>
 				<ref bean="SKTourUz_WebAppBean"/>
 				<ref bean="BlondinkaUz_WebAppBean"/>
@@ -46,46 +42,6 @@
 		</property>	    
 	</bean>
 	
-	<bean id="UristUz_WebAppBean" class="org.hydra.beans.WebApplication">
-		<property name="id" value="UristUz" />
-		<property name="urls">
-			<set>
-				<value>^https?://(www\.|wap\.)?urist\.uz.*</value>
-			</set>
-		</property>		
-	    <!-- Set locales -->
-	    <property name="locales">
-	    	<map>
-	    		<entry key="rus" value="Рус"/>
-	    		<entry key="uzb" value="Uzb"/>
-	    	</map>
-	    </property>
-		<!-- Set default locale -->
-		<property name="defaultLocale">
-			<value>rus</value>
-		</property>	    
-	</bean>	
-
-	<bean id="MaxmsUz_WebAppBean" class="org.hydra.beans.WebApplication">
-		<property name="id" value="MaxmsUz" />
-		<property name="urls">
-			<set>
-				<value>^https?://(www\.|wap\.)?maxms\.uz.*</value>
-			</set>
-		</property>		
-	    <!-- Set locales -->
-	    <property name="locales">
-	    	<map>
-	    		<entry key="rus" value="Рус"/>
-	    		<entry key="uzb" value="Uzb"/>
-	    	</map>
-	    </property>
-		<!-- Set default locale -->
-		<property name="defaultLocale">
-			<value>rus</value>
-		</property>	    
-	</bean>	
-
 	<bean id="TestUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="TestUz" />
 		<property name="urls">
@@ -97,7 +53,7 @@
 	    <property name="locales">
 	    	<map>
 	    		<entry key="rus" value="Рус"/>
-	    		<entry key="uzb" value="Uzb"/>
+	    		<entry key="eng" value="Eng"/>
 	    	</map>
 	    </property>
 		<!-- Set default locale -->
@@ -106,45 +62,6 @@
 		</property>	    
 	</bean>
 
-	<bean id="Test2Uz_WebAppBean" class="org.hydra.beans.WebApplication">
-		<property name="id" value="Test2Uz" />
-		<property name="urls">
-			<set>
-				<value>^https?://(www\.|wap\.)?test2\.uz.*</value>
-			</set>
-		</property>		
-	    <!-- Set locales -->
-	    <property name="locales">
-	    	<map>
-	    		<entry key="rus" value="Рус"/>
-	    		<entry key="uzb" value="Uzb"/>
-	    	</map>
-	    </property>
-		<!-- Set default locale -->
-		<property name="defaultLocale">
-			<value>rus</value>
-		</property>	    
-	</bean>
-	
-	<bean id="Test3Uz_WebAppBean" class="org.hydra.beans.WebApplication">
-		<property name="id" value="Test3Uz" />
-		<property name="urls">
-			<set>
-				<value>^https?://(www\.|wap\.)?test3\.uz.*</value>
-			</set>
-		</property>		
-	    <!-- Set locales -->
-	    <property name="locales">
-	    	<map>
-	    		<entry key="rus" value="Рус"/>
-	    		<entry key="uzb" value="Uzb"/>
-	    	</map>
-	    </property>
-		<!-- Set default locale -->
-		<property name="defaultLocale">
-			<value>rus</value>
-		</property>	    
-	</bean>	
 	
 	<bean id="ZFileUz_WebAppBean" class="org.hydra.beans.WebApplication">
 		<property name="id" value="ZFileUz" />

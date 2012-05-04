@@ -22,7 +22,7 @@ public class User extends AMessageHandler { // NO_UCD
 	public static IMessage logout(IMessage inMessage, WebContext webContext) {
 		String appId = inMessage.getData().get("appid");
 		_log.debug("Going to logout for: " + SessionUtils.getSessionData(webContext, "_user", inMessage.getData().get("appid")));
-		SessionUtils.setSessionData(webContext, "_user", appId, null);
+		SessionUtils.setSessionData(webContext.getSession(), "_user", appId, null);
 		inMessage.setReloadPage(true);
 		return(inMessage);
 	}
@@ -83,13 +83,13 @@ public class User extends AMessageHandler { // NO_UCD
 			return(setupUserSession(inMessage, user_mail, context));
 		}
 			
-		inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getData().get("_locale")));
+		inMessage.setError(MessagesManager.getText("NoData", null, inMessage.getData().get("locale")));
 		return(inMessage);
 	}
 
 	private static IMessage setupUserSession(IMessage inMessage, String userId, WebContext webContext) {
 		String appId = inMessage.getData().get("appid");
-		SessionUtils.setSessionData(webContext, "_user", appId, userId);
+		SessionUtils.setSessionData(webContext.getSession(), "_user", appId, userId);
 		inMessage.setReloadPage(true);
 		return(inMessage);
 	}

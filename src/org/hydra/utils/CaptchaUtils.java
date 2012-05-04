@@ -58,6 +58,6 @@ public final class CaptchaUtils {
 		List<String> err_ids = new ArrayList<String>();
 		err_ids.add(Constants._captcha_value);
 		inMessage.setHighlightFields(err_ids);
-		inMessage.setError(MessagesManager.getText("Captcha.Incorrect", null, inMessage.getData().get("_locale")));
+		inMessage.setError(MessagesManager.getText("Captcha.Incorrect", null, inMessage.getData().get("locale")));
 	}
 }

@@ -24,7 +24,7 @@ public final class ADeployer {
 				editLinks,
 				inMessage);
 		
-		_log.debug("locale: " + inMessage.getData().get("_locale"));
+		_log.debug("locale: " + inMessage.getData().get("locale"));
 		_log.debug("content size: " + content.length() + " bytes");
 		
 		inMessage.setHtmlContent(content);

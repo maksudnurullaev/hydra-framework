@@ -28,15 +28,6 @@ import org.hydra.utils.ErrorUtils.ERROR_CODES;
  */
 public final class Utils {
 	private static final Log _log = LogFactory.getLog("org.hydra.utils.Utils");
-	public static String WEBAPP_ROOT = null;
-		
-	public static String getRealPath(String inPath){
-		if(WEBAPP_ROOT == null){
-			_log.error("Web root folder not initialized!");
-			return(inPath);
-		}
-		return(new File(WEBAPP_ROOT, inPath).toString());
-	}
 	
 	public static String wrap2HTMLTag(String inHTMLTagName, String inContent) {
 		return String.format("<%s>%s</%s>", inHTMLTagName, inContent,
@@ -671,7 +662,7 @@ public final class Utils {
 		System.out.println("inMessage.isReloadPage(): " + inMessage.isReloadPage());
 		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
 		System.out.println("inMessage.getError(): " + inMessage.getError());
-		System.out.println("inMessage.getSessionID(): " + inMessage.getSessionID());
+		System.out.println("inMessage.getSessionID(): " + inMessage.getSession().getId());
 		System.out.println("inMessage.getUrl(): " + inMessage.getUrl());
 		System.out.println("inMessage.getUserId(): " + inMessage.getUserId());
 		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
