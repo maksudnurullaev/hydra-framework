@@ -1,5 +1,6 @@
 package org.hydra.messages.handlers;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.hydra.deployers.ADeployer;
@@ -66,9 +67,8 @@ public class AdmFiles extends AMessageHandler {
 			inMessage.setError("File path not defined");
 			return(inMessage);
 		}
-		String fileRealPath = Utils.getRealPath(inMessage.getData().get("file_path"));
-		getLog().debug("Delete file: " + fileRealPath);
-		org.apache.cassandra.io.util.FileUtils.delete(fileRealPath);				
+		File file = FileUtils.getRealFile(inMessage.getData().get("file_path"));
+		file.delete();
 		return(list(inMessage));		
 	}
 }

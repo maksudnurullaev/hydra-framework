@@ -42,9 +42,8 @@ public final class FileUtils {
 	public static String saveImage4(String inAppId, BufferedImage inImage){
 		// 0. Generate pathname for new image
 		String uri4Image = Utils.F("files/%s/images/%s.%s", inAppId, RandomStringUtils.random(8,true,true), generalImageFormat);
-		String realPath = Utils.getRealPath(uri4Image);
 		// 1. Save image in PNG formate
-		File output = new File(realPath);
+		File output = getRealFile(uri4Image);
 		try {
 			ImageIO.write(inImage, generalImageFormat, output);
 		} catch (IOException e) {
@@ -65,19 +64,15 @@ public final class FileUtils {
 			List<String> result,
 			String ifFileNameEndWith,
 			boolean includeSubDirs) {
-		
-		String realURI = Utils.getRealPath(URL);
-		
-		if(realURI == null) return;
-			
-		File dir = new File(realURI);
-		if(!dir.exists()){
-			_log.error("Directory not exist: " + realURI);
+					
+		File dir = getRealFile(URL);
+		if(dir != null && !dir.exists()){
+			_log.error("Directory not exist: " + dir.getPath());
 			return;
 		}
 		if(dir.isDirectory() && dir.list() != null){
 			for(String path2File: dir.list()){
-				File file = new File(realURI, path2File);
+				File file = new File(dir.getPath(), path2File);
 				if(file.isDirectory() && includeSubDirs){
 					getListOfFiles4Dir(URL + path2File, result, ifFileNameEndWith);
 				}else if(file.isFile()){
@@ -130,7 +125,7 @@ public final class FileUtils {
 		String orginalFileName = sanitize(file.getFilename());		
 		String uri4FilePath = Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder"))
 				+ getMD5FileName(orginalFileName) + getFileExtension(orginalFileName);
-		String realPath = Utils.getRealPath(uri4FilePath);
+		String realPath = getRealFile(uri4FilePath).getPath();
 		
 		System.out.println("uri4FilePath: " + uri4FilePath);
 		System.out.println("realPath: " + realPath);
@@ -321,36 +316,47 @@ public final class FileUtils {
 	}
 
 	public static Properties parseProperties(String propertiesFilePath) {
-		Properties properties = APropertyLoader.parsePropertyFile(Utils.getRealPath(propertiesFilePath));
+		Properties properties = APropertyLoader.parsePropertyFile(getRealFile(propertiesFilePath));
 		return properties;
 	}
 
 	public static String getFromHtmlFile(String inAppId, String fileName)  {
 		String filePath = String.format("/files/%s/html/%s.html", inAppId, fileName);
-		String realPath = Utils.getRealPath(filePath);
 		StringBuffer content = new StringBuffer(String.format("<!-- %s -->", fileName));
-		if(realPath != null){
-			File file = new File(realPath);
-			if(!file.exists()){
-				content.append(String.format("<!-- %s not found! -->", fileName));
-				return(content.toString());
-			}
-			try {
-				FileInputStream fis = new FileInputStream(file);
-				BufferedReader reader = new BufferedReader(new InputStreamReader(fis,Constants._utf_8));
-				String line = null;
-				while ((line = reader.readLine()) != null) {
-					if (!line.trim().isEmpty()){
-						content.append(line);
-					}
-				}
-			} catch (IOException e) {
-				content.append(String.format("<!-- ERROR: %s -->", e.getMessage()));
-			}			
+		
+		File file = getRealFile(filePath);
+		if(file == null || (!file.exists())){
+			content.append(String.format("<!-- %s not found! -->", fileName));
+			return(content.toString());
 		}
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(fis,Constants._utf_8));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				if (!line.trim().isEmpty()){
+					content.append(line);
+				}
+			}
+		} catch (IOException e) {
+			content.append(String.format("<!-- ERROR: %s -->", e.getMessage()));
+		}			
 		return(content.toString()); 
 	}
-
+	
+	public static File getRealFile(String inPath){
+		if(WEBAPP_ROOT == null) return(null);
+		return(new File(WEBAPP_ROOT, inPath));
+	}	
+	
+	public static boolean isExistAppHtmlFile(String inAppId, String inFileName){
+		String filePath = String.format("/files/%s/html/%s.html", inAppId, inFileName);
+		File file = getRealFile(filePath);
+		return(file != null && file.exists());
+	}	
+	
+	public static String WEBAPP_ROOT = null;	
+	
 	public static boolean isImage(String filePath) {
 		if(filePath == null || filePath.isEmpty()) return false;
 		if(filePath.toUpperCase().endsWith(".BMP")

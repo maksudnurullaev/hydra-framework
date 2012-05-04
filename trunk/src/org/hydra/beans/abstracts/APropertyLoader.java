@@ -111,9 +111,8 @@ public abstract class APropertyLoader extends ALogger {
 		return result;
 	}
 
-	public static Properties parsePropertyFile(String filePath){
-		if(filePath == null) return(null);
-		File file = new File(filePath);
+	public static Properties parsePropertyFile(File file){
+		if(file == null) return(null);
 		if(!file.exists()) return (null);
 		Properties result = null;
 		try {

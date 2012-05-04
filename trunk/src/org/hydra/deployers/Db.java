@@ -35,7 +35,7 @@ public final class Db {
 			String inHow, 
 			Map<String, String> editLinks,
 			IMessage inMessage){
-		String locale = inMessage.getData().get("_locale");
+		String locale = inMessage.getData().get("locale");
 		if(inHow.compareToIgnoreCase("div") == 0) // div wrapper 
 			return(DBUtils.wrapIfNeeds(inMessage.getData().get("appid"), 
 					"Text", 

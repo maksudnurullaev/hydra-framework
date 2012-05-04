@@ -31,11 +31,11 @@ public final class Dictionary {
 		int roleLevel = Utils.isSpecialKey(inKey);
 		if(roleLevel >= 0){
 			if(Roles.roleNotLessThen(roleLevel, inMessage))
-				MessagesManager.getText(inKey, null, inMessage.getData().get("_locale"));
+				MessagesManager.getText(inKey, null, inMessage.getData().get("locale"));
 			else
 				return "";
 		}
-		return MessagesManager.getText(inKey, null, inMessage.getData().get("_locale"));
+		return MessagesManager.getText(inKey, null, inMessage.getData().get("locale"));
 	}
 
 	private static String getDictionaryTemplateKeyANY(

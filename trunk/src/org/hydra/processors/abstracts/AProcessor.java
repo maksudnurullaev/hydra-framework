@@ -172,14 +172,14 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 			// Log message
 			getLog().debug(String.format(
 					"Processor(%s) handle message for group(%s) from pipe(size:%s)", getName(),
-					message.getSessionID(), getInPipe().getSize()));
+					message.getSession().getId(), getInPipe().getSize()));
 
 			if (message instanceof CommonMessage) {
 				IMessageService remoteMessageService = getInPipe().getRemoteMessageClient();
 				if(remoteMessageService != null){
-					getLog().warn("Message --> RMI: " + message.getSessionID());
+					getLog().warn("Message --> RMI: " + message.getSession().getId());
 					for(IMessage message_: remoteMessageService.processMessage(message)){
-						getLog().warn("Message <-- RMI: " + message_.getSessionID());
+						getLog().warn("Message <-- RMI: " + message_.getSession().getId());
 						getMessageCollector().putMessage(message_);
 					}
 				}else{
@@ -200,7 +200,7 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 	private void applyMessage(CommonMessage inMessage) {
 		getLog().debug(
 				String.format("Handle new message for group(%s)...", 
-						inMessage.getSessionID()));
+						inMessage.getSession().getId()));
 
 		String handlerName = inMessage.getData().get("handler");
 		String methodName = inMessage.getData().get("action");

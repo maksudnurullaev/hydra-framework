@@ -23,7 +23,7 @@ public class MessageService extends ALogger implements IMessageService {
 			inMessage.setError(e.getMessage());
 			result.add(inMessage);
 		}
-		getLog().debug("Get new message with session id: " + inMessage.getSessionID());
+		getLog().debug("Get new message with session id: " + inMessage.getSession().getId());
 		return (result.toArray(new IMessage[0]));
 	}
 

@@ -8,7 +8,7 @@ if (Globals == null) {
             ,'tryToLoadCount': 0
             ,'pageBusy': false
             ,'loadingImage': '<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif">'
-            ,'Y': null
+            ,'mobile': false
         };
 };
 /* Highlight them */
@@ -181,8 +181,6 @@ Globals.porcessMessage = function (message) {
     };  
     // check to reload page
     if(Globals.chk(message.reloadPage)){
-		var body = Globals.getPlaceholderOrNode('body');
-        body.html(Globals.loadingImage);
         window.location.reload();
         return;
     };

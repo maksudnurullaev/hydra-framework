@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.directwebremoting.io.FileTransfer;
 import org.hydra.messages.interfaces.IMessage;
 
@@ -19,7 +21,7 @@ public class CommonMessage implements IMessage {
 	private FileTransfer file = null;	
 	private String userId = null;
 	private Map<String, String> data = new HashMap<String, String>();
-	private String sessionID = null;
+	private HttpSession session = null;
 	private String url = null;
 	private Map<String, String> htmlContents = null;
 	private List<String> highlightFields = null;
@@ -103,13 +105,13 @@ public class CommonMessage implements IMessage {
 	}
 
 	@Override
-	public void setSessionID(String sessionID) {
-		this.sessionID = sessionID;
+	public void setSession(HttpSession session) {
+		this.session = session;
 	}
 
 	@Override
-	public String getSessionID() {
-		return sessionID;
+	public HttpSession getSession() {
+		return session;
 	}
 
 	@Override

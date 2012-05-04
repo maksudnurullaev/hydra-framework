@@ -103,7 +103,7 @@ public class WebMessagesHandler extends ALogger {
 		long startTime = System.currentTimeMillis();
 		// Waiting for response
 		getLog().debug("START: Waiting...");
-		while (!messagesCollector.hasNewMessages(inMessage.getSessionID())) {
+		while (!messagesCollector.hasNewMessages(inMessage.getSession().getId())) {
 			// if timeout
 			if (System.currentTimeMillis() - startTime > inMessage.getTimeout()) {
 
@@ -120,7 +120,7 @@ public class WebMessagesHandler extends ALogger {
 		getLog().debug("END: Waiting...");
 		// If response messages exist
 		IMessage messageBean = null;
-		while ((messageBean = messagesCollector.getMessage(inMessage.getSessionID())) != null)
+		while ((messageBean = messagesCollector.getMessage(inMessage.getSession().getId())) != null)
 		{
 			if(messageBean.getData() != null) messageBean.getData().clear();
 			resultList.add((MessageBean) messageBean);
@@ -135,7 +135,7 @@ public class WebMessagesHandler extends ALogger {
 		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.getFile().getFilename());
 		inMessage.getData().put("file_path", uri4File);
 		_log.debug("File uri: " + uri4File);
-		inMessage.getData().put("file_real_path", Utils.getRealPath(uri4File));
+		inMessage.getData().put("file_real_path", FileUtils.getRealFile(uri4File).getPath());
 		_log.debug("Real path: " + inMessage.getData().get("file_real_path"));
 	}
 

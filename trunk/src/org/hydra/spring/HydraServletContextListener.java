@@ -3,7 +3,7 @@ package org.hydra.spring;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.hydra.utils.Utils;
+import org.hydra.utils.FileUtils;
 
 public class HydraServletContextListener implements ServletContextListener {
 
@@ -13,7 +13,7 @@ public class HydraServletContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-        Utils.WEBAPP_ROOT = sce.getServletContext().getRealPath(".");
+        FileUtils.WEBAPP_ROOT = sce.getServletContext().getRealPath(".");
 	}
 
 }

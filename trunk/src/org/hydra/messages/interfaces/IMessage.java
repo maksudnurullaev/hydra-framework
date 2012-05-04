@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.directwebremoting.io.FileTransfer;
 
 public interface IMessage extends Serializable {	
@@ -15,7 +17,6 @@ public interface IMessage extends Serializable {
 	List<String> getHighlightFields();
 	Map<String, String> getHtmlContents();
 	List<String> getNoHighlightFields();
-	String getSessionID();
 	long getTimeout();
 	String getUrl();
 	String getUserId();
@@ -29,8 +30,9 @@ public interface IMessage extends Serializable {
 	void setHtmlContents(String inKeyElementID, String inHtmlContent);
 	void setNoHighlightFields(String[] mandatoryFields);
 	void setReloadPage(boolean b);
-	void setSessionID(String inSessionID);
 	void setTimeout(long timeout);
 	void setUrl(String inUrl);
 	void setUserId(String inUserId);
+	HttpSession getSession();
+	void setSession(HttpSession inSession);
 }
