@@ -1,1 +1,66 @@
-<h1>Тестовое поле</h1>
+<div data-role="page" id="mobile_main_page">
+	<div data-role="header">
+		<h1>UzManAuto</h1>
+		<a href="index.html" data-icon="gear" class="ui-btn-right">Options</a>
+	<div data-role="navbar">
+		<ul>
+			<li><a href="#">Стрица №1</a></li>
+			<li><a href="#">Стрица №2</a></li>
+			<li><a href="#">Стрица №3</a></li>
+		</ul>
+	</div><!-- /navbar -->		
+	</div><!-- /header -->
+	<div data-role="content" id="body_placeholder">	
+	
+		<div data-role="fieldcontain" class="ui-field-contain ui-body ui-br">
+			 <label for="name" class="ui-input-text">Текст:</label>
+			 <input type="text" value="" id="name" name="name" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset">
+		</div>
+		<div data-role="fieldcontain" class="ui-field-contain ui-body ui-br">
+			<label for="slider2" id="slider2-label" class="ui-slider">Переключатель:</label>
+			<select data-role="slider" id="slider2" name="slider2" class="ui-slider-switch">
+				<option value="off">Off</option>
+				<option value="on">On</option>
+			</select>
+		</div>			
+	</div>
+	
+	<fieldset data-role="controlgroup" data-mini="true">
+	   <legend>Выбор мощности тягача:</legend>
+		<input type="radio" name="radio-choice-1" id="radio-mini-1" value="choice-1" checked="checked" />
+
+		<label for="radio-mini-1">300 л.с.</label>
+		<input type="radio" name="radio-choice-1" id="radio-mini-2" value="choice-2"  />
+
+		<label for="radio-mini-2">400 л.с.</label>
+		<input type="radio" name="radio-choice-1" id="radio-mini-3" value="choice-3"  />
+
+		<label for="radio-mini-3">500 л.с.</label>
+	</fieldset>	
+
+	<div data-role="fieldcontain">
+		<fieldset data-role="controlgroup">
+		   <legend>Выбор типа тягача:</legend>
+		   <input type="checkbox" name="checkbox-1" id="checkbox-1" class="custom" />
+		   <label for="checkbox-1">Расширенная ось</label>
+		   <input type="checkbox" name="checkbox-2" id="checkbox-2" class="custom" />
+		   <label for="checkbox-2">АККП</label>
+		</fieldset>
+	</div>
+
+	<div data-role="fieldcontain">
+	   <label for="select-choice-1" class="select">Срочность заказа:</label>
+	   <select name="select-choice-1" id="select-choice-1">
+		  <option value="standard">Стандартные: 27 дней</option>
+		  <option value="rush">Срочный: 15 дней</option>
+		  <option value="express">Експресс: 7 дней</option>
+	   </select>
+	</div>
+
+	<label for="slider-step">Пробег (тыс. км.):</label>
+	<input type="range" name="slider" id="slider-step" value="5" min="0" max="50" step="1" />	
+<!-- /content -->
+	<div data-role="footer">
+		<h4>MaxMS, Powered by Hydra-Framework</h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
