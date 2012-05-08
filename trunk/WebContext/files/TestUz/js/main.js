@@ -27,4 +27,37 @@ TestUz.initStartPage = function(){
 		$('#dialog').dialog('open');
 		return false;
 	});
+	
+	// Tabs
+	$(function() {
+		$( "#tabs" ).tabs();
+	});	
+	// Radio
+	$(function() {
+		$( "#radio" ).buttonset();
+	});	
+	
+	// Slider
+	$(function() {
+		$( "#slider" ).slider({
+			value:5000,
+			min: 0,
+			max: 50000,
+			step: 1000,
+			slide: function( event, ui ) {
+				$( "#amount" ).val( "$" + ui.value );
+			}
+		});
+		$( "#amount" ).val( "$" + $( "#slider" ).slider( "value" ) );
+	});
+	
+	// Checkbox
+	$(function() {
+		$( "#check" ).button();
+	});	
+	
+	$( "#check" ).click(function(){
+		$("#check_label1 span").text(this.checked?"Вкл.":"Выкл.");
+	});
+	
 };

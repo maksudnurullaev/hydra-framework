@@ -107,6 +107,9 @@ Globals.setHtmlContents = function (contentsMap) {
             }
         };        
     }
+	if(Globals.chk($.mobile)){
+		$.mobile.changePage("#mobile_main_page");
+	}
 };
 /* Test DOM object existance */
 Globals.chk = function (obj) {
