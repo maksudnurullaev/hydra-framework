@@ -168,7 +168,7 @@ public final class SessionUtils {
 	}
 	
 	public static boolean isMobileBrowser(HttpServletRequest request){
-		return(isMobileBrowser(request.getHeader("User-Agent")));
+		return(request.getQueryString().toLowerCase().contains("http://wap.") || isMobileBrowser(request.getHeader("User-Agent")));
 	}
 	
 	public static boolean isMobileBrowser(String ua){
