@@ -41,6 +41,52 @@ if (TestUz == null) {
 	};
 };
 
+TestUz.initStartPage = function(){
+	// Dialog
+	$('#dialog').dialog({
+		autoOpen: false,
+		width: 600,
+		buttons: {
+			"Ok": function() {
+				$(this).dialog("close");
+			},
+			"Cancel": function() {
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	// Dialog Link
+	$('#dialog_link').click(function(){
+		$('#dialog').dialog('open');
+		return false;
+	});
+	
+	// Tabs
+	$(function() {
+		$( "#tabs" ).tabs();
+	});	
+	// Radio
+	$(function() {
+		$( "#radio" ).buttonset();
+	});	
+	
+	// Slider
+	$(function() {
+		$( "#slider" ).slider({
+			value:5000,
+			min: 0,
+			max: 50000,
+			step: 1000,
+			slide: function( event, ui ) {
+				$( "#amount" ).val( "$" + ui.value );
+			}
+		});
+		$( "#amount" ).val( "$" + $( "#slider" ).slider( "value" ) );
+	});
+	TestUz.init_form1();
+};
+
 TestUz.init_form1  = function(){    	
 	// Checkbox
 	$(function() {
@@ -67,15 +113,26 @@ TestUz.init_form1  = function(){
 TestUz.init_form1.setup_select02 = function(v){
 	TestUz.set_first_select_option('#select02');
 	if(v != 'select' && v != 'polu'){
-		$( "#select02" ).selectmenu('enable');	
+		// set enable anyway
+		if(Globals.chk($.mobile)){
+			$( "#select02" ).selectmenu('enable');	
+		}else{
+			$("#select02").removeAttr('disabled');	
+		}	
 	}else{
-		$( "#select02" ).selectmenu('disable');	
+		if(Globals.chk($.mobile)){
+			$( "#select02" ).selectmenu('disable');	
+		}else{
+			$("#select02").attr('disabled', '');		
+		}	
 	}
 };
 
 TestUz.set_first_select_option = function(v){
 	$( v ).val($( v +" option:first").val());
-	$( v ).selectmenu("refresh");
+	if(Globals.chk($.mobile)){
+		$( v ).selectmenu("refresh");
+	};
 };
 
 TestUz.init_form1.setup_select01 = function(v){
@@ -86,7 +143,11 @@ TestUz.init_form1.setup_select01 = function(v){
 	}
 	// check for disable
 	if((!v) || (!TestUz.data[v])){
-		$( "#select01" ).selectmenu('disable');	
+		if(Globals.chk($.mobile)){
+			$( "#select01" ).selectmenu('disable');	
+		}else{
+			$("#select01").attr('disabled', '');		
+		}
 		return;
 	} else if(TestUz.data[v]){
 		$.each(TestUz.data[v], function(i, l){
@@ -94,5 +155,9 @@ TestUz.init_form1.setup_select01 = function(v){
 		});
 	}
 	// set enable anyway
-	$( "#select01" ).selectmenu('enable');
+	if(Globals.chk($.mobile)){
+		$( "#select01" ).selectmenu('enable');
+	}else{
+		$("#select01").removeAttr('disabled');	
+	}
 };
