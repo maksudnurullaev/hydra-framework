@@ -10,8 +10,41 @@
 		</ul>
 	</div><!-- /navbar -->		
 	</div><!-- /header -->
-	<div data-role="content" id="body_placeholder">	
+
+<!-- Test form from clients -->	
+	<div data-role="fieldcontain">
+	   <label for="select0" class="select">Вид транспорта:</label>
+	   <select name="select0" id="select0">
+		  <option value="select">Выберите...</option>
+		  <option value="tyag">Тягачи</option>
+		  <option value="polu">Полуприцепная техника</option>
+		  <option value="spec">Спец. техника</option>
+	   </select>
+	</div>	
+	<div data-role="fieldcontain">
+	   <label for="select01" class="select">Модель странспорта:</label>
+	   <select name="select01" id="select01" disabled>
+		  <option value="select">Выберите...</option>
+	   </select>
+	</div>		
+	<div data-role="fieldcontain">
+	   <label for="select02" class="select">Шасси:</label>
+	   <select name="select02" id="select02" disabled>
+		  <option value="select">Выберите...</option>
+		  <optgroup label="Шасси самосвала">
+			<option value="TGS 33.360 /6x2 /76W/ Е-2">TGS 33.360 /6x2 /76W/ Е-2</option>
+			<option value="CLA 26.280 /6x4 /CS22">CLA 26.280 /6x4 /CS22</option>
+		  </optgroup>
+		  <optgroup label="Шасси на спец.технику">
+			<option value="CLA 16.220 /4x2 /CS03">CLA 16.220 /4x2 /CS03</option>
+			<option value="CLA 26.280 /6x4 /CS06">CLA 26.280 /6x4 /CS06</option>
+			<option value="CLA 26.280 /6x4 /CS13">CLA 26.280 /6x4 /CS13</option>
+		  </optgroup>		  
+	   </select>
+	</div>		
+<!-- Test form from clients -->
 	
+	<div data-role="content" id="body_placeholder">	
 		<div data-role="fieldcontain" class="ui-field-contain ui-body ui-br">
 			 <label for="name" class="ui-input-text">Текст:</label>
 			 <input type="text" value="" id="name" name="name" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset">
@@ -64,3 +97,12 @@
 		<h4>MaxMS, Powered by Hydra-Framework</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
+
+<script type="text/javascript">
+	$( "#mobile_main_page" ).live( 'pageshow',function(event){
+		TestUz.init_form1();
+	});
+	if(Globals.chk($.mobile)){
+		$.mobile.changePage("#mobile_main_page");
+	}
+</script> 

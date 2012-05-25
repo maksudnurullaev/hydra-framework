@@ -172,14 +172,12 @@ public final class SessionUtils {
 			_log.warn("request == null || request.getQueryString() == null");
 			return(false);
 		}
-		_log.error("request.getQueryString(): " + request.getQueryString());
 		if(request.getQueryString().toLowerCase().contains("http://wap.")){
 			return (true);
 		}else if(request.getHeader("User-Agent") == null){
 			_log.warn("request.getHeader(\"User-Agent\") == null");
 			return(false);			
 		}
-		_log.error("request.getHeader(\"User-Agent\"): " + request.getHeader("User-Agent"));
 		return(isMobileBrowser(request.getHeader("User-Agent")));
 	}
 	
