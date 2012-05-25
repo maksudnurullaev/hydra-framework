@@ -9,6 +9,7 @@ if (Globals == null) {
             ,'pageBusy': false
             ,'loadingImage': '<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif">'
             ,'mobile': false
+			,'mobile_init': false
         };
 };
 /* Highlight them */
@@ -107,9 +108,6 @@ Globals.setHtmlContents = function (contentsMap) {
             }
         };        
     }
-	if(Globals.chk($.mobile)){
-		$.mobile.changePage("#mobile_main_page");
-	}
 };
 /* Test DOM object existance */
 Globals.chk = function (obj) {
