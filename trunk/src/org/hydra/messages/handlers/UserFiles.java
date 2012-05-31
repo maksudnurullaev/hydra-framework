@@ -55,6 +55,36 @@ public class UserFiles extends AMessageHandler {
 		
 		return (ADeployer.deployContent(returnFormat, inMessage));
 	}
+	
+	public IMessage searchTxtDbFile(CommonMessage inMessage)
+	{
+		if(!validateData(inMessage, "appid", "folder", "file_name", "seek_string")) return inMessage;
+		
+		String realPath = FileUtils.getRealPath(inMessage, inMessage.getData().get("file_name"));
+		String seek_string = inMessage.getData().get("seek_string");
+		
+		String lines = FileUtils.findLines(realPath, seek_string, 100);
+		inMessage.setHtmlContent(lines);
+		
+		return(inMessage);
+	}	
+	public IMessage addTxtDbFile(CommonMessage inMessage){
+		if(!validateData(inMessage, "appid", "folder", "file_name")) return inMessage;
+		if(inMessage.getFile() == null){
+			inMessage.setError("NO_FILE");
+			inMessage.clearContent();
+			return(inMessage);
+		}
+		String realPath = FileUtils.getRealPath(inMessage, inMessage.getData().get("file_name"));
+		boolean result = FileUtils.saveFile(realPath, inMessage.getFile());
+		if(result){
+			inMessage.setHtmlContent("Files uploaded, size: " + inMessage.getFile().getSize()  + " bytes.");
+		}else{
+			inMessage.setHtmlContent("Failed uploading of file, size: " + inMessage.getFile().getSize() + " bytes.");
+		}
+		inMessage.setFile(null);
+		return(inMessage);
+	}
 
 	private static String getMainUrl(String inUrl) {
 		int result = inUrl.indexOf('/', 8);

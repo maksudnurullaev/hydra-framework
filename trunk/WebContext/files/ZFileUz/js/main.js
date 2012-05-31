@@ -66,6 +66,5 @@ ZFileUz.try2SendFile = function(){
                 , Name: jQuery('#input_file').prop('value')
             }
             , jQuery('#input_file')[0]);
-			//dwr.util.getValue('input_file'));
     }
 };

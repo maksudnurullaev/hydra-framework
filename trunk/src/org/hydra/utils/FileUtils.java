@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,7 +16,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Properties;
-
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -123,22 +123,32 @@ public final class FileUtils {
 		boolean result = false;
 		// 0. Generate pathname for new image
 		String orginalFileName = sanitize(file.getFilename());		
-		String uri4FilePath = Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder"))
-				+ getMD5FileName(orginalFileName) + getFileExtension(orginalFileName);
-		String realPath = getRealFile(uri4FilePath).getPath();
-		
-		System.out.println("uri4FilePath: " + uri4FilePath);
-		System.out.println("realPath: " + realPath);
-		System.out.println("orginalFileName: " + orginalFileName);
+//		String uri4FilePath = Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder"))
+//				+ getMD5FileName(orginalFileName) + getFileExtension(orginalFileName);
+//		String realPath = getRealFile(uri4FilePath).getPath();
+//		
+//		_log.debug("uri4FilePath: " + uri4FilePath);
+//		_log.debug("realPath: " + realPath);
+		String realPath = getRealPath(inMessage, (getMD5FileName(orginalFileName) + getFileExtension(orginalFileName)));
+		_log.debug("orginalFileName: " + orginalFileName);
 		
 		result = saveFile(realPath, file);
 		result = saveFileDescriptions(inMessage, realPath, dataDescriptionKeys);
 			
 		if(result)
-			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), uri4FilePath));
+			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), orginalFileName));
 		
 		return result;
-	}	
+	}
+	
+	public static String getRealPath(CommonMessage inMessage, String inFileName){
+		String uri4FilePath = Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder")) + inFileName;
+		String realPath = getRealFile(uri4FilePath).getPath();
+		
+		_log.debug("uri4FilePath: " + uri4FilePath);
+		_log.debug("realPath: " + realPath);		
+		return(realPath);
+	}
 	
 	public static String getMD5FileName(String pass) {
 		String result;
@@ -199,7 +209,7 @@ public final class FileUtils {
 		return filename.substring((lastLeft < lastRight ? lastRight : lastLeft) + 1);
 	}
 	
-	private static boolean saveFile(String realPathFile, FileTransfer file) {
+	public static boolean saveFile(String realPathFile, FileTransfer file) {
 		InputStream is = null;
 		FileOutputStream os = null;		
 		byte[] bufer = new byte[4096];
@@ -368,5 +378,39 @@ public final class FileUtils {
 			return(true);
 		}
 		return(false);
+	}
+
+	public static String findLines(String inRealPath, String inSeekString, int inLimit) {
+		StringBuffer sb = new StringBuffer();
+		StringBuffer sb2 = new StringBuffer();
+		String[] tokens = inSeekString.split("\\s+");
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(new File(inRealPath)));
+			String next_line;
+			int lines = 0; int found_lines = 0;
+			while((next_line = br.readLine()) != null){
+				lines++;
+				boolean all_tokens_found = true;
+				for(String token:tokens){
+					if(!next_line.toLowerCase().contains(token.toLowerCase())){
+						all_tokens_found = false;
+						break;
+					}
+				}
+				if(all_tokens_found){
+					found_lines ++;
+					if(found_lines < inLimit){
+						sb2.append("<small>" + next_line + "</small><br />");
+					}
+				}
+			}
+			sb.append("<h1>All (Founds): " + lines + " (" + found_lines + ") records</h1>");			
+			sb.append("<h1>Limit: " + inLimit + "</h1>");
+			if(sb2.length() > 0) sb.append(sb2);
+		} catch (Exception e) {
+			sb.append(e.getMessage());
+			_log.error(e.getMessage());
+		}
+		return(sb.toString());
 	}
 }
