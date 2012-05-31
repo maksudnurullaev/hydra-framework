@@ -41,6 +41,33 @@ if (TestUz == null) {
 	};
 };
 
+TestUz.try2FindIfDotted = function(){
+	var seek_string = $.trim($('#search_field').val());
+	if( seek_string && seek_string.indexOf('...') >= 0 ){
+		seek_string = seek_string.replace('...', '');
+		$('#search_field').val(seek_string);		
+		TestUz.try2Find();
+	}
+};
+
+TestUz.try2Find = function(){
+	var seek_string = $.trim($('#search_field').val());
+	if(seek_string){
+		Globals.sendMessage(
+			{handler:'UserFiles'
+				, action: "searchTxtDbFile"
+				, dest:   "seek_result"
+				, folder: "files"
+				, file_name: "MAN_DATA.txt"
+				, seek_string: seek_string
+			});
+	} else {
+		$('#seek_result').html('...');
+	}
+};
+
+
+
 TestUz.initStartPage = function(){
 	// Dialog
 	$('#dialog').dialog({

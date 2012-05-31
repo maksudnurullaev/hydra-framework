@@ -68,24 +68,14 @@ function sendDataFile(){
 <h3>Результат:</h3>
 <div id="seek_result">...</div>
 <script type="text/javascript">
-$('#search_field').keyup(function() {
-	var seek_string = $.trim($('#search_field').val());
-	if( seek_string && seek_string.indexOf('...') >= 0 ){
-		seek_string = seek_string.replace('...', '');
-		$('#search_field').val(seek_string);		
-		if(seek_string){
-			Globals.sendMessage(
-				{handler:'UserFiles'
-					, action: "searchTxtDbFile"
-					, dest:   "seek_result"
-					, folder: "files"
-					, file_name: "MAN_DATA.txt"
-					, seek_string: seek_string
-				});
-		} else {
-			$('#seek_result').html('...');
-		}
-	}
+$('#search_field').keyup(function(e) {
+	TestUz.try2FindIfDotted();
+});
+$('#search_field').live("keypress", function(e) {
+    /* ENTER PRESSED*/
+    if (e.keyCode == 13) {
+		TestUz.try2Find();
+    };
 });
 </script>
 <hr />
