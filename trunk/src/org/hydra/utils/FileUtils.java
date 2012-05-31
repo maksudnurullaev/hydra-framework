@@ -123,31 +123,26 @@ public final class FileUtils {
 		boolean result = false;
 		// 0. Generate pathname for new image
 		String orginalFileName = sanitize(file.getFilename());		
-//		String uri4FilePath = Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder"))
-//				+ getMD5FileName(orginalFileName) + getFileExtension(orginalFileName);
-//		String realPath = getRealFile(uri4FilePath).getPath();
-//		
-//		_log.debug("uri4FilePath: " + uri4FilePath);
-//		_log.debug("realPath: " + realPath);
-		String realPath = getRealPath(inMessage, (getMD5FileName(orginalFileName) + getFileExtension(orginalFileName)));
+		String encodedFileName = getMD5FileName(orginalFileName) + getFileExtension(orginalFileName);
+		String uri4File = getUri4File(inMessage, encodedFileName);
+		String realPath = getRealPath(inMessage, encodedFileName);
 		_log.debug("orginalFileName: " + orginalFileName);
 		
 		result = saveFile(realPath, file);
 		result = saveFileDescriptions(inMessage, realPath, dataDescriptionKeys);
 			
 		if(result)
-			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), orginalFileName));
+			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), uri4File));
 		
 		return result;
 	}
 	
+	public static String getUri4File(CommonMessage inMessage, String inFileName){
+		return(Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder")) + inFileName);
+	}
+	
 	public static String getRealPath(CommonMessage inMessage, String inFileName){
-		String uri4FilePath = Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder")) + inFileName;
-		String realPath = getRealFile(uri4FilePath).getPath();
-		
-		_log.debug("uri4FilePath: " + uri4FilePath);
-		_log.debug("realPath: " + realPath);		
-		return(realPath);
+		return(getRealFile(getUri4File(inMessage, inFileName)).getPath());
 	}
 	
 	public static String getMD5FileName(String pass) {
