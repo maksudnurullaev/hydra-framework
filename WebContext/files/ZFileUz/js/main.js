@@ -19,7 +19,6 @@ ZFileUz.setMainContent = function(id){
             jQuery(el).removeClass('highlight');
         }
     });  
-    
     var content = '[[';
     content += ('DB|Template|' + id + '.Page|span');
     content += ']]';
