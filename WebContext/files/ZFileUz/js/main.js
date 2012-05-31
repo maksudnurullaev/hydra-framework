@@ -8,12 +8,12 @@ if ( ZFileUz == null ) {
         };
 };
 
-ZFileUz.setMainContent = function(inEl){    
+ZFileUz.setMainContent = function(id){    
     if(Globals.pageBusy){
         return;
     }
     jQuery('#topmenuul a').each(function(index, el){
-         if(el.id == inEl.id){
+         if(el.id == id){
             jQuery(el).addClass('highlight');
         }else{
             jQuery(el).removeClass('highlight');
@@ -21,7 +21,7 @@ ZFileUz.setMainContent = function(inEl){
     });  
     
     var content = '[[';
-    content += ('DB|Template|' + inEl.id + '.Page|span');
+    content += ('DB|Template|' + id + '.Page|span');
     content += ']]';
 
     Globals.sendMessage({
