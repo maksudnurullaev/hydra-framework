@@ -168,11 +168,12 @@ public final class SessionUtils {
 	}
 	
 	public static boolean isMobileBrowser(HttpServletRequest request){
-		if(request == null || request.getQueryString() == null){
-			_log.warn("request == null || request.getQueryString() == null");
+		if( request == null ){
+			_log.fatal("request == null");
 			return(false);
 		}
-		if(request.getQueryString().toLowerCase().contains("http://wap.")){
+		String url = request.getRequestURL().toString() + (request.getQueryString() != null ? ("?" + request.getQueryString()) : "");
+		if(url.toLowerCase().contains("http://wap.")){
 			return (true);
 		}else if(request.getHeader("User-Agent") == null){
 			_log.warn("request.getHeader(\"User-Agent\") == null");
