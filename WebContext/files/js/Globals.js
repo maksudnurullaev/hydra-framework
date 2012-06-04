@@ -161,7 +161,7 @@ Globals.sendMessage = function (data, file) {
     MessageHandler.sendMessage(message, file, Globals.applyIncomingMessages);
 };
 Globals.confirmAndSendMessage = function (data) {
-    if(!confirm("Confirm action!\nПодтвердите действие!"))return;
+    if(!confirm("Are you sure?"))return;
     Globals.sendMessage(data);
 };
 /* Receive message from server */
