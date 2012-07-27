@@ -11,7 +11,7 @@
 		<property name="applications">
 			<set>
 				<ref bean="HydraUz_WebAppBean"/>
-				<ref bean="TestUz_WebAppBean"/>
+				<ref bean="ManUz_WebAppBean"/>
 				<ref bean="ZFileUz_WebAppBean"/>
 				<ref bean="SKTourUz_WebAppBean"/>
 				<ref bean="BlondinkaUz_WebAppBean"/>
@@ -42,11 +42,11 @@
 		</property>	    
 	</bean>
 	
-	<bean id="TestUz_WebAppBean" class="org.hydra.beans.WebApplication">
-		<property name="id" value="TestUz" />
+	<bean id="ManUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="ManUz" />
 		<property name="urls">
 			<set>
-				<value>^https?://(www\.|wap\.)?test\.uz.*</value>
+				<value>^https?://man\.hydra\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
