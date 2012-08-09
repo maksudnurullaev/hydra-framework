@@ -19,7 +19,6 @@ public interface IMessage extends Serializable {
 	List<String> getNoHighlightFields();
 	long getTimeout();
 	String getUrl();
-	String getUserId();
 	boolean isReloadPage();
 	void setContextPath(String inContextPath);
 	void setData(Map<String, String> inData);
@@ -32,7 +31,6 @@ public interface IMessage extends Serializable {
 	void setReloadPage(boolean b);
 	void setTimeout(long timeout);
 	void setUrl(String inUrl);
-	void setUserId(String inUserId);
 	HttpSession getSession();
 	void setSession(HttpSession inSession);
 }

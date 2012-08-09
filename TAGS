@@ -10,4 +10,10 @@
 [[DB|Text|%s|locale]]
 [[System|Login|form|NULL]]
 [[System|Captcha|Text|html]]
-<font color="white">[[System|LanguageBar|NULL|a]]</font>
+[[System|LanguageBar|NULL|a]]
+[[System|Session|All|Ul]]
+[[System|Session|All|Pre]]
+[[System|Login|String|none]]
+[[System|Password|form|NULL]]
+[[Files|Html|About|None]]
+[[Files|Html|About|By_Role]]

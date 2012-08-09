@@ -14,7 +14,7 @@ public final class Roles {
 				inMessage.getUrl().startsWith("http://localhost")
 						|| inMessage.getUrl().startsWith("http://127.0.0.1"))) return true;
 		String appId = inMessage.getData().get("_appid");
-		String userId = inMessage.getData().get("_user");
+		String userId = inMessage.getData().get("_userid");
 		if(appId == null || appId.length() == 0) return false;
 		if(userId == null || userId.length() == 0) return false;
 		

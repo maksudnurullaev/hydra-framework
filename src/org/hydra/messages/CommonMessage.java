@@ -19,7 +19,6 @@ public class CommonMessage implements IMessage {
 	private static final long serialVersionUID = 1L;
 
 	private FileTransfer file = null;	
-	private String userId = null;
 	private Map<String, String> data = new HashMap<String, String>();
 	private HttpSession session = null;
 	private String url = null;
@@ -68,7 +67,11 @@ public class CommonMessage implements IMessage {
 
 	@Override
 	public void setHtmlContent(String inHtmlContent) {
-		setHtmlContents(getData().get("dest"), inHtmlContent);
+		if(getData().get("dest") != null &&  !getData().get("dest").isEmpty()){
+			setHtmlContents(getData().get("dest"), inHtmlContent);
+		} else {
+			setError("Destination not defined!");
+		}
 	}
 
 	@Override
@@ -131,16 +134,6 @@ public class CommonMessage implements IMessage {
 	@Override
 	public boolean isReloadPage() {
 		return reloadPage;
-	}
-
-	@Override
-	public void setUserId(String _user_id) {
-		this.userId = _user_id;
-	}
-
-	@Override
-	public String getUserId() {
-		return userId;
 	}
 
 	@Override

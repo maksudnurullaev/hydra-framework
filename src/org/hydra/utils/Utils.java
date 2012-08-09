@@ -664,7 +664,6 @@ public final class Utils {
 		System.out.println("inMessage.getError(): " + inMessage.getError());
 		System.out.println("inMessage.getSessionID(): " + inMessage.getSession().getId());
 		System.out.println("inMessage.getUrl(): " + inMessage.getUrl());
-		System.out.println("inMessage.getUserId(): " + inMessage.getUserId());
 		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
 		System.out.println("=== End ===");
 	}
