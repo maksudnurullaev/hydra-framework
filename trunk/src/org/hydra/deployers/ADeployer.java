@@ -101,7 +101,10 @@ public final class ADeployer {
 			return Applications.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("Application") == 0)
 			return Application.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
+		else if(inWhere.compareToIgnoreCase("Files") == 0)
+			return Files.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		
+		_log.warn("Deployer: No WHERE part: " + inWhere);
 		return "Deployer: No WHERE part: " + inWhere ;
 	}
 

@@ -17,10 +17,10 @@ body{
 	font-family:verdana, Arial, Helvetica, sans-serif;
 	color:#FFFFFF;
 	background-color:#333333;
-	}
+}
 
 img{border:0; padding:0; margin:0;}
-.justify{text-align:justify;}
+.justify{ text-align: justify; }
 .bold{font-weight:bold;}`
 .center{text-align:center;}
 .right{text-align:right;}

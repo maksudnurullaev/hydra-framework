@@ -1,6 +1,7 @@
 package org.hydra.deployers;
 
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,9 +22,24 @@ public final class SystemSession {
 		else if(inKey.compareToIgnoreCase("all") == 0 &&
 				inHow.compareToIgnoreCase("pre") == 0)
 			return getAllPre(inHow, inMessage);
+		else if(inKey.compareToIgnoreCase("roles") == 0 &&
+				inHow.compareToIgnoreCase("ul") == 0)
+			return getRolesUl(inHow, inMessage);
 		
 		_log.error("Could not find relevant KEY/HOW part: " + inKey + '/' + inHow);
 		return("Could not find relevant KEY/HOW part: " + inKey + '/' + inHow);
+	}
+
+	private static String getRolesUl(String inHow, IMessage inMessage) {
+		if(inMessage == null || inMessage.getSession() == null){
+			return("<h3>Error: NO SESSION!</h3>");
+		}
+		List<String> roles = SessionUtils.getSessionRoles(inMessage);
+		StringBuffer sb = new StringBuffer();
+		for(String role:roles){
+			sb.append(String.format("<li>%s</li>", role));			
+		}
+		return(String.format("<h3>Roles</h3><ul>%s</ul>", sb.toString())); 
 	}
 
 	private static String getAllUl(String inHow, IMessage inMessage) {

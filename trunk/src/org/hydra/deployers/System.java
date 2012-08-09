@@ -25,6 +25,8 @@ public final class System {
 			return getSystemLanguagebarKeyHow(inKey, inHow, inMessage);
 		if(inWhat.compareToIgnoreCase("Login") == 0)
 			return SystemLogin.getKeyHow(inKey, inHow, inMessage);
+		if(inWhat.compareToIgnoreCase("Password") == 0)
+			return SystemPassword.getKeyHow(inKey, inHow, inMessage);		
 		if(inWhat.compareToIgnoreCase("Captcha") == 0)
 			return SystemCaptcha.getKeyHow(inKey, inHow, inMessage);
 		if(inWhat.compareToIgnoreCase("Tagger") == 0)
@@ -55,13 +57,13 @@ public final class System {
 		if(appLocales != null && appLocales.size() > 0){
 			String resultStr = "";
 			for (Map.Entry<String, String> entry:appLocales.entrySet()) {
+				if(!resultStr.isEmpty())
+					resultStr += "&nbsp;&nbsp";
 				if(entry.getKey().compareToIgnoreCase(inMessage.getData().get("locale")) == 0){ 
 					resultStr += entry.getValue();
 				}else{
 					resultStr += Utils.T("template.html.a.language.bar", entry.getKey(), entry.getValue());
 				}
-				if(!resultStr.isEmpty())
-					resultStr += "&nbsp;&nbsp;";
 			}
 			return resultStr;
 		}

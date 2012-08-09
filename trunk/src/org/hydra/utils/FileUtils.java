@@ -325,13 +325,13 @@ public final class FileUtils {
 		return properties;
 	}
 
-	public static String getFromHtmlFile(String inAppId, String fileName)  {
+	public static String getHtmlFromFile(String inAppId, String fileName)  {
 		String filePath = String.format("/files/%s/html/%s.html", inAppId, fileName);
 		StringBuffer content = new StringBuffer(String.format("<!-- %s -->", fileName));
 		
 		File file = getRealFile(filePath);
 		if(file == null || (!file.exists())){
-			content.append(String.format("<!-- %s not found! -->", fileName));
+			content.append(String.format("<!-- %s not found! -->", filePath));
 			return(content.toString());
 		}
 		try {

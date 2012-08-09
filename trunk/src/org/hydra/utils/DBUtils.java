@@ -345,7 +345,8 @@ public final class DBUtils {
 		if(value == null || value.isEmpty()){
 			_log.debug("testForExistenceOfKeyAndValue not passed!");
 			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_OR_VALUE_NOT_EXIST);
-			errorFields.add(fieldID);			
+			errorFields.add(fieldID);		
+			return(null);
 		}	
 		return(value);
 	}

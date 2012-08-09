@@ -7,9 +7,8 @@ if (Globals == null) {
             ,'editLinks': 'editLinks'        
             ,'tryToLoadCount': 0
             ,'pageBusy': false
-            ,'loadingImage': '<img src="http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif">'
-            ,'mobile': false
-			,'mobile_init': false
+            ,'loadingText': 'Wait...'
+            ,'onStartPage': false
         };
 };
 /* Highlight them */
@@ -30,8 +29,8 @@ Globals.setErrorClass = function(val, id){
 /* NO Highlight them */
 Globals.noHighlightFields = function(elementIDs){
     jQuery.each(elementIDs, function (index, id){
-		var node = jQuery('#' + id);
-		node.removeClass('error');
+        var node = jQuery('#' + id);
+        node.removeClass('error');
     });
 };
 /* toogle display */
@@ -39,28 +38,28 @@ Globals.toogleBlock = function(elemId){
     var node = jQuery('#' + elemId);
     if(!node) return;
     if(node.css('display') == 'none'){
-		Globals.showNode(node, true);
-	} else {
-		Globals.showNode(node, false);
-	}
+        Globals.showNode(node, true);
+    } else {
+        Globals.showNode(node, false);
+    }
 };
 /* toogle block highlight */ 
 Globals.toogleVisibility = function(elemId){
     var node = jQuery('#' + elemId);
     if(!node) return;
     if(node.css('visibility') == 'visible'){
-		node.css('visibility', 'hidden');
-	} else {
-		node.css('visibility', 'visible');
-	}
+        node.css('visibility', 'hidden');
+    } else {
+        node.css('visibility', 'visible');
+    }
 };
 /* clear edit area */
 Globals.clearEditArea = function(){
     var node = jQuery('#' + Globals.editBox);
-	if(node){
-		node.html("&nbsp;");
-		Globals.showNode(node, false);
-	}
+    if(node){
+        node.html("&nbsp;");
+        Globals.showNode(node, false);
+    }
 };
 /* Edit online */
 Globals.editIt = function(divId, handleName, actionName){        
@@ -73,38 +72,38 @@ Globals.editIt = function(divId, handleName, actionName){
     });
 };
 Globals.showNode = function(node, isVisible){
-	if(isVisible && (node.css('visibility') != 'visible' || node.css('display')) != 'block'){
-		node.css('visibility', 'visible');
-		node.css('display', 'block');
-		return;
-	} 
-	if(!isVisible && (node.css('visibility') != 'hidden'  || node.css('display')) != 'none') {
-		node.css('visibility', 'hidden');
-		node.css('display', 'none');
-	}
+    if(isVisible && (node.css('visibility') != 'visible' || node.css('display')) != 'block'){
+        node.css('visibility', 'visible');
+        node.css('display', 'block');
+        return;
+    } 
+    if(!isVisible && (node.css('visibility') != 'hidden'  || node.css('display')) != 'none') {
+        node.css('visibility', 'hidden');
+        node.css('display', 'none');
+    }
 };
 
 Globals.loadInitialPage = function($) {
-	Globals.sendMessage({
-		handler: 'General'
-		, action: 'getInitialBody'
-		, dest: 'body'
-	});
+    Globals.sendMessage({
+        handler: 'General'
+        , action: 'getInitialBody'
+        , dest: 'body'
+    });
 };
 /* Set html content by contents map */
 Globals.setHtmlContents = function (contentsMap) {
     if(!contentsMap){
         return;
-    }	
+    }    
     for(var elemId in contentsMap){
         var htmlContent = contentsMap[elemId];
         var node = Globals.getPlaceholderOrNode(elemId);
         if (node.length && htmlContent) {
             if(htmlContent.search(/^close_me/i) >= 0){
-				Globals.showNode(node, false);
+                Globals.showNode(node, false);
             }else{
                 node.html(htmlContent);
-				Globals.showNode(node, true);
+                Globals.showNode(node, true);
             }
         };        
     }
@@ -124,27 +123,27 @@ Globals.decodeContent = function(content){
 };
 /* get element placeholder or real element by id */
 Globals.getPlaceholderOrNode = function(elemId){
-	var node = jQuery('#' + elemId + '_placeholder');
-	if(!node.length){
-		node = jQuery('#' + elemId);
-	}
-	return(node);
+    var node = jQuery('#' + elemId + '_placeholder');
+    if(!node.length){
+        node = jQuery('#' + elemId);
+    }
+    return(node);
 };
 /* set & restore wait element*/
 Globals.setWaitElement = function (data){
     Globals.pageBusy = true;
-	var node = Globals.getPlaceholderOrNode('wait_element');
+    var node = Globals.getPlaceholderOrNode('wait_element');
     if(node.length){
-        node.html(Globals.loadingImage);
+        node.html(Globals.loadingText);
     } else {
-		node = Globals.getPlaceholderOrNode(data.dest);
-		if(node.length){
-			node.html(Globals.loadingImage);
-        }    
+        node = Globals.getPlaceholderOrNode(data.dest);
+        if(node.length){
+            node.html(Globals.loadingText);
+        }
     }
 };
 Globals.restoreWaitElement = function(){
-	var node = jQuery('#' + 'wait_element');
+    var node = jQuery('#' + 'wait_element');
     if(node.length){
         node.html("&nbsp;");
      }
@@ -176,26 +175,15 @@ Globals.applyIncomingMessages = function (messages) {
     Globals.restoreWaitElement();
 };
 Globals.porcessMessage = function (message) {
-    // check for error
-    if (Globals.chk(message.error)) {
-        alert(message.error);
-    };  
     // check to reload page
     if(Globals.chk(message.reloadPage)){
         window.location.reload();
         return;
     };
-    // is it new session?
-    if(Globals.chk(Globals.sessionID)){ 
-        if(Globals.sessionID != message.sessionID){
-			var body = Globals.getPlaceholderOrNode('body');
-			body.html(Globals.loadingImage);
-            window.location.reload();
-        }
-    } else {
-        Globals.sessionID = message.sessionID ;
-    }
-    
+    // check for error
+    if (Globals.chk(message.error)) {
+        alert(message.error);
+    };
     // check for html elements
     if (Globals.chk(message.htmlContents)) {
         Globals.setHtmlContents(message.htmlContents);
@@ -208,6 +196,11 @@ Globals.porcessMessage = function (message) {
     if (Globals.chk(message.highlightFields)) {
         Globals.highlightFields(message.highlightFields);
     };
+    //Globals.onStartPage initialization block
+    if(Globals.onStartPage){
+        Globals.onStartPage();
+        Globals.onStartPage = false;
+    }
 };
 Globals.htmlEscape = function (str) {
     return String(str)
@@ -217,7 +210,3 @@ Globals.htmlEscape = function (str) {
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
 };
-
-
-
-

@@ -139,7 +139,7 @@ public class IndexHtml extends HttpServlet {
 			}
 		}
 		
-		String content = FileUtils.getFromHtmlFile(inAppId, htmlTag);
+		String content = FileUtils.getHtmlFromFile(inAppId, htmlTag);
 		if(content == null){
 			_log.warn(htmlTag + " not found for: " + inAppId);
 			return("");

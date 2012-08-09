@@ -1,6 +1,8 @@
 package org.hydra.utils;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
@@ -103,13 +105,14 @@ public final class SessionUtils {
 		if(inContext != null){
 			// check for session browser value
 			if(!isSessionDataExist(inContext, "browser", inApp.getId())){
-				inResult.setErrorString("Session too old, page will be reload!");
+				inMessage.setError(inContext.getSession().getId());
 				inMessage.setReloadPage(true);
 				return;
 			}
 			inMessage.getData().put("browser",getSessionData(inContext, "browser", inApp.getId()));
 			// check for user (optional)
-			inMessage.getData().put("_user", getSessionData(inContext, "_user", inApp.getId()));
+			inMessage.getData().put("_userid", getSessionData(inContext, "_userid", inApp.getId()));
+			inMessage.getData().put("_roles", getSessionData(inContext, "_roles", inApp.getId()));
 			if(inMessage.getData().containsKey("locale")){ 
 				return; // not need to init locale state
 			}
@@ -135,6 +138,11 @@ public final class SessionUtils {
 		String key = getAppAndKeyID(inAppId,inKey);
 		return ((String)inContext.getSession().getAttribute(key));
 	}
+	
+	public static String getSessionData(HttpSession inContext, String inKey, String inAppId){
+		String key = getAppAndKeyID(inAppId,inKey);
+		return ((String)inContext.getAttribute(key));
+	}	
 	
 	public static boolean isSessionDataExist(WebContext inContext, String inKey, String inAppId){
 		String key = getAppAndKeyID(inAppId,inKey);
@@ -173,7 +181,7 @@ public final class SessionUtils {
 			return(false);
 		}
 		String url = request.getRequestURL().toString() + (request.getQueryString() != null ? ("?" + request.getQueryString()) : "");
-		if(url.toLowerCase().contains("http://wap.")){
+		if(url.toLowerCase().contains("http://wap")){
 			return (true);
 		}else if(request.getHeader("User-Agent") == null){
 			_log.warn("request.getHeader(\"User-Agent\") == null");
@@ -195,5 +203,25 @@ public final class SessionUtils {
 		}
 		_log.debug("... mobile browser not found!");
 		return(false);
+	}
+
+	public static List<String> getSessionRoles(IMessage inMessage) {
+		ArrayList<String> roles = new ArrayList<String>();
+		String roles_as_string = (inMessage.getData() != null ?  inMessage.getData().get("_roles") : null);
+		String user = (inMessage.getData() != null ?  inMessage.getData().get("_userid") : null);
+		
+		// user NOT logged in
+		if(user == null || user.isEmpty()){
+			roles.add("NonRegistered");
+			return(roles);
+		}
+		// ESLE
+		roles.add("Registered");
+		if(roles_as_string != null && !roles_as_string.isEmpty()){
+			String[] temp_roles = roles_as_string.split(",");
+			for(String role:temp_roles)
+				roles.add(role);
+		}	
+		return(roles);
 	}	
 }

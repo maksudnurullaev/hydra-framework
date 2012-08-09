@@ -38,15 +38,18 @@ public class General extends AMessageHandler { // NO_UCD
 				appId));		
 	}
 	
-	public static IMessage getInitialBody(CommonMessage inMessage) {		
-		boolean is_mobile = inMessage.getData().get("browser").equalsIgnoreCase("mobile");
+	public static IMessage getInitialBody(CommonMessage inMessage) {
+		boolean is_mobile = 
+				inMessage.getData() != null 
+				&& inMessage.getData().get("browser") != null 
+				&& inMessage.getData().get("browser").equalsIgnoreCase("mobile");
 		String appId = inMessage.getData().get("appid");
-		
+
 		String content = "";
 		if(is_mobile && FileUtils.isExistAppHtmlFile(appId, "body.mobile")){
-			content = FileUtils.getFromHtmlFile(appId,"body.mobile");
+			content = FileUtils.getHtmlFromFile(appId,"body.mobile");
 		}else{
-			content = FileUtils.getFromHtmlFile(appId,"body");			
+			content = FileUtils.getHtmlFromFile(appId,"body");			
 		}
 		if(content != null){
 			_log.debug(String.format("deploy connent for (appid/locale): ", 
