@@ -10,10 +10,10 @@
  </tr>
  <tr>
     <td rowspan="4" class="dark_bg">[[DB|Text|UsingConditions|locale]]:</td>
-    <td colspan="4"><input type="checkbox" id="vehicle_using_condition_long_dist"><label for="using_condition_long_dist">[[DB|Text|UsingConditionsLongDist|locale]]</label></td>
+    <td colspan="4"><input type="checkbox" id="vehicle_using_condition_long_dist"><label for="vehicle_using_condition_long_dist">[[DB|Text|UsingConditionsLongDist|locale]]</label></td>
  </tr>
  <tr>
-    <td colspan="4"><input type="checkbox" id="vehicle_using_condition_local"><label for="using_condition_local">[[DB|Text|UsingConditionsLocal|locale]]</label></td>
+    <td colspan="4"><input type="checkbox" id="vehicle_using_condition_local"><label for="vehicle_using_condition_local">[[DB|Text|UsingConditionsLocal|locale]]</label></td>
  </tr> 
  <tr>
     <td colspan="4"><input type="checkbox" id="vehicle_using_condition_bilding"><label for="vehicle_using_condition_bilding">[[DB|Text|UsingConditionsBuilding|locale]]</label></td>
@@ -119,9 +119,6 @@
     });
     $("#vehicle_trailer_info_correction").click(function(){
         $("#vehicle_trailer_info_correction_value").attr("disabled", !$(this).is(":checked"));
-    });
-    $("#vehicle_client_specification").click(function(){
-        $("#vehicle_client_specification_correction").attr("disabled", !$(this).is(":checked"));
     });
     $("#vehicle_client_specification_correction").click(function(){
         $("#vehicle_client_specification_correction_value").attr("disabled", !$(this).is(":checked"));
