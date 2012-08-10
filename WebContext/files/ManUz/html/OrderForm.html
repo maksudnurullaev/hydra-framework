@@ -1,0 +1,141 @@
+<h3>[[DB|Text|OrderInfo|locale]]</h3>
+<table class="order_form" style="margin-bottom:5px;" >
+ <tr>
+    <td class="dark_bg">[[DB|Text|InputDate|locale]]:</td>
+    <td colspan="4"><input id="ordering_date" type="text"></td>
+ </tr>
+ <tr>
+    <td class="dark_bg">[[DB|Text|ClientName|locale]]:</td>
+    <td colspan="4"><input id="ordering_client_name" type="text"></td>
+ </tr>
+ <tr>
+    <td rowspan="4" class="dark_bg">[[DB|Text|UsingConditions|locale]]:</td>
+    <td colspan="4"><input type="checkbox" id="vehicle_using_condition_long_dist"><label for="using_condition_long_dist">[[DB|Text|UsingConditionsLongDist|locale]]</label></td>
+ </tr>
+ <tr>
+    <td colspan="4"><input type="checkbox" id="vehicle_using_condition_local"><label for="using_condition_local">[[DB|Text|UsingConditionsLocal|locale]]</label></td>
+ </tr> 
+ <tr>
+    <td colspan="4"><input type="checkbox" id="vehicle_using_condition_bilding"><label for="vehicle_using_condition_bilding">[[DB|Text|UsingConditionsBuilding|locale]]</label></td>
+ </tr> 
+ <tr>
+    <td><input type="checkbox" id="vehicle_using_condition_other"><label for="vehicle_using_condition_other">[[DB|Text|UsingConditionsOther|locale]]</label></td>
+    <td colspan="3"><input disabled="1" type="text" id="vehicle_using_condition_other_value"></td>
+ </tr> 
+ <tr>
+    <td class="dark_bg">[[DB|Text|VehicleType|locale]]:</td>
+    <td><input type="checkbox" id="vehicle_type_saddle"><label for="vehicle_type_saddle">[[DB|Text|VehicleTypeSaddle|locale]]</label></td>
+    <td colspan="2"><input type="checkbox" id="vehicle_type_special"><label for="vehicle_type_special">[[DB|Text|VehicleTypeSpecial|locale]]</label></td>
+ </tr> 
+ <tr>
+    <td rowspan="2" class="dark_bg">[[DB|Text|OrderedVehicleInfo|locale]]</td>
+    <td>[[DB|Text|VehicleModel|locale]]</td>
+    <td><input type="text" id="vehicle_model_value"></td>
+    <td><input type="checkbox" id="vehicle_model_correction"></td>
+    <td><input disabled="1" type="text" id="vehicle_model_correction_value"></td>
+ </tr>
+ <tr>
+    <td>[[DB|Text|VehicleModelAdditionalInfo|locale]]</td>
+    <td><input type="text" id="vehicle_model_additonal_info"></td>
+    <td><input type="checkbox" id="vehicle_model_additonal_info_correction"></td>
+    <td><input disabled="1" type="text" id="vehicle_model_additonal_info_correction_value"></td>
+ </tr>
+ <tr>
+    <td colspan="2">[[DB|Text|VehicleTrailerConf|locale]]</td>
+    <td><input type="text" id="vehicle_trailer_info"></td>
+    <td><input type="checkbox" id="vehicle_trailer_info_correction"></td>
+    <td><input disabled="1" type="text" id="vehicle_trailer_info_correction_value"></td>
+ </tr>
+ <tr>
+    <td colspan="2">[[DB|Text|VehicleClientSpecification|locale]]</td>
+    <td><input type="checkbox" id="vehicle_client_specification"><label for="vehicle_client_specification">[[DB|Text|Included|locale]]</label></td>
+    <td><input disabled="1" type="checkbox" id="vehicle_client_specification_correction"></td>
+    <td><input disabled="1" type="text" id="vehicle_client_specification_correction_value"></td>
+ </tr>
+ <tr>
+    <td colspan="2">[[DB|Text|VehicleOrderCount|locale]]</td>
+    <td><input type="text" style="width: 4em;" id="vehicle_order_count"><label for="vehicle_order_count"> [[DB|Text|OrderCount|locale]]</label></td>
+    <td><input type="checkbox" id="vehicle_order_count_correction"></td>
+    <td><input disabled="1" type="text" id="vehicle_order_count_correction_value"></td>
+ </tr>
+ <tr>
+    <td colspan="2">[[DB|Text|ProcurementDate|locale]]</td>
+    <td><input type="text" style="width: 4em;" id="vehicle_procurement_date"><label for="vehicle_procurement_date"> [[DB|Text|Days|locale]]</label></td>
+    <td><input type="checkbox" id="vehicle_procurement_date_correction"></td>
+    <td><input disabled="1" type="text" id="vehicle_procurement_date_correction_value"></td>
+ </tr>
+ <tr>
+    <td rowspan="2" class="vt" colspan="2">[[DB|Text|ProcurementConditon|locale]]</td>
+    <td><input type="checkbox" id="vehicle_procurement_condition_self_delivery"> [[DB|Text|ProcurementSelfDelivery|locale]]</td>
+    <td rowspan="2" class="vt"><input type="checkbox" id="vehicle_procurement_condition"></td>
+    <td rowspan="2" class="vt"><input disabled="1" type="text" id="vehicle_procurement_condition_value"></td>
+ </tr>
+ <tr>
+    <td><input type="checkbox" id="vehicle_procurement_condition_man_delivery"> [[DB|Text|ProcurementManDelivery|locale]]</td>
+ </tr>
+ 
+ <tr>
+    <td rowspan="3" class="vt" colspan="2">[[DB|Text|PaymentConditon|locale]]</td>
+    <td><input type="checkbox" id="paynment_cashless"> [[DB|Text|PaymentCashless|locale]]</td>
+    <td rowspan="3" class="vt"><input type="checkbox" id="paynment_condition"></td>
+    <td rowspan="3" class="vt"><input disabled="1" type="text" id="paynment_condition_value"></td>
+ </tr>
+ <tr>
+    <td><input type="checkbox" id="paynment_cash"> [[DB|Text|PaymentCash|locale]]</td>
+ </tr>
+ <tr>
+    <td><input type="checkbox" id="paynment_lising"> [[DB|Text|PaymentLising|locale]]</td>
+ </tr>
+ 
+ <tr>
+    <td colspan="2">[[DB|Text|VehicleServicePackets|locale]]</td>
+    <td colspan="3"><input type="text" id="vehicle_service_packets"></td>
+ </tr>     
+
+ <tr>
+    <td rowspan="3" class="vt" colspan="2">[[DB|Text|ClientConnection|locale]]</td>
+    <td colspan="3"><input type="checkbox" id="client_connection_phone"> [[DB|Text|Phone|locale]]</td>
+ </tr>
+ <tr>
+    <td colspan="3"><input type="checkbox" id="client_connection_email"> [[DB|Text|EMail|locale]]</td>
+ </tr>
+ <tr>
+    <td colspan="3"><input type="checkbox" id="client_connection_mail"> [[DB|Text|Mail|locale]]</td>
+ </tr>         
+ 
+</table>
+<script>
+    $(function() {
+        $( "#ordering_date" ).datepicker();
+    });
+    $("#vehicle_using_condition_other").click(function(){
+        $("#vehicle_using_condition_other_value").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#vehicle_model_correction").click(function(){
+        $("#vehicle_model_correction_value").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#vehicle_model_additonal_info_correction").click(function(){
+        $("#vehicle_model_additonal_info_correction_value").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#vehicle_trailer_info_correction").click(function(){
+        $("#vehicle_trailer_info_correction_value").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#vehicle_client_specification").click(function(){
+        $("#vehicle_client_specification_correction").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#vehicle_client_specification_correction").click(function(){
+        $("#vehicle_client_specification_correction_value").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#vehicle_order_count_correction").click(function(){
+        $("#vehicle_order_count_correction_value").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#vehicle_procurement_date_correction").click(function(){
+        $("#vehicle_procurement_date_correction_value").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#vehicle_procurement_condition").click(function(){
+        $("#vehicle_procurement_condition_value").attr("disabled", !$(this).is(":checked"));
+    });
+    $("#paynment_condition").click(function(){
+        $("#paynment_condition_value").attr("disabled", !$(this).is(":checked"));
+    });
+</script>
