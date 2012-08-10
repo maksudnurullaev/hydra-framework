@@ -11,11 +11,10 @@ input[type="checkbox"] {
 
 table.order_form {
     border: 2px solid #c6d9f1;
+}
+table.order_form td{
     vertical-align:text-top;
 }
-
-table.order_form tr.separator { height: 10px; }
-
 table.order_form td.dark_bg{
     text-align: right;
 }
