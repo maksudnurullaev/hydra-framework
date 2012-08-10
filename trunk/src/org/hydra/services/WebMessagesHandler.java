@@ -149,10 +149,8 @@ public class WebMessagesHandler extends ALogger {
 				
 				if(inMessage.getError() != null) return(true);
 				
-				// send message to initialize body as usual
-				inMessage.getData().put("handler", "General");				
-				inMessage.getData().put("action", "getInitialBody");
-				return(false);
+				inMessage.setReloadPage(true);
+				return(true);
 			}
 		} else if(handler.compareToIgnoreCase("User") == 0){
 			if(action.compareToIgnoreCase("login") == 0){
