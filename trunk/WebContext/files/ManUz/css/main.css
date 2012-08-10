@@ -18,6 +18,6 @@ table.order_form td{
 table.order_form td.dark_bg{
     text-align: right;
 }
-table.order_form tr:nth-child(even) {
+tr.alt td{
 background-color: #c6d9f1;
 } 
