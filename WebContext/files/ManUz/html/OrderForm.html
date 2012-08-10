@@ -25,7 +25,7 @@
  <tr>
     <td class="dark_bg">[[DB|Text|VehicleType|locale]]:</td>
     <td><input type="checkbox" id="vehicle_type_saddle"><label for="vehicle_type_saddle">[[DB|Text|VehicleTypeSaddle|locale]]</label></td>
-    <td colspan="2"><input type="checkbox" id="vehicle_type_special"><label for="vehicle_type_special">[[DB|Text|VehicleTypeSpecial|locale]]</label></td>
+    <td colspan="3"><input type="checkbox" id="vehicle_type_special"><label for="vehicle_type_special">[[DB|Text|VehicleTypeSpecial|locale]]</label></td>
  </tr> 
  <tr>
     <td rowspan="2" class="dark_bg">[[DB|Text|OrderedVehicleInfo|locale]]:</td>
@@ -106,7 +106,9 @@
 <script>
     $(document).ready($(function() {
         $( "#ordering_date" ).datepicker();
+        $("tr:even").css("background-color", "#c6d9f1");
     }));
+    
     $("#vehicle_using_condition_other").click(function(){
         $("#vehicle_using_condition_other_value").attr("disabled", !$(this).is(":checked"));
     });
