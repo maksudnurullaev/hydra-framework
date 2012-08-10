@@ -1,5 +1,22 @@
 div.edit { border-top: 2px solid gray; border-bottom: 2px solid gray; padding: 10px; margin: 15px; text-align: center; background: white; color: black; }
 textarea.edittextarea { width: 100%; height: 200px; border: 1px solid #7F9DB9; }
-input {width: 25em; border: 1px solid rgb(127, 157, 185);}	
+input {width: 25em; border: 1px solid rgb(127, 157, 185);}
+input.input10em {width: 10em; border: 1px solid rgb(127, 157, 185);}
 .highlight { border: 3px solid green; }
 .error {background: #F0E68C;}
+
+input[type="checkbox"] {
+ width: auto;
+}
+
+table.order_form{
+    border: 2px solid #c6d9f1;
+}
+
+table.order_form tr.separator { height: 10px; }
+
+table.order_form td.dark_bg{
+    text-align: right;
+    vertical-align:text-top;
+}
+.vt {vertical-align:text-top;}
