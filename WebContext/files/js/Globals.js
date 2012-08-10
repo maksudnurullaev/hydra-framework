@@ -177,7 +177,7 @@ Globals.applyIncomingMessages = function (messages) {
 Globals.porcessMessage = function (message) {
     // check to reload page
     if(Globals.chk(message.reloadPage)){
-        window.location.reload();
+        window.location.reload(true);
         return;
     };
     // check for error

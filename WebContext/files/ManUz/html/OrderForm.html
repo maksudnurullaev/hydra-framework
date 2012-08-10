@@ -104,9 +104,9 @@
  </tr>         
 </table>
 <script>
-    $(function() {
+    $(document).ready($(function() {
         $( "#ordering_date" ).datepicker();
-    });
+    }));
     $("#vehicle_using_condition_other").click(function(){
         $("#vehicle_using_condition_other_value").attr("disabled", !$(this).is(":checked"));
     });
