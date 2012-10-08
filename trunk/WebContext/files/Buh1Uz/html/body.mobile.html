@@ -1,0 +1,108 @@
+<div data-role="page" id="mobile_main_page">
+	<div data-role="header">
+		<h1>UzManAuto</h1>
+		<a href="index.html" data-icon="gear" class="ui-btn-right">Options</a>
+	<div data-role="navbar">
+		<ul>
+			<li><a href="#">Стрица №1</a></li>
+			<li><a href="#">Стрица №2</a></li>
+			<li><a href="#">Стрица №3</a></li>
+		</ul>
+	</div><!-- /navbar -->		
+	</div><!-- /header -->
+
+<!-- Test form from clients -->	
+	<div data-role="fieldcontain">
+	   <label for="select0" class="select">Вид транспорта:</label>
+	   <select name="select0" id="select0">
+		  <option value="select">Выберите...</option>
+		  <option value="tyag">Тягачи</option>
+		  <option value="polu">Полуприцепная техника</option>
+		  <option value="spec">Спец. техника</option>
+	   </select>
+	</div>	
+	<div data-role="fieldcontain">
+	   <label for="select01" class="select">Модель странспорта:</label>
+	   <select name="select01" id="select01" disabled>
+		  <option value="select">Выберите...</option>
+	   </select>
+	</div>		
+	<div data-role="fieldcontain">
+	   <label for="select02" class="select">Шасси:</label>
+	   <select name="select02" id="select02" disabled>
+		  <option value="select">Выберите...</option>
+		  <optgroup label="Шасси самосвала">
+			<option value="TGS 33.360 /6x2 /76W/ Е-2">TGS 33.360 /6x2 /76W/ Е-2</option>
+			<option value="CLA 26.280 /6x4 /CS22">CLA 26.280 /6x4 /CS22</option>
+		  </optgroup>
+		  <optgroup label="Шасси на спец.технику">
+			<option value="CLA 16.220 /4x2 /CS03">CLA 16.220 /4x2 /CS03</option>
+			<option value="CLA 26.280 /6x4 /CS06">CLA 26.280 /6x4 /CS06</option>
+			<option value="CLA 26.280 /6x4 /CS13">CLA 26.280 /6x4 /CS13</option>
+		  </optgroup>		  
+	   </select>
+	</div>		
+<!-- Test form from clients -->
+	
+	<div data-role="content" id="body_placeholder">	
+		<div data-role="fieldcontain" class="ui-field-contain ui-body ui-br">
+			 <label for="name" class="ui-input-text">Текст:</label>
+			 <input type="text" value="" id="name" name="name" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset">
+		</div>
+		<div data-role="fieldcontain" class="ui-field-contain ui-body ui-br">
+			<label for="slider2" id="slider2-label" class="ui-slider">Переключатель:</label>
+			<select data-role="slider" id="slider2" name="slider2" class="ui-slider-switch">
+				<option value="off">Off</option>
+				<option value="on">On</option>
+			</select>
+		</div>			
+	</div>
+	
+	<fieldset data-role="controlgroup" data-mini="true">
+	   <legend>Выбор мощности тягача:</legend>
+		<input type="radio" name="radio-choice-1" id="radio-mini-1" value="choice-1" checked="checked" />
+
+		<label for="radio-mini-1">300 л.с.</label>
+		<input type="radio" name="radio-choice-1" id="radio-mini-2" value="choice-2"  />
+
+		<label for="radio-mini-2">400 л.с.</label>
+		<input type="radio" name="radio-choice-1" id="radio-mini-3" value="choice-3"  />
+
+		<label for="radio-mini-3">500 л.с.</label>
+	</fieldset>	
+
+	<div data-role="fieldcontain">
+		<fieldset data-role="controlgroup">
+		   <legend>Выбор типа тягача:</legend>
+		   <input type="checkbox" name="checkbox-1" id="checkbox-1" class="custom" />
+		   <label for="checkbox-1">Расширенная ось</label>
+		   <input type="checkbox" name="checkbox-2" id="checkbox-2" class="custom" />
+		   <label for="checkbox-2">АККП</label>
+		</fieldset>
+	</div>
+
+	<div data-role="fieldcontain">
+	   <label for="select-choice-1" class="select">Срочность заказа:</label>
+	   <select name="select-choice-1" id="select-choice-1">
+		  <option value="standard">Стандартные: 27 дней</option>
+		  <option value="rush">Срочный: 15 дней</option>
+		  <option value="express">Експресс: 7 дней</option>
+	   </select>
+	</div>
+
+	<label for="slider-step">Пробег (тыс. км.):</label>
+	<input type="range" name="slider" id="slider-step" value="5" min="0" max="50" step="1" />	
+<!-- /content -->
+	<div data-role="footer">
+		<h4>MaxMS, Powered by Hydra-Framework</h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+<script type="text/javascript">
+	$( "#mobile_main_page" ).live( 'pageshow',function(event){
+		TestUz.init_form1();
+	});
+	if(Globals.chk($.mobile)){
+		$.mobile.changePage("#mobile_main_page");
+	}
+</script> 
