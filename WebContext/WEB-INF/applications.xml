@@ -12,6 +12,7 @@
 			<set>
 				<ref bean="HydraUz_WebAppBean"/>
 				<ref bean="ManUz_WebAppBean"/>
+				<ref bean="Buh1Uz_WebAppBean"/>
 				<ref bean="ZFileUz_WebAppBean"/>
 				<ref bean="SKTourUz_WebAppBean"/>
 				<ref bean="BlondinkaUz_WebAppBean"/>
@@ -47,6 +48,26 @@
 		<property name="urls">
 			<set>
 				<value>^https?://man\.hydra\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>
+
+	<bean id="Buh1Uz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="Buh1Uz" />
+		<property name="urls">
+			<set>
+				<value>^https?://buh1\.hydra\.uz.*</value>
 			</set>
 		</property>		
 	    <!-- Set locales -->
