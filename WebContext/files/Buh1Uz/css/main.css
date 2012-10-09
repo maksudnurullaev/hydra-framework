@@ -20,4 +20,25 @@ table.order_form td.dark_bg{
 }
 tr.alt td{
 background-color: #c6d9f1;
-} 
+}
+ 
+#copyright {
+    padding: 20px 0;
+}
+#copyright p {
+    margin: 0;
+    padding: 0;
+}
+.fl_left {
+    float: left;
+}
+.fl_right {
+    float: right;
+}
+br.clear {
+    clear: both;
+    margin-top: -15px;
+}
+.clear {
+    clear: both;
+}
