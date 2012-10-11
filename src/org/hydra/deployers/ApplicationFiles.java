@@ -31,7 +31,7 @@ public class ApplicationFiles extends AMessageHandler {
 		
 		List<String> fileURLs = new ArrayList<String>();		
 		FileUtils.getListOfFiles4Dir(
-				String.format(FileUtils.URL4FILES_APPID_SUBFOLDER, inAppID, "images"),
+				String.format(FileUtils.URL4FILES_APPID_SUBFOLDER, inAppID, "files"),
 				fileURLs,
 				null);		
 		
@@ -49,7 +49,7 @@ public class ApplicationFiles extends AMessageHandler {
 	    	+ ",action:'addForm'"
 	    	+ ",appid:" + Utils.Q(inAppID) 
 	    	+ ",dest:" + Utils.Q(Constants._admin_app_action_div)
-	    	+ ",folder:'images'";
+	    	+ ",folder:'files'";
 	    
 	    header.append(Utils.T("template.html.a.onClick.sendMessage.Label"
 				, jsData

@@ -37,12 +37,12 @@ public class AdmFiles extends AMessageHandler {
 		String dest = inMessage.getData().get("dest");
 		
 		ArrayList<IField> fields = new ArrayList<IField>();
-		FieldInput fileField = new FieldInput("input_file");
+		FieldInput fileField = new FieldInput("New_File");
 		fileField.setType("file");
 		fields.add(fileField);
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|New_File|span]]</h4>"), appId, 
+				String.format("<h4>[[Dictionary|Text|New_File|NULL]]</h4>"), appId, 
 				"AdmFiles", "add", 
 				"AdmFiles", "list", 
 				dest, fields, null, inMessage);

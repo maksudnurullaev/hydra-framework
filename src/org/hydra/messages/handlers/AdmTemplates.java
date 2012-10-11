@@ -40,7 +40,7 @@ public class AdmTemplates extends AMessageHandler {
 		fields.add(new FieldTextArea("template_content", "", "style=\"width: 40em; height: 25em; border: 1px solid #7F9DB9;\""));
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|New_Template|span]]</h4>"), appID, 
+				String.format("<h4>[[Dictionary|Text|New_Template|span]]</h4>"), appID, 
 				"AdmTemplates", "add", 
 				"AdmTemplates", "list", 
 				Constants._admin_app_action_div, fields, null, inMessage);
@@ -71,7 +71,7 @@ public class AdmTemplates extends AMessageHandler {
 		fields.add(new FieldTextArea("template_content", "__1__", "style=\"width: 40em; height: 25em; border: 1px solid #7F9DB9;\""));
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|Update_Template|span]]</h4>"), appID, 
+				String.format("<h4>[[Dictionary|Text|Update_Template|span]]</h4>"), appID, 
 				"AdmTemplates", "update", 
 				"AdmTemplates", "list", 
 				Constants._admin_app_action_div, fields, null, inMessage);

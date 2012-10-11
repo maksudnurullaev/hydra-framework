@@ -3,7 +3,6 @@
 [[Application|Options|%s|html]]
 [[Application|Files|%s|html]]
 [[Application|Users|%s|html]]
-[[DB|Text|New_User|locale]]
 [[Dictionary|Template|html.body.vtop|html]]
 [[Dictionary|Template|template.textarea.endtag|html]]
 [[DB|Text|%s|locale]]

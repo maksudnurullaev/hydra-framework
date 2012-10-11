@@ -303,7 +303,7 @@ public final class Utils {
 				if(s.isVisible()){
 					result.append(String.format(
 							"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
-							, String.format("[[DB|Text|%s|span]]", s.getID())
+							, String.format("[[Dictionary|Text|%s|span]]", s.getID())
 							, s.getAsHtml()));
 				}else{
 					result.append(s.getAsHtml());
@@ -311,11 +311,11 @@ public final class Utils {
 			}
 		}
 		if(optionalFields != null){
-			result.append("<tr><td colspan=\"2\"><u><i>[[DB|Text|additional|span]]</i></u></td></tr>");			
+			result.append("<tr><td colspan=\"2\"><u><i>[[Dictionary|Text|additional|span]]</i></u></td></tr>");			
 			for(IField s :optionalFields)
 				result.append(String.format(
 						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
-								, String.format("[[DB|Text|%s|span]]", s.getID())
+								, String.format("[[Dictionary|Text|%s|span]]", s.getID())
 								, s.getAsHtml()));
 		}
 		result.append(String.format("<tr><td>&nbsp;</td><td>%s</td></tr>",
@@ -414,7 +414,7 @@ public final class Utils {
 		String result = "";
 		for(String t:arr){
 			if(!result.isEmpty()) result += ", ";
-			result += String.format("[[DB|Text|%s|span]]", t);
+			result += String.format("[[Dictionary|Text|%s|NULL]]", t);
 		}
 		return(result);
 	}	
@@ -479,7 +479,7 @@ public final class Utils {
 			if(containsTag(arrOfTags, tag)){// already exit 
 				continue;
 			}else{
-				selectPart.append(String.format("<option value=\"%s\">[[DB|Text|%s|span]]</option>", tag, tag));
+				selectPart.append(String.format("<option value=\"%s\">[[Dictionary|Text|%s|span]]</option>", tag, tag));
 				selectHasElements = true;
 			}
 		}
@@ -507,7 +507,7 @@ public final class Utils {
 			String[] arr = value.split(",");
 			for(String t:arr){
 				if(!textPart.isEmpty()) textPart += ", ";
-				textPart += String.format("[[DB|Text|%s|span]]", t);
+				textPart += String.format("[[Dictionary|Text|%s|span]]", t);
 				jsData = Utils.jsData(
 						 "handler", Utils.Q("Tagger")
 						,"action",  Utils.Q("delete")
@@ -609,13 +609,6 @@ public final class Utils {
 			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_PASSWORD);
 		}
 			
-	}
-
-	public static int isSpecialKey(String inKey) {
-		if(inKey == null || inKey.length() == 0) return(-1);
-		char cRole = inKey.charAt(0);
-		if(!Character.isDigit(cRole)) return(-1);
-		return (cRole - '0');
 	}
 
 	public static boolean errDBCodeValueExest(ERROR_CODES err) {

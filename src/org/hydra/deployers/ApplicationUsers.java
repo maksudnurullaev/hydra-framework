@@ -46,14 +46,14 @@ public final class ApplicationUsers {
 		        	String tag = r.getColumnSlice().getColumnByName("tag").getValue();
 		        	if(tag != null && (!tag.isEmpty())){
 			        	tag = Utils.tagsAsHtml(tag);
-			        	content.append(String.format("(%s)", tag));     	        		
+			        	content.append(String.format("<br />[[Dictionary|Text|Roles|NULL]]: %s", tag));     	        		
 		        	}
 	        	}
 	        	// ... info if exist
 	        	if(r.getColumnSlice().getColumnByName("info") != null){
 		        	String info = r.getColumnSlice().getColumnByName("info").getValue();
 		        	if(info != null && (!info.isEmpty()))
-		        		content.append(String.format("<br /><i>%s</i>", info));
+		        		content.append(String.format("<br />[[Dictionary|Text|Info|NULL]]: <i>%s</i>", info));
 	        	}
 	        	
 	        	content.append("</div>");
@@ -62,7 +62,7 @@ public final class ApplicationUsers {
 	    if(validRows == 0)
 	    	content.append("...");
     	StringBuffer header = new StringBuffer();
-    	header.append("[[DB|Text|Count_of_users|span]]: " + validRows);					
+    	header.append("[[Dictionary|Text|Count_of_users|span]]: " + validRows);					
 	    header.append(" | ");
 	    header.append(Utils.createJSLinkHAAD(
 					Utils.Q("AdmUsers"), 

@@ -55,6 +55,8 @@ public final class DBUtils {
 			String inColumnName,
 			StringWrapper inValue) {
 		
+		if(inKey == null || inKey.isEmpty()) { return(ErrorUtils.ERROR_CODES.ERROR_DB_NULL_VALUE); }
+		
 		Result result = new Result();
 		BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
 		if(result.isOk() && result.getObject() instanceof KspManager){
@@ -248,12 +250,6 @@ public final class DBUtils {
 			Map<String, String> editLinks,
 			String inWrapper){
 		Db._log.debug("Enter to: getDbTemplateKeyHow");
-		// test user access by key
-		int keyLevel = Utils.isSpecialKey(inKey); 
-		if(keyLevel >= 0){
-			if(!Roles.roleNotLessThen(keyLevel, inMessage))
-				return "";
-		}
 		// get result from DB
 		StringWrapper content = new StringWrapper();
 		ErrorUtils.ERROR_CODES err = getValue(inKsp, inCFname, inKey, inCName, content);
@@ -268,7 +264,7 @@ public final class DBUtils {
 			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
 			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
 		}
-		if(Roles.roleNotLessThen(Roles.USER_EDITOR, inMessage))
+		if(Roles.isUserHasRole(Roles.USER_EDITOR, inMessage))
 			wrapElement(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), editLinks, inWrapper);
 		
 		return content.getString();			
@@ -381,10 +377,8 @@ public final class DBUtils {
 			if(result.isOk() && result.getObject() instanceof KspManager){
 				KspManager kspManager = (KspManager) result.getObject();
 				if(kspManager.getAdministrators().size() > 0){
-					if(kspManager.getAdministrators().containsKey(key) &&
-							CryptoManager.checkPassword(password, kspManager.getAdministrators().get(key))){
-						return true;
-					}
+					return(	kspManager.getAdministrators().containsKey(key) 
+							&& CryptoManager.checkPassword( password, kspManager.getAdministrators().get(key) ) );
 				}
 			}
         } catch (Exception e) {

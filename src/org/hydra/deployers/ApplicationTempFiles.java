@@ -47,7 +47,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 				fileURLs,
 				APropertyLoader.SUFFIX);
 		if(fileURLs.isEmpty()) return("");
-		boolean isAdmin = Roles.roleNotLessThen(Roles.USER_ADMINISTRATOR, inMessage);		
+		boolean isAdmin = Roles.isUserHasRole(Roles.USER_ADMINISTRATOR, inMessage);		
 		int fileCount = 0;
 		
 		String jsActionFormat =  MessagesManager.getTemplate("template.html.a.onClick.decodeContent.Label");		 
@@ -80,7 +80,7 @@ public class ApplicationTempFiles extends AMessageHandler {
 						entry.getValue().size()));
 			}
 			content.append(Utils.F("<li>" 
-						+ String.format(jsActionFormat, Utils.Q(String.format(encodedContent, "all")), "[[DB|Text|All|locale]]")
+						+ String.format(jsActionFormat, Utils.Q(String.format(encodedContent, "all")), "[[Dictionary|Text|All|NULL]]")
 						+ " (" + fileCount + ")</li>"));
 			content.append("</ul>");
 			return(content.toString());

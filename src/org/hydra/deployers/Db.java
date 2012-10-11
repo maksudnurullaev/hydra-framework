@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.DBUtils;
-import org.hydra.utils.Utils;
 
 public final class Db {
 	public static final Log _log = LogFactory.getLog("org.hydra.deployers.Db");
@@ -44,15 +43,6 @@ public final class Db {
 					inMessage, 
 					editLinks, 
 					"div"));
-		if(inHow.compareToIgnoreCase("span") == 0) //span wrapper
-			return(DBUtils.wrapIfNeeds(inMessage.getData().get("appid"), 
-					"Text", 
-					inKey, 
-					locale, 
-					inMessage, 
-					editLinks, 
-					"span"));
-		_log.warn(Utils.F("Could not find HOW part for {{DB|Text|%s|%s}}",inKey, inHow));
 		return DBUtils.wrapIfNeeds(inMessage.getData().get("appid"), 
 				"Text", 
 				inKey,
