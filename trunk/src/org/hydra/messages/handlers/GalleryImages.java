@@ -61,7 +61,7 @@ public class GalleryImages extends AMessageHandler {
 		fields.add(hiddenThumbImagePath);
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|Edit_Description|span]]</h4>"), null, 
+				String.format("<h4>[[Dictionary|Text|Edit_Description|span]]</h4>"), null, 
 				"GalleryImages", "updateDescription", 
 				"GalleryImages", "list", 
 				destDivId, fields, null, inMessage);

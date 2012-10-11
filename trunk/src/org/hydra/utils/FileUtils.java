@@ -41,7 +41,7 @@ public final class FileUtils {
 
 	public static String saveImage4(String inAppId, BufferedImage inImage){
 		// 0. Generate pathname for new image
-		String uri4Image = Utils.F("files/%s/images/%s.%s", inAppId, RandomStringUtils.random(8,true,true), generalImageFormat);
+		String uri4Image = Utils.F("files/%s/files/%s.%s", inAppId, RandomStringUtils.random(8,true,true), generalImageFormat);
 		// 1. Save image in PNG formate
 		File output = getRealFile(uri4Image);
 		try {
@@ -94,6 +94,7 @@ public final class FileUtils {
 		String appId = inMessage.getData().get("appid");
 		FileTransfer file = inMessage.getFile();		
 		String realPath = inMessage.getData().get("file_real_path");
+
 		String resultStr = "";
 		// 1. 
 		InputStream is = null;
@@ -276,7 +277,7 @@ public final class FileUtils {
 	}
 
 	public static String getFilePropertiesDescription(IMessage inMessage, String propertiesFilePath) {
-		boolean isAdmin = Roles.roleNotLessThen(Roles.USER_ADMINISTRATOR, inMessage);
+		boolean isAdmin = Roles.isUserHasRole(Roles.USER_ADMINISTRATOR, inMessage);
 		Properties properties = parseProperties(propertiesFilePath);
 		String Public = properties.getProperty(FILE_DESCRIPTION_PUBLIC);
     	boolean isPublic = ((Public != null) 
@@ -298,12 +299,12 @@ public final class FileUtils {
 	    	// download link
 			String htmlTag = Utils.F("&nbsp;&nbsp;<a href=\"%s\" target=\"_blank\">%s</a>", 
 					stripPropertiesExtension(propertiesFilePath),
-					"[[DB|Text|Download|locale]]");
+					"[[Dictonary|Text|Download|NULL]]");
 			content.append(htmlTag);
 			content.append(" ");
 			// description
 			if(Description != null){ 
-				content.append(Utils.toogleLink(divHiddenID, "[[DB|Text|Description|locale]]"));
+				content.append(Utils.toogleLink(divHiddenID, "[[Dictonary|Text|Description|NULL]]"));
 				content.append(Utils.F("<div id=\"%s\" class=\"file_description\" >%s</div>", 
 						divHiddenID,
 						properties.get(FILE_DESCRIPTION_TEXT)));

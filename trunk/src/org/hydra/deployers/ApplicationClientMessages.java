@@ -15,7 +15,7 @@ public final class ApplicationClientMessages {
 	private static String getALLDivId(
 			String inAppID, String inDivId) {
 		StringBuffer content = new StringBuffer();
-		content.append("<h2>[[DB|Text|Client_Requests|span]]</h2>");
+		content.append("<h2>[[Dictonary|Text|Client_Requests|span]]</h2>");
 		content.append("<div id='app_action'>");
 		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, _cfName, "", "", "", "");
 		int validRows = 0;

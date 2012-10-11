@@ -29,7 +29,7 @@ public final class SystemPassword {
 		String userId = inMessage.getData().get("_userid");
 		String locale = inMessage.getData().get("locale");
 		if(userId == null || userId.isEmpty())
-			return("[[DB|Text|You_not_logged_in!|locale]]");
+			return("[[Dictionary|Text|You_not_logged_in|NULL]]");
 		return getPasswordChange(inHow, locale);
 	}
 

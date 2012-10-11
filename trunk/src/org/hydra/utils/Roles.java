@@ -4,40 +4,27 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 public final class Roles {
-	public static final int USER_ADMINISTRATOR = 9;
-	public static final int USER_EDITOR = 2;
-	public static final int USER_PUBLISHER = 1;
-	public static final int USER_REGISTERED = 0;
+	public static final String USER_ADMINISTRATOR = "User.Administrator";
+	public static final String USER_EDITOR        = "User.Editor";
+	public static final String USER_PUBLISHER     = "User.Publisher";
+	public static final String USER_REGISTERED    = "User";
 	
-	public static boolean roleNotLessThen(int inRoleLevel, IMessage inMessage) {
-		if(inMessage.getUrl() != null && (
-				inMessage.getUrl().startsWith("http://localhost")
-						|| inMessage.getUrl().startsWith("http://127.0.0.1"))) return true;
+	public static boolean isUserHasRole(String inRole, IMessage inMessage) {
+		if(inRole == null) return(false);
 		String appId = inMessage.getData().get("_appid");
-		String userId = inMessage.getData().get("_userid");
-		if(appId == null || appId.length() == 0) return false;
-		if(userId == null || userId.length() == 0) return false;
-		
-		if(userId.startsWith("+++")) return true; // super user
-	
-		int roleLevel = -1;
-		StringWrapper sWrapper = new StringWrapper();
-		ERROR_CODES err = DBUtils.getValue(appId, "User", userId, "tag", sWrapper);
-		if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-			roleLevel = 0; // just registered user level
-			String rolesStr = sWrapper.getString();
-			if(rolesStr != null && rolesStr.length() > 0){
-				if(rolesStr.contains("User.Administrator")){
-					roleLevel = USER_ADMINISTRATOR;
-				}else if(rolesStr.contains("User.Publisher")){
-					roleLevel = USER_PUBLISHER;
-				}else if(rolesStr.contains("User.Editor")){
-					roleLevel = USER_EDITOR;
-				}else if(rolesStr.contains("User")){
-					roleLevel = USER_REGISTERED;
-				}
+		String userId = inMessage.getData().get("_userid");		
+		String rolesStr = null;
+		if(inMessage.getUrl().startsWith("http://127.0.0.1")) { rolesStr = USER_ADMINISTRATOR; }
+		else {
+			StringWrapper sWrapper = new StringWrapper();
+			ERROR_CODES err = DBUtils.getValue(appId, "User", userId, "tag", sWrapper);
+			if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
+				rolesStr = sWrapper.getString();
 			}
 		}
-		return(roleLevel >= inRoleLevel);
+		if(rolesStr != null && rolesStr.length() > 0){
+			return(rolesStr.toLowerCase().contains(inRole.toLowerCase()));
+		}		
+		return(false);
 	}
 }

@@ -36,7 +36,7 @@ public class AdmTags extends AMessageHandler {
 		fields.add(new FieldInput("tag_new", "NewName"));		
 		
 		String form = Utils.generateForm(
-				String.format("<h4>[[DB|Text|New_Tag|span]]</h4>"), appId, 
+				String.format("<h4>[[Dictionary|Text|New_Tag|span]]</h4>"), appId, 
 				"AdmTags", "add", 
 				"AdmTags", "list", 
 				Constants._admin_app_action_div, fields, null, inMessage);

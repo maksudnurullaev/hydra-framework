@@ -64,9 +64,9 @@ public final class SystemLogin {
 		String tag = "";
 		String info = "";
 		
-		if(inUserID.length() == 3 && inUserID.contains("+++")){
-			tag = "+++";
-			info = "+++";
+		if(inUserID.length() == 1 && inUserID.contains("*")){
+			tag = "*";
+			info = "*";
 		}else{
 			List<Row<String,String,String>> rows = DBUtils.getValidRows(inApplicationID, "User", inUserID, inUserID, "", "");
 			

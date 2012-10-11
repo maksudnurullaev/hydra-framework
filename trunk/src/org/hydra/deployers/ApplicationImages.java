@@ -33,7 +33,7 @@ public class ApplicationImages {
 		_log.debug("App id: " + appid);
 		_log.debug("Folder: " + inFolder);
 		
-		boolean isUserEditor = Roles.roleNotLessThen(Roles.USER_EDITOR, inMessage);
+		boolean isUserEditor = Roles.isUserHasRole(Roles.USER_EDITOR, inMessage);
 		String imageGalleryDivId = inFolder.replace('/', '_');
 		StringBuffer content = new StringBuffer(String.format("<div class='gallery' id='%s'>", imageGalleryDivId));
 		

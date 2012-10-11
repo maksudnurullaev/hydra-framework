@@ -95,7 +95,7 @@ public class User extends AMessageHandler { // NO_UCD
 			_log.debug("Test administrator for user: " + user_mail);
 			if(DBUtils.test4GlobalAdmin(user_mail, user_password)){
 				_log.debug("Found administrator account for: " + user_mail);
-				return(setupUserSession(inMessage, "+++", "+++", context));
+				return(setupUserSession(inMessage, "*", "*", context));
 			}
 		}else{
 			if(user_mail.isEmpty()){

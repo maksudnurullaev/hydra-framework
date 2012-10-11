@@ -41,14 +41,14 @@ public class UserFiles extends AMessageHandler {
 		String returnFormat = "";
 		if(FileUtils.saveFileAndDescriptions(inMessage, filePath, "Name", "Public", "Tag", "Text"))
 		{
-			returnFormat = "[[DB|Template|FileSavedOk.Header|span]]";
+			returnFormat = "[[Dictionary|Template|FileSavedOk.Header|span]]";
 			String fullPath = getMainUrl(inMessage.getUrl()) + filePath.getString();
-			returnFormat += "[[DB|Text|PathAsText|span]] " + fullPath;
-			returnFormat += "[[DB|Text|PathAsLink|span]] " + Utils.T("template.html.a.Href.Label", fullPath, fullPath);
-			returnFormat += "[[DB|Template|FileSavedOk.Footer|span]]";
+			returnFormat += "[[Dictionary|Text|PathAsText|span]] " + fullPath;
+			returnFormat += "[[Dictionary|Text|PathAsLink|span]] " + Utils.T("template.html.a.Href.Label", fullPath, fullPath);
+			returnFormat += "[[Dictionary|Template|FileSavedOk.Footer|span]]";
 			
 		}else{
-			returnFormat = "[[DB|Template|FileSavedFailed|span]]";
+			returnFormat = "[[Dictionary|Template|FileSavedFailed|span]]";
 			inMessage.setError(filePath.getString());
 		}	
 		// finish
