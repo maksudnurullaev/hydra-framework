@@ -28,7 +28,7 @@ public class ApplicationTemplates extends AMessageHandler {
 	static String getKeyHtml(String inAppID) {
 		StringBuffer content = new StringBuffer();
 		
-		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Template", "", "", "", "");
+		List<Row<String,String,String>> rows = DBUtils.getRows(inAppID, "Template", "", "", "", "");
 		_log.debug("rows.size(): " + rows.size());
 		int validRows = 0;
 

@@ -17,14 +17,25 @@ public class General extends AMessageHandler { // NO_UCD
 		if (!validateData(inMessage, "key"))
 			return inMessage;
 		
+		String 	wrapHtmlElement = "div";
+		if(inMessage.getData().containsKey("wrap")){
+			wrapHtmlElement = inMessage.getData().get("wrap");
+		}
+		
 		String content = MessagesManager.getText(
 				inMessage.getData().get("key"),
-				"div",
+				wrapHtmlElement,
 				inMessage.getData().get("locale"));
 
 		return (ADeployer.deployContent(content,inMessage));
 	}
 
+	// just for some tests!
+	public static void dumpMethod(CommonMessage inMessage){
+		inMessage.setError("Dump method processed!");
+		_log.warn("Dump method processed!");
+	}
+	
 	public static void changeLocale(IMessage inMessage, WebContext webContext) {
 		if (!validateData(inMessage, "locale"))return;
 		String locale = inMessage.getData().get("locale");

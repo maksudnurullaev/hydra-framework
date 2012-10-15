@@ -8,6 +8,7 @@ import java.util.Map;
 import me.prettyprint.cassandra.dao.SimpleCassandraDao;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.beans.ColumnSlice;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.beans.Row;
@@ -17,13 +18,12 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.ColumnQuery;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
+import me.prettyprint.hector.api.query.SliceQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.KspManager;
-import org.hydra.deployers.Db;
 import org.hydra.managers.CryptoManager;
-import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
 /**
@@ -32,288 +32,242 @@ import org.hydra.utils.ErrorUtils.ERROR_CODES;
  * 
  */
 public final class DBUtils {
-	private static final Log _log = LogFactory.getLog("org.hydra.utils.DBUtils");
+	static final Log _log = LogFactory.getLog("org.hydra.utils.DBUtils");
+	private static KspManager _kspManager = null;
 	
 	public static SimpleCassandraDao getSimpleCassandraDaoOrNull(
 			String inKeyspace,
 			String inColumnFamily){
 		
-		Result result = new Result();
-		BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
-		if(result.isOk() && result.getObject() instanceof KspManager){
-			KspManager kspManager = (KspManager) result.getObject();
-			return(kspManager.getSimpleCassandraDao(inKeyspace, inColumnFamily));
+		KspManager kspManager = getKspManager();
+		if(kspManager == null){ 
+			_log.error("No keyspace");
+			return(null); 
 		}
-		_log.error(ErrorUtils.ERROR_CODES.ERROR_DB_NO_KSP.toString());
-		return null;
+		return(kspManager.getSimpleCassandraDao(inKeyspace, inColumnFamily));
 	}
 	
-	public static ErrorUtils.ERROR_CODES getValue(
-			String inKeyspace,
+	public static ERROR_CODES getValue(
+			String inAppId,
 			String inColumnFamily, 
 			String inKey,
 			String inColumnName,
 			StringWrapper inValue) {
 		
-		if(inKey == null || inKey.isEmpty()) { return(ErrorUtils.ERROR_CODES.ERROR_DB_NULL_VALUE); }
-		
-		Result result = new Result();
-		BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
-		if(result.isOk() && result.getObject() instanceof KspManager){
-			KspManager kspManager = (KspManager) result.getObject();
-			SimpleCassandraDao s = kspManager.getSimpleCassandraDao(inKeyspace, inColumnFamily);
-			if(s != null){
-				_log.debug(String.format("Try to find key/column_name: %s/%s", inKey, inColumnName));
-				try {
-					inValue.setString(s.get(inKey, inColumnName));
-					if(inValue.getString() == null )
-						return ErrorUtils.ERROR_CODES.ERROR_DB_NULL_VALUE;
-					if(inValue.getString().isEmpty())
-						return ErrorUtils.ERROR_CODES.ERROR_DB_EMPTY_VALUE;
-					return ErrorUtils.ERROR_CODES.NO_ERROR;
-				} catch (Exception e) {
-					_log.error("... exception: " + e.getMessage());
-					return ErrorUtils.ERROR_CODES.ERROR_DB_NO_DATABASE;
-				}
-				
-			}else{
-				return ErrorUtils.ERROR_CODES.ERROR_DB_NO_CF;
-			}
+		if(inKey == null || inKey.isEmpty()) { return(ERROR_CODES.ERROR_DB_NULL_VALUE); }
+
+		SimpleCassandraDao s = getSimpleCassandraDaoOrNull(inAppId, inColumnFamily);
+		if(s != null){
+			_log.debug(String.format("Try to find key/column_name: %s/%s", inKey, inColumnName));
+			try {
+				inValue.setString(s.get(inKey, inColumnName));
+				if(inValue.getString() == null )
+					return(ERROR_CODES.ERROR_DB_NULL_VALUE);
+				if(inValue.getString().isEmpty())
+					return(ERROR_CODES.ERROR_DB_EMPTY_VALUE);
+				return(ERROR_CODES.NO_ERROR);
+			} catch (Exception e) {
+				_log.error("... exception: " + e.getMessage());
+				return(ERROR_CODES.ERROR_DB_NO_DATABASE);
+			}	
 		}
-		return ErrorUtils.ERROR_CODES.ERROR_DB_NO_KSP;
+		return ERROR_CODES.ERROR_DB_NO_CF;
 	}
 
-	public static ErrorUtils.ERROR_CODES setValue(
-			String inKeyspace,
+	public static ERROR_CODES setValue(
+			String inAppId,
 			String inColumnFamily, 
 			String inKey,
 			String inColumnName, 
 			String value) {
-		_log.debug("Try to insert...");
-		_log.debug("inKeyspace: " + inKeyspace);
-		_log.debug("inColumnFamily: " + inColumnFamily);
-		_log.debug("inKey: " + inKey);
-		_log.debug("inColumnName: " + inColumnName);
-		_log.debug("value: " + value);
-		try{
-			Result result = new Result();
-			BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
-			if(result.isOk() && result.getObject() instanceof KspManager){
-				KspManager kspManager = (KspManager) result.getObject();
-				SimpleCassandraDao s = kspManager.getSimpleCassandraDao(inKeyspace, inColumnFamily);
-				if(s != null){
-					s.insert(inKey, inColumnName, value);
-					return ErrorUtils.ERROR_CODES.NO_ERROR;
-				}else{
-					return ErrorUtils.ERROR_CODES.ERROR_DB_NO_CF;
-				}
-			}
-			return ErrorUtils.ERROR_CODES.ERROR_DB_NO_KSP;
-		}catch(Exception e){
-			_log.error(e.toString());
-			return ErrorUtils.ERROR_CODES.ERROR_UKNOWN;
+		
+		SimpleCassandraDao s = getSimpleCassandraDaoOrNull(inAppId, inColumnFamily);
+
+		if(s != null){
+			s.insert(inKey, inColumnName, value);
+			return ERROR_CODES.NO_ERROR;
 		}
+		return ERROR_CODES.ERROR_DB_NO_CF;
 	}
 	
 	public static int getCountOf(
-			String inKeyspace,
+			String inAppId,
 			String inColumnFamily) {
-		return getCountOf(inKeyspace, inColumnFamily, "", "", "", "");
+		return getCountOf(inAppId, inColumnFamily, "", "", "", "");
 	}
 	
 	public static int getCountOf(
-			String inKeyspace,
+			String inAppId,
 			String inColumnFamily,
 			String inKey) {
-		return getCountOf(inKeyspace, inColumnFamily, inKey, inKey, "", "");
+		return getCountOf(inAppId, inColumnFamily, inKey, inKey, "", "");
 	}
 	
 	public static int getCountOf(
-			String inKeyspace,
+			String inAppId,
 			String inColumnFamily,
 			String inKeyStart,
 			String inKeyEnd,
 			String inKeyRangeStart,
 			String inKeyRangeFinish){
 
-		List<Row<String, String, String>> rows = 
-			getValidRows(inKeyspace, inColumnFamily, inKeyStart, inKeyEnd, inKeyRangeStart, inKeyRangeFinish);
-		if(rows != null)
-			return(rows.size());
+		List<Row<String, String, String>> rows = getRows(inAppId, inColumnFamily, inKeyStart, inKeyEnd, inKeyRangeStart, inKeyRangeFinish);
+		if(rows != null){ return(rows.size()); }
 		return(0);
 	}	
 	
-	public static List<Row<String, String, String>> getValidRows(
-			String inKeyspace,
+	public static List<Row<String, String, String>> getRows(
+			String inAppId,
 			String inColumnFamily, 
 			String inKeyStart,
 			String inKeyEnd,
 			String inKeyRangeStart,
 			String inKeyRangeFinish) {
 		List<Row<String, String, String>> resultRows = new ArrayList<Row<String,String,String>>();
-		Result result = new Result();
+		KspManager kspManager = getKspManager();
+		if(kspManager == null){ 
+			_log.error("No keyspace");
+			return(null); 
+		}
 		StringSerializer stringSerializer = StringSerializer.get();
-		try {		
-			BeansUtils.getWebContextBean(result, Constants._bean_ksp_manager);
-			if(result.isOk() && result.getObject() instanceof KspManager){
-				KspManager kspManager = (KspManager) result.getObject();
-				Keyspace keyspace = kspManager.getKeyspace(inKeyspace);
-				RangeSlicesQuery<String, String, String> rangeSlicesQuery = 
-					HFactory.createRangeSlicesQuery(keyspace, stringSerializer, stringSerializer, stringSerializer);
+		
+		Keyspace keyspace = kspManager.getKeyspace(inAppId);
+		RangeSlicesQuery<String, String, String> rangeSlicesQuery = 
+			HFactory.createRangeSlicesQuery(keyspace, stringSerializer, stringSerializer, stringSerializer);
 				
-	            rangeSlicesQuery.setColumnFamily(inColumnFamily);
-	            rangeSlicesQuery.setKeys(inKeyStart, inKeyEnd);
-	            rangeSlicesQuery.setRange(inKeyRangeStart, inKeyRangeFinish, false, 3);
+        rangeSlicesQuery.setColumnFamily(inColumnFamily);
+        rangeSlicesQuery.setKeys(inKeyStart, inKeyEnd);
+        rangeSlicesQuery.setRange(inKeyRangeStart, inKeyRangeFinish, false, 3);
 	            
-	            QueryResult<OrderedRows<String, String, String>> resultOfExec = rangeSlicesQuery.execute();
-	            OrderedRows<String, String, String> ol = resultOfExec.get();
-	            for(Row<String, String, String> row: ol){
-	            	if(row.getColumnSlice() != null 
-	            			&& row.getColumnSlice().getColumns() != null
-	            			&& row.getColumnSlice().getColumns().size() > 0){
-	            		resultRows.add(row);
-	            	}
-	            }
-	            return(resultRows);
-			}
+        try {
+            QueryResult<OrderedRows<String, String, String>> resultOfExec = rangeSlicesQuery.execute();
+            OrderedRows<String, String, String> ol = resultOfExec.get();
+            for(Row<String, String, String> row: ol){
+            	if(row.getColumnSlice() != null 
+            			&& row.getColumnSlice().getColumns() != null
+            			&& row.getColumnSlice().getColumns().size() > 0){
+            		resultRows.add(row);
+            	}
+            }
+            return(resultRows);
         } catch (HectorException he) {
             _log.error(he);
-            resultRows.clear();
-            return resultRows;
         }		
-        resultRows.clear();
-        return resultRows; 
+        return(null);
 	}		
 	
-	public static ErrorUtils.ERROR_CODES deleteKey(
-			String appId, 
+	public static ERROR_CODES deleteKey(
+			String inAppId, 
 			String inColumnFamily,
 			String inKey) {
 		
-	_log.debug(String.format("Try to delete Ksp/CFName/Key: %s/%s/%s", appId, inColumnFamily,inKey));
-	
-	Result result = new Result();
-	BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
-	if(result.isOk() && result.getObject() instanceof KspManager){
-		KspManager kspManager = (KspManager) result.getObject();
-		StringSerializer stringSerializer = StringSerializer.get();			
-		Mutator<String> mutator = HFactory.createMutator(kspManager.getKeyspace(appId), stringSerializer);
-		mutator.delete(inKey, inColumnFamily, null, stringSerializer);
-		mutator.execute();
-		return ErrorUtils.ERROR_CODES.NO_ERROR;
+		_log.debug(String.format("Try to delete Ksp/CFName/Key: %s/%s/%s", inAppId, inColumnFamily,inKey));
+		
+		KspManager kspManager = getKspManager();
+		if(kspManager == null){ return(ERROR_CODES.ERROR_DB_NO_KSP); }
+
+		Mutator<String> mutator = getMutator(inAppId);
+		if(mutator == null) { return(ERROR_CODES.ERROR_NO_VALID_MUTATOR); }
+		try {
+			mutator.delete(inKey, inColumnFamily, null, StringSerializer.get());
+			mutator.execute();
+		} catch (Exception e) {
+			_log.error(e.toString());
+			return(ERROR_CODES.ERROR_UKNOWN);
+		}
+		return ERROR_CODES.NO_ERROR;
 	}
 	
-	return ErrorUtils.ERROR_CODES.ERROR_DB_NO_KSP;		
+	public static Mutator<String> getMutator(String inAppId){
+		KspManager kspManager = getKspManager();
+		if(kspManager == null){
+			_log.error("Could not find KspManager for: " + inAppId);
+			return(null);
+		}
+		StringSerializer stringSerializer = StringSerializer.get();			
+		return(HFactory.createMutator(kspManager.getKeyspace(inAppId), stringSerializer));
+	}
+	
+	public static KspManager getKspManager(){
+		if(_kspManager != null){ return(_kspManager); }
+		Result result = new Result();
+		BeansUtils.getWebContextBean(result , Constants._bean_ksp_manager);
+		if(result.isOk() && result.getObject() instanceof KspManager){
+			_kspManager = (KspManager) result.getObject();
+		}
+		return(_kspManager);
 	}
 
 	public static HColumn<String, String> getColumn(
-			String inKeyspace,
+			String inAppId,
 			String inColumnFamily, 
 			String inKey, 
 			String inColumnName) {
-		_log.debug("    inKeyspace: " + inKeyspace);
-		_log.debug("inColumnFamily: " + inColumnFamily);
-		_log.debug("         inKey: " + inKey);
-		_log.debug("  inColumnName: " + inColumnName);
+
+		KspManager kspManager = getKspManager();
+		if(kspManager == null){ 
+			_log.error("No keyspace");
+			return(null); 
+		}		
+		
+		Keyspace keyspace = kspManager.getKeyspace(inAppId);
+		if(keyspace == null) {
+			_log.error("keyspace: " + inKey + " == null)");
+			return null;
+		}
+		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
+		columnQuery.setColumnFamily(inColumnFamily).setKey(inKey).setName(inColumnName);
 		try {		
-			Result result = new Result();
-			BeansUtils.getWebContextBean(result, Constants._bean_ksp_manager);
-			if(result.isOk() && result.getObject() instanceof KspManager){
-				_log.debug("KspManager exist: "	+ (result.isOk() && result.getObject() instanceof KspManager));
-				KspManager kspManager = (KspManager) result.getObject();
-				Keyspace keyspace = kspManager.getKeyspace(inKeyspace);
-				if(keyspace != null){
-					ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
-					columnQuery.setColumnFamily(inColumnFamily).setKey(inKey).setName(inColumnName);
-					QueryResult<HColumn<String, String>> result2 = columnQuery.execute();
-					return(result2.get());
-				}else{
-					_log.error("keyspace: " + inKey + " == null)");
-					return null;
-				}
-			}else{
-				_log.error("!(result.isOk() && result.getObject() instanceof KspManager)");
-				return null;
-			}			
+			QueryResult<HColumn<String, String>> result = columnQuery.execute();
+			return(result.get());
         } catch (HectorException he) {
-            _log.error(he);
+            _log.error(he.toString());
             return null;
         } 
 	}
 
-	public static String wrapIfNeeds(
-			String inKsp, 
-			String inCFname,
-			String inKey,
-			String inCName,
-			IMessage inMessage,
-			Map<String, String> editLinks,
-			String inWrapper){
-		Db._log.debug("Enter to: getDbTemplateKeyHow");
-		// get result from DB
-		StringWrapper content = new StringWrapper();
-		ErrorUtils.ERROR_CODES err = getValue(inKsp, inCFname, inKey, inCName, content);
-		switch (err) {
-		case NO_ERROR:
-			break;
-		case ERROR_DB_EMPTY_VALUE:
-		case ERROR_DB_NULL_VALUE:
-			content.setString(String.format("<font color='red'>%s</font>",inKey));
-			break;
-		default:
-			_log.error(String.format("DB error with %s: %s", inKey, err.toString()));
-			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
-		}
-		if(Roles.isUserHasRole(Roles.USER_EDITOR, inMessage))
-			wrapElement(inKey, content, "DBRequest", inCFname, Utils.errDBCodeValueExest(err), editLinks, inWrapper);
+	public static QueryResult<ColumnSlice<String, String>> getColumns(
+			String inAppId,
+			String inColumnFamily, 
+			String inKey) {
+
+		KspManager kspManager = getKspManager();
+		if(kspManager == null){ 
+			_log.error("No keyspace");
+			return(null); 
+		}		
 		
-		return content.getString();			
-	}
-
-	public static void wrapElement(
-			String inKey, 
-			StringWrapper content, 
-			String inHandlerName,
-			String inEditObjectName,
-			boolean noError, 
-			Map<String, String> editLinks,
-			String inWrapper) {
-	
-		String wrapElemId = Utils.sanitazeHtmlId(String.format("%s.%s", inEditObjectName, inKey));
-		String wrapString = String.format("<%s id='%s'>%s</%s>", inWrapper, wrapElemId, content.getString(), inWrapper);
-		content.setString(wrapString.toString());
-		// List of Link
-		if(editLinks != null && !editLinks.containsKey(wrapElemId)){
-			StringBuffer result = new StringBuffer();
-			
-			// main link
-			if(!noError)
-				result.append("<a class='red' onclick=\"javascript:void(Globals.editIt('");
-			else
-				result.append("<a class='green' onclick=\"javascript:void(Globals.editIt('");
-			result.append(inKey).append("','").append(inHandlerName).append("','").append("edit" + inEditObjectName)
-						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
-			// sup - description
-			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.toogleVisibility('");
-			result.append(wrapElemId).append("')); return false;\" href=\"#\">Show me</a>, ")
-				.append(wrapString.toString().length()).append(")</sup>");
-			
-			editLinks.put(wrapElemId, result.toString());
+		Keyspace keyspace = kspManager.getKeyspace(inAppId);
+		if(keyspace == null) {
+			_log.error("keyspace: " + inKey + " == null)");
+			return null;
 		}
-	}
-
+		StringSerializer stringSerializer = StringSerializer.get();
+		SliceQuery<String, String, String> sq = HFactory.createSliceQuery(keyspace, stringSerializer, stringSerializer, stringSerializer);
+		sq.setColumnFamily(inColumnFamily);
+		sq.setKey(inKey);
+		sq.setRange("", "", false, 3);
+		try {		
+			QueryResult<ColumnSlice<String, String>> result = sq.execute();
+			return(result);
+        } catch (HectorException he) {
+            _log.error(he.toString());
+            return null;
+        } 
+	}	
+	
 	public static void testForNonExistenceOfKey(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
-			String inKeyspace, 
+			String inAppId, 
 			String inColumnFamily,
 			String inKey, 
 			String fieldID) {
 		
-		int foundRows = getValidRows(inKeyspace, inColumnFamily, inKey, inKey, "", "").size();
+		int foundRows = getRows(inAppId, inColumnFamily, inKey, inKey, "", "").size();
 		if(foundRows != 0){
 			_log.warn(Utils.F("%s.%s['%s'] already exist!", 
-					inKeyspace, inColumnFamily,inKey));
+					inAppId, inColumnFamily,inKey));
 			errorCodes.add(ERROR_CODES.ERROR_DB_KEY_ALREADY_EXIST);
 			errorFields.add(fieldID);	
 		}
@@ -323,13 +277,13 @@ public final class DBUtils {
 	public static String testForExistenceOfKeyAndValue(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
-			String inKeyspace, 
+			String inAppId, 
 			String inColumnFamily,
 			String inKey, 
 			String inColumnName,
 			String fieldID) {
 		
-		SimpleCassandraDao s = DBUtils.getSimpleCassandraDaoOrNull(inKeyspace, inColumnFamily);
+		SimpleCassandraDao s = DBUtils.getSimpleCassandraDaoOrNull(inAppId, inColumnFamily);
 		if(s == null){
 			_log.error(ERROR_CODES.ERROR_DB_NO_CF);
 			errorCodes.add(ERROR_CODES.ERROR_DB_NO_CF);
@@ -350,15 +304,13 @@ public final class DBUtils {
 	public static Map<String, String> testForExistenceKey(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
-			String inKeyspace, 
+			String inAppId, 
 			String inColumnFamily,
 			String inKey,
 			String fieldID) {
 		Map<String, String> result = new HashMap<String, String>();
-		List<Row<String, String, String>> rows = getValidRows(inKeyspace, inColumnFamily, inKey, inKey, "", "");
-		if(rows.size() == 1 
-				&& rows.get(0).getColumnSlice() != null
-				){
+		List<Row<String, String, String>> rows = getRows(inAppId, inColumnFamily, inKey, inKey, "", "");
+		if(rows.size() == 1	&& rows.get(0).getColumnSlice() != null ){
 			for(HColumn<String, String> hc: rows.get(0).getColumnSlice().getColumns()){
 				result.put(hc.getName(), hc.getValue());
 			}
@@ -370,15 +322,15 @@ public final class DBUtils {
 		return(result);
 	}	
 	
-	public static boolean test4GlobalAdmin(String key, String password) {
+	public static boolean test4GlobalAdmin(String inKey, String inPassword) {
 		Result result = new Result();
 		try {		
 			BeansUtils.getWebContextBean(result, Constants._bean_ksp_manager);
 			if(result.isOk() && result.getObject() instanceof KspManager){
 				KspManager kspManager = (KspManager) result.getObject();
 				if(kspManager.getAdministrators().size() > 0){
-					return(	kspManager.getAdministrators().containsKey(key) 
-							&& CryptoManager.checkPassword( password, kspManager.getAdministrators().get(key) ) );
+					return(	kspManager.getAdministrators().containsKey(inKey) 
+							&& CryptoManager.checkPassword( inPassword, kspManager.getAdministrators().get(inKey) ) );
 				}
 			}
         } catch (Exception e) {
@@ -386,6 +338,53 @@ public final class DBUtils {
             return false;
         }		
         return false; 
+	}
+
+	public static ERROR_CODES setObjects(
+			String inAppId,
+			List<Map<String, String>> objects, List<String> outKeys) {
+		Mutator<String> mutator = getMutator(inAppId);
+		if(mutator == null) { return(ERROR_CODES.ERROR_NO_VALID_MUTATOR); }
+		if(objects == null || objects.size() == 0) { return(ERROR_CODES.ERROR_DB_EMPTY_VALUE); }
+		for(Map<String, String> map:objects){
+			// check & validation
+			if(map.size() <= 1) { continue; }
+			String objectName  = map.get(Constants._key_object_name);
+			if(objectName == null || objectName.isEmpty()){ continue; }
+			// remove objectName key & value due objectId generated
+			map.remove(Constants._key_object_name);
+			// update key id
+			String objectId = GetDBObjectID(objectName);
+			for(Map.Entry<String, String> entry: map.entrySet()){
+				mutator.addInsertion(objectId, "Objects", HFactory.createStringColumn(entry.getKey(), entry.getValue()));
+			}
+			mutator.execute();
+			if(outKeys != null) { outKeys.add(objectId); }
+		}
+		return(ERROR_CODES.NO_ERROR);
+	}
+
+
+	public static String GetDBObjectID(String inObjectName){
+		return ( inObjectName + " " + Utils.GetCurrentDateTime() + " " + Utils.GetUUID().substring(0,2));		
 	}	
+
+	public static Map<String, String> getColumnsAsMap(
+			String inAppId,
+			String inColumnFamily, 
+			String inKey) {
+		QueryResult<ColumnSlice<String, String>> result = getColumns(inAppId, inColumnFamily, inKey);
+		if(result == null || result.get() == null || result.get().getColumns().size() == 0) { return(null);}
+		Map<String, String> map = new HashMap<String, String>();
+		for(HColumn<String, String> c:result.get().getColumns()){ map.put(c.getName(), c.getValue()); }
+		return(map);
+	}
+
+	public static Map<String, Map<String, String>> getObjectsAsMap(
+			String inAppId, List<String> objectIds) {
+		Map<String, Map<String, String>> result = new HashMap<String, Map<String,String>>();
+		for(String id: objectIds){ result.put(id, getColumnsAsMap(inAppId, "Objects", id)); }
+		return(result);
+	}
 }
 

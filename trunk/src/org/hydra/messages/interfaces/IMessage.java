@@ -33,4 +33,6 @@ public interface IMessage extends Serializable {
 	void setUrl(String inUrl);
 	HttpSession getSession();
 	void setSession(HttpSession inSession);
+	String getSessionId();
+	void setSessionId(String id);
 }

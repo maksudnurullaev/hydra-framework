@@ -119,12 +119,13 @@ public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage
 			setStatistics(getName(), StatisticsTypes.WITH_ERRORS);
 			throw new RichedMaxCapacityException();
 		} else {
+			assert inMessage != null;
 			getStack().addLast(inMessage);
 			setStatistics(getName(), StatisticsTypes.ACCEPTED);
 		}
 				
 		getLog().debug(String.format("New message with groupID(%s) added to pipe(%s)", 
-				inMessage.getSession().getId(), 
+				inMessage.getSessionId(), 
 				getName()));
 		
 		// Event part

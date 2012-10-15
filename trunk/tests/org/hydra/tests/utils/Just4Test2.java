@@ -1,12 +1,13 @@
 package org.hydra.tests.utils;
 
+import org.hydra.utils.DBUtils;
+
 public class Just4Test2 {
-
+	
 	public static void main(String[] argv){
-		String str = "</textarea> . --- </texTArea>";
-		str = str.replaceAll("\\W", "_");
-
-		System.out.println("After replacement:\n" + "   " + str);
-
+		for (int i = 0; i < 10; i++) {
+			String objName = "Object";
+			System.out.println(objName + i  + ": " + DBUtils.GetDBObjectID(objName + i));			
+		}
 	}
 }

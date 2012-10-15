@@ -26,7 +26,13 @@ public final class SessionUtils {
 			WebContext inWebContext) {
 		ServletContext context = inWebContext.getServletContext();
 		// set session ID
-		inMessage.setSession(inWebContext.getSession());
+		if(inWebContext.getSession() != null){
+			inMessage.setSession(inWebContext.getSession());
+			inMessage.setSessionId(inWebContext.getSession().getId());
+		}else{
+			inResult.setErrorString("Could not setup web session!");
+			return(inResult);
+		}
 		// set context path
 		inMessage.setContextPath(context.getContextPath());
 		// setup web application
@@ -105,7 +111,7 @@ public final class SessionUtils {
 		if(inContext != null){
 			// check for session browser value
 			if(!isSessionDataExist(inContext, "browser", inApp.getId())){
-				inMessage.setError(inContext.getSession().getId());
+				inMessage.setError("Could not setup web session!");
 				inMessage.setReloadPage(true);
 				return;
 			}

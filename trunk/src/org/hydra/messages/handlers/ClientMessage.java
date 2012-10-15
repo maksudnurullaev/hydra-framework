@@ -27,7 +27,7 @@ public class ClientMessage extends AMessageHandler {
 	}	
 	
 	public IMessage add(CommonMessage inMessage){		
-		Utils.dump(inMessage);
+		Utils.dumpIncomingWebMessage(inMessage);
 		if((!AMessageHandler.validateData(inMessage, "text")) || 
 				(!CaptchaUtils.validateCaptcha(inMessage))){
 			return inMessage;

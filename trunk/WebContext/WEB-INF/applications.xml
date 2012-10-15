@@ -16,8 +16,13 @@
 				<ref bean="ZFileUz_WebAppBean"/>
 				<ref bean="SKTourUz_WebAppBean"/>
 				<ref bean="BlondinkaUz_WebAppBean"/>
+				<ref bean="Test_WebAppBean"/>
 			</set>
 		</property>				
+	</bean>
+	
+	<bean id="Test_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="Test" />
 	</bean>
 	
 	<bean id="HydraUz_WebAppBean" class="org.hydra.beans.WebApplication">

@@ -29,7 +29,7 @@ public final class ApplicationTags {
 				"New"
 				)
 			);
-		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", "", "");
+		List<Row<String,String,String>> rows = DBUtils.getRows(inAppID, "Tag", "", "", "", "");
 		int validRows = 0;
 	    for (Row<String, String, String> r : rows) {
 	    	String key = r.getKey();

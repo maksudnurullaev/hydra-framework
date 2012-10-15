@@ -25,6 +25,7 @@
 				<value>Template</value>
 				<value>Tag</value>
 				<value>ClientMessage</value>
+				<value>Objects</value>
 			</set>		
 		</property>
 	    <!-- Set locales -->

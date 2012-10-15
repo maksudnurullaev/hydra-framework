@@ -8,6 +8,7 @@
 	<property name="properties.dir" value="${basedir}/properties" />
 	<property name="name" value="${application.name}" />
 	<property name="classes" value="${basedir}/WebContext/WEB-INF/classes" />
+	<property name="web.inf.path" value="${basedir}/WebContext/WEB-INF" />
 
 	<fileset id="local.libs" dir="${basedir}/WebContext/WEB-INF/lib">
 		<include name="*.jar" />
@@ -19,6 +20,7 @@
 		
 	<path id="master-classpath">
 		<pathelement path="${classes}"/>
+		<pathelement path="${web.inf.path}"/>
 		<fileset refid="local.libs"/>
 		<fileset refid="web.libs"/>
 	</path>
@@ -43,6 +45,11 @@
 			<src path="${src.tests}" />
 			<classpath refid="master-classpath" />
 		</javac>
+		<copy todir="${classes}" preservelastmodified="true">
+			<fileset dir="${basedir}/properties">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>		
 	</target>
 
 	<target name="clean.build" description="Clean project">
@@ -88,7 +95,7 @@
 	</target>
 	
 	<target name="test.all" depends="build" description="Run tests">
-		<junit printsummary="on" fork="true" haltonfailure="false"
+		<junit printsummary="on" fork="false" haltonfailure="true"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />			
@@ -108,13 +115,13 @@ tests.failed=${tests.failed}
         </fail>
 	</target>	
 	<target name="test" depends="build" description="Run tests">
-		<junit printsummary="on" fork="false" haltonfailure="false"
+		<junit printsummary="on" fork="true" haltonfailure="false"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestBeanWebApplications.class" />
+					<include name="**/TestDBStage1.class" />
 				</fileset>
 			</batchtest>			
 		</junit>

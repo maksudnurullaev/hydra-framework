@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hydra.deployers.Db;
 import org.hydra.html.fields.FieldInput;
 import org.hydra.html.fields.IField;
 import org.hydra.managers.MessagesManager;
@@ -90,7 +91,7 @@ public final class Utils {
 	}
 
 	public static String GetCurrentDateTime() { // NO_UCD
-		SimpleDateFormat sdf = new SimpleDateFormat();
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.time_uid_format);
 		return String.format(sdf.format(new Date()));
 	}
 
@@ -340,7 +341,7 @@ public final class Utils {
 		for(String tag:Constants._GLOBAL_TAGS)
 				result.add(tag);
 		// finish
-		List<Row<String, String, String>> rows = DBUtils.getValidRows(inAppID, "Tag", "", "", "", "" );
+		List<Row<String, String, String>> rows = DBUtils.getRows(inAppID, "Tag", "", "", "", "" );
 	    for (Row<String, String, String> r : rows) {
 	    	HColumn<String, String> hc = r.getColumnSlice().getColumnByName("name");
 	    	if(hc != null && hc.getValue() != null)
@@ -641,7 +642,7 @@ public final class Utils {
 		return (result);
 	}
 	
-	public static void dump(IMessage inMessage) {
+	public static void dumpIncomingWebMessage(IMessage inMessage) {
 		System.out.println("=== Start ===");
 		if(inMessage == null){
 			System.out.println("=== NULL ===");
@@ -655,7 +656,7 @@ public final class Utils {
 		System.out.println("inMessage.isReloadPage(): " + inMessage.isReloadPage());
 		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
 		System.out.println("inMessage.getError(): " + inMessage.getError());
-		System.out.println("inMessage.getSessionID(): " + inMessage.getSession().getId());
+		System.out.println("inMessage.getSessionID(): " + inMessage.getSessionId());
 		System.out.println("inMessage.getUrl(): " + inMessage.getUrl());
 		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
 		System.out.println("=== End ===");
@@ -668,5 +669,66 @@ public final class Utils {
 
 	public static String replaceAll(String inString) {
 		return(inString.replaceAll("(?i)</textarea>", "[[Dictionary|Template|template.textarea.endtag|html]]"));
+	}
+
+	public static String wrapIfNeeds(
+			String inKsp, 
+			String inCFname,
+			String inKey,
+			String inCName,
+			IMessage inMessage,
+			Map<String, String> editLinks,
+			String inWrapper){
+		Db._log.debug("Enter to: getDbTemplateKeyHow");
+		// get result from DB
+		StringWrapper content = new StringWrapper();
+		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inKsp, inCFname, inKey, inCName, content);
+		switch (err) {
+		case NO_ERROR:
+			break;
+		case ERROR_DB_EMPTY_VALUE:
+		case ERROR_DB_NULL_VALUE:
+			content.setString(String.format("<font color='red'>%s</font>",inKey));
+			break;
+		default:
+			DBUtils._log.error(String.format("DB error with %s: %s", inKey, err.toString()));
+			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
+		}
+		if(Roles.isUserHasRole(Roles.USER_EDITOR, inMessage))
+			Utils.wrapElement(inKey, content, "DBRequest", inCFname, errDBCodeValueExest(err), editLinks, inWrapper);
+		
+		return content.getString();			
+	}
+
+	public static void wrapElement(
+			String inKey, 
+			StringWrapper content, 
+			String inHandlerName,
+			String inEditObjectName,
+			boolean noError, 
+			Map<String, String> editLinks,
+			String inWrapper) {
+	
+		String wrapElemId = sanitazeHtmlId(String.format("%s.%s", inEditObjectName, inKey));
+		String wrapString = String.format("<%s id='%s'>%s</%s>", inWrapper, wrapElemId, content.getString(), inWrapper);
+		content.setString(wrapString.toString());
+		// List of Link
+		if(editLinks != null && !editLinks.containsKey(wrapElemId)){
+			StringBuffer result = new StringBuffer();
+			
+			// main link
+			if(!noError)
+				result.append("<a class='red' onclick=\"javascript:void(Globals.editIt('");
+			else
+				result.append("<a class='green' onclick=\"javascript:void(Globals.editIt('");
+			result.append(inKey).append("','").append(inHandlerName).append("','").append("edit" + inEditObjectName)
+						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
+			// sup - description
+			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.toogleVisibility('");
+			result.append(wrapElemId).append("')); return false;\" href=\"#\">Show me</a>, ")
+				.append(wrapString.toString().length()).append(")</sup>");
+			
+			editLinks.put(wrapElemId, result.toString());
+		}
 	}
 }
