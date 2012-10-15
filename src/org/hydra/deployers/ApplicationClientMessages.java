@@ -17,7 +17,7 @@ public final class ApplicationClientMessages {
 		StringBuffer content = new StringBuffer();
 		content.append("<h2>[[Dictonary|Text|Client_Requests|span]]</h2>");
 		content.append("<div id='app_action'>");
-		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, _cfName, "", "", "", "");
+		List<Row<String,String,String>> rows = DBUtils.getRows(inAppID, _cfName, "", "", "", "");
 		int validRows = 0;
 	    for (Row<String, String, String> r : rows) {
 	    	ColumnSlice<String, String> cs= r.getColumnSlice();

@@ -28,7 +28,7 @@ public final class ApplicationUsers {
 			String inAppID) {
 		StringBuffer content = new StringBuffer();
 		
-		List<Row<String,String,String>> rows = DBUtils.getValidRows(inAppID, "User", "", "", "", "");
+		List<Row<String,String,String>> rows = DBUtils.getRows(inAppID, "User", "", "", "", "");
 		int validRows = 0;
 
 	    for (Row<String, String, String> r : rows) {

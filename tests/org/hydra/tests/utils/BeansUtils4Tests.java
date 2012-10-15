@@ -20,7 +20,7 @@ public final class BeansUtils4Tests {
 		_log.debug("Create new GenericApplicationContext!");
 		ctx = new GenericApplicationContext();
 		xmlReader = new XmlBeanDefinitionReader(ctx);
-		xmlReader.loadBeanDefinitions(new ClassPathResource("../applicationContext.xml"));
+		xmlReader.loadBeanDefinitions(new ClassPathResource("applicationContext.xml"));
 		ctx.refresh();		
 	}
 	

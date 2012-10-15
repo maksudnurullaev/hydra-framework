@@ -18,6 +18,8 @@ public class CommonMessage implements IMessage {
 
 	private static final long serialVersionUID = 1L;
 
+	private String sessionId = null;
+
 	private FileTransfer file = null;	
 	private Map<String, String> data = new HashMap<String, String>();
 	private HttpSession session = null;
@@ -29,11 +31,26 @@ public class CommonMessage implements IMessage {
 	private String error = null;
 	private String contextPath;
 	private long timeOut;
-
+		
+	public CommonMessage(String inSessionId){
+		this.sessionId = inSessionId;
+	}
+	public CommonMessage() {
+	}
+	@Override
+	public void setSessionId(String inSessionId) {
+		this.sessionId = inSessionId;
+	}	
+	
+	@Override	
+	public String getSessionId(){
+		return(sessionId);
+	}
+	@Override
 	public long getTimeout() {
 		return(timeOut);
 	}	
-	
+	@Override	
 	public void setTimeout(long timeout){
 		timeOut = timeout;
 	}
@@ -43,7 +60,6 @@ public class CommonMessage implements IMessage {
 			htmlContents = new HashMap<String, String>();
 		htmlContents.put(keyElementID, htmlContent);
 	}
-
 	@Override
 	public void setData(Map<String, String> _data) {
 		this.data = _data;

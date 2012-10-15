@@ -103,7 +103,7 @@ public class WebMessagesHandler extends ALogger {
 		long startTime = System.currentTimeMillis();
 		// Waiting for response
 		getLog().debug("START: Waiting...");
-		while (!messagesCollector.hasNewMessages(inMessage.getSession().getId())) {
+		while (!messagesCollector.hasNewMessages(inMessage.getSessionId())) {
 			// if timeout
 			if (System.currentTimeMillis() - startTime > inMessage.getTimeout()) {
 
@@ -120,7 +120,7 @@ public class WebMessagesHandler extends ALogger {
 		getLog().debug("END: Waiting...");
 		// If response messages exist
 		IMessage messageBean = null;
-		while ((messageBean = messagesCollector.getMessage(inMessage.getSession().getId())) != null)
+		while ((messageBean = messagesCollector.getMessage(inMessage.getSessionId())) != null)
 		{
 			if(messageBean.getData() != null) messageBean.getData().clear();
 			resultList.add((MessageBean) messageBean);

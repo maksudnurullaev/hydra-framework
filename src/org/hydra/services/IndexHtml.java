@@ -75,7 +75,7 @@ public class IndexHtml extends HttpServlet {
 			SessionUtils.setSessionData(req.getSession(), "browser" , app.getId(), "general");			
 		}
 		
-		CommonMessage msg = new CommonMessage();
+		CommonMessage msg = new CommonMessage(req.getSession().getId());
 		msg.setUrl(url);
 		Result inResult = new Result();
 		SessionUtils.setWebAppParameters(inResult, msg, app);

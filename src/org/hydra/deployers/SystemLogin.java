@@ -68,7 +68,7 @@ public final class SystemLogin {
 			tag = "*";
 			info = "*";
 		}else{
-			List<Row<String,String,String>> rows = DBUtils.getValidRows(inApplicationID, "User", inUserID, inUserID, "", "");
+			List<Row<String,String,String>> rows = DBUtils.getRows(inApplicationID, "User", inUserID, inUserID, "", "");
 			
 			if(rows == null)     return "NO_USER";
 			if(rows.size() != 1) return "NOT_UNIQUE";

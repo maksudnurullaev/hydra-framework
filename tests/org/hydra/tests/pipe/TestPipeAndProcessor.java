@@ -51,11 +51,8 @@ public class TestPipeAndProcessor{
 		_outPipe.setName("Test outPipe");
 		_outPipe.setStatisticsCollector(_statisticsCollector);
 
-		_message1 = new MessageBean();
-		_message1.getData().put("sessionID", "Test Message1");
-		
-		_message2 = new MessageBean();
-		_message2.getData().put("sessionID", "Test Message2");
+		_message1 = new MessageBean("Session #1");		
+		_message2 = new MessageBean("Session #1");
 	}
 
 	@Test
@@ -127,8 +124,7 @@ public class TestPipeAndProcessor{
 		_inPipe.setMaxCapacity(messageCount);
 		// Test with (messageCount x 2) messages
 		for (int i = 0; i < (messageCount * 2); i++) {
-			message = new MessageBean();
-			message.getData().put("sessionID", String.format("Message #%d", i));
+			message = new MessageBean(String.format("Session ID=%d", i));
 			_inPipe.setMessage(message);
 		}
 	}

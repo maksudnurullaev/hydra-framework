@@ -21,8 +21,8 @@ public final class Constants {
 	public static final String _cassandra_cluster = "_cassandra_cluster";
 	
 	// **** Common constants
-	static final Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-	static final String time_uid_format = "yyyy.MM.dd HH:mm:ss SSS";
+	public static final Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+	public static final String time_uid_format = "yyyy.MM.dd HH:mm:ss SSS";
 	public static final int _unlimited = -1;
 	public static final String UnknownString = "Unknown";
 	
@@ -49,6 +49,7 @@ public final class Constants {
 	public static final String _captcha_value = "captcha_value";
 	public static final String _captcha_OK = "_captcha_OK";
 	public static final String _admin_app_action_div = "admin_app_action_div";
-	public static final Object _admin_app_sub_action_div = "admin_app_sub_action_div";
+	public static final String _admin_app_sub_action_div = "admin_app_sub_action_div";
 	public static final String _url_mode_param = "mode=";
+	public static final String _key_object_name = "_object_name";
 }

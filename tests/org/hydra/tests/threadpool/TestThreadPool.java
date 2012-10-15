@@ -70,16 +70,13 @@ public class TestThreadPool {
 		_processor12.setOutPipe(_outPipe);
 		_processor13.setOutPipe(_outPipe);
 
-		int messageCount = 1000;
+		int messageCount = 10;
 		try {
 			MessageBean message = null;
 			for (int i = 0; i < messageCount; i++) {
-				message = new MessageBean();
+				message = new MessageBean(String.format("Session ID=%d", i));
 				message.getData().put("handler", "General");
-				message.getData().put("action", "getTextByKey");
-				message.getData().put("key", "home.context");
-				message.getData().put("sessionID",
-						String.format("Test Message #%d", i));
+				message.getData().put("action", "dumpMethod");
 				_main_inPipe.setMessage(message);
 			}
 		} catch (RichedMaxCapacityException e) {

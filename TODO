@@ -1,11 +1,3 @@
-1.
-	Fix edition of template KEY input file
-2.
-3.
-
-	<!--  Remote - CLIENT PART - mnurullayev -->
-	<bean id="remoteMessageClient" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-	    <property name="serviceUrl" value="rmi://192.168.34.88:1199/MessageService"/>
-	    <property name="serviceInterface" value="org.hydra.services.remote.interfaces.IMessageService"/>
-	</bean>		
-	
+1. Make configurable mobile pages dependencies from applications.xml file
+2. Make configurable users access dependences from applications.xml file 
+3. Make test do data access with elementary functionality

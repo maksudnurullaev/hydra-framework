@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.DBUtils;
+import org.hydra.utils.Utils;
 
 public final class Db {
 	public static final Log _log = LogFactory.getLog("org.hydra.deployers.Db");
@@ -36,14 +36,14 @@ public final class Db {
 			IMessage inMessage){
 		String locale = inMessage.getData().get("locale");
 		if(inHow.compareToIgnoreCase("div") == 0) // div wrapper 
-			return(DBUtils.wrapIfNeeds(inMessage.getData().get("appid"), 
+			return(Utils.wrapIfNeeds(inMessage.getData().get("appid"), 
 					"Text", 
 					inKey, 
 					locale, 
 					inMessage, 
 					editLinks, 
 					"div"));
-		return DBUtils.wrapIfNeeds(inMessage.getData().get("appid"), 
+		return Utils.wrapIfNeeds(inMessage.getData().get("appid"), 
 				"Text", 
 				inKey,
 				locale, 
@@ -57,7 +57,7 @@ public final class Db {
 			String inHow,			 // reserved
 			Map<String, String> editLinks,
 			IMessage inMessage){
-		return DBUtils.wrapIfNeeds(
+		return Utils.wrapIfNeeds(
 				inMessage.getData().get("appid"), 
 				"Template", 
 				inKey, 
