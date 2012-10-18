@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+
+<project name="hydra-framework" basedir="." default="info">
+	<property file="build.properties" />
+
+	<property name="src" value="${basedir}/src" />
+	<property name="src.tests" value="${basedir}/tests" />
+	<property name="properties.dir" value="${basedir}/properties" />
+	<property name="name" value="${application.name}" />
+	<property name="classes" value="${basedir}/WebContext/WEB-INF/classes" />
+	<property name="web.inf.path" value="${basedir}/WebContext/WEB-INF" />
+
+	<fileset id="local.libs" dir="${basedir}/WebContext/WEB-INF/lib">
+		<include name="*.jar" />
+	</fileset>
+	
+	<fileset id="web.libs" dir="${appserver.lib}">
+		<include name="servlet*.jar" />
+	</fileset>	
+		
+	<path id="master-classpath">
+		<pathelement path="${classes}"/>
+		<pathelement path="${web.inf.path}"/>
+		<fileset refid="local.libs"/>
+		<fileset refid="web.libs"/>
+	</path>
+
+	<path id="sources-path">
+		<pathelement path="${basedir}/src"/>
+		<pathelement path="${basedir}/test"/>
+	</path>
+		
+	<target name="info">
+		<echo message="" />
+		<echo message="Help:" />
+		<echo message="---------------------------------------" />
+		<echo message="type 'ant -p' for list of targets" />
+	</target>
+
+	<target name="build" description="Build project">
+		<mkdir dir="${classes}" />
+		<javac destdir="${classes}" source="1.5" target="1.5" debug="true"
+			deprecation="true" optimize="false" failonerror="true" includeantruntime="false">
+			<src path="${src}" />
+			<src path="${src.tests}" />
+			<classpath refid="master-classpath" />
+		</javac>
+		<copy todir="${classes}" preservelastmodified="true">
+			<fileset dir="${basedir}/properties">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>		
+	</target>
+
+	<target name="clean.build" description="Clean project">
+		<delete dir="${classes}"/>
+	</target>	
+	
+	<target name="web.clean" description="Remove project from web server">
+		<delete includeemptydirs="true">
+			<fileset dir="${deploy.path}/${name}">
+				<exclude name="**/files/**" />
+				<exclude name="**/images/**" />
+			</fileset>
+		</delete>
+	</target>	
+	
+	<target name="web.deploy" depends="build" description="Deploy project to web server">
+		<copy todir="${deploy.path}/${name}" preservelastmodified="true">
+			<fileset dir="${basedir}/WebContext">
+				<include name="**/*.*" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+		<copy todir="${deploy.path}/${name}/WEB-INF/classes" preservelastmodified="true">
+			<fileset dir="${basedir}/properties">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		<copy todir="${deploy.path}/${name}/WEB-INF/classes" preservelastmodified="true">
+			<fileset dir="${basedir}/WebContext/WEB-INF">
+				<include name="app*.xml" />
+			</fileset>
+		</copy>		
+		<echo message="Everything copied to ${deploy.path}/${name}"/>
+	</target>
+
+	<target name="create.war" depends="build"
+		description="Create WAR file">
+		<war destfile="${name}.war" webxml="${basedir}/WebContext/WEB-INF/web.xml">
+			<fileset dir="${basedir}/WebContext">
+				<include name="**/*.*" />
+			</fileset>
+		</war>
+	</target>
+	
+	<target name="test.all" depends="build" description="Run tests">
+		<junit printsummary="on" fork="false" haltonfailure="true"
+			failureproperty="tests.failed" showoutput="true">
+			<classpath refid="master-classpath" />
+			<formatter type="brief" usefile="false" />			
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/Test*.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<fail if="tests.failed">
+tests.failed=${tests.failed}
+***********************************************************
+***********************************************************
+**** One or more tests failed! Check the output ... ****
+***********************************************************
+***********************************************************
+        </fail>
+	</target>	
+	<target name="test" depends="build" description="Run tests">
+		<junit printsummary="on" fork="false" haltonfailure="false"
+			failureproperty="tests.failed" showoutput="true">
+			<classpath refid="master-classpath" />
+			<formatter type="brief" usefile="false" />			
+			<batchtest>
+				<fileset dir="${classes}">
+					<include name="**/TestDBFind.class" />
+				</fileset>
+			</batchtest>			
+		</junit>
+		<fail if="tests.failed">
+tests.failed=${tests.failed}
+***********************************************************
+***********************************************************
+**** One or more tests failed! Check the output ... ****
+***********************************************************
+***********************************************************
+        </fail>
+	</target>
+	
+<!-- Temporaly commented!!!
+	<target name="build.javadoc" depends="build" description="Build API documentation">
+
+		<mkdir dir="./doc/api" />
+		<javadoc sourcepath="${src}" destdir="./doc/api" packagenames="*">
+			<classpath refid="master-classpath" />
+		</javadoc>
+
+		<batchtest>
+			<fileset dir="${classes}">
+				<include name="**/Test*.class" />
+			</fileset>
+		</batchtest>				
+	</target>
+-->
+
+</project>

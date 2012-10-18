@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<bean id="_hydra_web_applications" class="org.hydra.beans.WebApplications">
+		<constructor-arg><ref bean="_ksp_manager"/></constructor-arg>
+		<property name="applications">
+			<set>
+				<ref bean="HydraUz_WebAppBean"/>
+				<ref bean="ManUz_WebAppBean"/>
+				<ref bean="Buh1Uz_WebAppBean"/>
+				<ref bean="ZFileUz_WebAppBean"/>
+				<ref bean="SKTourUz_WebAppBean"/>
+				<ref bean="BlondinkaUz_WebAppBean"/>
+				<ref bean="Test_WebAppBean"/>
+			</set>
+		</property>				
+	</bean>
+	
+	<bean id="Test_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="Test" />
+	</bean>
+	
+	<bean id="HydraUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="HydraUz" />
+		<property name="urls">
+			<set>
+				<value>^https?://127\.0\.0\.1.*</value>
+				<value>^https?://91\.212\.89\.163.*</value>
+				<value>^https?://(www\.|wap\.)?hydra\.uz.*</value>
+				<value>^https?://localhost.*</value>
+			</set>
+		</property>
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>
+	
+	<bean id="ManUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="ManUz" />
+		<property name="urls">
+			<set>
+				<value>^https?://man\.hydra\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>
+
+	<bean id="Buh1Uz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="Buh1Uz" />
+		<property name="urls">
+			<set>
+				<value>^https?://buh1\.hydra\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>
+
+	
+	<bean id="ZFileUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="ZFileUz" />
+		<property name="urls">
+			<set>
+				<value>^https?://(www\.|wap\.)?zfile\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="uzb" value="Uzb"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+		<property name="timeout" value="600000"/> <!-- 10 min -->
+	</bean>		
+
+	<bean id="SKTourUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="SKTourUz" />
+		<property name="urls">
+			<set>
+				<value>^https?://(www\.|wap\.)?sktour\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>eng</value>
+		</property>	    
+	</bean>		
+	<bean id="BlondinkaUz_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="BlondinkaUz" />
+		<property name="urls">
+			<set>
+				<value>^https?://(www\.|wap\.)?blondinka\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>			
+</beans>

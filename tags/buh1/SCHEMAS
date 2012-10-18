@@ -1,0 +1,10 @@
+WebApplications
+	getValidApplication
+	WebApplication
+		isMineUrl
+		getSessionValue
+Message
+	appId
+	userId
+	sessionObj
+	
