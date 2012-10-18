@@ -121,7 +121,7 @@ tests.failed=${tests.failed}
 			<formatter type="brief" usefile="false" />			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestDBStage1.class" />
+					<include name="**/TestDBFind.class" />
 				</fileset>
 			</batchtest>			
 		</junit>
