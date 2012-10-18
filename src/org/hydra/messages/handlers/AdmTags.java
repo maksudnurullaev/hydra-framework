@@ -81,7 +81,7 @@ public class AdmTags extends AMessageHandler {
 		String inColumnFamily = "Tag";
 		
 		inMessage.getData().put("dest", Constants._admin_app_action_div);
-		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, inColumnFamily, value);
+		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKeys(appId, inColumnFamily, value);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
 			inMessage.setError(errCode.toString());
 			return inMessage;

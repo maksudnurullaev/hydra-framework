@@ -111,7 +111,7 @@ public final class DBUtils {
 			String inKeyRangeStart,
 			String inKeyRangeFinish){
 
-		List<Row<String, String, String>> rows = getRows(inAppId, inColumnFamily, inKeyStart, inKeyEnd, inKeyRangeStart, inKeyRangeFinish);
+		List<Row<String, String, String>> rows = getRows(inAppId, inColumnFamily, 1, inKeyStart, inKeyEnd, inKeyRangeStart, inKeyRangeFinish);
 		if(rows != null){ return(rows.size()); }
 		return(0);
 	}	
@@ -121,8 +121,19 @@ public final class DBUtils {
 			String inColumnFamily, 
 			String inKeyStart,
 			String inKeyEnd,
-			String inKeyRangeStart,
-			String inKeyRangeFinish) {
+			String inRangeStart,
+			String inRangeFinish) {
+		return(getRows(inAppId, inColumnFamily, 100, inKeyStart, inKeyEnd, inRangeStart, inRangeFinish));
+	}
+	
+	public static List<Row<String, String, String>> getRows(
+			String inAppId,
+			String inColumnFamily, 
+			int inRangeCount,
+			String inKeyStart,
+			String inKeyEnd,
+			String inRangeStart,
+			String inRangeFinish) {
 		List<Row<String, String, String>> resultRows = new ArrayList<Row<String,String,String>>();
 		KspManager kspManager = getKspManager();
 		if(kspManager == null){ 
@@ -137,7 +148,7 @@ public final class DBUtils {
 				
         rangeSlicesQuery.setColumnFamily(inColumnFamily);
         rangeSlicesQuery.setKeys(inKeyStart, inKeyEnd);
-        rangeSlicesQuery.setRange(inKeyRangeStart, inKeyRangeFinish, false, 3);
+        rangeSlicesQuery.setRange(inRangeStart, inRangeFinish, false, inRangeCount);
 	            
         try {
             QueryResult<OrderedRows<String, String, String>> resultOfExec = rangeSlicesQuery.execute();
@@ -156,23 +167,27 @@ public final class DBUtils {
         return(null);
 	}		
 	
-	public static ERROR_CODES deleteKey(
+	public static ERROR_CODES deleteKeys(
 			String inAppId, 
 			String inColumnFamily,
-			String inKey) {
+			String ... objectIds) {
 		
-		_log.debug(String.format("Try to delete Ksp/CFName/Key: %s/%s/%s", inAppId, inColumnFamily,inKey));
+		if(objectIds == null || objectIds.length == 0) { return(ERROR_CODES.ERROR_DB_EMPTY_VALUE); }
 		
-		KspManager kspManager = getKspManager();
+		KspManager kspManager = DBUtils.getKspManager();
 		if(kspManager == null){ return(ERROR_CODES.ERROR_DB_NO_KSP); }
-
-		Mutator<String> mutator = getMutator(inAppId);
+	
+		Mutator<String> mutator = DBUtils.getMutator(inAppId);
 		if(mutator == null) { return(ERROR_CODES.ERROR_NO_VALID_MUTATOR); }
+		
+		for(String id:objectIds){
+			mutator.addDeletion(id, inColumnFamily, null, StringSerializer.get());
+		}
+		
 		try {
-			mutator.delete(inKey, inColumnFamily, null, StringSerializer.get());
 			mutator.execute();
 		} catch (Exception e) {
-			_log.error(e.toString());
+			DBUtils._log.error(e.toString());
 			return(ERROR_CODES.ERROR_UKNOWN);
 		}
 		return ERROR_CODES.NO_ERROR;
@@ -264,7 +279,7 @@ public final class DBUtils {
 			String inKey, 
 			String fieldID) {
 		
-		int foundRows = getRows(inAppId, inColumnFamily, inKey, inKey, "", "").size();
+		int foundRows = getRows(inAppId, inColumnFamily, 1, inKey, inKey, "", "").size();
 		if(foundRows != 0){
 			_log.warn(Utils.F("%s.%s['%s'] already exist!", 
 					inAppId, inColumnFamily,inKey));
@@ -309,7 +324,7 @@ public final class DBUtils {
 			String inKey,
 			String fieldID) {
 		Map<String, String> result = new HashMap<String, String>();
-		List<Row<String, String, String>> rows = getRows(inAppId, inColumnFamily, inKey, inKey, "", "");
+		List<Row<String, String, String>> rows = getRows(inAppId, inColumnFamily, 10, inKey, inKey, "", "");
 		if(rows.size() == 1	&& rows.get(0).getColumnSlice() != null ){
 			for(HColumn<String, String> hc: rows.get(0).getColumnSlice().getColumns()){
 				result.put(hc.getName(), hc.getValue());
@@ -340,51 +355,18 @@ public final class DBUtils {
         return false; 
 	}
 
-	public static ERROR_CODES setObjects(
-			String inAppId,
-			List<Map<String, String>> objects, List<String> outKeys) {
-		Mutator<String> mutator = getMutator(inAppId);
-		if(mutator == null) { return(ERROR_CODES.ERROR_NO_VALID_MUTATOR); }
-		if(objects == null || objects.size() == 0) { return(ERROR_CODES.ERROR_DB_EMPTY_VALUE); }
-		for(Map<String, String> map:objects){
-			// check & validation
-			if(map.size() <= 1) { continue; }
-			String objectName  = map.get(Constants._key_object_name);
-			if(objectName == null || objectName.isEmpty()){ continue; }
-			// remove objectName key & value due objectId generated
-			map.remove(Constants._key_object_name);
-			// update key id
-			String objectId = GetDBObjectID(objectName);
-			for(Map.Entry<String, String> entry: map.entrySet()){
-				mutator.addInsertion(objectId, "Objects", HFactory.createStringColumn(entry.getKey(), entry.getValue()));
-			}
-			mutator.execute();
-			if(outKeys != null) { outKeys.add(objectId); }
-		}
-		return(ERROR_CODES.NO_ERROR);
-	}
-
-
-	public static String GetDBObjectID(String inObjectName){
+	public static String getDBObjectID(String inObjectName){
 		return ( inObjectName + " " + Utils.GetCurrentDateTime() + " " + Utils.GetUUID().substring(0,2));		
-	}	
+	}
 
-	public static Map<String, String> getColumnsAsMap(
-			String inAppId,
-			String inColumnFamily, 
-			String inKey) {
-		QueryResult<ColumnSlice<String, String>> result = getColumns(inAppId, inColumnFamily, inKey);
-		if(result == null || result.get() == null || result.get().getColumns().size() == 0) { return(null);}
+	public static Map<String, String> getMapFromRow(
+			Row<String, String, String> row) {
 		Map<String, String> map = new HashMap<String, String>();
-		for(HColumn<String, String> c:result.get().getColumns()){ map.put(c.getName(), c.getValue()); }
-		return(map);
+		for(HColumn<String, String> column: row.getColumnSlice().getColumns()){
+			map.put(column.getName(), column.getValue());
+		}
+		return(map.size() == 0 ? null : map);
 	}
 
-	public static Map<String, Map<String, String>> getObjectsAsMap(
-			String inAppId, List<String> objectIds) {
-		Map<String, Map<String, String>> result = new HashMap<String, Map<String,String>>();
-		for(String id: objectIds){ result.put(id, getColumnsAsMap(inAppId, "Objects", id)); }
-		return(result);
-	}
 }
 

@@ -113,7 +113,7 @@ public class AdmUsers extends AMessageHandler {
 		String appId = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("key").trim();
 				
-		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "User", key);
+		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKeys(appId, "User", key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
 			inMessage.setError(errCode.toString());
 			return inMessage;

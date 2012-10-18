@@ -98,7 +98,7 @@ public class UserFiles extends AMessageHandler {
 		String appId = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("key");
 				
-		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, "Template", key);
+		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKeys(appId, "Template", key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
 			inMessage.setError(errCode.toString());
 			return inMessage;

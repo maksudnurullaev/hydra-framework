@@ -68,7 +68,7 @@ public class ClientMessage extends AMessageHandler {
 		String appId = inMessage.getData().get("appid");
 		String key = inMessage.getData().get("key");
 				
-		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKey(appId, _cfName, key);
+		ErrorUtils.ERROR_CODES errCode = DBUtils.deleteKeys(appId, _cfName, key);
 		if(errCode != ErrorUtils.ERROR_CODES.NO_ERROR){
 			inMessage.setError(errCode.toString());
 			return inMessage;
