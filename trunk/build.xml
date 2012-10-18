@@ -115,7 +115,7 @@ tests.failed=${tests.failed}
         </fail>
 	</target>	
 	<target name="test" depends="build" description="Run tests">
-		<junit printsummary="on" fork="true" haltonfailure="false"
+		<junit printsummary="on" fork="false" haltonfailure="false"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />			
