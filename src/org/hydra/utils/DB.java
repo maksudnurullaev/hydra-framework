@@ -14,9 +14,9 @@ import org.apache.commons.logging.LogFactory;
 
 public final class DB {
 	private static Log _log = LogFactory.getLog("org.hydra.utils.CaptchaUtils");
+	static JdbcConnectionPool cp =JdbcConnectionPool.create("jdbc:h2:file:db/buh1", "sa", "sa");
 	
 	public static Connection getConnection(){
-		JdbcConnectionPool cp =JdbcConnectionPool.create("jdbc:h2:file:db/buh1", "sa", "sa");
 		try {
 			return(cp.getConnection());
 		} catch (SQLException e) {
