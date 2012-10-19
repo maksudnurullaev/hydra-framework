@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hydra.utils.DBObjects;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +23,7 @@ public class TestDBFind {
 //			obj.put("key" + i, "Value" + i);
 			objects.add(obj);	
 		}
-		DBObjects.setObjects("Test", objects, objectIds);
+		//TODDO DBObjects.setObjects("Test", objects, objectIds);
 		System.out.println("Inserted objects count: " + objectIds.size());
 	}
 		

@@ -91,9 +91,7 @@ public final class ADeployer {
 			String inHow,
 			Map<String, String> editLinks,
 			IMessage inMessage) {
-		if(inWhere.compareToIgnoreCase("db") == 0)
-			return Db.getWhatKeyHow(inWhat, inKey, inHow, editLinks, inMessage);
-		else if(inWhere.compareToIgnoreCase("system") == 0)
+		if(inWhere.compareToIgnoreCase("system") == 0)
 			return System.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)
 			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inMessage);

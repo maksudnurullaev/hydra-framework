@@ -9,14 +9,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import me.prettyprint.hector.api.beans.HColumn;
-import me.prettyprint.hector.api.beans.Row;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.deployers.Db;
 import org.hydra.html.fields.FieldInput;
 import org.hydra.html.fields.IField;
 import org.hydra.managers.MessagesManager;
@@ -334,23 +330,7 @@ public final class Utils {
 			return( ((FieldInput) s).getType().compareToIgnoreCase("file") == 0 );
 		return false;
 	}
-
-	public static List<String> getAllTags4(String inAppID) {
-		List<String> result = new ArrayList<String>();
-		// set flobal tags
-		for(String tag:Constants._GLOBAL_TAGS)
-				result.add(tag);
-		// finish
-		List<Row<String, String, String>> rows = DBUtils.getRows(inAppID, "Tag", "", "", "", "" );
-	    for (Row<String, String, String> r : rows) {
-	    	HColumn<String, String> hc = r.getColumnSlice().getColumnByName("name");
-	    	if(hc != null && hc.getValue() != null)
-	    		result.add(hc.getValue());
-	    }
-		// finish
-		return(result);
-	}
-
+	
 	public static void testFieldEMail(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
@@ -419,141 +399,6 @@ public final class Utils {
 		}
 		return(result);
 	}	
-	
-	public static String tagsAsEditableHtml(
-			String appId, 
-			String elemID,
-			String value,
-			String addValue,
-			String delValue,
-			List<String> tagPrefixes) {
-		
-		if(tagPrefixes == null || tagPrefixes.size() == 0) return "No tag prefixes";
-		// add value
-		if(addValue != null){
-			if(value == null || value.isEmpty())
-				value = addValue;
-			else
-				value += ("," + addValue); 
-		}
-		// delete value
-		if(delValue != null){
-			if(value != null && (!value.isEmpty()))
-				value = del4Tags(value, delValue);
-		}
-
-		String selectID = sanitazeHtmlId("tag_select_" + elemID);
-		String prefixesID = sanitazeHtmlId("tag_prefixes_" + elemID); 
-		String divId = sanitazeHtmlId("tag_div_" + elemID);
-		
-		// input - value
-		String inputHtmlTag = String.format("<input id=\"%s\" type=\"hidden\" value=\"%s\">", 
-				elemID,
-				value);
-		// input - prefixes
-		String prefixesValue = list2String(tagPrefixes);
-		String prefixesHtmlTag = String.format("<input id=\"%s\" type=\"hidden\" value=\"%s\">", 
-				prefixesID,
-				prefixesValue);
-		
-		// select
-		StringBuffer selectPart = new StringBuffer();
-		selectPart.append(String.format("<select id=\"%s\" style=\"border: 1px solid rgb(127, 157, 185);\">", selectID));
-
-		boolean selectHasElements = false;
-		List<String> allTags = Utils.getAllTags4(appId);
-		List<String> filteredTags = new ArrayList<String>();
-		
-		if(tagPrefixes != null && tagPrefixes.size() > 0){
-			for(String tag: allTags){
-				for(String ptag:tagPrefixes){
-					if(tag.contains(ptag))
-						filteredTags.add(tag);
-				}
-			}			
-		}else{
-			filteredTags = allTags;
-		}
-
-		String[] arrOfTags = value.split(",");
-		for(String tag:filteredTags){
-			if(containsTag(arrOfTags, tag)){// already exit 
-				continue;
-			}else{
-				selectPart.append(String.format("<option value=\"%s\">[[Dictionary|Text|%s|span]]</option>", tag, tag));
-				selectHasElements = true;
-			}
-		}
-			
-		selectPart.append("</select> | ");
-		
-		String jsData = Utils.jsData(
-				 "handler", Utils.Q("Tagger")
-				,"action",  Utils.Q("add")
-				,"appid", Utils.Q(appId)
-				,"elemid", Utils.Q(elemID)
-				,"value", Utils.V(elemID)
-				,"addvalue", Utils.V(selectID)
-				,"prefixes", Utils.V(prefixesID)
-				,"dest", Utils.Q(Utils.sanitazeHtmlId(divId))
-			);			
-		selectPart.append(Utils.createJSLink(jsData, "Add"));		
-		
-		// div for tags
-		String textPart = "";
-		if(value.isEmpty()){
-			textPart = "...";
-		}else{
-			textPart = "";
-			String[] arr = value.split(",");
-			for(String t:arr){
-				if(!textPart.isEmpty()) textPart += ", ";
-				textPart += String.format("[[Dictionary|Text|%s|span]]", t);
-				jsData = Utils.jsData(
-						 "handler", Utils.Q("Tagger")
-						,"action",  Utils.Q("delete")
-						,"appid", Utils.Q(appId)
-						,"elemid", Utils.Q(elemID)
-						,"value", Utils.V(elemID)
-						,"delvalue", Utils.Q(t)
-						,"prefixes", Utils.V(prefixesID)
-						,"dest", Utils.Q(Utils.sanitazeHtmlId(divId))
-					);			
-				textPart += F("[%s]", Utils.createJSLink(jsData, "X"));	
-			}
-			
-		}
-		
-		// finish
-		String result = "";
-		result += String.format("<div id='%s'>", divId);
-		result += textPart;
-		if(selectHasElements)
-			result += ("<hr />" + selectPart.toString());
-		result += (inputHtmlTag + prefixesHtmlTag);
-		result += "</div>";
-		
-		return(result);  		
-	}
-
-	private static boolean containsTag(String[] arrOfTags, String tag) {
-		for(String t: arrOfTags){
-			if(tag.length() == t.length() && tag.compareTo(t) == 0)
-				return true;
-		}
-		return false;
-	}
-
-	private static String del4Tags(String value, String delValue) {
-		String[] arr = value.split(",");
-		String result = "";
-		for(String t: arr){
-			if(t.compareTo(delValue) == 0) continue;
-			if(!result.isEmpty()) result += ",";
-			result += t;
-		}
-		return result;
-	}
 
 	public static String list2String(List<String> values) {
 		return list2String("", values, ",");
@@ -669,35 +514,6 @@ public final class Utils {
 
 	public static String replaceAll(String inString) {
 		return(inString.replaceAll("(?i)</textarea>", "[[Dictionary|Template|template.textarea.endtag|html]]"));
-	}
-
-	public static String wrapIfNeeds(
-			String inKsp, 
-			String inCFname,
-			String inKey,
-			String inCName,
-			IMessage inMessage,
-			Map<String, String> editLinks,
-			String inWrapper){
-		Db._log.debug("Enter to: getDbTemplateKeyHow");
-		// get result from DB
-		StringWrapper content = new StringWrapper();
-		ErrorUtils.ERROR_CODES err = DBUtils.getValue(inKsp, inCFname, inKey, inCName, content);
-		switch (err) {
-		case NO_ERROR:
-			break;
-		case ERROR_DB_EMPTY_VALUE:
-		case ERROR_DB_NULL_VALUE:
-			content.setString(String.format("<font color='red'>%s</font>",inKey));
-			break;
-		default:
-			DBUtils._log.error(String.format("DB error with %s: %s", inKey, err.toString()));
-			content.setString(String.format("<font color='red'>%s</font>",inKey, err.toString()));
-		}
-		if(Roles.isUserHasRole(Roles.USER_EDITOR, inMessage))
-			Utils.wrapElement(inKey, content, "DBRequest", inCFname, errDBCodeValueExest(err), editLinks, inWrapper);
-		
-		return content.getString();			
 	}
 
 	public static void wrapElement(
