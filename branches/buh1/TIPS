@@ -1,0 +1,3 @@
+#### Cassandra ####
+create column family Text with comparator = UTF8Type ;
+create column family Template with comparator = UTF8Type ;
