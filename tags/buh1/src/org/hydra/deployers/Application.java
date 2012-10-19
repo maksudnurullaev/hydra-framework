@@ -22,16 +22,12 @@ public final class Application {
 			IMessage inMessage) {
 		if(inWhat.compareToIgnoreCase("options") == 0)
 			return getOptionsKeyHow(inKey,inHow);
-		else if(inWhat.compareToIgnoreCase("tags") == 0)
-			return ApplicationTags.getKeyHow(inKey,inHow);
 		else if(inWhat.compareToIgnoreCase("users") == 0)
 			return ApplicationUsers.getKeyHow(inKey,inHow);				
 		else if(inWhat.compareToIgnoreCase("templates") == 0)
 			return ApplicationTemplates.getKeyHow(inKey,inHow);				
 		else if(inWhat.compareToIgnoreCase("files") == 0)
 			return ApplicationFiles.getKeyHow(inKey,inHow);	
-		else if(inWhat.compareToIgnoreCase("ClientMessages") == 0)
-			return ApplicationClientMessages.getKeyHow(inKey,inHow);	
 		else if(inWhat.compareToIgnoreCase("TempFiles") == 0)
 			return ApplicationTempFiles.getKeyHow(inKey,inHow, inMessage);	
 		else if(inWhat.compareToIgnoreCase("Images") == 0)

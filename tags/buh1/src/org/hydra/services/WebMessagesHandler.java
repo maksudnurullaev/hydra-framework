@@ -8,7 +8,6 @@ import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.MessagesCollector;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.handlers.General;
-import org.hydra.messages.handlers.User;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
@@ -21,6 +20,8 @@ import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
+
+import org.apache.commons.lang.NotImplementedException;
 
 public class WebMessagesHandler extends ALogger {
 	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {	
@@ -63,8 +64,7 @@ public class WebMessagesHandler extends ALogger {
 			inMessage.setFile(inFile);
 			setupFile(inMessage);
 		}
-		//TODO just for test SessionUtils.printSessionData(webContext, inMessage);
-
+		
 		return(handleMessage(inMessage));
 	}
 	
@@ -154,11 +154,9 @@ public class WebMessagesHandler extends ALogger {
 			}
 		} else if(handler.compareToIgnoreCase("User") == 0){
 			if(action.compareToIgnoreCase("login") == 0){
-				inMessage = (MessageBean) User.login(inMessage, webContext);
-				return(true);
+				throw new NotImplementedException(); //TODO inMessage = (MessageBean) User.login(inMessage, webContext);
 			} else if(action.compareToIgnoreCase("logout") == 0){
-				inMessage = (MessageBean) User.logout(inMessage, webContext);
-				return(true);
+				throw new NotImplementedException(); //TODO inMessage = (MessageBean) User.logout(inMessage, webContext);
 			}
 		}else if(handler.compareToIgnoreCase("Adm") == 0){
 			if(action.compareToIgnoreCase("getCassandraConfiguration") == 0){

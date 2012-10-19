@@ -9,8 +9,6 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public final class BeansUtils4Tests {
-//	public final static Resource res = 
-//		new FileSystemResource("WebContext/WEB-INF/applicationContext.xml");
 	static Log _log = LogFactory.getLog("org.hydra.utils.BeansUtils4Tests");
 	private GenericApplicationContext ctx = null;
 	private static XmlBeanDefinitionReader xmlReader = null;

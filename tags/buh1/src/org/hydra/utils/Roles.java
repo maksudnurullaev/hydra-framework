@@ -1,5 +1,7 @@
 package org.hydra.utils;
 
+import java.util.List;
+
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
 
@@ -11,19 +13,15 @@ public final class Roles {
 	
 	public static boolean isUserHasRole(String inRole, IMessage inMessage) {
 		if(inRole == null) return(false);
-		String appId = inMessage.getData().get("_appid");
-		String userId = inMessage.getData().get("_userid");		
-		String rolesStr = null;
-		if(inMessage.getUrl().startsWith("http://127.0.0.1")) { rolesStr = USER_ADMINISTRATOR; }
+		if(inMessage.getUrl().startsWith("http://127.0.0.1")) { return(true); }
 		else {
-			StringWrapper sWrapper = new StringWrapper();
-			ERROR_CODES err = DBUtils.getValue(appId, "User", userId, "tag", sWrapper);
-			if(err == ERROR_CODES.NO_ERROR && !sWrapper.getString().isEmpty()){
-				rolesStr = sWrapper.getString();
+			SessionUtils.getSessionRoles(inMessage);
+			List<String> roles = SessionUtils.getSessionRoles(inMessage);
+			for(String role: roles){
+				if(role.toLowerCase() == inRole){
+					return(true);
+				}
 			}
-		}
-		if(rolesStr != null && rolesStr.length() > 0){
-			return(rolesStr.toLowerCase().contains(inRole.toLowerCase()));
 		}		
 		return(false);
 	}

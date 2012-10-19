@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<bean id="_hydra_web_applications" class="org.hydra.beans.WebApplications">
+		<property name="applications">
+			<set>
+				<ref bean="Hydra_WebAppBean"/>
+				<ref bean="Buh1_WebAppBean"/>
+			</set>
+		</property>				
+	</bean>
+	
+	<bean id="Hydra_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="Hydra" />
+		<property name="urls">
+			<set>
+				<value>^https?://127\.0\.0\.1.*</value>
+				<value>^https?://91\.212\.89\.163.*</value>
+				<value>^https?://(www\.|wap\.)?hydra\.uz.*</value>
+				<value>^https?://localhost.*</value>
+			</set>
+		</property>
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>	
+
+	<bean id="Buh1_WebAppBean" class="org.hydra.beans.WebApplication">
+		<property name="id" value="Buh1" />
+		<property name="urls">
+			<set>
+				<value>^https?://buh1\.hydra\.uz.*</value>
+			</set>
+		</property>		
+	    <!-- Set locales -->
+	    <property name="locales">
+	    	<map>
+	    		<entry key="rus" value="Рус"/>
+	    		<entry key="eng" value="Eng"/>
+	    	</map>
+	    </property>
+		<!-- Set default locale -->
+		<property name="defaultLocale">
+			<value>rus</value>
+		</property>	    
+	</bean>
+</beans>
