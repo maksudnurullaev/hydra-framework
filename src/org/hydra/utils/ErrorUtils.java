@@ -6,6 +6,7 @@ public final class ErrorUtils {
 // COMMON		
 		ERROR_UKNOWN,
 		NO_ERROR,
+		NO_IMPLEMENTED_YET, 
 // DB 		
 		ERROR_DB_NULL_VALUE,
 		ERROR_DB_EMPTY_VALUE,

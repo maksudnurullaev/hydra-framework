@@ -29,8 +29,6 @@ public final class System {
 			return SystemPassword.getKeyHow(inKey, inHow, inMessage);		
 		if(inWhat.compareToIgnoreCase("Captcha") == 0)
 			return SystemCaptcha.getKeyHow(inKey, inHow, inMessage);
-		if(inWhat.compareToIgnoreCase("Tagger") == 0)
-			return SystemTagger.getKeyHow(inKey, inHow, inMessage);
 		if(inWhat.compareToIgnoreCase("Session") == 0)
 			return SystemSession.getKeyHow(inKey, inHow, inMessage);
 		_log.error("Could not find WHAT part: " + inWhat);
