@@ -51,5 +51,4 @@ public final class Constants {
 	public static final String _admin_app_action_div = "admin_app_action_div";
 	public static final String _admin_app_sub_action_div = "admin_app_sub_action_div";
 	public static final String _url_mode_param = "mode=";
-	public static final String _key_object_name = "_object_name";
 }

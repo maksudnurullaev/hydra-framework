@@ -19,7 +19,7 @@ public final class ApplicationUsers {
 
 	static String getKeyHtml(
 			String inAppID) {
-		DB.getList(inAppID, "User");
+		DB.getObjects(inAppID, "User");
 		return(null);
 	}
 

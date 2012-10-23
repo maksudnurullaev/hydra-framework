@@ -72,8 +72,9 @@ public final class Utils {
 	}
 
 	public static String GetDateUUID() { // NO_UCD
-		return Utils.GetCurrentDateTime(Constants.time_uid_format) + " - "
-				+ Utils.GetUUID();
+		return(String.format("%s %s"
+				, Utils.GetCurrentDateTime(Constants.time_uid_format)
+				, Utils.GetUUID().substring(0, 2)));
 	}
 
 	public static String GetUUID() {
