@@ -1,35 +1,45 @@
 package org.hydra.tests.utils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
-import org.hydra.utils.DB;
 import org.hydra.utils.DBUtils;
+import org.hydra.utils.DBUtils.QUERY_TYPE;
 
 public class Just4Test2 {
 	public static void main(String[] argv) {
-		Connection c = DB.getConnection();
-		System.out.println(c.toString());
-		List<String> stmts = DBUtils.getDBObjectsCreateStatements();
-		stmts.add("INSERT INTO Objects(KEY) VALUES('TEST');");
-		stmts.add("SELECT * FROM OBJECTS;");
-		try {
-			for (String stmt : stmts) {
-				PreparedStatement ps = c.prepareStatement(stmt);
-				if (ps.execute()) {
-					printRs(ps.getResultSet());
-				}
-			}
-			c.commit();
-			c.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		Map<String, String> data = new HashMap<String, String>();
+//		data.put("_object", "version");
+		data.put("_key", "version 2012.10.23 10:31:47 587 97 8a");
+//		data.put("name", "='value11'");
+//		data.put("name2", "like 'value2%'");
+//		data.put("name3", "='test");
+		LinkedList<String> queries = DBUtils.makeQueries(QUERY_TYPE.DELETE, data);
+		while(!queries.isEmpty()){
+			System.out.println(queries.removeFirst());
 		}
+//		List<String> stmts = DBUtils.getDBObjectsCreateStatements();
+//		stmts.clear();
+//		stmts.add("INSERT INTO Objects(KEY) VALUES('TEST');");
+//		stmts.add("SELECT * FROM OBJECTS;");
+//		try {
+//			for (String stmt : stmts) {
+//				PreparedStatement ps = c.prepareStatement(stmt);
+//				if (ps.execute()) {
+//					printRs(ps.getResultSet());
+//				}
+//			}
+//			c.commit();
+//			c.close();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	static void printRs(ResultSet rs) {
