@@ -1,3 +1,4 @@
-1. Make configurable mobile pages dependencies from applications.xml file
-2. Make configurable users access dependences from applications.xml file 
-3. Make test do data access with elementary functionality
+CREATE TABLE Objects (ID INT PRIMARY KEY AUTO_INCREMENT, KEY VARCHAR(64), FIELD_NAME VARCHAR(64), FIELD_ORDER INT DEFAULT 0 NOT NULL, FIELD_VALUE VARCHAR(255));
+CREATE INDEX iKEY ON Objects(KEY);
+CREATE INDEX iFIELD_NAME ON Objects(FIELD_NAME);
+CREATE INDEX iFIELD_ORDER ON Objects(FIELD_ORDER);
