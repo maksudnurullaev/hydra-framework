@@ -22,6 +22,7 @@ public final class DB {
 			while(!queries.isEmpty()){
 				connection.prepareStatement(queries.remove()).execute();
 			}
+			connection.close();
 		} catch (SQLException e) {
 			_log.error(e.toString());
 			return(false);
@@ -34,7 +35,7 @@ public final class DB {
 		
 	}
 	
-	public static Map<String, Map<String, String>> getObject(Map<String, String> data) {
+	public static Map<String, Map<String, String>> getObjects(Map<String, String> data) {
 		LinkedList<String> listOfQueries= DBUtils.makeQueries(QUERY_TYPE.SELECT, data);
 		if(!listOfQueries.isEmpty()){
 			Connection connection = DBUtils.getConnection();
@@ -56,6 +57,7 @@ public final class DB {
 					}
 				}
 				if(result.size() == 0) { return(null); }
+				connection.close();
 				return(result);
 			} catch (SQLException e) {
 				_log.error(e.toString());
@@ -72,6 +74,7 @@ public final class DB {
 			try {
 				Statement statement = connection.createStatement();
 				statement.execute(listOfQueries.remove());
+				connection.close();
 			} catch (SQLException e) {
 				_log.error(e.toString());
 				return(false);
@@ -86,11 +89,33 @@ public final class DB {
 		try {
 			Statement statement = connection.createStatement();
 			rs = statement.executeQuery(String.format(DBUtils.select2find_field_name_existance, key, fieldName));
-			return(rs.next());
+			boolean result = rs.next();
+			connection.close();
+			return(result);
 		} catch (SQLException e) {
 			_log.error(e.toString());
 		}
 		return(false);		
+	}
+
+	public static int getCountOfObjects(Map<String, String> data) {
+		LinkedList<String> listOfQueries= DBUtils.makeQueries(QUERY_TYPE.SELECT_COUNT, data);
+		if(!listOfQueries.isEmpty()){
+			Connection connection = DBUtils.getConnection();
+			ResultSet rs;
+			try {
+				Statement statement = connection.createStatement();
+				rs = statement.executeQuery(listOfQueries.remove());
+				rs.next();
+				int result = rs.getInt(1);
+				connection.close();
+				return(result);
+			} catch (SQLException e) {
+				_log.error(e.toString());
+				return(-1);
+			}
+		}
+		return(-1);
 	}
 
 }

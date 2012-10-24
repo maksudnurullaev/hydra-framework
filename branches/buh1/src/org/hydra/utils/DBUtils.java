@@ -1,64 +1,51 @@
 package org.hydra.utils;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.h2.jdbcx.JdbcConnectionPool;
+import org.hydra.beans.abstracts.APropertyLoader;
 
 public final class DBUtils {
 	public static enum QUERY_TYPE{
 		INSERT,
 		UPDATE,
 		DELETE,
-		SELECT
+		SELECT,
+		SELECT_COUNT,
 	};
 	private static Log _log = LogFactory.getLog("org.hydra.utils.DBUtils");
-	private static boolean _db_objects_created = false;
-	static JdbcConnectionPool cp =JdbcConnectionPool.create("jdbc:h2:file:db/buh1", "sa", "sa");
+	public static Properties prop = new Properties();    	 	
+	static JdbcConnectionPool cp = null;
 
-	public static LinkedList<String> getDBObjectsCreateStatements() {
-		LinkedList<String> stmts = new LinkedList<String>();
-		stmts.add("CREATE TABLE Objects (ID INT PRIMARY KEY AUTO_INCREMENT, KEY VARCHAR(64), FIELD_NAME VARCHAR(64), FIELD_ORDER INT DEFAULT 0 NOT NULL, FIELD_VALUE VARCHAR(255));");
-		stmts.add("CREATE INDEX iKEY ON Objects(KEY);");
-		stmts.add("CREATE INDEX iFIELD_NAME ON Objects(FIELD_NAME);");
-		stmts.add("CREATE INDEX iFIELD_ORDER ON Objects(FIELD_ORDER);");
-		return(stmts);
+	public static void init_cp(){
+		prop = APropertyLoader.loadProperties("buh1");
+        cp = JdbcConnectionPool.create(
+       		prop.getProperty("db.connection.string"), 
+       		prop.getProperty("db.user.name"), 
+       		prop.getProperty("db.user.password"));
 	}
-
+	
+	public void finalize(){
+		if(cp != null) cp.dispose();
+	}
+	
 	public static Connection getConnection(){
-		if(!_db_objects_created){
-			createDBObjectsIfNotExist();
-		}
+		if(cp == null){ init_cp(); }
 		try {
 			return(cp.getConnection());
 		} catch (SQLException e) {
 			_log.error(e.toString());
 		}
 		return(null);
-	}
-
-	private static void createDBObjectsIfNotExist() {
-		LinkedList<String> stmts = DBUtils.getDBObjectsCreateStatements();
-		try {
-			Connection c = cp.getConnection();
-			ResultSet rs =  c.getMetaData().getTables(c.getCatalog(), null, "OBJECTS", null);
-			if(!rs.next()){ // table Objects not found!!!
-				while(!stmts.isEmpty()){
-					c.prepareStatement(stmts.remove()).execute();
-				}
-				c.commit();
-				c.close();
-			}
-			// change to prevent do it each time
-			_db_objects_created = true;
-		} catch (SQLException e) {
-			_log.error(e.toString());
-		}
 	}
 
 	public static boolean validateData(QUERY_TYPE queryType, Map<String, String> data) {
@@ -104,6 +91,8 @@ public final class DBUtils {
 				if(objectName == null || objectName.trim().isEmpty()) { return(false); }
 				return(true);
 			}
+		case SELECT_COUNT:
+			return(data.containsKey("_object"));
 		}
 		return(false);
 	}
@@ -114,9 +103,10 @@ public final class DBUtils {
 
 	public static String insert_format = " INSERT INTO OBJECTS (KEY, FIELD_NAME, FIELD_VALUE) VALUES('%s', '%s', '%s')  ; ";
 	public static String update_format = " UPDATE OBJECTS SET FIELD_VALUE = '%s' WHERE KEY = '%s' AND FIELD_NAME = '%s' ; ";
-	public static String select_format = " SELECT KEY, FIELD_NAME, FIELD_VALUE, FIELD_ORDER  FROM OBJECTS %s ; ";
+	public static String select_format = " SELECT KEY, FIELD_NAME, FIELD_VALUE, FIELD_ORDER  FROM OBJECTS %s ORDER BY KEY DESC ; ";
 	public static String delete_format = " DELETE FROM OBJECTS WHERE KEY = '%s' ;";
 	public static String select2find_field_name_existance = "SELECT FIELD_NAME FROM OBJECTS WHERE KEY = '%s' AND FIELD_NAME = '%s' ; " ;
+	public static String select4count  = " SELECT COUNT(DISTINCT KEY) FROM OBJECTS %s ;  "; 
 
 	public static LinkedList<String> makeQueries(
 			QUERY_TYPE queryType,
@@ -149,32 +139,10 @@ public final class DBUtils {
 				}
 				break;
 			case SELECT:
-				// where #1
-				String wherePart = null;
-				if(data.containsKey("_key")){
-					String key = data.get("_key");
-					wherePart = " WHERE KEY = '" + key + "' ";
-				} else {
-					String objectName = data.get("_object");
-					wherePart = " WHERE KEY LIKE '" + objectName + "%'" ; 
-				}
-				// where #2
-				String wherePart2 = null;
-				for(Map.Entry<String, String> entry: data.entrySet()){
-					if(entry.getKey().startsWith("_")){ continue; } // don't use special fields 
-					if(entry.getValue() != null && (!entry.getValue().isEmpty())){
-						if(wherePart2 == null){
-							wherePart2 = " (FIELD_NAME = '" + entry.getKey() + "' AND FIELD_VALUE " + entry.getValue() + ") ";
-						} else {
-							wherePart2 += " OR (FIELD_NAME = '" + entry.getKey() + "' AND FIELD_VALUE " + entry.getValue() + ") ";
-						}
-					}
-				}
-				if(wherePart2 != null){
-					wherePart += " AND (" + wherePart2 + ") ";
-				}
-				result.add(String.format(select_format,	wherePart));
-				// make select part
+				result.add(String.format(select_format,	getWherePart(data)));
+				break;
+			case SELECT_COUNT:
+				result.add(String.format(select4count, getWherePart(data)));
 				break;
 			case DELETE:
 				result.add(String.format(delete_format,	data.get("_key")));
@@ -183,4 +151,85 @@ public final class DBUtils {
 			}
 		return (result);
 	}
+
+	private static String getWherePart(Map<String, String> data) {
+		String wherePart = "";
+		if(data.containsKey("_key")){
+			String key = data.get("_key");
+			wherePart = " WHERE KEY = '" + key + "' ";
+		} else if(data.containsKey("_object")){
+			String objectName = data.get("_object");
+			wherePart = " WHERE KEY LIKE '" + objectName.toLowerCase() + "%'" ; 
+		}
+		// where #2
+		String wherePart2 = "";
+		for(Map.Entry<String, String> entry: data.entrySet()){
+			if(entry.getKey().startsWith("_")){ continue; } // don't use special fields 
+			if(entry.getValue() != null && (!entry.getValue().isEmpty())){
+				if(wherePart2.isEmpty()){
+					wherePart2 = " (FIELD_NAME = '" + entry.getKey() + "' AND FIELD_VALUE " + entry.getValue() + ") ";
+				} else {
+					wherePart2 += " OR (FIELD_NAME = '" + entry.getKey() + "' AND FIELD_VALUE " + entry.getValue() + ") ";
+				}
+			}
+		}
+		if(wherePart.isEmpty()){
+			wherePart = wherePart2.isEmpty() ? "" : " WHERE " + wherePart2 + " ";
+		} else {
+			wherePart +=  wherePart2.isEmpty() ? "" : " AND (" + wherePart2 + ") ";					
+		}
+		return wherePart;
+	}
+
+	public static Map<String, Map<String, String>> sortMapByFoundFields(
+			Map<String, Map<String, String>> map, int expectedFiledCount) {
+		Map<String, Map<String, String>> result = new HashMap<String, Map<String,String>>();
+		for(Map.Entry<String, Map<String, String>> entry: map.entrySet()){
+			if(entry.getValue().size() >= expectedFiledCount){
+				result.put(entry.getKey(), entry.getValue());
+			}
+		}
+		return(result);
+	}
+
+	public static Map<String, List<String>> sortMapByPages(
+			List<String> keys, 
+			int pageSize) {
+		Map<String, List<String>> pages = new HashMap<String, List<String>>();
+		int rowsCount = keys.size();
+		if(rowsCount <= pageSize){
+			pages.put("1", keys);
+		} else {
+			int module = rowsCount % pageSize;
+			int pagesCount = (rowsCount - module) / pageSize;
+			if(module != 0) { pagesCount += 1; }
+			for(int i = 1; i<=pagesCount; i++){
+				pages.put(""+i, DBUtils.getKeysListPageFromMap(keys, i, pageSize));
+			}
+		}
+		return(pages);
+	}
+
+	private static List<String> getKeysListPageFromMap(
+			List<String> keys, 
+			int pageNumber,
+			int pageSize) {
+		int keysSize = keys.size();
+		int startElement = (pageNumber - 1) * pageSize;
+		int endElement = startElement + pageSize;
+		String [] keysAsArray = keys.toArray(new String[keysSize]);
+		List<String> result = new ArrayList<String>(); 
+		for(int i=(startElement); i<endElement; i++){
+			if(i<keysSize){
+				result.add(keysAsArray[i]);
+			} else { break; }
+		}
+		return(result);
+	}
+
+	public static List<String> getKeysAsList(
+			Map<String, Map<String, String>> map) {
+		return(new ArrayList<String>(map.keySet()));
+	}
+
 }

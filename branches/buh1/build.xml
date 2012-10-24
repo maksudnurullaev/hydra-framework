@@ -50,7 +50,7 @@
 				<include name="**/*.*" />
 			</fileset>
 			<fileset dir="${basedir}/xml">
-				<include name="*.xml" />
+				<include name="*.*" />
 			</fileset>
 		</copy>			
 	</target>
@@ -88,7 +88,7 @@
 	</target>
 	
 	<target name="test.all" depends="build" description="Run tests">
-		<junit printsummary="on" fork="false" haltonfailure="true"
+		<junit printsummary="on" fork="true" haltonfailure="true"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />			
@@ -108,13 +108,13 @@ tests.failed=${tests.failed}
         </fail>
 	</target>	
 	<target name="test" depends="build" description="Run tests">
-		<junit printsummary="on" fork="false" haltonfailure="false"
+		<junit printsummary="on" fork="true" haltonfailure="false"
 			failureproperty="tests.failed" showoutput="true">
 			<classpath refid="master-classpath" />
 			<formatter type="brief" usefile="false" />			
 			<batchtest>
 				<fileset dir="${classes}">
-					<include name="**/TestDBSetGetDelete1.class" />
+					<include name="**/TestDBSetGetDeleteMany.class" />
 				</fileset>
 			</batchtest>			
 		</junit>
@@ -125,7 +125,7 @@ tests.failed=${tests.failed}
 **** One or more tests failed! Check the output ... ****
 ***********************************************************
 ***********************************************************
-        </fail>
+        </fail>		
 	</target>
 	
 <!-- Temporaly commented!!!

@@ -30,7 +30,7 @@ public class TestDBSetGetDelete1 {
 		Assert.assertFalse(DBUtils.validateData(QUERY_TYPE.SELECT, data));
 		data.put("_key", objectId);
 		Assert.assertTrue(DBUtils.validateData(QUERY_TYPE.SELECT, data));
-		Map<String, Map<String, String>> map = DB.getObject(data);
+		Map<String, Map<String, String>> map = DB.getObjects(data);
 		Assert.assertTrue(map.containsKey(objectId));
 		Assert.assertTrue(map.get(objectId).containsKey("name1"));
 		Assert.assertTrue(map.get(objectId).get("name1").contains("Value1"));
@@ -45,14 +45,14 @@ public class TestDBSetGetDelete1 {
 		
 		data.clear();
 		data.put("_key", objectId);
-		map = DB.getObject(data);
+		map = DB.getObjects(data);
 		Assert.assertTrue(map.get(objectId).get("name1").contains("11_value"));
 		Assert.assertTrue(map.get(objectId).get("name3").contains("value3"));
 		
 		// delete
 		Assert.assertTrue(DBUtils.validateData(QUERY_TYPE.DELETE, data));	
 		Assert.assertTrue(DB.deleteObject(data));
-		Assert.assertNull(DB.getObject(data));
+		Assert.assertNull(DB.getObjects(data));
 		
 	}
 		

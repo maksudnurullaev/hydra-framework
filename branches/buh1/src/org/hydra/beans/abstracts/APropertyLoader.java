@@ -75,7 +75,7 @@ public abstract class APropertyLoader extends ALogger {
 					final String key = (String) keys.nextElement();
 					final String value = rb.getString(key);
 
-					result.put(key, value);
+					result.put(key, (value == null)?"":value);
 				}
 			} else {
 				name = name.replace('.', '/');
@@ -142,7 +142,7 @@ public abstract class APropertyLoader extends ALogger {
 				found = line.indexOf("=");
 				if (found != NOT_FOUND) {
 					savePreviousKeyValue(result, curKey, curValue);
-					curKey = line.substring(0, found - 1).trim();
+					curKey = line.substring(0, found).trim();
 					curValue = line.substring(found + 1, line.length()).trim();
 				}else{
 					curValue += "\n";
