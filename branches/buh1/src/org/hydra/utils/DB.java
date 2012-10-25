@@ -44,16 +44,27 @@ public final class DB {
 				Statement statement = connection.createStatement();
 				rs = statement.executeQuery(listOfQueries.remove());
 				Map<String, Map<String, String>> result = new HashMap<String, Map<String,String>>();
-				while(rs.next()){
+				boolean rsHasRecords = rs.next();
+				while(rsHasRecords){
 					String key = rs.getString(1);
 					String name = rs.getString(2);
 					String value = rs.getString(3);
 					int order = rs.getInt(4);
-					if(!result.containsKey(key)){ result.put(key, new HashMap<String, String>()); }
-					if(!result.get(key).containsKey(name)){
-						result.get(key).put(name, value);						
+					if(order == 0){
+						if(!result.containsKey(key)){ result.put(key, new HashMap<String, String>()); }
+						result.get(key).put(name, value);
+						rsHasRecords = rs.next();
 					} else {
-						result.get(key).put(name, result.get(key).get(name) + value);
+						StringBuffer sb = new StringBuffer(value);
+						rsHasRecords = rs.next();
+						do {
+							sb.append(rs.getString(3));
+							rsHasRecords = rs.next();
+							if(!rsHasRecords){ break; }
+							order = rs.getInt(4);							
+						} while (order != 0);
+						if(!result.containsKey(key)){ result.put(key, new HashMap<String, String>()); }
+						result.get(key).put(name, sb.toString());						
 					}
 				}
 				if(result.size() == 0) { return(null); }

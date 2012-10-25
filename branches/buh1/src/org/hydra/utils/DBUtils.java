@@ -101,10 +101,10 @@ public final class DBUtils {
 		return(String.format("%s %s %s", objectName, Utils.GetDateUUID(), Utils.GetUUID().substring(0, 2)));
 	}
 
-	public static String insert_format = " INSERT INTO OBJECTS (KEY, FIELD_NAME, FIELD_VALUE) VALUES('%s', '%s', '%s')  ; ";
+	public static String insert_format = " INSERT INTO OBJECTS (KEY, FIELD_NAME, FIELD_VALUE, FIELD_ORDER) VALUES('%s', '%s', '%s', %s)  ; ";
 	public static String update_format = " UPDATE OBJECTS SET FIELD_VALUE = '%s' WHERE KEY = '%s' AND FIELD_NAME = '%s' ; ";
-	public static String select_format = " SELECT KEY, FIELD_NAME, FIELD_VALUE, FIELD_ORDER  FROM OBJECTS %s ORDER BY KEY DESC ; ";
-	public static String delete_format = " DELETE FROM OBJECTS WHERE KEY = '%s' ;";
+	public static String select_format = " SELECT KEY, FIELD_NAME, FIELD_VALUE, FIELD_ORDER  FROM OBJECTS %s ORDER BY KEY DESC, FIELD_ORDER ; ";
+	public static String delete_format = " DELETE FROM OBJECTS WHERE %s ;";
 	public static String select2find_field_name_existance = "SELECT FIELD_NAME FROM OBJECTS WHERE KEY = '%s' AND FIELD_NAME = '%s' ; " ;
 	public static String select4count  = " SELECT COUNT(DISTINCT KEY) FROM OBJECTS %s ;  "; 
 
@@ -115,27 +115,23 @@ public final class DBUtils {
 			switch (queryType) {
 			case INSERT:
 				for(Map.Entry<String, String> entry: data.entrySet()){
-					if(entry.getKey().startsWith("_")){ continue; } // don't use special fields 
-					result.add(String.format(insert_format,
-							data.get("_key"),
+					if(entry.getKey().startsWith("_")){ continue; } // don't use special fields
+					makeQueriesWithCheckingFiledSize(
+							QUERY_TYPE.INSERT, 
+							result, data.get("_key"),
 							entry.getKey(),
-							entry.getValue()));
+							entry.getValue());
 				}
 				break;
 			case UPDATE:
 				for(Map.Entry<String, String> entry: data.entrySet()){
 					if(entry.getKey().startsWith("_")){ continue; } // don't use special fields
-					if(DB.objectHasFieldName(data.get("_key"), entry.getKey())){
-						result.add(String.format(update_format,
-								entry.getValue(),
-								data.get("_key"),
-								entry.getKey()));
-					} else {
-						result.add(String.format(insert_format,
-								data.get("_key"),
-								entry.getKey(),
-								entry.getValue()));						
-					}
+					makeQueriesWithCheckingFiledSize(
+							QUERY_TYPE.INSERT, 
+							result, data.get("_key"),
+							entry.getKey(),
+							entry.getValue());
+
 				}
 				break;
 			case SELECT:
@@ -145,11 +141,44 @@ public final class DBUtils {
 				result.add(String.format(select4count, getWherePart(data)));
 				break;
 			case DELETE:
-				result.add(String.format(delete_format,	data.get("_key")));
+				result.add(String.format(delete_format,	String.format(" KEY = '%s' ", data.get("_key"))));
 			default:
 				break;
 			}
 		return (result);
+	}
+
+	private static void makeQueriesWithCheckingFiledSize(
+			QUERY_TYPE insert,
+			LinkedList<String> quieriesList, 
+			String key, 
+			String fieldName, 
+			String fieldValue) {
+		if(insert == QUERY_TYPE.UPDATE){
+			quieriesList.add(String.format(delete_format, String.format(" KEY = '%s' AND FIELD_NAME = '%s' ", key, fieldName)));
+		}		
+		int valueLength = fieldValue.length();
+		if( valueLength > 255 ){
+			int endRange =  0;
+			int order = 0;
+			for(int i=0 ; i<valueLength; i+=255){
+				endRange = i+255;
+				if(endRange >= valueLength) endRange = valueLength;
+				quieriesList.add(String.format(insert_format,
+						key,
+						fieldName,
+						fieldValue.substring(i, endRange),
+						++order
+						));
+			}		
+		} else {
+			quieriesList.add(String.format(insert_format,
+					key,
+					fieldName,
+					fieldValue,
+					0
+					));			
+		}
 	}
 
 	private static String getWherePart(Map<String, String> data) {
