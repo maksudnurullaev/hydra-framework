@@ -3,6 +3,7 @@ package org.hydra.deployers;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -30,9 +31,9 @@ public final class SystemLogin {
 	private static String getFormAny(
 			String inHow, 
 			IMessage inMessage) {
-		String userId = inMessage.getData().get("_userid");
-		String appId = inMessage.getData().get("appid");
-		String locale = inMessage.getData().get("locale");
+		String userId = Utils.getMessageDataOrNull(inMessage, Constants._userid_key);
+		String appId = Utils.getMessageDataOrNull(inMessage, Constants._appid_key);
+		String locale = Utils.getMessageDataOrNull(inMessage, Constants._locale_key);
 		if(userId == null || userId.isEmpty())
 			return getFormLogin(inHow, locale);
 
@@ -43,9 +44,9 @@ public final class SystemLogin {
 			String inHow, 
 			IMessage inMessage,
 			boolean inShort) {
-		String userId = inMessage.getData().get("_userid");
-		String appId = inMessage.getData().get("appid");
-		String locale = inMessage.getData().get("locale");
+		String userId = Utils.getMessageDataOrNull(inMessage, Constants._userid_key);
+		String appId = Utils.getMessageDataOrNull(inMessage, Constants._appid_key);
+		String locale = Utils.getMessageDataOrNull(inMessage, Constants._locale_key);
 
 		return(getUserInfo(inHow, locale, appId, userId, inShort));
 	}	

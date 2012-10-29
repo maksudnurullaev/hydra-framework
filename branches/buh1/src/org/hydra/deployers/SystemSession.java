@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Roles;
 import org.hydra.utils.SessionUtils;
 
 public final class SystemSession {
@@ -34,7 +35,7 @@ public final class SystemSession {
 		if(inMessage == null || inMessage.getSession() == null){
 			return("<h3>Error: NO SESSION!</h3>");
 		}
-		List<String> roles = SessionUtils.getSessionRoles(inMessage);
+		List<String> roles = Roles.getUserRoles(inMessage);
 		StringBuffer sb = new StringBuffer();
 		for(String role:roles){
 			sb.append(String.format("<li>%s</li>", role));			

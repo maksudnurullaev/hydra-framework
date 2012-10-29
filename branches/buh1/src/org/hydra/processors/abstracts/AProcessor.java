@@ -13,7 +13,6 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
 import org.hydra.processors.interfaces.IProcessor;
-import org.hydra.services.remote.interfaces.IMessageService;
 import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
 
@@ -174,18 +173,8 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 					"Processor(%s) handle message for group(%s) from pipe(size:%s)", getName(),
 					message.getSessionId(), getInPipe().getSize()));
 
-			if (message instanceof CommonMessage) {
-				IMessageService remoteMessageService = getInPipe().getRemoteMessageClient();
-				if(remoteMessageService != null){
-					getLog().warn("Message --> RMI: " + message.getSessionId());
-					for(IMessage message_: remoteMessageService.processMessage(message)){
-						getLog().warn("Message <-- RMI: " + message_.getSessionId());
-						getMessageCollector().putMessage(message_);
-					}
-				}else{
-								
+			if (message instanceof CommonMessage) {								
 					applyMessage((CommonMessage)message);
-				}
 			} else{
 				message.setError("Expected CommonMessage type!");
 			}
@@ -202,8 +191,8 @@ public abstract class AProcessor extends AStatisticsApplyer implements
 				String.format("Handle new message for group(%s)...", 
 						inMessage.getSessionId()));
 
-		String handlerName = inMessage.getData().get("handler");
-		String methodName = inMessage.getData().get("action");
+		String handlerName = Utils.getMessageDataOrNull(inMessage, "handler");
+		String methodName = Utils.getMessageDataOrNull(inMessage, "action");
 
 		_log.debug("check for valid handler and action");
 		if (Utils.isInvalidString(handlerName)) {

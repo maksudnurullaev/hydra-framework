@@ -7,7 +7,6 @@ import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.processors.exceptions.NullProcessorException;
 import org.hydra.processors.interfaces.IProcessor;
-import org.hydra.services.remote.interfaces.IMessageService;
 
 /**
  * Pipe interface to route {@link IMessage} objects to {@link IProcessor}, {@link ICollector} and etc.
@@ -16,12 +15,6 @@ import org.hydra.services.remote.interfaces.IMessageService;
  * @see {@link IMessage}, {@link IProcessor}, {@link ICollector}
  */
 public interface IPipe<E> {
-	public IMessageService getRemoteMessageClient();
-	public void setRemoteMessageClient(IMessageService inService);
-		
-	public IMessageService getRemoteMessageServer();
-	public void setRemoteMessageServer(IMessageService inService);
-	
 	/**
 	 * Add new listener
 	 * @param inListener

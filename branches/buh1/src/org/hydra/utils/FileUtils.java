@@ -16,10 +16,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Properties;
+
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.io.FileTransfer;
@@ -27,6 +27,7 @@ import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.spring.HydraServletContextListener;
 
 public final class FileUtils {
 	public static final int FILE_TYPE_UNKNOWN = 0;
@@ -88,12 +89,11 @@ public final class FileUtils {
 		if(!AMessageHandler.validateFile(inMessage)){			
 			return("ERROR: no file!");
 		}		
-		if(!AMessageHandler.validateData(inMessage, "appid", "folder", "file_path", "file_real_path")){
+		if(!AMessageHandler.validateData(inMessage, Constants._appid_key, Constants._folder, Constants._file_path, Constants._file_real_path)){
 			return("ERROR: no valid parameters!");
 		}
-		String appId = inMessage.getData().get("appid");
 		FileTransfer file = inMessage.getFile();		
-		String realPath = inMessage.getData().get("file_real_path");
+		String realPath = Utils.getMessageDataOrNull(inMessage, Constants._file_real_path);
 
 		String resultStr = "";
 		// 1. 
@@ -109,7 +109,6 @@ public final class FileUtils {
 				os.write(bufer, 0, bytesRead);
 			}
 			os.close();
-			resultStr = getFileBox(appId, inMessage.getData().get("file_path"));
 		} catch (Exception e) {
 			_log.error(e.toString());
 			resultStr = e.toString();
@@ -139,7 +138,7 @@ public final class FileUtils {
 	}
 	
 	public static String getUri4File(CommonMessage inMessage, String inFileName){
-		return(Utils.F(URL4FILES_APPID_SUBFOLDER, inMessage.getData().get("appid"), inMessage.getData().get("folder")) + inFileName);
+		return(Utils.F(URL4FILES_APPID_SUBFOLDER, Utils.getMessageDataOrNull(inMessage, Constants._appid_key), Utils.getMessageDataOrNull(inMessage, Constants._folder)) + inFileName);
 	}
 	
 	public static String getRealPath(CommonMessage inMessage, String inFileName){
@@ -170,11 +169,11 @@ public final class FileUtils {
 			File file = new File(filePath + APropertyLoader.SUFFIX);
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, false), Constants._utf_8));
 			for(int i = 0; i < dataDescriptionKeys.length ; i++){
-				if(inMessage.getData().containsKey(dataDescriptionKeys[i]))
+				if(Utils.getMessageDataOrNull(inMessage, dataDescriptionKeys[i]) != null)
 				{
 					String key = dataDescriptionKeys[i];
-					String value = inMessage.getData().get(key).trim();
-					if(key.compareToIgnoreCase("Name") == 0) value = sanitize(value);
+					String value = Utils.getMessageDataOrNull(inMessage, key);
+					if(key.compareToIgnoreCase("Name") == 0) value = sanitize(value.trim());
 					else if(!value.isEmpty()) value = value.replaceAll("\n", "\n\t");
 					if(value.length() > Constants._max_textarea_field_limit)
 						value = value.substring(0, Constants._max_textarea_field_limit - 3 ) + "...";
@@ -224,42 +223,6 @@ public final class FileUtils {
 			return(false);
 		}	
 	}
-	
-	public static String getFileBox(String inAppID, String inFilePath) {
-		if(inFilePath == null){
-			_log.warn("Trying to process null inFilePath");
-			return("");
-		}
-		
-		String fileExtension = getFileExtension(inFilePath);
-		if(fileExtension == null){
-			_log.warn("NULL file extension for: " + inFilePath);
-			return("");
-		}
-		
-		StringBuffer content = new StringBuffer();
-    	String divHiddenID = Utils.sanitazeHtmlId("template_" + inFilePath);  
-		content.append("<div style=\"margin: 5px; padding: 5px; border: 1px solid rgb(127, 157, 185);\">");
-		
-    	content.append(getDeleteLink("AdmFiles", Utils.Q(Constants._admin_app_action_div), inAppID, inFilePath) + " ");
-    	content.append("[<strong>" + fileExtension + "</strong>] ");
-    	
-    	String htmlTag = "NOT_DEFINED";
-		if(ImageUtils.validate(inFilePath)){
-			htmlTag = Utils.F("<img src=\"%s\" border=\"0\">", inFilePath);
-		}else{			
-			htmlTag = Utils.F("<a href=\"%s\" target=\"_blank\">TEXT</a>", inFilePath);
-		}
-		content.append(Utils.toogleLink(divHiddenID, inFilePath));
-		content.append(Utils.F("<div id=\"%s\" style=\"display: none;\" class=\"edit\">%s<hr />%s</div>", 
-				divHiddenID,
-				StringEscapeUtils.escapeHtml(htmlTag),
-				htmlTag));        	
-    	
-    	content.append("</div>");
-    	
-		return content.toString();
-	}
 
 	public static String getDeleteLink(
 			String inHandler,
@@ -269,52 +232,11 @@ public final class FileUtils {
 		String jsData = Utils.jsData(
 				 "handler", Utils.Q(inHandler)
 				,"action",  Utils.Q("delete")
-				,"appid", Utils.Q(inAppID)
-				,"file_path", Utils.Q(key)
+				,Constants._appid_key, Utils.Q(inAppID)
+				,Constants._file_path, Utils.Q(key)
 				,"dest", Utils.sanitazeHtmlId(inDest)
 			);
 		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
-	}
-
-	public static String getFilePropertiesDescription(IMessage inMessage, String propertiesFilePath) {
-		boolean isAdmin = Roles.isUserHasRole(Roles.USER_ADMINISTRATOR, inMessage);
-		Properties properties = parseProperties(propertiesFilePath);
-		String Public = properties.getProperty(FILE_DESCRIPTION_PUBLIC);
-    	boolean isPublic = ((Public != null) 
-    			&& (Public.compareToIgnoreCase("true") == 0)) ? true : false;
-		
-    	String divHiddenID = Utils.sanitazeHtmlId("template." + sanitize(propertiesFilePath));
-    	String Description = properties.getProperty(FILE_DESCRIPTION_TEXT);
-    	if(isPublic || isAdmin){
-			StringBuffer content = new StringBuffer();
-			content.append("<div class=\"file_row\">");
-			
-			//TODO create delete link later
-	    	// if(isAdmin)
-	    	//	content.append(getDeleteLink("UserFiles", Utils.Q(Constants._user_content), inAppID, propertiesFilePath) + " ");
-			
-			// name
-			content.append("<span class=\"file_name\">" + properties.get("Name") + "</span>");
-			content.append("<br />");
-	    	// download link
-			String htmlTag = Utils.F("&nbsp;&nbsp;<a href=\"%s\" target=\"_blank\">%s</a>", 
-					stripPropertiesExtension(propertiesFilePath),
-					"[[Dictonary|Text|Download|NULL]]");
-			content.append(htmlTag);
-			content.append(" ");
-			// description
-			if(Description != null){ 
-				content.append(Utils.toogleLink(divHiddenID, "[[Dictonary|Text|Description|NULL]]"));
-				content.append(Utils.F("<div id=\"%s\" class=\"file_description\" >%s</div>", 
-						divHiddenID,
-						properties.get(FILE_DESCRIPTION_TEXT)));
-			}
-	
-	    	content.append("</div>");
-	    	
-			return content.toString();
-    	}
-    	return("");
 	}
 
 	public static String stripPropertiesExtension(String propertiesFilePath) {
@@ -351,8 +273,8 @@ public final class FileUtils {
 	}
 	
 	public static File getRealFile(String inPath){
-		if(WEBAPP_ROOT == null) return(null);
-		return(new File(WEBAPP_ROOT, inPath));
+		if(HydraServletContextListener.ROOT_DIR == null) return(null);
+		return(new File(HydraServletContextListener.ROOT_DIR, inPath));
 	}	
 	
 	public static boolean isExistAppHtmlFile(String inAppId, String inFileName){
@@ -408,5 +330,16 @@ public final class FileUtils {
 			_log.error(e.getMessage());
 		}
 		return(sb.toString());
+	}
+
+	public static void setupFile(IMessage inMessage) {
+		_log.debug("File name/size: " + inMessage.getFile().getFilename() + "/" + inMessage.getFile().getSize());
+		String appId = Utils.getMessageDataOrNull(inMessage, Constants._appid_key);
+		String folder = Utils.getMessageDataOrNull(inMessage, Constants._folder);
+		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.getFile().getFilename());
+		inMessage.getData().put(Constants._file_path, uri4File);
+		_log.debug("File uri: " + uri4File);
+		inMessage.getData().put(Constants._file_real_path, FileUtils.getRealFile(uri4File).getPath());
+		_log.debug("Real path: " + Utils.getMessageDataOrNull(inMessage, Constants._file_real_path));	
 	}
 }

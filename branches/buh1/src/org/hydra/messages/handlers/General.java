@@ -8,24 +8,24 @@ import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.SessionUtils;
+import org.hydra.utils.Utils;
 
 public class General extends AMessageHandler { // NO_UCD
 	private static Log _log = LogFactory.getLog("org.hydra.messages.handlers.General");
 	public static IMessage getTextByKey(CommonMessage inMessage) {
-		if (!validateData(inMessage, "key"))
+		if (!validateData(inMessage, Constants._key))
 			return inMessage;
 		
-		String 	wrapHtmlElement = "div";
-		if(inMessage.getData().containsKey("wrap")){
-			wrapHtmlElement = inMessage.getData().get("wrap");
-		}
+		String 	wrapHtmlElement = Utils.getMessageDataOrNull(inMessage, "wrap");
+		if(wrapHtmlElement == null){ wrapHtmlElement =  Constants._div; }
 		
 		String content = MessagesManager.getText(
-				inMessage.getData().get("key"),
+				Utils.getMessageDataOrNull(inMessage, Constants._key),
 				wrapHtmlElement,
-				inMessage.getData().get("locale"));
+				Utils.getMessageDataOrNull(inMessage, Constants._locale_key));
 
 		return (ADeployer.deployContent(content,inMessage));
 	}
@@ -37,24 +37,22 @@ public class General extends AMessageHandler { // NO_UCD
 	}
 	
 	public static void changeLocale(IMessage inMessage, WebContext webContext) {
-		if (!validateData(inMessage, "locale"))return;
-		String locale = inMessage.getData().get("locale");
-		String appId = inMessage.getData().get("appid");
+		if (!validateData(inMessage, Constants._locale_key))return;
+		String locale = Utils.getMessageDataOrNull(inMessage, Constants._locale_key);
+		String appId = Utils.getMessageDataOrNull(inMessage, Constants._appid_key);
 		
-		SessionUtils.setSessionData(webContext.getSession(), "locale", appId, locale);
+		SessionUtils.setSessionData(webContext.getSession(), Constants._locale_key, appId, locale);
 		
 		_log.debug("set locale to: " + 
 				SessionUtils.getSessionData(webContext, 
-				"locale", 
+				Constants._locale_key, 
 				appId));		
 	}
 	
 	public static IMessage getInitialBody(CommonMessage inMessage) {
-		boolean is_mobile = 
-				inMessage.getData() != null 
-				&& inMessage.getData().get("browser") != null 
-				&& inMessage.getData().get("browser").equalsIgnoreCase("mobile");
-		String appId = inMessage.getData().get("appid");
+		String browser  = Utils.getMessageDataOrNull(inMessage, "browser");
+		boolean is_mobile = (browser != null && browser.equalsIgnoreCase("mobile"));
+		String appId = Utils.getMessageDataOrNull(inMessage, Constants._appid_key);
 
 		String content = "";
 		if(is_mobile && FileUtils.isExistAppHtmlFile(appId, "body.mobile")){
@@ -63,38 +61,27 @@ public class General extends AMessageHandler { // NO_UCD
 			content = FileUtils.getHtmlFromFile(appId,"body");			
 		}
 		if(content != null){
-			_log.debug(String.format("deploy connent for (appid/locale): ", 
-					inMessage.getData().get("appid"), 
-					inMessage.getData().get("locale")));
+			_log.debug(String.format("deploy connent for (appid/locale): %s/%s", 
+					Utils.getMessageDataOrNull(inMessage, Constants._appid_key), 
+					Utils.getMessageDataOrNull(inMessage, Constants._locale_key)));
 			return(ADeployer.deployContent(content,inMessage));
 		}
-		inMessage.setHtmlContent("Could not find initial body for: " + inMessage.getData().get("appid"));
+		inMessage.setHtmlContent("Could not find initial body for: " +Utils.getMessageDataOrNull(inMessage, Constants._appid_key));
 		return(inMessage);
 	};
 
 	public static IMessage getContent(CommonMessage inMessage){
-		if (!validateData(inMessage, "content"))
+		if (!validateData(inMessage, Constants._content_key))
 			return inMessage;
 		
-		String content = inMessage.getData().get("content");
+		String content = Utils.getMessageDataOrNull(inMessage, Constants._content_key);
 		_log.debug("Try to get content for: " + content);
 		
-		if(!content.isEmpty())
+		if(content != null && !content.isEmpty())
 			ADeployer.deployContent(content,inMessage);
 		else
 			inMessage.setError("_error_empty_request_");
 
 		return inMessage;
 	};	
-	
-	public static IMessage getHAKDContent(CommonMessage inMessage){
-		if (!validateData(inMessage, "hakdContent"))
-			return inMessage;
-		
-		String hakdContent = inMessage.getData().get("hakdContent");
-		inMessage.getData().put("content", "[[" + hakdContent + "]]");
-		
-		return(getContent(inMessage));
-		
-	};
 }

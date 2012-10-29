@@ -24,40 +24,39 @@ public final class CaptchaUtils {
 	}
 	
 	
-	public static boolean validateCaptcha(IMessage inMessage, WebContext context) {
+	public static boolean validateIfNeedsCaptcha(IMessage inMessage, WebContext context) {
+		String captchaValue = Utils.getMessageDataOrNull(inMessage, Constants._captcha_value);
+		if(captchaValue == null) { return(true); }; // nothing to check
+		HttpSession session = context.getSession();
+		int sessionValue = (Integer) session.getAttribute(Utils.getMessageDataOrNull(inMessage, Constants._appid_key) + Constants._captcha_value);
 		try{
-			HttpSession session = context.getSession();
-			int sessionValue = (Integer) session.getAttribute(inMessage.getData().get("appid") + Constants._captcha_value);
-			if(inMessage.getData().containsKey(Constants._captcha_value)){
-				String captchaValue = inMessage.getData().get(Constants._captcha_value);
-				int passedValue = Integer.parseInt(captchaValue);
-				_log.warn(String.format("sessionValue(%s), captchaValue(%s)", sessionValue, captchaValue));
-				if(passedValue == sessionValue){
-					inMessage.getData().put(Constants._captcha_value, Constants._captcha_OK);
-					return(true);
-				}
+			int passedValue = Integer.parseInt(captchaValue);
+			_log.debug(String.format("sessionValue(%s), captchaValue(%s)", sessionValue, captchaValue));
+			if(passedValue == sessionValue){
+				inMessage.getData().put(Constants._captcha_value, Constants._captcha_OK);
+				return(true);
 			}
 		}catch (Exception e){
-			_log.error(e.getMessage());
+			_log.error(e.toString());
 		}
 		return false;
 	}
 
-	public static boolean validateCaptcha(CommonMessage inMessage) {
-		if(inMessage.getData().containsKey(Constants._captcha_value)){
-			String value = inMessage.getData().get(Constants._captcha_value);
-			if(value.equalsIgnoreCase(Constants._captcha_OK)){
+	public static boolean isValidCaptcha(CommonMessage inMessage) {
+		String captchaValue = Utils.getMessageDataOrNull(inMessage, Constants._captcha_value);
+		if(captchaValue != null){
+			if(captchaValue.equalsIgnoreCase(Constants._captcha_OK)){
 				return(true);
 			}
 		}
-		makeCaptchaNotVerifiedMessage(inMessage);
+		makeError4Captcha(inMessage);
 		return(false);
 	}	
 	
-	public static void makeCaptchaNotVerifiedMessage(CommonMessage inMessage){
+	public static void makeError4Captcha(CommonMessage inMessage){
 		List<String> err_ids = new ArrayList<String>();
 		err_ids.add(Constants._captcha_value);
 		inMessage.setHighlightFields(err_ids);
-		inMessage.setError(MessagesManager.getText("Captcha.Incorrect", null, inMessage.getData().get("locale")));
+		inMessage.setError(MessagesManager.getText("Captcha.Incorrect", null, Utils.getMessageDataOrNull(inMessage, Constants._locale_key)));
 	}
 }
