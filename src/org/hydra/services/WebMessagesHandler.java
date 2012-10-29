@@ -8,6 +8,7 @@ import org.directwebremoting.io.FileTransfer;
 import org.hydra.beans.MessagesCollector;
 import org.hydra.messages.MessageBean;
 import org.hydra.messages.handlers.General;
+import org.hydra.messages.handlers.User;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.pipes.Pipe;
@@ -20,8 +21,6 @@ import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
 import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
-
-import org.apache.commons.lang.NotImplementedException;
 
 public class WebMessagesHandler extends ALogger {
 	public Object[] sendMessage(MessageBean inMessage, FileTransfer inFile) throws RichedMaxCapacityException {	
@@ -53,16 +52,15 @@ public class WebMessagesHandler extends ALogger {
 			return resultList.toArray();			
 		}		
 		// test & setup captcha if needs
-		if(inMessage.getData().containsKey(Constants._captcha_value)
-				&& !CaptchaUtils.validateCaptcha(inMessage, webContext)){
-			CaptchaUtils.makeCaptchaNotVerifiedMessage(inMessage);
+		if(!CaptchaUtils.validateIfNeedsCaptcha(inMessage, webContext)){
+			CaptchaUtils.makeError4Captcha(inMessage);
 			resultList.add(inMessage);
 			return resultList.toArray();
 		}		
 		// test & setup file if needs
 		if(inFile != null){
 			inMessage.setFile(inFile);
-			setupFile(inMessage);
+			FileUtils.setupFile(inMessage);
 		}
 		
 		return(handleMessage(inMessage));
@@ -128,35 +126,24 @@ public class WebMessagesHandler extends ALogger {
 		return resultList.toArray();		
 	}
 
-	private void setupFile(IMessage inMessage) {
-		getLog().debug("File name/size: " + inMessage.getFile().getFilename() + "/" + inMessage.getFile().getSize());
-		String appId = inMessage.getData().get("appid");
-		String folder = inMessage.getData().get("folder");
-		String uri4File = Utils.F(FileUtils.URL4FILES_APPID_SUBFOLDER, appId, folder) + FileUtils.sanitize(inMessage.getFile().getFilename());
-		inMessage.getData().put("file_path", uri4File);
-		_log.debug("File uri: " + uri4File);
-		inMessage.getData().put("file_real_path", FileUtils.getRealFile(uri4File).getPath());
-		_log.debug("Real path: " + inMessage.getData().get("file_real_path"));
-	}
-
 	private boolean handledWithSession(IMessage inMessage,
 			WebContext webContext) {
-		String handler = inMessage.getData().get("handler");
-		String action = inMessage.getData().get("action");
+		String handler = Utils.getMessageDataOrNull(inMessage, "handler");
+		String action = Utils.getMessageDataOrNull(inMessage, "action");
 		if(handler.compareToIgnoreCase("General") == 0){
 			if(action.compareToIgnoreCase("changeLocale") == 0){
 				General.changeLocale(inMessage, webContext);
-				
-				if(inMessage.getError() != null) return(true);
-				
 				inMessage.setReloadPage(true);
 				return(true);
 			}
 		} else if(handler.compareToIgnoreCase("User") == 0){
 			if(action.compareToIgnoreCase("login") == 0){
-				throw new NotImplementedException(); //TODO inMessage = (MessageBean) User.login(inMessage, webContext);
+				User.login(inMessage, webContext);
+				return(true);
 			} else if(action.compareToIgnoreCase("logout") == 0){
-				throw new NotImplementedException(); //TODO inMessage = (MessageBean) User.logout(inMessage, webContext);
+				webContext.getSession().invalidate();
+				inMessage.setReloadPage(true);
+				return(true);
 			}
 		}else if(handler.compareToIgnoreCase("Adm") == 0){
 			if(action.compareToIgnoreCase("getCassandraConfiguration") == 0){
@@ -180,7 +167,7 @@ public class WebMessagesHandler extends ALogger {
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
 						"Server Port", inContext.getHttpServletRequest().getServerPort())
 				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Web Applicication ID", inMessage.getData().get("appid"))
+						"Web Applicication ID", Utils.getMessageDataOrNull(inMessage, Constants._appid_key))
 				);
 		inMessage.setHtmlContent(result);
 		return inMessage;

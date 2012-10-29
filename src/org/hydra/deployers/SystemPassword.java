@@ -3,6 +3,7 @@ package org.hydra.deployers;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
 
 public final class SystemPassword {
@@ -26,8 +27,8 @@ public final class SystemPassword {
 			String inHow, 
 			IMessage inMessage
 			) {
-		String userId = inMessage.getData().get("_userid");
-		String locale = inMessage.getData().get("locale");
+		String userId = Utils.getMessageDataOrNull(inMessage, Constants._userid_key);
+		String locale = Utils.getMessageDataOrNull(inMessage, Constants._locale_key);
 		if(userId == null || userId.isEmpty())
 			return("[[Dictionary|Text|You_not_logged_in|NULL]]");
 		return getPasswordChange(inHow, locale);

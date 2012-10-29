@@ -43,12 +43,25 @@ public final class Constants {
 	// **** Constants for access modes
 	public static final String _mode_edit_templates = "edit_templates";
 	public static final String _utf_8 = "UTF-8";
-	
-	public static final String[] _GLOBAL_TAGS= {"User", "User.Editor", "User.Publisher", "User.Administrator"};
-	
+
+	// **** other values
 	public static final String _captcha_value = "captcha_value";
 	public static final String _captcha_OK = "_captcha_OK";
 	public static final String _admin_app_action_div = "admin_app_action_div";
 	public static final String _admin_app_sub_action_div = "admin_app_sub_action_div";
 	public static final String _url_mode_param = "mode=";
+	public static final String _roles_key = "_roles";
+	public static final String _userid_key = "_userid";
+	public static final String _browser_key = "browser";
+	public static final String _locale_key = "locale";
+	public static final String _appid_key = "appid";
+	public static final String _content_key = "content";
+	public static final String _key = "key";
+	public static final String _div = "div";
+	public static final String _folder = "folder";
+	public static final String _file_path = "file_path";
+	public static final String _file_real_path = "file_real_path";
+	public static final String _user_password = "user_password";
+	public static final String _user_password_new1 = "user_password_new1";
+	public static final String _user_password_new2 = "user_password_new2";
 }

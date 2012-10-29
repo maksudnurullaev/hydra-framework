@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.Utils;
 
 public final class ADeployer {
@@ -24,7 +25,7 @@ public final class ADeployer {
 				editLinks,
 				inMessage);
 		
-		_log.debug("locale: " + inMessage.getData().get("locale"));
+		_log.debug("locale: " + Utils.getMessageDataOrNull(inMessage, Constants._locale_key));
 		_log.debug("content size: " + content.length() + " bytes");
 		
 		inMessage.setHtmlContent(content);
@@ -95,10 +96,6 @@ public final class ADeployer {
 			return System.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)
 			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inMessage);
-		else if(inWhere.compareToIgnoreCase("Applications") == 0)
-			return Applications.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
-		else if(inWhere.compareToIgnoreCase("Application") == 0)
-			return Application.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("Files") == 0)
 			return Files.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		

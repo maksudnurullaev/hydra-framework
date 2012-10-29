@@ -41,6 +41,7 @@ public final class MessagesManager{
 	}
 	
 	public static String getText(String inKey, String inHtmlWrap, String inLocale){
+		if(inKey == null) { return("Error: send NULL instead some key!");}
 		if(inLocale == null)
 			inLocale = getTextManager().getDefaultLocale();		
 		

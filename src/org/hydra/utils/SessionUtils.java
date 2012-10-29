@@ -1,8 +1,6 @@
 package org.hydra.utils;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
@@ -94,9 +92,7 @@ public final class SessionUtils {
 			IMessage inMessage,
 			WebApplication app) {
 		// set application id should be fine
-		inMessage.getData().put("_appid", app.getId());
-		if(!inMessage.getData().containsKey("appid"))
-			inMessage.getData().put("appid", app.getId());
+		inMessage.getData().put(Constants._appid_key, app.getId());
 		// set application timeout
 		inMessage.setTimeout(app.getTimeout());
 		inResult.setResult(true);
@@ -110,30 +106,34 @@ public final class SessionUtils {
 
 		if(inContext != null){
 			// check for session browser value
-			if(!isSessionDataExist(inContext, "browser", inApp.getId())){
+			if(!isSessionDataExist(inContext, Constants._browser_key, inApp.getId())){
 				inMessage.setError("Could not setup web session!");
 				inMessage.setReloadPage(true);
 				return;
 			}
-			inMessage.getData().put("browser",getSessionData(inContext, "browser", inApp.getId()));
+			inMessage.getData().put(Constants._browser_key,getSessionData(inContext, Constants._browser_key, inApp.getId()));
 			// check for user (optional)
-			inMessage.getData().put("_userid", getSessionData(inContext, "_userid", inApp.getId()));
-			inMessage.getData().put("_roles", getSessionData(inContext, "_roles", inApp.getId()));
-			if(inMessage.getData().containsKey("locale")){ 
+			inMessage.getData().put(Constants._userid_key, getSessionData(inContext, Constants._userid_key, inApp.getId()));
+			inMessage.getData().put(Constants._roles_key, getSessionData(inContext, Constants._roles_key, inApp.getId()));
+			if(Utils.getMessageDataOrNull(inMessage, Constants._locale_key) != null){ 
 				return; // not need to init locale state
 			}
 			// check for locale (optional)
-			if(isContextContain(inContext, "locale", inApp.getId())){
-				inMessage.getData().put("locale", getSessionData(inContext, "locale", inApp.getId()));				
+			if(isContextContain(inContext, Constants._locale_key, inApp.getId())){
+				inMessage.getData().put(Constants._locale_key, getSessionData(inContext, Constants._locale_key, inApp.getId()));				
 			}else{
-				inMessage.getData().put("locale", inApp.getDefaultLocale());				
+				inMessage.getData().put(Constants._locale_key, inApp.getDefaultLocale());				
 			}
 		} else{
 			inResult.setErrorString("Could not find web context!");		
 		}
 	}
 	
-	public static void setSessionData(HttpSession inSession, String inKey, String inAppId, Object inValue) {
+	public static void setSessionData(
+			HttpSession inSession, 
+			String inKey, 
+			String inAppId, 
+			Object inValue) {
 		String key = getAppAndKeyID(inAppId,inKey);
 		inSession.setAttribute(key, inValue);
 		_log.debug("sessionKey: " + key);
@@ -170,7 +170,7 @@ public final class SessionUtils {
 		}
 		HttpSession session = inMessage.getSession();
 		StringBuffer sb = new StringBuffer();
-		sb.append("#### SESSION DATA for: " + inMessage.getData().get("appid") + '\n');
+		sb.append("#### SESSION DATA for: " + Utils.getMessageDataOrNull(inMessage, Constants._appid_key) + '\n');
 		sb.append("SESSION ID: " + session.getId() + '\n');
 		Enumeration<String> keys = session.getAttributeNames();
 		while(keys.hasMoreElements()){
@@ -209,25 +209,5 @@ public final class SessionUtils {
 		}
 		_log.debug("... mobile browser not found!");
 		return(false);
-	}
-
-	public static List<String> getSessionRoles(IMessage inMessage) {
-		ArrayList<String> roles = new ArrayList<String>();
-		String roles_as_string = (inMessage.getData() != null ?  inMessage.getData().get("_roles") : null);
-		String user = (inMessage.getData() != null ?  inMessage.getData().get("_userid") : null);
-		
-		// user NOT logged in
-		if(user == null || user.isEmpty()){
-			roles.add("NonRegistered");
-			return(roles);
-		}
-		// ESLE
-		roles.add("Registered");
-		if(roles_as_string != null && !roles_as_string.isEmpty()){
-			String[] temp_roles = roles_as_string.split(",");
-			for(String role:temp_roles)
-				roles.add(role);
-		}	
-		return(roles);
 	}	
 }

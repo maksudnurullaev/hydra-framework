@@ -15,7 +15,6 @@ import org.hydra.pipes.exceptions.RichedMaxCapacityException;
 import org.hydra.pipes.interfaces.IPipe;
 import org.hydra.processors.exceptions.NullProcessorException;
 import org.hydra.processors.interfaces.IProcessor;
-import org.hydra.services.remote.interfaces.IMessageService;
 import org.hydra.utils.Constants;
 
 /**
@@ -23,23 +22,6 @@ import org.hydra.utils.Constants;
  *
  */
 public abstract class APipe extends AStatisticsApplyer implements IPipe<IMessage> {
-	private IMessageService remoteMessageClient = null;
-	private IMessageService remoteMessageServer = null;
-	
-	public IMessageService getRemoteMessageClient() {
-		return remoteMessageClient;
-	}
-	public void setRemoteMessageClient(IMessageService inService) {
-		this.remoteMessageClient = inService;
-	}
-	
-	public IMessageService getRemoteMessageServer() {
-		return remoteMessageServer;
-	}
-	public void setRemoteMessageServer(IMessageService inService) {
-		this.remoteMessageServer = inService;
-	}	
-
 	private int _maxCapacity = Constants._unlimited;
 	private volatile LinkedList<IMessage> _stack = null;
 	private String _name = null;

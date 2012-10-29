@@ -222,7 +222,7 @@ public final class Utils {
 
 		List<String> strSaveArrayData = new ArrayList<String>();
 		if(inAppId != null){
-			strSaveArrayData.add("appid");
+			strSaveArrayData.add(Constants._appid_key);
 			strSaveArrayData.add(Utils.Q(inAppId));
 		}
 		strSaveArrayData.add("handler");
@@ -238,9 +238,10 @@ public final class Utils {
 			for (IField field : fields) {
 				if(isFieldFileUploadType(field)){
 					fileField = field.getValue4JS();
-					if(inMessage != null && inMessage.getData().containsKey("folder")){
-						strSaveArrayData.add("folder");
-						strSaveArrayData.add(Q(inMessage.getData().get("folder")));
+					String folder = Utils.getMessageDataOrNull(inMessage, Constants._folder);
+					if(inMessage != null && folder != null){
+						strSaveArrayData.add(Constants._folder);
+						strSaveArrayData.add(Q(folder));
 					}
 				}else{
 					strSaveArrayData.add(field.getID());
@@ -262,7 +263,7 @@ public final class Utils {
 
 		List<String> strCancelArrayData = new ArrayList<String>();
 		if(inAppId != null){
-			strCancelArrayData.add("appid");
+			strCancelArrayData.add(Constants._appid_key);
 			strCancelArrayData.add(Utils.Q(inAppId));
 		}
 		strCancelArrayData.add("handler");
@@ -361,23 +362,25 @@ public final class Utils {
 		}
 	}	
 	
-	public static void test2ValidPasswords(
+	public static boolean test4ValidPasswords(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
 			CommonMessage inMessage, 
 			String key, 
 			String key2) {
-		String value = inMessage.getData().get(key).trim();
-		String value2 = inMessage.getData().get(key2).trim();
+		String value = Utils.getMessageDataOrNull(inMessage, Constants._user_password_new1);
+		String value2 = Utils.getMessageDataOrNull(inMessage, Constants._user_password_new2);
 		
-		if((value == null) ||
-				(!value.equals(value2)) ||
-				(value.length() < 5)){
+		if(value == null 
+				|| value2 == null
+				|| !value.trim().equals(value2.trim()) 
+				|| (value.length() < 5)){
 			errorFields.add(key);
 			errorFields.add(key2);
 			errorCodes.add(ERROR_CODES.ERROR_NO_VALID_PASSWORDS);
+			return(false);
 		}
-			
+		return(true);
 	}
 
 	public static String getJsHighlight4(List<String> errorFields) {
@@ -547,5 +550,9 @@ public final class Utils {
 			
 			editLinks.put(wrapElemId, result.toString());
 		}
+	}
+
+	public static String getMessageDataOrNull(IMessage inMessage,  String inKey) {
+		return((inMessage.getData() != null ?  inMessage.getData().get(inKey) : null));
 	}
 }

@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.beans.WebApplication;
 import org.hydra.messages.CommonMessage;
+import org.hydra.utils.Constants;
 import org.hydra.utils.FileUtils;
 import org.hydra.utils.Result;
 import org.hydra.utils.SessionUtils;
@@ -79,7 +80,7 @@ public class IndexHtml extends HttpServlet {
 		msg.setUrl(url);
 		Result inResult = new Result();
 		SessionUtils.setWebAppParameters(inResult, msg, app);
-		_log.debug("Corresponding web application is: " + msg.getData().get("appid"));
+		_log.debug("Corresponding web application is: " + msg.getData().get(Constants._appid_key));
 
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
@@ -100,10 +101,10 @@ public class IndexHtml extends HttpServlet {
 				if(nextLine.trim().isEmpty()) continue;
 				String lowCaseNextLine = nextLine.toLowerCase();
 				if(lowCaseNextLine.contains(_header_end_tag)){
-					sb.append(addHtmlTagFiles(msg.getData().get("appid"), "_head", mobile_browser));					
+					sb.append(addHtmlTagFiles(msg.getData().get(Constants._appid_key), "_head", mobile_browser));					
 				}
 				if(lowCaseNextLine.contains(_body_end_tag)){
-					sb.append(addHtmlTagFiles(msg.getData().get("appid"), "_body", mobile_browser));					
+					sb.append(addHtmlTagFiles(msg.getData().get(Constants._appid_key), "_body", mobile_browser));					
 				}
 				if(lowCaseNextLine.contains(_general_version_comment)){
 					 if(!mobile_browser){

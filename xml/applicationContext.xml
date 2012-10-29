@@ -14,9 +14,6 @@
 	<!-- To describe all applications here -->
 	<import resource="applications.xml"/>
 	
-	<!-- DB beans -->
-	<import resource="db.xml"/>
-
 	<!-- Text Resources for main initialization -->
 	<bean id="_text_manager" class="org.hydra.managers.TextManager">
 	    <!-- Set locales -->
