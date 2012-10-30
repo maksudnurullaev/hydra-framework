@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.hydra.deployers.ADeployer;
-import org.hydra.managers.MessagesManager;
+import org.hydra.deployers.Dictionary;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
@@ -20,12 +20,11 @@ public class General extends AMessageHandler { // NO_UCD
 			return inMessage;
 		
 		String 	wrapHtmlElement = Utils.getMessageDataOrNull(inMessage, "wrap");
-		if(wrapHtmlElement == null){ wrapHtmlElement =  Constants._div; }
 		
-		String content = MessagesManager.getText(
+		String content = Dictionary.getTextByKey(
 				Utils.getMessageDataOrNull(inMessage, Constants._key),
 				wrapHtmlElement,
-				Utils.getMessageDataOrNull(inMessage, Constants._locale_key));
+				inMessage);
 
 		return (ADeployer.deployContent(content,inMessage));
 	}
@@ -66,7 +65,7 @@ public class General extends AMessageHandler { // NO_UCD
 					Utils.getMessageDataOrNull(inMessage, Constants._locale_key)));
 			return(ADeployer.deployContent(content,inMessage));
 		}
-		inMessage.setHtmlContent("Could not find initial body for: " +Utils.getMessageDataOrNull(inMessage, Constants._appid_key));
+		inMessage.setHtmlContent("Could not find initial body for: " + Utils.getMessageDataOrNull(inMessage, Constants._appid_key));
 		return(inMessage);
 	};
 

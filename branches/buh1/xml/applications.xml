@@ -23,16 +23,5 @@
 				<value>^https?://localhost.*</value>
 			</set>
 		</property>		
-	    <!-- Set locales -->
-	    <property name="locales">
-	    	<map>
-	    		<entry key="rus" value="Рус"/>
-	    		<entry key="eng" value="Eng"/>
-	    	</map>
-	    </property>
-		<!-- Set default locale -->
-		<property name="defaultLocale">
-			<value>rus</value>
-		</property>	    
 	</bean>
 </beans>

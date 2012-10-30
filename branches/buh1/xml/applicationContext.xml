@@ -15,7 +15,7 @@
 	<import resource="applications.xml"/>
 	
 	<!-- Text Resources for main initialization -->
-	<bean id="_text_manager" class="org.hydra.managers.TextManager">
+	<bean id="_dictionary" class="org.hydra.deployers.Dictionary">
 	    <!-- Set locales -->
 	    <property name="locales">
 	    	<map>

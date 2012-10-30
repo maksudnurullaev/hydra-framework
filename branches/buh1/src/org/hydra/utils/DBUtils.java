@@ -1,5 +1,9 @@
 package org.hydra.utils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,7 +16,7 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.h2.jdbcx.JdbcConnectionPool;
-import org.hydra.beans.abstracts.APropertyLoader;
+import org.hydra.deployers.Dictionary;
 
 public final class DBUtils {
 	public static enum QUERY_TYPE{
@@ -27,11 +31,10 @@ public final class DBUtils {
 	static JdbcConnectionPool cp = null;
 
 	public static void init_cp(){
-		prop = APropertyLoader.loadProperties("buh1");
         cp = JdbcConnectionPool.create(
-       		prop.getProperty("db.connection.string"), 
-       		prop.getProperty("db.user.name"), 
-       		prop.getProperty("db.user.password"));
+       		Dictionary.getTextByKey("db.connection.string", null, "USR"), 
+       		Dictionary.getTextByKey("db.user.name", null, "USR"), 
+       		Dictionary.getTextByKey("db.user.password", "", "USR"));
 	}
 	
 	public void finalize(){

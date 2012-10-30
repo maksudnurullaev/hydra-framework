@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
-import org.hydra.managers.MessagesManager;
+import org.hydra.deployers.Dictionary;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
 
@@ -57,6 +57,6 @@ public final class CaptchaUtils {
 		List<String> err_ids = new ArrayList<String>();
 		err_ids.add(Constants._captcha_value);
 		inMessage.setHighlightFields(err_ids);
-		inMessage.setError(MessagesManager.getText("Captcha.Incorrect", null, Utils.getMessageDataOrNull(inMessage, Constants._locale_key)));
+		inMessage.setError(Dictionary.getTextByKey("Captcha.Incorrect", null, Utils.getMessageDataOrNull(inMessage, Constants._locale_key)));
 	}
 }
