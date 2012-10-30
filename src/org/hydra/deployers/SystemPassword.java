@@ -37,7 +37,7 @@ public final class SystemPassword {
 	private static String getPasswordChange(
 			String inHow, 
 			String inLocale) {
-		return(Utils.T("html.form.password_change"));
+		return("html.form.password_change");
 	}
 
 }

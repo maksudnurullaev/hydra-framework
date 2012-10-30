@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.hydra.beans.WebApplication;
 import org.hydra.beans.WebApplications;
+import org.hydra.deployers.Dictionary;
 import org.hydra.messages.interfaces.IMessage;
 
 public final class SessionUtils {
@@ -122,7 +123,7 @@ public final class SessionUtils {
 			if(isContextContain(inContext, Constants._locale_key, inApp.getId())){
 				inMessage.getData().put(Constants._locale_key, getSessionData(inContext, Constants._locale_key, inApp.getId()));				
 			}else{
-				inMessage.getData().put(Constants._locale_key, inApp.getDefaultLocale());				
+				inMessage.getData().put(Constants._locale_key, Dictionary.getDefaultLocale());				
 			}
 		} else{
 			inResult.setErrorString("Could not find web context!");		

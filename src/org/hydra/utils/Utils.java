@@ -13,9 +13,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hydra.html.fields.FieldInput;
-import org.hydra.html.fields.IField;
-import org.hydra.managers.MessagesManager;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.ErrorUtils.ERROR_CODES;
@@ -64,11 +61,6 @@ public final class Utils {
 		}
 
 		return String.format(format, "no-stacktrace-found!");
-	}
-
-	public static String T(String inTemplateName, Object... inStrings) {
-		return (String.format(MessagesManager.getTemplate(inTemplateName),
-				inStrings));
 	}
 
 	public static String GetDateUUID() { // NO_UCD
@@ -130,43 +122,6 @@ public final class Utils {
 		result.append("<div id=\"editBox\"></div>");
 		return result.toString();
 	}
-
-	public static String createJSLinkHAAD(
-			String inHandler
-			, String inMethod
-			, String inKey
-			, String inDest
-			, String inName
-			) {
-		String jsData = Utils.T("template.html.js.HAAD"
-				, inHandler
-				, inMethod
-				, inKey
-				, inDest);
-		return Utils.T("template.html.a.onClick.sendMessage.Label"
-				, jsData
-				, inName);
-	}
-
-	public static String createJSLink(
-			String inJSData
-			, String inName
-			) {
-		return Utils.T("template.html.a.onClick.sendMessage.Label"
-				, inJSData
-				, inName);
-	}
-
-	public static String createJSLink(
-			  String inTitle
-			, String inJSData
-			, String inName
-			) {
-		return Utils.T("template.html.a.Title.onClick.sendMessage.Label"
-				, inTitle
-				, inJSData
-				, inName);
-	}	
 	
 	public static String V(String id) {
 		return "jQuery('#" + id + "').prop('value')" ; 
@@ -197,142 +152,6 @@ public final class Utils {
 		return ss.toString();
 	}
 
-	public static String createJSLinkWithConfirm(String inJSData, String inName) {
-		return Utils.T("template.html.a.onClick.confirmAndSendMessage.Label"
-				, inJSData
-				, inName);
-	}
-	
-	public static String createJSLinkWithConfirm(String inTitle, String inJSData, String inName) {
-		return Utils.T("template.html.a.Title.onClick.confirmAndSendMessage.Label"
-				, inTitle
-				, inJSData
-				, inName);
-	}	
-
-	public static String generateForm(
-			String inTitle,
-			String inAppId,
-			String inSaveHandler, String inSaveAction, // Save
-			String inCancelHandler, String inCancelAction, // Cancel
-			String inDest,
-			ArrayList<IField> fields, 
-			ArrayList<IField> optionalFields, 
-			CommonMessage inMessage) {
-
-		List<String> strSaveArrayData = new ArrayList<String>();
-		if(inAppId != null){
-			strSaveArrayData.add(Constants._appid_key);
-			strSaveArrayData.add(Utils.Q(inAppId));
-		}
-		strSaveArrayData.add("handler");
-		strSaveArrayData.add(Utils.Q(inSaveHandler));
-		strSaveArrayData.add("action");
-		strSaveArrayData.add(Utils.Q(inSaveAction));
-		strSaveArrayData.add("dest");
-		strSaveArrayData.add(Utils.Q(Utils.sanitazeHtmlId(inDest)));
-		
-		String fileField = null;
-		
-		if(fields != null && fields.size() > 0){			
-			for (IField field : fields) {
-				if(isFieldFileUploadType(field)){
-					fileField = field.getValue4JS();
-					String folder = Utils.getMessageDataOrNull(inMessage, Constants._folder);
-					if(inMessage != null && folder != null){
-						strSaveArrayData.add(Constants._folder);
-						strSaveArrayData.add(Q(folder));
-					}
-				}else{
-					strSaveArrayData.add(field.getID());
-					strSaveArrayData.add(field.getValue4JS());
-					
-				}
-			}
-		}
-		
-		if(optionalFields != null && optionalFields.size() > 0){
-			for (IField field : optionalFields) {
-				strSaveArrayData.add(field.getID());
-				strSaveArrayData.add(field.getValue4JS());
-			}			
-		}
-		
-		String jsSaveData = jsData(strSaveArrayData
-				.toArray(new String[0]));
-
-		List<String> strCancelArrayData = new ArrayList<String>();
-		if(inAppId != null){
-			strCancelArrayData.add(Constants._appid_key);
-			strCancelArrayData.add(Utils.Q(inAppId));
-		}
-		strCancelArrayData.add("handler");
-		strCancelArrayData.add(Utils.Q(inCancelHandler));
-		strCancelArrayData.add("action");
-		strCancelArrayData.add(Utils.Q(inCancelAction));
-		strCancelArrayData.add("dest");
-		strCancelArrayData.add(Utils.Q(Utils.sanitazeHtmlId(inDest)));
-
-		String jsCancelData = jsData(strCancelArrayData
-				.toArray(new String[0]));
-
-		StringBuffer ssJsActions = new StringBuffer();
-		if(fileField == null){
-			ssJsActions.append(Utils.T("template.html.a.onClick.sendMessage.Label"
-					, jsSaveData
-					, "Save"));
-		}else{
-			ssJsActions.append(Utils.T("template.html.a.onClick.sendMessage2.Label"
-					, jsSaveData, fileField
-					, "Save"));			
-		}
-		ssJsActions.append(" | ");
-		ssJsActions.append(Utils.T("template.html.a.onClick.sendMessage.Label"
-				, jsCancelData
-				, "Cancel"));
-
-		String jsActions = ssJsActions.toString();
-
-		StringBuffer result = new StringBuffer(inTitle);
-
-		result.append("<table class=\"statistics\">");
-		result.append("<tbody>");
-		if(fields != null){
-			for (IField s : fields){
-				if(s.isVisible()){
-					result.append(String.format(
-							"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
-							, String.format("[[Dictionary|Text|%s|span]]", s.getID())
-							, s.getAsHtml()));
-				}else{
-					result.append(s.getAsHtml());
-				}
-			}
-		}
-		if(optionalFields != null){
-			result.append("<tr><td colspan=\"2\"><u><i>[[Dictionary|Text|additional|span]]</i></u></td></tr>");			
-			for(IField s :optionalFields)
-				result.append(String.format(
-						"<tr><td class=\"tr\">%s:</td><td>%s</td></tr>"
-								, String.format("[[Dictionary|Text|%s|span]]", s.getID())
-								, s.getAsHtml()));
-		}
-		result.append(String.format("<tr><td>&nbsp;</td><td>%s</td></tr>",
-				jsActions));
-		result.append("<tr><td>&nbsp;</td><td id='wait_element'>&nbsp;</td></tr>");
-		result.append("</tbody>");
-		result.append("</table>");
-
-		return (result.toString());
-	}
-
-	public static boolean isFieldFileUploadType(IField s) {
-		if(s == null) return false;
-		if(s instanceof FieldInput)
-			return( ((FieldInput) s).getType().compareToIgnoreCase("file") == 0 );
-		return false;
-	}
-	
 	public static void testFieldEMail(
 			List<String> errorFields,
 			List<ERROR_CODES> errorCodes, 
@@ -499,7 +318,7 @@ public final class Utils {
 		if(inMessage.getData() != null){
 			System.out.println("DATA:");
 			for(Entry<String, String> kv: inMessage.getData().entrySet()){
-				System.out.println(F("%s: %s", kv.getKey(), kv.getValue()));
+				System.out.println(F("... %s: %s", kv.getKey(), kv.getValue()));
 			}
 		}
 		System.out.println("inMessage.isReloadPage(): " + inMessage.isReloadPage());
@@ -509,47 +328,6 @@ public final class Utils {
 		System.out.println("inMessage.getUrl(): " + inMessage.getUrl());
 		System.out.println("inMessage.getContextPath(): " + inMessage.getContextPath());
 		System.out.println("=== End ===");
-	}
-
-	public static String sanitazeHtmlId(String string) {
-		if(string == null) return null;
-		return(string.replaceAll("\\W", "_"));
-	}
-
-	public static String replaceAll(String inString) {
-		return(inString.replaceAll("(?i)</textarea>", "[[Dictionary|Template|template.textarea.endtag|html]]"));
-	}
-
-	public static void wrapElement(
-			String inKey, 
-			StringWrapper content, 
-			String inHandlerName,
-			String inEditObjectName,
-			boolean noError, 
-			Map<String, String> editLinks,
-			String inWrapper) {
-	
-		String wrapElemId = sanitazeHtmlId(String.format("%s.%s", inEditObjectName, inKey));
-		String wrapString = String.format("<%s id='%s'>%s</%s>", inWrapper, wrapElemId, content.getString(), inWrapper);
-		content.setString(wrapString.toString());
-		// List of Link
-		if(editLinks != null && !editLinks.containsKey(wrapElemId)){
-			StringBuffer result = new StringBuffer();
-			
-			// main link
-			if(!noError)
-				result.append("<a class='red' onclick=\"javascript:void(Globals.editIt('");
-			else
-				result.append("<a class='green' onclick=\"javascript:void(Globals.editIt('");
-			result.append(inKey).append("','").append(inHandlerName).append("','").append("edit" + inEditObjectName)
-						.append("')); return false;\" href=\"#\">").append(inKey).append("</a>");
-			// sup - description
-			result.append("<sup>(<a class='green' onclick=\"javascript:void(Globals.toogleVisibility('");
-			result.append(wrapElemId).append("')); return false;\" href=\"#\">Show me</a>, ")
-				.append(wrapString.toString().length()).append(")</sup>");
-			
-			editLinks.put(wrapElemId, result.toString());
-		}
 	}
 
 	public static String getMessageDataOrNull(IMessage inMessage,  String inKey) {

@@ -48,10 +48,11 @@ public final class System {
 		return tempStr ;
 	}
 
+	static String languageBar = "<a href=\"#\" onclick=\"javascript:void(Globals.sendMessage({handler:'General', action:'changeLocale', locale:'%s', dest:'body', url: document.URL })); return false;\">%s</a>";
 	private static String getSystemLanguagebarKeyA(
 			String inKey,
 			IMessage inMessage) {
-		Map<String, String> appLocales = getAppDefinedLocales(inMessage);
+		Map<String, String> appLocales = Dictionary.getLocales();
 		if(appLocales != null && appLocales.size() > 0){
 			String resultStr = "";
 			for (Map.Entry<String, String> entry:appLocales.entrySet()) {
@@ -60,25 +61,12 @@ public final class System {
 				if(entry.getKey().compareToIgnoreCase(Utils.getMessageDataOrNull(inMessage, Constants._locale_key)) == 0){ 
 					resultStr += entry.getValue();
 				}else{
-					resultStr += Utils.T("template.html.a.language.bar", entry.getKey(), entry.getValue());
+					resultStr += String.format(languageBar, entry.getKey(), entry.getValue());
 				}
 			}
 			return resultStr;
 		}
 		_log.error("Could not define locale for:" + Utils.getMessageDataOrNull(inMessage, Constants._appid_key));
 		return ("Could not define locale for:" + Utils.getMessageDataOrNull(inMessage, Constants._appid_key));
-	}
-
-	public static Map<String, String> getAppDefinedLocales(IMessage inMessage){
-		if(Utils.getMessageDataOrNull(inMessage, Constants._appid_key) == null){
-			return(null);
-		}
-		Result result = new Result();
-		BeansUtils.getWebContextBean(result, (Utils.getMessageDataOrNull(inMessage, Constants._appid_key) + Constants._bean_web_app_id_postfix));
-		if(result.isOk() && result.getObject() instanceof WebApplication){ 
-			WebApplication app = (WebApplication) result.getObject();
-			return(app.getLocales());
-		}
-		return (null);
 	}
 }

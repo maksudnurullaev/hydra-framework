@@ -2,7 +2,6 @@ package org.hydra.utils;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,12 +9,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
@@ -23,7 +20,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.io.FileTransfer;
-import org.hydra.beans.abstracts.APropertyLoader;
 import org.hydra.messages.CommonMessage;
 import org.hydra.messages.handlers.abstracts.AMessageHandler;
 import org.hydra.messages.interfaces.IMessage;
@@ -129,7 +125,6 @@ public final class FileUtils {
 		_log.debug("orginalFileName: " + orginalFileName);
 		
 		result = saveFile(realPath, file);
-		result = saveFileDescriptions(inMessage, realPath, dataDescriptionKeys);
 			
 		if(result)
 			outFilePath.setString(String.format("%s/%s", inMessage.getContextPath(), uri4File));
@@ -160,33 +155,6 @@ public final class FileUtils {
 		}
 		return(result);
 	}	
-
-	public static boolean saveFileDescriptions(CommonMessage inMessage,
-			String filePath, String ... dataDescriptionKeys) {
-		if(dataDescriptionKeys.length == 0)return(false);
-		
-		try {
-			File file = new File(filePath + APropertyLoader.SUFFIX);
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, false), Constants._utf_8));
-			for(int i = 0; i < dataDescriptionKeys.length ; i++){
-				if(Utils.getMessageDataOrNull(inMessage, dataDescriptionKeys[i]) != null)
-				{
-					String key = dataDescriptionKeys[i];
-					String value = Utils.getMessageDataOrNull(inMessage, key);
-					if(key.compareToIgnoreCase("Name") == 0) value = sanitize(value.trim());
-					else if(!value.isEmpty()) value = value.replaceAll("\n", "\n\t");
-					if(value.length() > Constants._max_textarea_field_limit)
-						value = value.substring(0, Constants._max_textarea_field_limit - 3 ) + "...";
-					if(value.length() > 0) bw.write(key + " = " + value + "\n");
-				}					
-			}
-			bw.close();			
-		} catch (IOException e) {
-			_log.error(e.getMessage());
-			return(false);
-		}
-		return(true);
-	}
 	
 	public static String getFileExtension(String filename){
 		int lastDot = filename.lastIndexOf('.');
@@ -222,30 +190,6 @@ public final class FileUtils {
 			_log.error(e.toString());
 			return(false);
 		}	
-	}
-
-	public static String getDeleteLink(
-			String inHandler,
-			String inDest,
-			String inAppID, 
-			String key) {
-		String jsData = Utils.jsData(
-				 "handler", Utils.Q(inHandler)
-				,"action",  Utils.Q("delete")
-				,Constants._appid_key, Utils.Q(inAppID)
-				,Constants._file_path, Utils.Q(key)
-				,"dest", Utils.sanitazeHtmlId(inDest)
-			);
-		return(Utils.F("[%s]", Utils.createJSLinkWithConfirm("Delete",jsData, "X")));		
-	}
-
-	public static String stripPropertiesExtension(String propertiesFilePath) {
-		return propertiesFilePath.substring(0, propertiesFilePath.length() - APropertyLoader.SUFFIX.length());
-	}
-
-	public static Properties parseProperties(String propertiesFilePath) {
-		Properties properties = APropertyLoader.parsePropertyFile(getRealFile(propertiesFilePath));
-		return properties;
 	}
 
 	public static String getHtmlFromFile(String inAppId, String fileName)  {

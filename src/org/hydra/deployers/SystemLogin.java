@@ -4,9 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hydra.messages.interfaces.IMessage;
 import org.hydra.utils.Constants;
+import org.hydra.utils.Roles;
 import org.hydra.utils.Utils;
-
-import org.apache.commons.lang.NotImplementedException;
 
 public final class SystemLogin {
 	private static final Log _log = LogFactory.getLog("org.hydra.deployers.SystemLogin");
@@ -31,6 +30,9 @@ public final class SystemLogin {
 	private static String getFormAny(
 			String inHow, 
 			IMessage inMessage) {
+		if(Roles.isLocalhostAdministrator(inMessage)){
+			return("[[Dictionary|Text|You_registered_as|locale]]: [[Dictionary|Text|Administrator|locale]]");
+		}
 		String userId = Utils.getMessageDataOrNull(inMessage, Constants._userid_key);
 		String appId = Utils.getMessageDataOrNull(inMessage, Constants._appid_key);
 		String locale = Utils.getMessageDataOrNull(inMessage, Constants._locale_key);
@@ -56,13 +58,13 @@ public final class SystemLogin {
 			String inApplicationID, 
 			String inUserID, 
 			boolean inShort) {
-		throw new NotImplementedException();
+		return("SystemLogin.getUserInfo()");
 	}
 
 	private static String getFormLogin(
 			String inHow, 
 			String inLocale) {
-		return(Utils.T("html.form.login"));
+		return("html.form.login");
 	}
 
 }

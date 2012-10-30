@@ -95,7 +95,7 @@ public final class ADeployer {
 		if(inWhere.compareToIgnoreCase("system") == 0)
 			return System.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("dictionary") == 0)
-			return Dictionary.getDictionaryWhatKeyHow(inWhat, inKey, inHow, inMessage);
+			return Dictionary.getTextByKey(inKey, inHow, inMessage);
 		else if(inWhere.compareToIgnoreCase("Files") == 0)
 			return Files.getWhatKeyHow(inWhat, inKey, inHow, inMessage);
 		

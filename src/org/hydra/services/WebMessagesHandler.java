@@ -46,6 +46,9 @@ public class WebMessagesHandler extends ALogger {
 			resultList.add(inMessage);
 			return resultList.toArray();
 		}
+		
+		// ************* handle incoming message ************* //
+		
 		// test for action with session
 		if(handledWithSession(inMessage, webContext)){
 			resultList.add(inMessage);
@@ -145,31 +148,8 @@ public class WebMessagesHandler extends ALogger {
 				inMessage.setReloadPage(true);
 				return(true);
 			}
-		}else if(handler.compareToIgnoreCase("Adm") == 0){
-			if(action.compareToIgnoreCase("getCassandraConfiguration") == 0){
-				inMessage = (MessageBean) getCassandraConfiguration(inMessage, webContext);
-				return(true);
-			} 
 		}
 		//
 		return false;
-	}
-
-	public static IMessage getCassandraConfiguration(IMessage inMessage, WebContext inContext){
-		String result = Utils.T("template.table.with.class",
-				"table.name.value",
-				String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Server", inContext.getServletContext().getServerInfo())
-				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Protocol", inContext.getHttpServletRequest().getProtocol())
-				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Server Name", inContext.getHttpServletRequest().getServerName())
-				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Server Port", inContext.getHttpServletRequest().getServerPort())
-				+ String.format("<tr><td class='tr'><u>%s</u>:</td><td>%s</td></tr>", 
-						"Web Applicication ID", Utils.getMessageDataOrNull(inMessage, Constants._appid_key))
-				);
-		inMessage.setHtmlContent(result);
-		return inMessage;
 	}
 }

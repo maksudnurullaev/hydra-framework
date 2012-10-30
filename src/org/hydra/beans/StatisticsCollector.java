@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hydra.beans.interfaces.IStatisticsCollector;
-import org.hydra.messages.interfaces.IMessage;
-import org.hydra.utils.Utils;
 import org.hydra.utils.abstracts.ALogger;
 
 public class StatisticsCollector extends ALogger implements IStatisticsCollector {
@@ -80,25 +78,4 @@ public class StatisticsCollector extends ALogger implements IStatisticsCollector
 		return result;
 	}
 
-	public String getHtmlReport(IMessage inMessage) {
-		String result = ""; 
-		String tempString = "";		
-		// Table header
-		tempString += String.format("<td>%s</td>", "&nbsp;");
-		for (StatisticsTypes type : StatisticsTypes.values()) {
-			tempString += String.format("<td>&nbsp;&nbsp;&nbsp;<u>%s</u></td>", type.toString());
-		}
-		result += Utils.T("template.table.tr", tempString);
-		// Table rows
-		for (Map.Entry<String, Map<StatisticsTypes,Integer>> mapStringTypeInteger : _statistics.entrySet()) {
-			tempString = String.format("<td><u>%s</u>:</td>",mapStringTypeInteger.getKey());			
-			for (StatisticsTypes type : StatisticsTypes.values()) {
-				tempString += String.format("<td>%s</td>", 
-						mapStringTypeInteger.getValue().get(type));
-			}
-			result += String.format("<tr class='tr'>%s</tr>", tempString);
-		}
-		
-		return Utils.T("template.table.with.class", "statistics", result);
-	}
 }
